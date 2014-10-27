@@ -10,21 +10,10 @@ if ( !function_exists('woocommerce_emerchantpay_init') ):
 	{
 	    if ( !class_exists( 'WC_Payment_Gateway' ) ) return;
 
-	    /**
-	     * Localisation
-	     */
-	    load_plugin_textdomain('woocommerce_emerchantpay', false, './languages');
+		// Load text Domain
+	    load_plugin_textdomain('woocommerce_emerchantpay', false, 'languages');
 
-	    /*
-	    if($_GET['msg']!=''){
-	        add_action('the_content', 'showMessageEmp');
-	    }
-
-	    function showMessageEmp($content){
-	            return '<div class="box '.htmlentities($_GET['type']).'-box">'.htmlentities(urldecode($_GET['msg'])).'</div>'.$content;
-	    }
-	    */
-
+		// Get Genesis class
 		include dirname(__FILE__) . '/includes/class.wc_genesis.php';
 
 		/**

@@ -7,48 +7,44 @@ use \Genesis\Configuration as GenesisConf;
 
 class WC_Genesis extends WC_Payment_Gateway
 {
-	protected $msg = array();
-
 	public function __construct()
 	{
+		$this->id                   = 'genesis';
+		$this->method_title         = __('eMerchantPay', 'woocommerce_emerchantpay');
+		$this->icon                 = plugins_url( 'assets/images/logo.gif', plugin_dir_path(__FILE__) );
+		$this->has_fields           = false;
+
 		$this->init_form_fields();
 		$this->init_settings();
 
-		$this->id                   = 'genesis';
-		$this->method_title         = __('eMerchantPay', 'woocommerce_emerchantpay');
-		$this->icon                 = sprintf('%s/%s/images/logo.gif', WP_PLUGIN_URL, plugin_basename(dirname(__FILE__)));
-		$this->has_fields           = false;
+		foreach ($this->settings as $name => $value) {
+			if (!isset($this->$name)) {
+				$this->$name = $value;
+			}
+		}
 
-		$this->title                = $this->settings['title'];
-		$this->description          = $this->settings['description'];
-		$this->username             = $this->settings['username'];
-		$this->password             = $this->settings['password'];
-		$this->token                = $this->settings['token'];
-		$this->transaction_types    = $this->settings['transaction_types'];
-		$this->iframe_mode          = $this->settings['iframe_mode'];
+		// WooCommerce hooks
+		add_action('init', array(&$this, 'process_gateway_response' ));
 
-		$this->msg['message']     = "";
-		$this->msg['class']       = "";
+		add_action( 'woocommerce_api_' . strtolower( get_class( $this ) ), array( $this, 'process_gateway_response' ) );
 
-		add_action('init', array(&$this, 'check_genesis_response'));
+		add_action( 'woocommerce_receipt_' . $this->id, array(&$this, 'generate_form' ));
 
-		//update for woocommerce >2.0
-		add_action( 'woocommerce_api_' . strtolower( get_class( $this ) ), array( $this, 'check_genesis_response' ) );
+		add_action( 'woocommerce_thankyou_' . $this->id, array(&$this, 'process_return' ));
 
-		add_action('valid-genesis-request', array(&$this, 'successful_request'));
-
+		// Save admin-panel options
 		if ( version_compare( WOOCOMMERCE_VERSION, '2.0.0', '>=' ) ) {
 			add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( &$this, 'process_admin_options' ) );
 		} else {
 			add_action( 'woocommerce_update_options_payment_gateways', array( &$this, 'process_admin_options' ) );
 		}
 
-		add_action('woocommerce_receipt_' . $this->id, array(&$this, 'receipt_page'));
-		add_action('woocommerce_thankyou_' . $this->id, array(&$this, 'thankyou_page'));
+		// Credentials Setup
+		$this->setGenesisCredentials($this->settings);
 	}
 
 	/**
-	 * Set the Admin Panel options
+	 * Admin Panel Field Definition
 	 *
 	 * @return void
 	 */
@@ -58,63 +54,64 @@ class WC_Genesis extends WC_Payment_Gateway
 			'enabled' => array(
 				'title'         => __('Enable/Disable', 'woocommerce_emerchantpay'),
 				'type'          => 'checkbox',
-				'label'         => __('Enable eMerchantPay plugin', 'woocommerce_emerchantpay'),
+				'label'         => __('Enable eMerchantPay Checkout', 'woocommerce_emerchantpay'),
 				'default'       => 'no'
 			),
 			'title' => array(
 				'title'         => __('Title:', 'woocommerce_emerchantpay'),
 				'type'          => 'text',
 				'description'   => __('This controls the title which the user sees during checkout.', 'woocommerce_emerchantpay'),
+				'desc_tip'      => true,
 				'default'       => __('eMerchantPay', 'woocommerce_emerchantpay')
 			),
 			'description' => array(
 				'title'         => __('Description:', 'woocommerce_emerchantpay'),
 				'type'          => 'textarea',
 				'description'   => __('This controls the description which the user sees during checkout.', 'woocommerce_emerchantpay'),
-				'default'       => __('Pay securely by Credit, Debit card, Alternative Methods through eMerchantPay.', 'woocommerce_emerchantpay')
+				'desc_tip'      => true,
+				'default'       => __('Pay securely by Debit or Credit card, through eMerchantPay\'s Secure Gateway.<br/>You will be redirected to your secure server', 'woocommerce_emerchantpay')
 			),
-			'username' => array(
-				'title'         => __('Username', 'woocommerce_emerchantpay'),
-				'type'          => 'text',
-				'description'   => __('Enter your Genesis username.')
-			),
-			'password' => array(
-				'title'         => __('Password', 'woocommerce_emerchantpay'),
-				'type'          => 'text',
-				'description'   =>  __('Enter your Genesis password.', 'woocommerce_emerchantpay'),
-			),
-			'token' => array(
-				'title'         => __('Token', 'woocommerce_emerchantpay'),
-				'type'          => 'text',
-				'description'   =>  __('Enter your Genesis Token', 'woocommerce_emerchantpay'),
-			),
-			'environment' => array(
-				'title'         => __('Gateway Environment', 'woocommerce_emerchantpay'),
-				'type'          => 'select',
-				'options'       => array(
-					'sandbox'       =>__('Sandbox', 'woocommerce_emerchantpay'),
-					'production'    =>__('Production', 'woocommerce_emerchantpay')
-				),
-				'description'   =>  __('Sandbox - test mode, no money are being transferred | Production - live production environment. (Consult the Documentation for more information)')
+			'test_mode' => array(
+				'title'         => __('Test Mode', 'woocommerce_emerchantpay'),
+				'type'          => 'checkbox',
+				'label'          => __( 'Use Genesis Staging', 'woocommerce' ),
+				'description'   =>  __('Selecting this would route all request to our test environment.<br/>NO Funds are being transferred!'),
+				'desc_tip'      => true,
 			),
 			'transaction_types' => array(
-				'title'         => __('Auth/Sale', 'woocommerce_emerchantpay'),
+				'title'         => __('Transcation Type', 'woocommerce_emerchantpay'),
 				'type'          => 'select',
 				'options'       => array(
+					'auth'   => __('Authorize', 'woocommerce_emerchantpay'),
+					'auth3d' => __('Authorize 3D', 'woocommerce_emerchantpay'),
 					'sale'   => __('Sale', 'woocommerce_emerchantpay'),
-					'sale3d' => __('Sale 3D', 'woocommerce_emerchantpay')
+					'sale3d' => __('Sale 3D', 'woocommerce_emerchantpay'),
 				),
-				'description'   =>  __('Sale - Sale transaction type | Sale3D - Sale transaction type with 3D authentication. (Consult the Documentation for more information)')
+				'description'   =>  __('Authorize - authorize transaction type<br/><br/>Authorize3D - authorize transaction type with 3D Authentication<br/><br/>Sale - Sale transaction type<br/><br/>Sale3D - sale transaction type with 3D authentication.'),
+				'desc_tip'      => true,
 			),
-			'processing_mode' => array(
-				'title'         => __('Processing Mode', 'woocommerce_emerchantpay'),
-				'type'          => 'select',
-				'options'       => array(
-					'1' => __('iframe mode', 'woocommerce_emerchantpay'),
-					'2' => __('Button mode', 'woocommerce_emerchantpay'),
-				),
-				'description'   =>  __('What mode of operation do you prefer: iframe - load the Payment Form as iframe | Button - set up a link and let the user decide when to start the Payment session', 'woocommerce_emerchantpay'),
-				'default'       => '1',
+			'api_credentials' => array(
+				'title'       => __( 'API Credentials', 'woocommerce' ),
+				'type'        => 'title',
+				'description' => sprintf( __( 'Enter Genesis API Credentials below, in order to access the Gateway. If you forgot/lost your credentials, please %sget in touch%s with our technical support.', 'woocommerce' ), '<a href="mailto:tech-support@e-comprocessing.com">', '</a>' ),
+			),
+			'username' => array(
+				'title'         => __('Gateway Username', 'woocommerce_emerchantpay'),
+				'type'          => 'text',
+				'description'   => __('This is your Genesis username.'),
+				'desc_tip'      => true,
+			),
+			'password' => array(
+				'title'         => __('Gateway Password', 'woocommerce_emerchantpay'),
+				'type'          => 'text',
+				'description'   =>  __('This is your Genesis password.', 'woocommerce_emerchantpay'),
+				'desc_tip'      => true,
+			),
+			'token' => array(
+				'title'         => __('Gateway Token', 'woocommerce_emerchantpay'),
+				'type'          => 'text',
+				'description'   =>  __('This is your Genesis Token', 'woocommerce_emerchantpay'),
+				'desc_tip'      => true,
 			),
 		);
 	}
@@ -139,36 +136,30 @@ class WC_Genesis extends WC_Payment_Gateway
 		<?php
 	}
 
-	/**
-	 * Process the Payment
-	 *
-	 * @param int $order_id
-	 *
-	 * @return array check result, url
-	 */
-	public function process_payment($order_id)
+	public function process_return($order_id)
 	{
-		$order = new WC_Order($order_id);
+		$type = esc_sql($_GET['type']);
 
-		return array(
-			'result'    => 'success',
-			'redirect'  => $order->get_checkout_payment_url( true )
-		);
+		if (isset($type) && !empty($type)) {
+
+			$order = new WC_Order($order_id);
+
+			switch ($type) {
+				case 'success':
+					$order->update_status('completed');
+					break;
+				case 'failure':
+					$order->update_status('failed');
+					break;
+				case 'cancel':
+					$order->update_status('cancelled');
+					break;
+			}
+
+			header('Location: ' . $order->get_checkout_order_received_url());
+		}
+
 	}
-
-	/*
-	function process_payment($order_id){
-		$order = new WC_Order($order_id);
-		return array('result' => 'success',
-					'redirect' => add_query_arg
-					('order',
-						$order->id, add_query_arg('key',
-						$order->order_key,
-						get_permalink(get_option('woocommerce_pay_page_id'))))
-
-		);
-	}
-	*/
 
 	/**
 	 * Generate HTML Payment form
@@ -177,36 +168,39 @@ class WC_Genesis extends WC_Payment_Gateway
 	 *
 	 * @return string HTML form
 	 */
-	private function receipt_page($order_id)
+	public function process_payment($order_id)
 	{
+		global $woocommerce;
+
 		$order = new WC_Order( $order_id );
 
+		$trx_id = $this->genTransactionId($order_id);
+
+		$return = array(
+			'success'   => sprintf('%s&type=success', $order->get_checkout_order_received_url()),
+			'failure'   => sprintf('%s&type=failure', $order->get_checkout_order_received_url()),
+			'cancel'    => sprintf('%s&type=cancel', $order->get_checkout_order_received_url()),
+		);
+
 		$redirect_url = ( $this->redirect_page_id == "" || $this->redirect_page_id == 0 ) ? get_site_url() . "/" : get_permalink( $this->redirect_page_id );
+		// For wooCoomerce 2.0
+		$redirect_url = add_query_arg( 'wc-api', strtolower( get_class( $this ) ), $redirect_url );
 
-		//For wooCoomerce 2.0
-		$redirect_url = add_query_arg( 'wc-api', get_class( $this ), $redirect_url );
+		$genesis = new Genesis('WPF\Create');
 
-		$order_id = $order_id . '_' . date( "ymds" ) . '_' . mt_rand(42,1337);
-
-		GenesisConf::setToken( $this->settings['token'] );
-		GenesisConf::setUsername( $this->settings['username'] );
-		GenesisConf::setPassword( $this->settings['password'] );
-		GenesisConf::setEnvironment( $this->settings['environment'] );
-
-		$genesis = new Genesis( 'WPF\Create' );
-
-		$genesis->request()
-		        ->setTransactionId( $order_id )
-		        ->setCurrency( get_option( 'woocommerce_currency' ) )
-		        ->setAmount( $order->order_total )
+		$genesis
+			->request()
+		        ->setTransactionId( $trx_id )
+		        ->setCurrency( $order->get_order_currency() )
+		        ->setAmount( $this->get_order_total() )
 		        ->setUsage( 'TEST' )
 		        ->setDescription( 'TEST' )
 		        ->setCustomerEmail( $order->billing_email )
 		        ->setCustomerPhone( $order->billing_phone )
 		        ->setNotificationUrl( $redirect_url )
-		        ->setReturnSuccessUrl( $redirect_url )
-		        ->setReturnFailureUrl( $redirect_url )
-		        ->setReturnCancelUrl( $redirect_url )
+		        ->setReturnSuccessUrl( $return['success'] )
+		        ->setReturnFailureUrl( $return['failure'] )
+		        ->setReturnCancelUrl( $return['cancel'] )
 		        ->setBillingFirstName( $order->billing_first_name )
 		        ->setBillingLastName( $order->billing_last_name )
 		        ->setBillingAddress1( $order->billing_address_1 )
@@ -233,26 +227,46 @@ class WC_Genesis extends WC_Payment_Gateway
 
 		if ( isset( $response->redirect_url ) ) {
 			$target_url = (string) $response->redirect_url;
+
+			$order->update_status('pending');
 		}
 
 		if ( isset( $response->status) && (string)$response->status == 'error') {
-			die('ERROR: ' . $response->message);
+			$woocommerce->add_error(__("We were unable to process your order, please make sure all the data is correct or try again later."));
 		}
 
-		//$target_url = 'https://payment-9e5.emerchantpay.com/payment/form/post?PS_SIGNATURE=72c0d3958272ef3fe358a3c99d9f81b5&PS_EXPIRETIME=1413447098&PS_SIGTYPE=PSMD5&approval_url=http%3A%2F%2Fgenesis.woo%2F%3Fwc-api%3DWC_Gateway_emp_ecom&client_id=548663&credit_card_trans_type=sale&customer_address=1st+Street&customer_address2=&customer_city=London&customer_company=&customer_country=GB&customer_email=admin%40local.host&customer_first_name=John&customer_last_name=Doe&customer_phone=%2B4422030201&customer_postcode=W12+7TS&customer_state=&decline_url=http%3A%2F%2Fgenesis.woo%2F%3Fwc-api%3DWC_Gateway_emp_ecom&form_id=4574&item_1_digital=1&item_1_name=20_14101538&item_1_unit_price_GBP=14.97&order_currency=GBP&order_reference=20_14101538&shipping_address=1st+Street&shipping_address2=&shipping_city=London&shipping_company=&shipping_country=GB&shipping_first_name=John&shipping_last_name=Doe&shipping_phone=%2B4422030201&shipping_postcode=W12+7TS&shipping_state=&test_transaction=1&transtype=';
+		return array(
+			'result'    => 'success',
+			'redirect'  => $target_url
+		);
+	}
 
-		// Modes
-		switch ( $this->iframe_mode ) {
-			case 1:
-				printf( '<iframe src="%s" frameborder="0" scrolling="true" width="800" height="600" ></iframe>', $target_url );
-				break;
-			case 2:
-				printf( '', '');
-				break;
-			case 3:
-				printf( '<script language="javascript">setTimeout(function(){location.replace("%s")}, 3000);</script>', $target_url );
-				break;
+	public function process_refund($order_id, $amount, $reason)
+	{
+		$order = new WC_Order($order_id);
+
+		$genesis = new Genesis('Financial\Refund');
+
+		$genesis
+			->request()
+				->setTransactionId($this->genTransactionId($order_id))
+				->setUsage($reason)
+				->setRemoteIp($_SERVER['REMOTE_ADDR'])
+				->setReferenceId($order->get_transaction_id())
+				->setCurrency($order->get_order_currency())
+				->setAmount($amount);
+
+		$genesis->sendRequest();
+
+		$response = $genesis->response()->getResponseObject();
+
+		if (isset($response->status) && $response->status == 'approved') {
+			$order->add_order_note(sprintf('Refunded amount: %s%s, done by RID: %s', $amount, $response->unique_id), 0);
+
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -260,179 +274,120 @@ class WC_Genesis extends WC_Payment_Gateway
 	 *
 	 * @return void
 	 */
-	private function check_genesis_response()
+	public function process_notification()
 	{
-		// TODO - FIX
 		global $woocommerce;
 
-		$authenticatedParam = ParamSigner::paramAuthenticate($_GET, $this -> secret_key);
-		if(!$authenticatedParam)
-		{
-			die("Data tampering detected or offer expired.");
-		}
-		else
-		{
+		if (isset($_POST['wpf_unique_id']) && isset($_POST['notification_type'])) {
+			$notification = new \Genesis\API\Notification();
 
-			if(isset($_REQUEST['order_reference']) && isset($_REQUEST['notification_type']) ){
+			$notification->parseNotification($_POST);
 
+			if ($notification->isAuthentic()) {
+				$notificationObj = $notification->getNotificaitonObject();
 
-				$redirect_url = ($this -> redirect_page_id=="" || $this -> redirect_page_id==0)?get_site_url() . "/":get_permalink($this -> redirect_page_id);
-				$order_id_time = $_REQUEST['order_reference'];
+				$trx = $this->parseTransactionId($notificationObj->transaction_id);
 
-				$order_id = explode('_', $_REQUEST['order_reference']);
-				$order_id = (int)$order_id[0];
-				$this -> msg['class'] = 'error';
+				// It's recommended to Reconcile after Notification
+				$genesis = new Genesis('WPF\Reconcile');
+				$genesis->request()->setUniqueId($notificationObj->payment_transaction_unique_id);
+				$genesis->sendRequest();
 
-				if($order_id != ''){
+				$reconcile = $genesis->response()->getResponseObject();
 
-					$order = new WC_Order($order_id);
+				$order = new WC_Order($trx['order_id']);
 
-					$AuthDesc = $_REQUEST['notification_type'];
+				switch ($reconcile->status) {
+					case 'approved':
+						$order->payment_complete($reconcile->unique_id);
 
-					if($order -> status !=='completed'){
-
-
-						if($AuthDesc=="order"){
-
-							$order -> payment_complete();
-							$woocommerce -> cart -> empty_cart();
-						}
-
-						if($AuthDesc=="orderdeclined"){
-
-							$order -> update_status('Failed');
-							$this -> msg['message'] = "Thank you for shopping with us. However, the transaction has been declined.";
-							$this -> msg['class'] = 'error';
-
-						}
-
-					}
-
+						$woocommerce->cart->empty_cart();
+						break;
+					case 'declined':
+						$order->update_status('failure', $reconcile->technical_message);
+						break;
+					default:
+					case 'error':
+						$order->update_status('error', $reconcile->technical_message);
+						break;
 				}
-				$redirect_url = ($this -> redirect_page_id=="" || $this -> redirect_page_id==0)?get_site_url() . "/":get_permalink($this -> redirect_page_id);
 
-				// For wooCoomerce 2.0
-				$redirect_url = add_query_arg( array('msg'=> urlencode($this -> msg['message']), 'type'=>$this -> msg['class']), $redirect_url );
-
-				wp_redirect( $redirect_url );
-
-				exit;
+				echo $notification->getEchoResponse();
 			}
 		}
 	}
-
 
 	/**
-	 * Generate HTML Payment form
+	 * Generate transaction id, unique to this instance
 	 *
-	 * @param $order_id
+	 * @param string $input
 	 *
-	 * @return string HTML form
+	 * @return array|string
 	 */
-	/*
-	public function generate_genesis_form($order_id)
+	private function genTransactionId($input)
 	{
-		$order = new WC_Order( $order_id );
+		// Why are we doing this?
+		// We need to be sure that we have a unique string we can use as transaction id.
+		// In order to do this, we use a few $_SERVER parameters to make some unique id.
 
-		$redirect_url = ( $this->redirect_page_id == "" || $this->redirect_page_id == 0 ) ? get_site_url() . "/" : get_permalink( $this->redirect_page_id );
+		$unique = sprintf('%s|%s|%s', $_SERVER['SERVER_NAME'], microtime(true), $_SERVER['REMOTE_ADDR']);
 
-		//For wooCoomerce 2.0
-		$redirect_url = add_query_arg( 'wc-api', get_class( $this ), $redirect_url );
-
-		$order_id = $order_id . '_' . date( "ymds" ) . '_' . mt_rand(42,1337);
-
-		GenesisConf::setToken( $this->settings['token'] );
-		GenesisConf::setUsername( $this->settings['username'] );
-		GenesisConf::setPassword( $this->settings['password'] );
-		GenesisConf::setEnvironment( $this->settings['environment'] );
-
-		$genesis = new Genesis( 'WPF\Create' );
-
-		$genesis->request()
-		        ->setTransactionId( $order_id )
-		        ->setCurrency( get_option( 'woocommerce_currency' ) )
-		        ->setAmount( $order->order_total )
-		        ->setUsage( 'TEST' )
-		        ->setDescription( 'TEST' )
-		        ->setCustomerEmail( $order->billing_email )
-		        ->setCustomerPhone( $order->billing_phone )
-		        ->setNotificationUrl( $redirect_url )
-		        ->setReturnSuccessUrl( $redirect_url )
-		        ->setReturnFailureUrl( $redirect_url )
-		        ->setReturnCancelUrl( $redirect_url )
-		        ->setBillingFirstName( $order->billing_first_name )
-		        ->setBillingLastName( $order->billing_last_name )
-		        ->setBillingAddress1( $order->billing_address_1 )
-		        ->setBillingAddress2( $order->billing_address_2 )
-		        ->setBillingZipCode( $order->billing_postcode )
-		        ->setBillingCity( $order->billing_city )
-		        ->setBillingState( $order->billing_state )
-		        ->setBillingCountry( $order->billing_country )
-		        ->setShippingFirstName( $order->shipping_first_name )
-		        ->setShippingLastName( $order->shipping_last_name )
-		        ->setShippingAddress1( $order->shipping_address_1 )
-		        ->setShippingAddress2( $order->shipping_address_2 )
-		        ->setShippingZipCode( $order->shipping_postcode )
-		        ->setShippingCity( $order->shipping_city )
-		        ->setShippingState( $order->shipping_state )
-		        ->setShippingCountry( $order->shipping_country )
-		        ->addTransactionType( 'sale' );
-
-		$genesis->sendRequest();
-
-		$response = $genesis->response()->getResponseObject();
-
-		$target_url = null;
-
-		if ( isset( $response->redirect_url ) ) {
-			$target_url = (string) $response->redirect_url;
-		}
-
-		if ( isset( $response->status) && (string)$response->status == 'error') {
-			die('ERROR: ' . $response->message);
-		}
-
-		//$target_url = 'https://payment-9e5.emerchantpay.com/payment/form/post?PS_SIGNATURE=72c0d3958272ef3fe358a3c99d9f81b5&PS_EXPIRETIME=1413447098&PS_SIGTYPE=PSMD5&approval_url=http%3A%2F%2Fgenesis.woo%2F%3Fwc-api%3DWC_Gateway_emp_ecom&client_id=548663&credit_card_trans_type=sale&customer_address=1st+Street&customer_address2=&customer_city=London&customer_company=&customer_country=GB&customer_email=admin%40local.host&customer_first_name=John&customer_last_name=Doe&customer_phone=%2B4422030201&customer_postcode=W12+7TS&customer_state=&decline_url=http%3A%2F%2Fgenesis.woo%2F%3Fwc-api%3DWC_Gateway_emp_ecom&form_id=4574&item_1_digital=1&item_1_name=20_14101538&item_1_unit_price_GBP=14.97&order_currency=GBP&order_reference=20_14101538&shipping_address=1st+Street&shipping_address2=&shipping_city=London&shipping_company=&shipping_country=GB&shipping_first_name=John&shipping_last_name=Doe&shipping_phone=%2B4422030201&shipping_postcode=W12+7TS&shipping_state=&test_transaction=1&transtype=';
-
-		// Modes
-		switch ( $this->iframe_mode ) {
-			case 1:
-				return sprintf( '<iframe src="%s" frameborder="0" scrolling="true" width="800" height="600" ></iframe>', $target_url );
-				break;
-			case 2:
-				return sprintf( '<script language="javascript">setTimeout(function(){location.replace("%s")}, 3000);</script>', $target_url );
-				break;
-		}
-
+		return sprintf('%s-%s', $input, strtoupper(md5($unique)));
 	}
-	*/
+
+	/**
+	 * Parse transaction id from a string to assoc array
+	 *
+	 * @param $input
+	 *
+	 * @return array|bool
+	 */
+	private function parseTransactionID($input)
+	{
+		$arr = explode('-', $input);
+
+		// Use @ to silence notices/warnings
+		return array (
+			'order_id' => @$arr[0],
+			'salt'     => @$arr[1],
+		);
+	}
+
+	/**
+	 * Set the Genesis PHP Lib Credentials, based on the customer's
+	 * admin settings
+	 *
+	 * @param array $settings WooCommerce settings array
+	 *
+	 * @return void
+	 */
+	private function setGenesisCredentials($settings = array())
+	{
+		GenesisConf::setToken( $settings['token'] );
+		GenesisConf::setUsername( $settings['username'] );
+		GenesisConf::setPassword( $settings['password'] );
+
+		GenesisConf::setEnvironment( (isset($settings['test_mode']) && $settings['test_mode']) ? 'sandbox' : 'production' );
+	}
 
 	/*
-   function get_pages($title = false, $indent = true) {
+	private function searchOrderNotes($order_id, $needle)
+	{
+		remove_filter('comments_clauses', array( 'WC_Comments' ,'exclude_order_comments'), 10, 1 );
 
-		echo '<script type="text/javascript">
-				if (top.location.href != self.location.href)
-				top.location.href = self.location.href;
-			  </script>';
+		$query = new WP_Comment_Query();
 
-		$wp_pages = get_pages('sort_column=menu_order');
-		$page_list = array();
-		if ($title) $page_list[] = $title;
-		foreach ($wp_pages as $page) {
-			$prefix = '';
-			// show indented child pages?
-			if ($indent) {
-				$has_parent = $page->post_parent;
-				while($has_parent) {
-					$prefix .=  ' - ';
-					$next_page = get_page($has_parent);
-					$has_parent = $next_page->post_parent;
-				}
-			}
-			// add to page list array array
-			$page_list[$page->ID] = $prefix . $page->post_title;
-		}
-		return $page_list;
+		$comments = $query->query(
+			array(
+				'type'      => 'order_note',
+				'search'    => $needle,
+				'post_id'   => intval($order_id),
+			)
+		);
+
+		add_filter('comments_clauses', array( 'WC_Comments' ,'exclude_order_comments'), 10, 1 );
+
+		return reset($comments);
 	}
 	*/
 }
