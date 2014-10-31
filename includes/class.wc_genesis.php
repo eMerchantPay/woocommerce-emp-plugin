@@ -1,21 +1,30 @@
 <?php
 
+// Don't run standalone
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require 'genesis/vendor/autoload.php';
 
-use \Genesis\Base as Genesis;
-use \Genesis\Configuration as GenesisConf;
+use \Genesis\Genesis as Genesis;
+use \Genesis\GenesisConfig as GenesisConf;
 
 class WC_Genesis extends WC_Payment_Gateway
 {
 	public function __construct()
 	{
-		$this->id                   = 'genesis';
-		$this->method_title         = __('eMerchantPay', 'woocommerce_emerchantpay');
-		$this->icon                 = plugins_url( 'assets/images/logo.gif', plugin_dir_path(__FILE__) );
-		$this->has_fields           = false;
+		$this->id           = 'genesis';
+		$this->has_fields   = false;
+		$this->method_title = __('eMerchantPay', 'woocommerce_emerchantpay');
+		$this->supports     = array( 'products', 'refunds' );
+		$this->icon         = plugins_url( 'assets/images/logo.gif', plugin_dir_path(__FILE__) );
 
 		$this->init_form_fields();
 		$this->init_settings();
+
+		// Notifications
+		$this->notify_url   = WC()->api_request_url( get_class($this) );
 
 		foreach ($this->settings as $name => $value) {
 			if (!isset($this->$name)) {
@@ -24,13 +33,15 @@ class WC_Genesis extends WC_Payment_Gateway
 		}
 
 		// WooCommerce hooks
-		add_action('init', array(&$this, 'process_gateway_response' ));
+		//add_action('init', array(&$this, 'process_gateway_response' ));
 
-		add_action( 'woocommerce_api_' . strtolower( get_class( $this ) ), array( $this, 'process_gateway_response' ) );
-
+		// WPF Redirect
 		add_action( 'woocommerce_receipt_' . $this->id, array(&$this, 'generate_form' ));
 
-		add_action( 'woocommerce_thankyou_' . $this->id, array(&$this, 'process_return' ));
+		// Notification
+		add_action( 'woocommerce_api_' . strtolower( get_class( $this ) ), array( $this, 'process_notification' ) );
+
+		//add_action( 'woocommerce_thankyou_' . $this->id, array(&$this, 'process_return' ));
 
 		// Save admin-panel options
 		if ( version_compare( WOOCOMMERCE_VERSION, '2.0.0', '>=' ) ) {
@@ -40,7 +51,7 @@ class WC_Genesis extends WC_Payment_Gateway
 		}
 
 		// Credentials Setup
-		$this->setGenesisCredentials($this->settings);
+		$this->setGenesisLogin($this->settings);
 	}
 
 	/**
@@ -156,7 +167,7 @@ class WC_Genesis extends WC_Payment_Gateway
 					break;
 			}
 
-			header('Location: ' . $order->get_checkout_order_received_url());
+			header('Location: ' . $order->get_view_order_url());
 		}
 
 	}
@@ -174,33 +185,31 @@ class WC_Genesis extends WC_Payment_Gateway
 
 		$order = new WC_Order( $order_id );
 
-		$trx_id = $this->genTransactionId($order_id);
-
-		$return = array(
-			'success'   => sprintf('%s&type=success', $order->get_checkout_order_received_url()),
-			'failure'   => sprintf('%s&type=failure', $order->get_checkout_order_received_url()),
-			'cancel'    => sprintf('%s&type=cancel', $order->get_checkout_order_received_url()),
+		$urls = array(
+			'notify'    => WC()->api_request_url( get_class($this) ),
+			// Client URLs
+			'success'   => $order->get_checkout_order_received_url(), //sprintf('%s&type=success', $order->get_checkout_order_received_url()),
+			'failure'   => $order->get_cancel_order_url(), //sprintf('%s&type=failure', $order->get_checkout_order_received_url()),
+			'cancel'    => $order->get_cancel_order_url(), //sprintf('%s&type=cancel', $order->get_checkout_order_received_url()),
 		);
 
-		$redirect_url = ( $this->redirect_page_id == "" || $this->redirect_page_id == 0 ) ? get_site_url() . "/" : get_permalink( $this->redirect_page_id );
-		// For wooCoomerce 2.0
-		$redirect_url = add_query_arg( 'wc-api', strtolower( get_class( $this ) ), $redirect_url );
+		$transaciton_id = $this->genTrxID($order_id);
 
 		$genesis = new Genesis('WPF\Create');
 
 		$genesis
 			->request()
-		        ->setTransactionId( $trx_id )
+		        ->setTransactionId( $transaciton_id )
 		        ->setCurrency( $order->get_order_currency() )
 		        ->setAmount( $this->get_order_total() )
 		        ->setUsage( 'TEST' )
 		        ->setDescription( 'TEST' )
 		        ->setCustomerEmail( $order->billing_email )
 		        ->setCustomerPhone( $order->billing_phone )
-		        ->setNotificationUrl( $redirect_url )
-		        ->setReturnSuccessUrl( $return['success'] )
-		        ->setReturnFailureUrl( $return['failure'] )
-		        ->setReturnCancelUrl( $return['cancel'] )
+		        ->setNotificationUrl( $urls['notify'] )
+		        ->setReturnSuccessUrl( $urls['success'] )
+		        ->setReturnFailureUrl( $urls['failure'] )
+		        ->setReturnCancelUrl( $urls['cancel'] )
 		        ->setBillingFirstName( $order->billing_first_name )
 		        ->setBillingLastName( $order->billing_last_name )
 		        ->setBillingAddress1( $order->billing_address_1 )
@@ -219,49 +228,57 @@ class WC_Genesis extends WC_Payment_Gateway
 		        ->setShippingCountry( $order->shipping_country )
 		        ->addTransactionType( 'sale' );
 
-		$genesis->sendRequest();
+		$genesis->execute();
 
 		$response = $genesis->response()->getResponseObject();
 
-		$target_url = null;
+		$data = array();
+
+		if ( isset( $response->status) && strval($response->status) == 'error') {
+			$woocommerce->add_error(__('We were unable to process your order, please make sure all the data is correct or try again later.', 'woocommerce_emerchantpay'));
+		}
 
 		if ( isset( $response->redirect_url ) ) {
-			$target_url = (string) $response->redirect_url;
-
-			$order->update_status('pending');
+			$data = array(
+				'result'    => 'success',
+				'redirect'  => strval($response->redirect_url)
+			);
 		}
 
-		if ( isset( $response->status) && (string)$response->status == 'error') {
-			$woocommerce->add_error(__("We were unable to process your order, please make sure all the data is correct or try again later."));
-		}
-
-		return array(
-			'result'    => 'success',
-			'redirect'  => $target_url
-		);
+		return $data;
 	}
 
-	public function process_refund($order_id, $amount, $reason)
+	public function process_refund($order_id, $amount = NULL, $reason ='')
 	{
 		$order = new WC_Order($order_id);
+
+		if ( ! $order || ! $order->get_transaction_id() ) {
+			return false;
+		}
 
 		$genesis = new Genesis('Financial\Refund');
 
 		$genesis
 			->request()
-				->setTransactionId($this->genTransactionId($order_id))
+				->setTransactionId($this->genTrxID($order_id))
 				->setUsage($reason)
 				->setRemoteIp($_SERVER['REMOTE_ADDR'])
 				->setReferenceId($order->get_transaction_id())
 				->setCurrency($order->get_order_currency())
 				->setAmount($amount);
 
-		$genesis->sendRequest();
+		$genesis->execute();
 
 		$response = $genesis->response()->getResponseObject();
 
 		if (isset($response->status) && $response->status == 'approved') {
-			$order->add_order_note(sprintf('Refunded amount: %s%s, done by RID: %s', $amount, $response->unique_id), 0);
+			$order->add_order_note(
+				__( 'Refunded completed!', 'woocommerce_emerchantpay' ) .
+				"\n" .
+				__( 'Refund ID:', 'woocommerce_emerchantpay') .
+				"\n" .
+				$response->unique_id
+			);
 
 			return true;
 		}
@@ -270,12 +287,14 @@ class WC_Genesis extends WC_Payment_Gateway
 	}
 
 	/**
-	 * Check Gateway response and update order status
+	 * Check Gateway Notification and alter order status
 	 *
 	 * @return void
 	 */
 	public function process_notification()
 	{
+		@ob_clean();
+
 		global $woocommerce;
 
 		if (isset($_POST['wpf_unique_id']) && isset($_POST['notification_type'])) {
@@ -284,35 +303,57 @@ class WC_Genesis extends WC_Payment_Gateway
 			$notification->parseNotification($_POST);
 
 			if ($notification->isAuthentic()) {
-				$notificationObj = $notification->getNotificaitonObject();
-
-				$trx = $this->parseTransactionId($notificationObj->transaction_id);
-
-				// It's recommended to Reconcile after Notification
 				$genesis = new Genesis('WPF\Reconcile');
-				$genesis->request()->setUniqueId($notificationObj->payment_transaction_unique_id);
-				$genesis->sendRequest();
+				$genesis->request()->setUniqueId($notification->getParsedNotification()->wpf_unique_id);
+				$genesis->execute();
 
-				$reconcile = $genesis->response()->getResponseObject();
+				$reconcile = $genesis->response()->getResponseObject()->payment_transaction;
 
-				$order = new WC_Order($trx['order_id']);
+				if ($reconcile) {
+					$transaction_id = $this->parseTrxID(strval($reconcile->transaction_id));
 
-				switch ($reconcile->status) {
-					case 'approved':
-						$order->payment_complete($reconcile->unique_id);
+					$order = new WC_Order( $transaction_id['order_id'] );
 
-						$woocommerce->cart->empty_cart();
-						break;
-					case 'declined':
-						$order->update_status('failure', $reconcile->technical_message);
-						break;
-					default:
-					case 'error':
-						$order->update_status('error', $reconcile->technical_message);
-						break;
+					switch ( $reconcile->status ) {
+						case 'approved':
+							$amount = \Genesis\Utils\Currency::exponentToReal(strval($reconcile->amount), strval($reconcile->currency));
+
+							$order->add_order_note(
+								__( 'Payment through Genesis completed!', 'woocommerce_emerchantpay' ) .
+								"\n" .
+								__( 'Payment ID:', 'woocommerce_emerchantpay') .
+								"\n" .
+								strval($reconcile->unique_id) .
+								"\n" .
+								__( 'Total:', 'woocommerce_emerchantpay') .
+								' ' .
+								$amount
+							);
+
+							$order->payment_complete( strval($reconcile->unique_id) );
+
+							// Update the order, just to be sure, sometimes transaction is not beind set!
+							update_post_meta($order->id, '_transaction_id', strval($reconcile->unique_id));
+
+							$woocommerce->cart->empty_cart();
+							break;
+						case 'declined':
+							$order->update_status( 'failure', strval($reconcile->technical_message) );
+							break;
+						case 'error':
+							$order->update_status( 'error',   strval($reconcile->technical_message) );
+							break;
+						case 'refunded':
+							$order->update_status( 'refund',  strval($reconcile->technical_message) );
+					}
+
+					header('Content-Type: application/xml');
+					echo $notification->getEchoResponse();
+
+					// Woo are OB everything up to this point.
+					// In order to respond, we have to exit!
+					exit(0);
 				}
-
-				echo $notification->getEchoResponse();
 			}
 		}
 	}
@@ -324,7 +365,7 @@ class WC_Genesis extends WC_Payment_Gateway
 	 *
 	 * @return array|string
 	 */
-	private function genTransactionId($input)
+	private function genTrxID($input)
 	{
 		// Why are we doing this?
 		// We need to be sure that we have a unique string we can use as transaction id.
@@ -342,7 +383,7 @@ class WC_Genesis extends WC_Payment_Gateway
 	 *
 	 * @return array|bool
 	 */
-	private function parseTransactionID($input)
+	private function parseTrxID($input)
 	{
 		$arr = explode('-', $input);
 
@@ -361,7 +402,7 @@ class WC_Genesis extends WC_Payment_Gateway
 	 *
 	 * @return void
 	 */
-	private function setGenesisCredentials($settings = array())
+	private function setGenesisLogin($settings = array())
 	{
 		GenesisConf::setToken( $settings['token'] );
 		GenesisConf::setUsername( $settings['username'] );
