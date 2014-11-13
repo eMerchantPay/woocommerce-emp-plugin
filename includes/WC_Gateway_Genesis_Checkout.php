@@ -10,7 +10,7 @@ require 'genesis/vendor/autoload.php';
 use \Genesis\Genesis as Genesis;
 use \Genesis\GenesisConfig as GenesisConf;
 
-class WC_Genesis extends WC_Payment_Gateway
+class WC_Gateway_Genesis_Checkout extends WC_Payment_Gateway
 {
 	public function __construct()
 	{
@@ -34,14 +34,13 @@ class WC_Genesis extends WC_Payment_Gateway
 
 		// WooCommerce hooks
 		//add_action('init', array(&$this, 'process_gateway_response' ));
+		//add_action( 'woocommerce_thankyou_' . $this->id, array(&$this, 'process_return' ));
 
 		// WPF Redirect
 		add_action( 'woocommerce_receipt_' . $this->id, array(&$this, 'generate_form' ));
 
 		// Notification
 		add_action( 'woocommerce_api_' . strtolower( get_class( $this ) ), array( $this, 'process_notification' ) );
-
-		//add_action( 'woocommerce_thankyou_' . $this->id, array(&$this, 'process_return' ));
 
 		// Save admin-panel options
 		if ( version_compare( WOOCOMMERCE_VERSION, '2.0.0', '>=' ) ) {
@@ -51,7 +50,7 @@ class WC_Genesis extends WC_Payment_Gateway
 		}
 
 		// Credentials Setup
-		$this->setGenesisLogin($this->settings);
+		$this->setGenesisCredentials($this->settings);
 	}
 
 	/**
@@ -186,14 +185,15 @@ class WC_Genesis extends WC_Payment_Gateway
 		$order = new WC_Order( $order_id );
 
 		$urls = array(
+			// Notification URLs
 			'notify'    => WC()->api_request_url( get_class($this) ),
-			// Client URLs
+			// Customer URLs
 			'success'   => $order->get_checkout_order_received_url(), //sprintf('%s&type=success', $order->get_checkout_order_received_url()),
 			'failure'   => $order->get_cancel_order_url(), //sprintf('%s&type=failure', $order->get_checkout_order_received_url()),
 			'cancel'    => $order->get_cancel_order_url(), //sprintf('%s&type=cancel', $order->get_checkout_order_received_url()),
 		);
 
-		$transaciton_id = $this->genTrxID($order_id);
+		$transaciton_id = $this->makeTransactionId($order_id);
 
 		$genesis = new Genesis('WPF\Create');
 
@@ -234,8 +234,10 @@ class WC_Genesis extends WC_Payment_Gateway
 
 		$data = array();
 
-		if ( isset( $response->status) && strval($response->status) == 'error') {
-			$woocommerce->add_error(__('We were unable to process your order, please make sure all the data is correct or try again later.', 'woocommerce_emerchantpay'));
+		if (!$genesis->response()->isSuccessful()) {
+			$woocommerce->add_error(
+				__('We were unable to process your order, please make sure all the data is correct or try again later.', 'woocommerce_emerchantpay')
+			);
 		}
 
 		if ( isset( $response->redirect_url ) ) {
@@ -260,7 +262,7 @@ class WC_Genesis extends WC_Payment_Gateway
 
 		$genesis
 			->request()
-				->setTransactionId($this->genTrxID($order_id))
+				->setTransactionId($this->makeTransactionId($order_id))
 				->setUsage($reason)
 				->setRemoteIp($_SERVER['REMOTE_ADDR'])
 				->setReferenceId($order->get_transaction_id())
@@ -271,7 +273,7 @@ class WC_Genesis extends WC_Payment_Gateway
 
 		$response = $genesis->response()->getResponseObject();
 
-		if (isset($response->status) && $response->status == 'approved') {
+		if ($genesis->response()->isSuccessful()) {
 			$order->add_order_note(
 				__( 'Refunded completed!', 'woocommerce_emerchantpay' ) .
 				"\n" .
@@ -310,7 +312,7 @@ class WC_Genesis extends WC_Payment_Gateway
 				$reconcile = $genesis->response()->getResponseObject()->payment_transaction;
 
 				if ($reconcile) {
-					$transaction_id = $this->parseTrxID(strval($reconcile->transaction_id));
+					$transaction_id = $this->parseTransactionId(strval($reconcile->transaction_id));
 
 					$order = new WC_Order( $transaction_id['order_id'] );
 
@@ -365,7 +367,7 @@ class WC_Genesis extends WC_Payment_Gateway
 	 *
 	 * @return array|string
 	 */
-	private function genTrxID($input)
+	private function makeTransactionId($input)
 	{
 		// Why are we doing this?
 		// We need to be sure that we have a unique string we can use as transaction id.
@@ -383,7 +385,7 @@ class WC_Genesis extends WC_Payment_Gateway
 	 *
 	 * @return array|bool
 	 */
-	private function parseTrxID($input)
+	private function parseTransactionId($input)
 	{
 		$arr = explode('-', $input);
 
@@ -402,13 +404,15 @@ class WC_Genesis extends WC_Payment_Gateway
 	 *
 	 * @return void
 	 */
-	private function setGenesisLogin($settings = array())
+	private function setGenesisCredentials($settings = array())
 	{
 		GenesisConf::setToken( $settings['token'] );
 		GenesisConf::setUsername( $settings['username'] );
 		GenesisConf::setPassword( $settings['password'] );
 
-		GenesisConf::setEnvironment( (isset($settings['test_mode']) && $settings['test_mode']) ? 'sandbox' : 'production' );
+		GenesisConf::setEnvironment(
+			(isset($settings['test_mode']) && $settings['test_mode']) ? 'sandbox' : 'production'
+		);
 	}
 
 	/*

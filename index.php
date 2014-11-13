@@ -14,7 +14,7 @@ if ( !function_exists('woocommerce_emerchantpay_init') ):
 	    load_plugin_textdomain('woocommerce_emerchantpay', false, 'languages');
 
 		// Get Genesis class
-		include dirname(__FILE__) . '/includes/class.wc_genesis.php';
+		include dirname(__FILE__) . '/includes/WC_Gateway_Genesis_Checkout.php';
 
 		/**
 		 * Add the eMerchantPay's Genesis Gateway to WooCommerce
@@ -26,7 +26,7 @@ if ( !function_exists('woocommerce_emerchantpay_init') ):
 		 */
 		if ( !function_exists('woocommerce_add_genesis_gateway') ):
 		    function woocommerce_add_genesis_gateway($methods) {
-			    array_push($methods, 'WC_Genesis');
+			    array_push($methods, 'WC_Gateway_Genesis_Checkout');
 		        return $methods;
 		    }
 		endif;
