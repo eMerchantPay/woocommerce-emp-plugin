@@ -9,7 +9,7 @@ include_once 'genesis/vendor/autoload.php';
 use \Genesis\Genesis as Genesis;
 use \Genesis\GenesisConfig as GenesisConf;
 
-class WC_Gateway_Genesis_Checkout extends WC_Payment_Gateway
+class WC_EMerchantPay_Checkout extends WC_Payment_Gateway
 {
 	public function __construct()
 	{
