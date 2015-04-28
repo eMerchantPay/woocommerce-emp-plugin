@@ -1,5 +1,5 @@
-Genesis client for WooCommerce
-=============================
+eMerchantPay Module for WooCommerce
+===================================
 
 This is a Payment Module for eMerchantPay that gives you the ability to process payments through eMerchantPay's Payment Gateway - Genesis.
 
@@ -7,15 +7,9 @@ Requirements
 ------------
 
 * WooCommerce 2.x
-* GenesisPHP 1.0
-
-GenesisPHP Requirements
-------------
-
 * PHP version >= 5.3 (however since 5.3 is EoL, we recommend at least PHP v5.4)
-* PHP with libxml
+* PHP w/ libxml
 * PHP ext: cURL (optionally you can use StreamContext)
-* Composer
 
 Installation
 ------------

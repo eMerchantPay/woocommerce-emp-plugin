@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce eMerchantPay Payment Gateway Client
 Description: Extends WooCommerce's Checkout with eMerchantPay/Genesis Gateway
-Version: 1.0.0
+Version: 1.1.0
 */
 
 if ( !function_exists('woocommerce_emerchantpay_init') ):
