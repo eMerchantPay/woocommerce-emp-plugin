@@ -1,21 +1,35 @@
 <?php
-/**
- * Request Genesis
- * This is the base of every API request
+/*
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * @package Genesis
- * @subpackage API
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @license     http://opensource.org/licenses/MIT The MIT License
  */
-
 namespace Genesis\API;
 
-use \Genesis\Network as Network;
-use \Genesis\Builders as Builders;
-use \Genesis\Exceptions as Exceptions;
-use \Genesis\GenesisConfig as GenesisConfig;
-use \Genesis\Utils\Common as Common;
-use \Genesis\Utils\Currency as Currency;
-
+/**
+ * Class Request
+ *
+ * Base of every API request
+ *
+ * @package    Genesis
+ * @subpackage API
+ */
 abstract class Request
 {
     /**
@@ -62,30 +76,70 @@ abstract class Request
     protected $requiredFieldsGroups;
 
     /**
+     * Store a OR relationship between fields, whether at
+     * least of of them has to be filled in.
+     *
+     * @var \ArrayObject
+     */
+    protected $requiredFieldsOR;
+
+    /**
      * Store the generated Builder Body
      *
-     * @var \Genesis\Builders\Builder
+     * @var \Genesis\Builder
      */
     protected $builderContext;
 
+    /**
+     * Bootstrap per-request configuration
+     */
+    public function __construct()
+    {
+        $this->initConfiguration();
+        $this->setRequiredFields();
+    }
+
+    /**
+     * Initialize per-request configuration
+     */
+    protected function initConfiguration()
+    {
+
+    }
+
+    /**
+     * Set the *required fields for the request
+     */
+    protected function setRequiredFields()
+    {
+
+    }
+
+    /**
+     * Convert Pascal to Camel case and set the correct property
+     *
+     * @param $method
+     * @param $args
+     *
+     * @return $this
+     */
     public function __call($method, $args)
     {
-        $methodType     = substr($method, 0, 3);
-        $requestedKey   = strtolower(Common::uppercaseToUnderscore(substr($method, 3)));
+        $methodType = substr($method, 0, 3);
+        $requestedKey = strtolower(\Genesis\Utils\Common::pascalToSnakeCase(substr($method, 3)));
 
         switch ($methodType) {
-            case 'add' :
+            case 'add':
                 if (isset($this->$requestedKey) && is_array($this->$requestedKey)) {
                     $groupArray = $this->$requestedKey;
-                }
-                else {
+                } else {
                     $groupArray = array();
                 }
 
                 array_push($groupArray, array($requestedKey => trim(reset($args))));
                 $this->$requestedKey = $groupArray;
                 break;
-            case 'set' :
+            case 'set':
                 $this->$requestedKey = trim(reset($args));
                 break;
         }
@@ -102,53 +156,10 @@ abstract class Request
     {
         $this->processRequestParameters();
 
-        $this->builderContext = new Builders\Builder();
+        $this->builderContext = new \Genesis\Builder();
         $this->builderContext->parseStructure($this->treeStructure->getArrayCopy());
 
         return $this->builderContext->getDocument();
-    }
-
-    /**
-     * Getter for per-request GenesisConfig
-     *
-     * @param $key - setting name
-     *
-     * @return mixed - contents of the specified setting
-     */
-    public function getApiConfig($key)
-    {
-        return $this->config->offsetGet($key);
-    }
-
-    /**
-     * Setter for per-request GenesisConfig
-     *
-     * @param $key      - setting name
-     * @param $value    - setting value
-     *
-     * @return void
-     */
-    protected function setApiConfig($key, $value)
-    {
-        $this->config->offsetSet($key, $value);
-    }
-
-    /**
-     * Build the complete URL for the request
-     *
-     * @param $sub_domain String    - gateway/wpf etc.
-     * @param $path String          - path of the current request
-     * @param $appendToken Bool     - should we append the token to the end of the url
-     *
-     * @return string               - complete URL (sub_domain,path,token)
-     */
-    protected function buildRequestURL($sub_domain = 'gateway', $path = '/', $appendToken = true)
-    {
-        $base_url = GenesisConfig::getEnvironmentURL($this->config->protocol, $sub_domain, $this->config->port);
-
-        $token = $appendToken ? GenesisConfig::getToken() : '';
-
-        return sprintf('%s/%s/%s', $base_url, $path, $token);
     }
 
     /**
@@ -164,13 +175,20 @@ abstract class Request
     protected function processRequestParameters()
     {
         // Step 1
-        $this->processAmount();
-        // Step 2
         $this->populateStructure();
-        // Step 3
+        // Step 2
         $this->sanitizeStructure();
-        // Step 4
+        // Step 3
         $this->checkRequirements();
+    }
+
+    /**
+     * Create the Tree structure and populate
+     * the fields with the set parameters.
+     */
+    protected function populateStructure()
+    {
+
     }
 
     /**
@@ -180,13 +198,13 @@ abstract class Request
      */
     protected function sanitizeStructure()
     {
-        $this->treeStructure->exchangeArray(Common::emptyValueRecursiveRemoval($this->treeStructure->getArrayCopy()));
+        $this->treeStructure->exchangeArray(\Genesis\Utils\Common::emptyValueRecursiveRemoval($this->treeStructure->getArrayCopy()));
     }
 
     /**
      * Perform field validation
      *
-     * @throws Exceptions\BlankRequiredField
+     * @throws \Genesis\Exceptions\BlankRequiredField
      * @return void
      */
     protected function checkRequirements()
@@ -197,10 +215,9 @@ abstract class Request
 
             $iterator = new \RecursiveIteratorIterator($this->requiredFields->getIterator());
 
-            foreach($iterator as $fieldName)
-            {
+            foreach ($iterator as $fieldName) {
                 if (empty($this->$fieldName)) {
-                    throw new Exceptions\BlankRequiredField($fieldName);
+                    throw new \Genesis\Exceptions\BlankRequiredField($fieldName);
                 }
             }
         }
@@ -212,12 +229,14 @@ abstract class Request
             $emptyFlag = false;
             $groupsFormatted = array();
 
-            foreach($fields as $group => $groupFields)
-            {
-                $groupsFormatted[] = sprintf('%s (%s)', ucfirst($group), implode(', ', $groupFields));
+            foreach ($fields as $group => $groupFields) {
+                $groupsFormatted[] = sprintf(
+                    '%s (%s)',
+                    ucfirst($group),
+                    implode(', ', $groupFields)
+                );
 
-                foreach ($groupFields as $field)
-                {
+                foreach ($groupFields as $field) {
                     if (!empty($this->$field)) {
                         $emptyFlag = true;
                     }
@@ -225,7 +244,10 @@ abstract class Request
             }
 
             if (!$emptyFlag) {
-                throw new Exceptions\BlankRequiredField('One of the following group(s) of field(s): ' . implode(' / ', $groupsFormatted) . ' must be filled in!', true);
+                throw new \Genesis\Exceptions\BlankRequiredField(
+                    'One of the following group(s) of field(s): ' . implode(' / ', $groupsFormatted) . ' must be filled in!',
+                    true
+                );
             }
         }
 
@@ -233,13 +255,13 @@ abstract class Request
         if (isset($this->requiredFieldsConditional)) {
             $fields = $this->requiredFieldsConditional->getArrayCopy();
 
-            foreach($fields as $fieldName => $fieldDependencies)
-            {
+            foreach ($fields as $fieldName => $fieldDependencies) {
                 if (isset($this->$fieldName) && !empty($this->$fieldName)) {
-                    foreach ($fieldDependencies as $field)
-                    {
+                    foreach ($fieldDependencies as $field) {
                         if (empty($this->$field)) {
-                            throw new Exceptions\BlankRequiredField($fieldName . ' is depending on field: ' . $field . ' which');
+                            throw new \Genesis\Exceptions\BlankRequiredField(
+                                $fieldName . ' is depending on field: ' . $field . ' which'
+                            );
                         }
                     }
                 }
@@ -252,28 +274,121 @@ abstract class Request
 
             $status = false;
 
-            foreach ($fields as $fieldName)
-            {
+            foreach ($fields as $fieldName) {
                 if (isset($this->$fieldName) && !empty($this->$fieldName)) {
                     $status = true;
                 }
             }
 
             if (!$status) {
-                throw new Exceptions\BlankRequiredField(implode($fields));
+                throw new \Genesis\Exceptions\BlankRequiredField(implode($fields));
             }
         }
     }
 
     /**
-     * Process the amount set by user to comply with ISO-4217
+     * Add transaction type
+     *
+     * @param string $name
+     * @param array     $parameters
+     */
+    public function addTransactionType($name, $parameters = array())
+    {
+
+    }
+
+    /**
+     * Set the language of a WPF form
+     */
+    public function setLanguage()
+    {
+
+    }
+
+    /**
+     * Perform a field transformation
+     * and return the result
+     *
+     * @param string $method
+     * @param array  $args
+     * @param string $prefix
+     *
+     * @return mixed
+     */
+    protected function transform($method, $args, $prefix = 'transform')
+    {
+        $method = $prefix . \Genesis\Utils\Common::snakeCaseToCamelCase($method);
+
+        if (method_exists($this, $method)) {
+            $result = call_user_func_array(array($this, $method), $args);
+
+            if ($result) {
+                return $result;
+            }
+        }
+
+        return reset($args);
+    }
+
+    /**
+     * Convert the amount from Minor cur
+     *
+     * @param string $amount
+     * @param string $currency
+     *
+     * @return string
+     */
+    protected function transformAmount($amount = '', $currency = '')
+    {
+        if (!empty($amount) && !empty($currency)) {
+            return \Genesis\Utils\Currency::amountToExponent($amount, $currency);
+        }
+
+        return false;
+    }
+
+    /**
+     * Setter for per-request Config
+     *
+     * @param $key   - setting name
+     * @param $value - setting value
      *
      * @return void
      */
-    protected function processAmount()
+    protected function setApiConfig($key, $value)
     {
-        if (isset($this->amount) && isset($this->currency)) {
-            $this->amount = Currency::realToExponent($this->amount, $this->currency);
-        }
+        $this->config->offsetSet($key, $value);
+    }
+
+    /**
+     * Build the complete URL for the request
+     *
+     * @param $sub_domain  String    - gateway/wpf etc.
+     * @param $path        String          - path of the current request
+     * @param $appendToken Bool     - should we append the token to the end of the url
+     *
+     * @return string               - complete URL (sub_domain,path,token)
+     */
+    protected function buildRequestURL($sub_domain = 'gateway', $path = '/', $appendToken = true)
+    {
+        $proto = isset($this->config) ? $this->getApiConfig('protocol') : '';
+        $port = isset($this->config) ? $this->getApiConfig('port') : '';
+        $token = ($appendToken) ? \Genesis\Config::getToken() : '';
+
+        $base_url = \Genesis\Config::getEnvironmentURL($proto, $sub_domain, $port);
+
+        return sprintf('%s/%s/%s', $base_url, $path, $token);
+    }
+
+    /**
+     * Getter for per-request Config
+     *
+     * @param $key - setting name
+     *
+     * @return mixed - contents of the specified setting
+     */
+    public function getApiConfig($key)
+    {
+        return $this->config->offsetGet($key);
     }
 }

@@ -1,17 +1,32 @@
 <?php
+/*
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @license     http://opensource.org/licenses/MIT The MIT License
+ */
+namespace Genesis;
+
 /**
  * Base class of Genesis
  *
  * @package Genesis
  */
-
-namespace Genesis;
-
-use \Genesis\API\Errors as Errors;
-use \Genesis\API\Response as Response;
-use \Genesis\Exceptions as Exceptions;
-use \Genesis\Utils\Country as Country;
-
 class Genesis
 {
     /**
@@ -19,71 +34,42 @@ class Genesis
      *
      * @var \Genesis\API\Request
      */
-    public $requestContext;
+    protected $requestCtx;
+
     /**
-     * Store the Network Request Instance
+     * Store the Network Response Instance
      *
      * @var \Genesis\API\Response
      */
-    public $responseContext;
+    protected $responseCtx;
+
     /**
      * Store the Network Request Instance
      *
-     * @var \Genesis\Network\Request
+     * @var \Genesis\Network\
      */
-    protected $networkContext;
+    protected $networkCtx;
 
     /**
      * Initialize and instantiate the desired request
      *
-     * @param $request - name of the API request
+     * @param $request - API Request name, please consult the README for a list of all requests
+     *
      * @throws Exceptions\InvalidMethod()
      */
     public function __construct($request)
     {
+        // Verify system requirements
+        \Genesis\Utils\Common::checkRequirements();
+
+        // Initialize the request
         $request = sprintf('\Genesis\API\Request\%s', $request);
 
-        if ( class_exists($request) ) {
-            $this->requestContext = new $request;
+        if (class_exists($request)) {
+            $this->requestCtx = new $request;
+        } else {
+            throw new \Genesis\Exceptions\InvalidMethod('The select request is invalid!');
         }
-        else {
-            throw new Exceptions\InvalidMethod();
-        }
-    }
-
-    /**
-     * Get request instance
-     *
-     * @return \Genesis\API\Request
-     */
-    public function request()
-    {
-        return $this->requestContext;
-    }
-
-    /**
-     * Get Response instance
-     *
-     * @return \Genesis\API\Response
-     */
-    public function response()
-    {
-        return $this->responseContext;
-    }
-
-    /*
-     * Send the request
-     *
-     */
-    public function execute()
-    {
-        // Send the request
-        $this->networkContext = new Network\Request($this->requestContext);
-        $this->networkContext->setRequestData();
-        $this->networkContext->sendRequest();
-
-        // Parse the response
-        $this->responseContext = new Response($this->networkContext);
     }
 
     /**
@@ -93,9 +79,9 @@ class Genesis
      *
      * @return mixed
      */
-    static function getErrorCode($error)
+    public static function getErrorCode($error)
     {
-        return constant('\Genesis\API\Errors::' . $error);
+        return constant('\Genesis\API\Constants\Errors::' . $error);
     }
 
     /**
@@ -103,12 +89,19 @@ class Genesis
      * on the Error Code
      *
      * @param $error_code
+     *
      * @return string
      */
-    static function getErrorDescription($error_code)
+    public static function getErrorDescription($error_code)
     {
-        return Errors::getErrorDescription($error_code);
+        return \Genesis\API\Constants\Errors::getErrorDescription($error_code);
     }
+
+    /*
+     * Send the request
+     *
+     * @return void
+     */
 
     /**
      * Get a country full name by an ISO-4217 code
@@ -117,9 +110,41 @@ class Genesis
      *
      * @return mixed - full name of the country
      */
-    static function getFullCountryName($iso_code)
+    public static function getFullCountryName($iso_code)
     {
-        return Country::getCountryName($iso_code);
+        return \Genesis\Utils\Country::getCountryName($iso_code);
+    }
+
+    /**
+     * Get a country ISO-4217 code by its name
+     *
+     * @param string $country_name - country name
+     *
+     * @return string
+     */
+    public static function getCountryISOCode($country_name)
+    {
+        return \Genesis\Utils\Country::getCountryISO($country_name);
+    }
+
+    /**
+     * Get request instance
+     *
+     * @return \Genesis\API\Request
+     */
+    public function request()
+    {
+        return $this->requestCtx;
+    }
+
+    /**
+     * Get Response instance
+     *
+     * @return \Genesis\API\Response
+     */
+    public function response()
+    {
+        return $this->responseCtx;
     }
 
     /*
@@ -129,8 +154,14 @@ class Genesis
      *
      * @return mixed - ISO-4217 country code
      */
-    static function getCountryISOCode($country_name)
+    public function execute()
     {
-        return Country::getCountryISO($country_name);
+        // Send the request
+        $this->networkCtx = new Network();
+        $this->networkCtx->setApiCtxData($this->requestCtx);
+        $this->networkCtx->sendRequest();
+
+        // Parse the response
+        $this->responseCtx = new \Genesis\API\Response($this->networkCtx);
     }
 }

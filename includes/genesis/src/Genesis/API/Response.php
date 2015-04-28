@@ -1,17 +1,33 @@
 <?php
-/**
- * Response handler - handles responses from Genesis Gateway
+/*
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * @package Genesis
- * @subpackage API
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @license     http://opensource.org/licenses/MIT The MIT License
  */
-
 namespace Genesis\API;
 
-use Genesis\Exceptions;
-use Genesis\Utils\Currency as Currency;
-use Genesis\Network\Request as Network;
-
+/**
+ * Response - process/format an incoming Genesis response
+ *
+ * @package    Genesis
+ * @subpackage API
+ */
 class Response
 {
     /**
@@ -29,19 +45,34 @@ class Response
     public $responseRaw;
 
     /**
-     * Network Context Handle
+     * Initialize with NetworkContext (if available)
      *
-     * @var Network
+     * @param \Genesis\Network|null $networkContext
+     *
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
-    private $networkContext;
-
-    public function __construct(Network $networkContext)
+    public function __construct($networkContext = null)
     {
-        $this->networkContext = $networkContext;
-
-        if ( strlen($this->networkContext->getResponseBody()) > 0 ) {
-            $this->parseResponse($this->networkContext->getResponseBody());
+        if (is_a($networkContext, '\Genesis\Network')) {
+            $this->parseResponse($networkContext->getResponseBody());
         }
+    }
+
+    /**
+     * Parse Genesis response to SimpleXMLElement
+     *
+     * @param string $response
+     *
+     * @throws \Genesis\Exceptions\InvalidArgument
+     */
+    public function parseResponse($response)
+    {
+        if (empty($response)) {
+            throw new \Genesis\Exceptions\InvalidArgument('Invalid document!');
+        }
+
+        $this->responseRaw = $response;
+        $this->responseObj = \Genesis\Utils\Common::xmlToObj($response);
     }
 
     /**
@@ -56,36 +87,42 @@ class Response
     {
         $status = false;
 
-	    $successfulStatuses = array('approved', 'pending_async', 'new');
+        $successfulStatuses = array(
+            \Genesis\API\Constants\Transaction\States::APPROVED,
+            \Genesis\API\Constants\Transaction\States::PENDING_ASYNC,
+            \Genesis\API\Constants\Transaction\States::NEW_STATUS,
+        );
 
-        if (isset($this->responseObj->status) && in_array($this->responseObj->status, $successfulStatuses)) {
+        if (isset($this->responseObj->status) && in_array($this->responseObj->status,
+                $successfulStatuses)
+        ) {
             $status = true;
         }
 
-	    if (!isset($this->responseObj->status)) {
-		    $status = null;
-	    }
+        if (!isset($this->responseObj->status)) {
+            $status = null;
+        }
 
         return $status;
     }
 
-	/**
-	 * Check whether the transaction was partially approved
-	 *
-	 * @see Genesis_API_Documentation for more information
-	 *
-	 * @return bool
-	 */
-	public function isPartiallyApproved()
-	{
-		$status = false;
+    /**
+     * Check whether the transaction was partially approved
+     *
+     * @see Genesis_API_Documentation for more information
+     *
+     * @return bool
+     */
+    public function isPartiallyApproved()
+    {
+        if (isset($this->responseObj->partial_approval)) {
+            if (\Genesis\Utils\Common::stringToBoolean($this->responseObj->partial_approval)) {
+                return true;
+            }
+        }
 
-		if (isset($this->responseObj->partial_approval) && strval($this->responseObj->partial_approval) == 'true') {
-			$status = true;
-		}
-
-		return $status;
-	}
+        return false;
+    }
 
     /**
      * Try to fetch a description of the received Error Code
@@ -95,14 +132,14 @@ class Response
     public function getErrorDescription()
     {
         if (isset($this->responseObj->code) && !empty($this->responseObj->code)) {
-            return Errors::getErrorDescription($this->responseObj->code);
+            return Constants\Errors::getErrorDescription($this->responseObj->code);
         }
 
         if (isset($this->responseObj->response_code) && !empty($this->responseObj->response_code)) {
-            return Errors::getIssuerResponseCode($this->responseObj->response_code);
+            return Constants\Errors::getIssuerResponseCode($this->responseObj->response_code);
         }
 
-	    return null;
+        return null;
     }
 
     /**
@@ -125,49 +162,34 @@ class Response
         return $this->responseObj;
     }
 
-	/**
-	 * Get formatted amount (instead of ISO4217, return in float)
-	 *
-	 * @return String | null (if no amount&currency is available)
-	 */
-	public function getFormattedAmount()
-	{
-		if (isset($this->responseObj->currency) && !empty($this->responseObj->currency)) {
-			if ( isset( $this->responseObj->amount ) && ! empty( $this->responseObj->amount ) ) {
-				return Currency::exponentToReal( $this->responseObj->amount, $this->responseObj->currency );
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get DateTime object from the timestamp inside the response
-	 *
-	 * @return \DateTime|null (if invalid timestamp)
-	 */
-	public function getFormattedTimestamp()
-	{
-		if (isset($this->responseObj->timestamp) && !empty($this->responseObj->timestamp)) {
-			return new \DateTime($this->responseObj->timestamp);
-		}
-
-		return null;
-	}
-
     /**
-     * Parse Genesis response to SimpleXMLElement
+     * Get formatted amount (instead of ISO4217, return in float)
      *
-     * @param $response \SimpleXMLElement
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @return String | null (if no amount&currency is available)
      */
-    public function parseResponse($response)
+    public function getFormattedAmount()
     {
-        if (empty($response)) {
-            throw new Exceptions\InvalidArgument();
+        if (isset($this->responseObj->currency) && !empty($this->responseObj->currency)) {
+            if (isset($this->responseObj->amount) && !empty($this->responseObj->amount)) {
+                return \Genesis\Utils\Currency::exponentToAmount($this->responseObj->amount,
+                    $this->responseObj->currency);
+            }
         }
 
-        $this->responseRaw = $response;
-        $this->responseObj = simplexml_load_string($response);
+        return null;
+    }
+
+    /**
+     * Get DateTime object from the timestamp inside the response
+     *
+     * @return \DateTime|null (if invalid timestamp)
+     */
+    public function getFormattedTimestamp()
+    {
+        if (isset($this->responseObj->timestamp) && !empty($this->responseObj->timestamp)) {
+            return new \DateTime($this->responseObj->timestamp);
+        }
+
+        return null;
     }
 }
