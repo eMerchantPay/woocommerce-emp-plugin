@@ -298,7 +298,7 @@ class Paysafecard extends \Genesis\API\Request
                 'format'   => 'xml',
             ));
 
-        parent::setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
     }
 
     /**
@@ -315,14 +315,7 @@ class Paysafecard extends \Genesis\API\Request
             'currency',
             'return_success_url',
             'return_failure_url',
-            'customer_phone',
             'customer_email',
-            'billing_first_name',
-            'billing_last_name',
-            'billing_address1',
-            'billing_zip_code',
-            'billing_city',
-            'billing_country'
         );
 
         $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
@@ -343,7 +336,7 @@ class Paysafecard extends \Genesis\API\Request
                 'remote_ip'          => $this->remote_ip,
                 'return_success_url' => $this->return_success_url,
                 'return_failure_url' => $this->return_failure_url,
-                'amount'             => parent::transform('amount', array(
+                'amount'             => $this->transform('amount', array(
                         $this->amount,
                         $this->currency,
                     )),

@@ -30,32 +30,6 @@ namespace Genesis\Utils;
  */
 final class Common
 {
-    public static function checkRequirements()
-    {
-        // PHP version requirements
-        if (self::compareVersions('5.3.0', '<')) {
-            throw new \Exception('Unsupported PHP version.
-				This projects requires PHP version > 5.3.0.
-				Please upgrade!');
-        }
-
-        // cURL requirements
-        if (\Genesis\Config::getInterfaceSetup('network') == 'curl') {
-            if (!function_exists('curl_init')) {
-                throw new \Exception('cURL is selected, but its not installed on your system!
-					You can use "stream_context" alternatively, or install the cURL PHP extension.');
-            }
-        }
-
-        // XMLWriter requirements
-        if (\Genesis\Config::getInterfaceSetup('builder') == 'xmlwriter') {
-            if (!class_exists('XMLWriter')) {
-                throw new \Exception('XMLWriter is selected, but its not installed on your system!,
-					You can use "domdocument" alternatively, or re-compile PHP with XML support!');
-            }
-        }
-    }
-
     /**
      * Helper for version_compare()
      *
@@ -70,8 +44,7 @@ final class Common
     }
 
     /**
-     * Get the current PHP version
-     *
+     * Helper to get the current PHP version
      *
      * @return int
      */
@@ -86,10 +59,10 @@ final class Common
              *
              * format: major minor release
              */
-            define('PHP_VERSION_ID', ($major * 10000 + $minor * 100 + $release));
+            define('PHP_VERSION_ID', (($major * 10000) + ($minor * 100) + $release));
         }
 
-        return PHP_VERSION_ID;
+        return (int)PHP_VERSION_ID;
     }
 
     /**
@@ -104,13 +77,35 @@ final class Common
     {
         preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $input, $matches);
 
-        $ret = reset($matches);
-
-        foreach ($ret as &$match) {
-            $match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
+        foreach ($matches[0] as &$match) {
+            $match = ($match == strtoupper($match)) ? strtolower($match) : lcfirst($match);
         }
 
-        return implode('_', $ret);
+        return implode('_', $matches[0]);
+    }
+
+    /**
+     * Get PascalCase to action/target array
+     *
+     * @param $input
+     *
+     * @return array
+     */
+    public static function resolveDynamicMethod($input)
+    {
+        $snakeCase = explode('_', self::pascalToSnakeCase($input));
+
+        $result = array(
+            current(
+                array_slice($snakeCase, 0, 1)
+            ),
+            implode(
+                '_',
+                array_slice($snakeCase, 1)
+            )
+        );
+
+        return $result;
     }
 
     /**
@@ -122,8 +117,8 @@ final class Common
      */
     public static function snakeCaseToCamelCase($input)
     {
-        return preg_replace_callback('/(?:^|_)(.?)/', function ($v) {
-            return strtoupper($v[1]);
+        return preg_replace_callback('/(?:^|_)(.?)/', function($value) {
+            return strtoupper($value[1]);
         }, $input);
     }
 
@@ -153,27 +148,13 @@ final class Common
     /**
      * Create ArrayObject ($target) from passed Array ($source_array)
      *
-     * @param $source_array - input array
+     * @param $srcArray - input array
      *
      * @return \ArrayObject
      */
-    public static function createArrayObject($source_array)
+    public static function createArrayObject($srcArray)
     {
-        return new \ArrayObject($source_array, \ArrayObject::ARRAY_AS_PROPS);
-    }
-
-    /**
-     * Get an ArrayObject from an XML string
-     *
-     * @param string $xml_document
-     *
-     * @return \stdClass
-     */
-    public static function xmlToObj($xml_document)
-    {
-        $parser = new \Genesis\Parsers\XML($xml_document);
-
-        return $parser->getObject();
+        return new \ArrayObject($srcArray, \ArrayObject::ARRAY_AS_PROPS);
     }
 
     /**
@@ -197,15 +178,14 @@ final class Common
     /**
      * Check if the passed argument is a valid XML tag name
      *
-     * @param $tag
+     * @param string $tag
      *
      * @return bool
      */
     public static function isValidXMLName($tag)
     {
         if (!is_array($tag)) {
-            return preg_match('/^[a-z_]+[a-z0-9\:\-\.\_]*[^:]*$/i', $tag,
-                $matches) && reset($matches) == $tag;
+            return preg_match('/^[a-z_]+[a-z0-9\:\-\.\_]*[^:]*$/i', $tag, $matches) && reset($matches) == $tag;
         }
 
         return false;
@@ -235,9 +215,9 @@ final class Common
     /**
      * Convert Boolean to String
      *
-     * @param $bool
+     * @param bool $bool
      *
-     * @return mixed
+     * @return string
      */
     public static function booleanToString($bool)
     {

@@ -95,6 +95,22 @@ class SofortiDEAL extends \Genesis\API\Request
     protected $customer_phone;
 
     /**
+     * The bank id of the bank where the customer resides
+     *
+     * @see Supported Bank Ids
+     *
+     * @var string
+     */
+    protected $customer_bank_id;
+
+    /**
+     * Must contain valid bank account number of customer
+     *
+     * @var string
+     */
+    protected $bank_account_number;
+
+    /**
      *Customer's Billing Address: First name
      *
      * @var string
@@ -298,7 +314,7 @@ class SofortiDEAL extends \Genesis\API\Request
                 'format'   => 'xml',
             ));
 
-        parent::setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
     }
 
     /**
@@ -315,16 +331,9 @@ class SofortiDEAL extends \Genesis\API\Request
             'currency',
             'return_success_url',
             'return_failure_url',
-            'customer_phone',
             'customer_email',
             'customer_bank_id',
             'bank_account_number',
-            'billing_first_name',
-            'billing_last_name',
-            'billing_address1',
-            'billing_zip_code',
-            'billing_city',
-            'billing_country'
         );
 
         $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
@@ -345,7 +354,7 @@ class SofortiDEAL extends \Genesis\API\Request
                 'remote_ip'          => $this->remote_ip,
                 'return_success_url' => $this->return_success_url,
                 'return_failure_url' => $this->return_failure_url,
-                'amount'             => parent::transform('amount', array(
+                'amount'             => $this->transform('amount', array(
                         $this->amount,
                         $this->currency,
                     )),

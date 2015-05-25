@@ -23,15 +23,27 @@
 namespace Genesis\Exceptions;
 
 /**
- * Class BlankRequiredField
+ * Class InvalidResponse
+ *
+ * Used to indicate an invalid document
+ * in the API response.
  *
  * @package Genesis\Exceptions
  */
-class BlankRequiredField extends \Exception
+class InvalidResponse extends \Exception
 {
-    public function __construct($message = '', $code = false, $previous = null)
+    /**
+     * Construct
+     *
+     * @param string $message
+     * @param int $code
+     * @param null $previous
+     */
+    public function __construct($message = '', $code = 0, $previous = null)
     {
-        $message = sprintf("Please check your setup, field(s): %s is/are empty!", $message);
+        if (empty($message)) {
+            $message = 'Invalid/Unexpected format!';
+        }
 
         parent::__construct($message, $code, $previous);
     }

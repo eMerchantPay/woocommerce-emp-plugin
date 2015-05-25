@@ -43,15 +43,15 @@ class Network
      */
     public function __construct($interface = null)
     {
-        $interface = $interface ?: \Genesis\Config::getInterfaceSetup('network');
+        $interface = $interface ?: \Genesis\Config::getInterface('network');
 
         switch ($interface) {
             default:
             case 'curl':
                 $this->context = new Network\cURL();
                 break;
-            case 'stream_context':
-                $this->context = new Network\StreamContext();
+            case 'stream':
+                $this->context = new Network\Stream();
                 break;
         }
     }

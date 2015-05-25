@@ -108,7 +108,7 @@ class eZeeWallet extends \Genesis\API\Request
                 'format'   => 'xml',
             ));
 
-        parent::setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
     }
 
     /**
@@ -120,7 +120,6 @@ class eZeeWallet extends \Genesis\API\Request
     {
         $requiredFields = array(
             'transaction_id',
-            'remote_ip',
             'amount',
             'currency',
             'return_success_url',
@@ -145,17 +144,23 @@ class eZeeWallet extends \Genesis\API\Request
                 'transaction_id'     => $this->transaction_id,
                 'usage'              => $this->usage,
                 'remote_ip'          => $this->remote_ip,
-                'amount'             => parent::transform('amount', array(
+                'amount'             => $this->transform(
+                    'amount',
+                    array(
                         $this->amount,
                         $this->currency,
-                    )),
+                    )
+                ),
                 'currency'           => $this->currency,
                 'return_success_url' => $this->return_success_url,
                 'return_failure_url' => $this->return_failure_url,
                 'source_wallet_id'   => $this->source_wallet_id,
-                'source_wallet_pwd'  => parent::transform('wallet_password', array(
+                'source_wallet_pwd'  => $this->transform(
+                    'wallet_password',
+                    array(
                         $this->source_wallet_pwd
-                    )),
+                    )
+                ),
             )
         );
 
@@ -163,7 +168,7 @@ class eZeeWallet extends \Genesis\API\Request
     }
 
     /**
-     * Apply transformation to fields (where necessary)
+     * Apply transformation: encode in base64
      *
      * @param string $input
      *

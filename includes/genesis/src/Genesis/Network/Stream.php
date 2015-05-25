@@ -28,7 +28,7 @@ namespace Genesis\Network;
  * @package    Genesis
  * @subpackage Network
  */
-class StreamContext implements \Genesis\Interfaces\Network
+class Stream implements \Genesis\Interfaces\Network
 {
     /**
      * Keep per-request data as other methods need it
@@ -64,7 +64,7 @@ class StreamContext implements \Genesis\Interfaces\Network
      */
     public function getStatus()
     {
-        return substr($this->response, 9, 3);
+        return (int)substr($this->response, 9, 3);
     }
 
     /**
@@ -103,7 +103,6 @@ class StreamContext implements \Genesis\Interfaces\Network
      * @param array $requestData
      *
      * @return void
-     * @throws \Genesis\Exceptions\MissingComponent
      */
     public function prepareRequestBody($requestData)
     {
@@ -121,6 +120,7 @@ class StreamContext implements \Genesis\Interfaces\Network
                 'method'  => $requestData['type'],
                 'header'  => implode("\r\n", $headers),
                 'content' => $requestData['body'],
+                'timeout' => $requestData['timeout']
             ),
             'ssl'  => array(
                 // DO NOT allow self-signed certificates
@@ -130,22 +130,15 @@ class StreamContext implements \Genesis\Interfaces\Network
                 // Validate Certificates
                 'verify_peer'       => true,
                 // Abort if the certificate-chain is longer than 5 nodes
-                'verify_depth'      => 5,
+                'verify_depth'      => 10,
                 // SNI causes errors due to improper handling of alerts by OpenSSL in 0.9.8
                 // As many php releases are linked against 0.9.8, its better to disable SNI
                 // in case you can't upgrade.
                 'SNI_enabled'       => true,
                 // You can tweak the accepted Cipher list (if needed)
-                'ciphers'           => implode(':', $this->getCiphers())
+                'ciphers'           => implode(':', self::getCiphers())
             )
         );
-
-        // Warn about unsupported version
-        if (\Genesis\Utils\Common::compareVersions('5.3.2', '<')) {
-            throw new \Genesis\Exceptions\MissingComponent(
-                'Unsupported version, please upgrade your PHP installation or switch to cURL'
-            );
-        }
 
         // Note: Mitigate CRIME/BEAST attacks
         if (\Genesis\Utils\Common::compareVersions('5.4.13', '>=')) {
@@ -167,11 +160,48 @@ class StreamContext implements \Genesis\Interfaces\Network
     }
 
     /**
+     * Send the request
+     *
+     * @return void
+     */
+    public function execute()
+    {
+        set_error_handler(array($this, 'processErrors'), E_WARNING);
+
+        $stream = fopen($this->requestData['url'], 'r', false, $this->streamContext);
+
+        $this->responseBody = stream_get_contents($stream);
+
+        $this->responseHeaders = $http_response_header;
+
+        $this->response = implode("\r\n", $http_response_header) . "\r\n\r\n" . $this->responseBody;
+
+        restore_error_handler();
+    }
+
+    /**
+     * Handle stream-related errors
+     *
+     * @param $errNo  - error code
+     * @param $errStr - error message
+     *
+     * @throws \Genesis\Exceptions\ErrorNetwork
+     */
+    public static function processErrors($errNo, $errStr)
+    {
+        // When an exception is being thrown, we have to restore
+        // the handler.
+        restore_error_handler();
+
+        throw new \Genesis\Exceptions\ErrorNetwork($errStr, $errNo);
+    }
+
+    /**
      * Grab an array of Cipher definitions
      *
      * @return array
      */
-    private function getCiphers()
+    public static function getCiphers()
     {
         return array(
             'ECDHE-RSA-AES128-GCM-SHA256',
@@ -212,38 +242,5 @@ class StreamContext implements \Genesis\Interfaces\Network
             '!PSK',
             '!SSLv2',
         );
-    }
-
-    /**
-     * Send the request
-     *
-     * @return void
-     */
-    public function execute()
-    {
-        set_error_handler(array($this, 'processErrors'), E_WARNING);
-
-        $stream = fopen($this->requestData['url'], 'r', false, $this->streamContext);
-
-        restore_error_handler();
-
-        $this->responseBody = stream_get_contents($stream);
-
-        $this->responseHeaders = $http_response_header;
-
-        $this->response = implode("\r\n", $http_response_header) . "\r\n\r\n" . $this->responseBody;
-    }
-
-    /**
-     * Handle stream-related errors
-     *
-     * @param $errNo  - error code
-     * @param $errStr - error message
-     *
-     * @throws \Genesis\Exceptions\NetworkError
-     */
-    private function processErrors($errNo, $errStr)
-    {
-        throw new \Genesis\Exceptions\NetworkError($errStr, $errNo);
     }
 }

@@ -96,23 +96,11 @@ abstract class Request
     public function __construct()
     {
         $this->initConfiguration();
-        $this->setRequiredFields();
-    }
 
-    /**
-     * Initialize per-request configuration
-     */
-    protected function initConfiguration()
-    {
-
-    }
-
-    /**
-     * Set the *required fields for the request
-     */
-    protected function setRequiredFields()
-    {
-
+        // A request might not always feature 'required' fields
+        if (method_exists($this, 'setRequiredFields')) {
+            $this->setRequiredFields();
+        }
     }
 
     /**
@@ -125,22 +113,21 @@ abstract class Request
      */
     public function __call($method, $args)
     {
-        $methodType = substr($method, 0, 3);
-        $requestedKey = strtolower(\Genesis\Utils\Common::pascalToSnakeCase(substr($method, 3)));
+        list($action, $target) = \Genesis\Utils\Common::resolveDynamicMethod($method);
 
-        switch ($methodType) {
-            case 'add':
-                if (isset($this->$requestedKey) && is_array($this->$requestedKey)) {
-                    $groupArray = $this->$requestedKey;
-                } else {
-                    $groupArray = array();
+        switch ($action) {
+            case 'get':
+                if (property_exists($this, $target)) {
+                    return $this->$target;
                 }
 
-                array_push($groupArray, array($requestedKey => trim(reset($args))));
-                $this->$requestedKey = $groupArray;
                 break;
             case 'set':
-                $this->$requestedKey = trim(reset($args));
+                if (property_exists($this, $target)) {
+                    $this->$target = trim(reset($args));
+                    return $this;
+                }
+
                 break;
         }
 
@@ -182,14 +169,6 @@ abstract class Request
         $this->checkRequirements();
     }
 
-    /**
-     * Create the Tree structure and populate
-     * the fields with the set parameters.
-     */
-    protected function populateStructure()
-    {
-
-    }
 
     /**
      * Remove empty keys/values from the structure
@@ -198,18 +177,37 @@ abstract class Request
      */
     protected function sanitizeStructure()
     {
-        $this->treeStructure->exchangeArray(\Genesis\Utils\Common::emptyValueRecursiveRemoval($this->treeStructure->getArrayCopy()));
+        $this->treeStructure->exchangeArray(
+            \Genesis\Utils\Common::emptyValueRecursiveRemoval(
+                $this->treeStructure->getArrayCopy()
+            )
+        );
     }
 
     /**
      * Perform field validation
      *
-     * @throws \Genesis\Exceptions\BlankRequiredField
+     * @throws \Genesis\Exceptions\ErrorParameter
      * @return void
      */
     protected function checkRequirements()
     {
-        /* Verify that all required fields are populated */
+        $this->verifyFieldRequirements();
+
+        $this->verifyGroupRequirements();
+
+        $this->verifyConditionalRequirements();
+
+        $this->verifyConditionalFields();
+    }
+
+    /**
+     * Verify that all required fields are populated
+     *
+     * @throws \Genesis\Exceptions\ErrorParameter
+     */
+    protected function verifyFieldRequirements()
+    {
         if (isset($this->requiredFields)) {
             $this->requiredFields->setIteratorClass('RecursiveArrayIterator');
 
@@ -217,12 +215,21 @@ abstract class Request
 
             foreach ($iterator as $fieldName) {
                 if (empty($this->$fieldName)) {
-                    throw new \Genesis\Exceptions\BlankRequiredField($fieldName);
+                    throw new \Genesis\Exceptions\ErrorParameter(
+                        sprintf('Empty (null) required parameter: %s', $fieldName)
+                    );
                 }
             }
         }
+    }
 
-        /* Verify that the group fields in the request are populated */
+    /**
+     * Verify that the group fields in the request are populated
+     *
+     * @throws \Genesis\Exceptions\ErrorParameter
+     */
+    protected function verifyGroupRequirements()
+    {
         if (isset($this->requiredFieldsGroups)) {
             $fields = $this->requiredFieldsGroups->getArrayCopy();
 
@@ -244,14 +251,28 @@ abstract class Request
             }
 
             if (!$emptyFlag) {
-                throw new \Genesis\Exceptions\BlankRequiredField(
-                    'One of the following group(s) of field(s): ' . implode(' / ', $groupsFormatted) . ' must be filled in!',
+                throw new \Genesis\Exceptions\ErrorParameter(
+                    sprintf(
+                        'One of the following group/s of field/s must be filled in: %s%s',
+                        PHP_EOL,
+                        implode(
+                            PHP_EOL,
+                            $groupsFormatted
+                        )
+                    ),
                     true
                 );
             }
         }
+    }
 
-        /* Verify that all fields (who depend on previously populated fields) are populated */
+    /**
+     * Verify that all fields (who depend on previously populated fields) are populated
+     *
+     * @throws \Genesis\Exceptions\ErrorParameter
+     */
+    protected function verifyConditionalRequirements()
+    {
         if (isset($this->requiredFieldsConditional)) {
             $fields = $this->requiredFieldsConditional->getArrayCopy();
 
@@ -259,16 +280,27 @@ abstract class Request
                 if (isset($this->$fieldName) && !empty($this->$fieldName)) {
                     foreach ($fieldDependencies as $field) {
                         if (empty($this->$field)) {
-                            throw new \Genesis\Exceptions\BlankRequiredField(
-                                $fieldName . ' is depending on field: ' . $field . ' which'
+                            throw new \Genesis\Exceptions\ErrorParameter(
+                                sprintf(
+                                    '%s is depending on: %s, which is empty (null)!',
+                                    $fieldName,
+                                    $field
+                                )
                             );
                         }
                     }
                 }
             }
         }
+    }
 
-        /* Verify conditional requirement, where either one of the fields are populated */
+    /**
+     * Verify conditional requirement, where either one of the fields are populated
+     *
+     * @throws \Genesis\Exceptions\ErrorParameter
+     */
+    protected function verifyConditionalFields()
+    {
         if (isset($this->requiredFieldsOR)) {
             $fields = $this->requiredFieldsOR->getArrayCopy();
 
@@ -281,28 +313,9 @@ abstract class Request
             }
 
             if (!$status) {
-                throw new \Genesis\Exceptions\BlankRequiredField(implode($fields));
+                throw new \Genesis\Exceptions\ErrorParameter(implode($fields));
             }
         }
-    }
-
-    /**
-     * Add transaction type
-     *
-     * @param string $name
-     * @param array     $parameters
-     */
-    public function addTransactionType($name, $parameters = array())
-    {
-
-    }
-
-    /**
-     * Set the language of a WPF form
-     */
-    public function setLanguage()
-    {
-
     }
 
     /**
@@ -331,7 +344,7 @@ abstract class Request
     }
 
     /**
-     * Convert the amount from Minor cur
+     * Apply transformation: Convert to Minor currency unit
      *
      * @param string $amount
      * @param string $currency
@@ -363,21 +376,23 @@ abstract class Request
     /**
      * Build the complete URL for the request
      *
-     * @param $sub_domain  String    - gateway/wpf etc.
-     * @param $path        String          - path of the current request
+     * @param $subDomain  String   - gateway/wpf etc.
+     * @param $path        String   - path of the current request
      * @param $appendToken Bool     - should we append the token to the end of the url
      *
      * @return string               - complete URL (sub_domain,path,token)
      */
-    protected function buildRequestURL($sub_domain = 'gateway', $path = '/', $appendToken = true)
+    protected function buildRequestURL($subDomain = 'gateway', $path = '/', $appendToken = true)
     {
-        $proto = isset($this->config) ? $this->getApiConfig('protocol') : '';
-        $port = isset($this->config) ? $this->getApiConfig('port') : '';
-        $token = ($appendToken) ? \Genesis\Config::getToken() : '';
+        $token  = ($appendToken) ? \Genesis\Config::getToken() : '';
 
-        $base_url = \Genesis\Config::getEnvironmentURL($proto, $sub_domain, $port);
+        $baseURL = \Genesis\Config::getEnvironmentURL(
+            $this->getApiConfig('protocol'),
+            $subDomain,
+            $this->getApiConfig('port')
+        );
 
-        return sprintf('%s/%s/%s', $base_url, $path, $token);
+        return sprintf('%s/%s/%s', $baseURL, $path, $token);
     }
 
     /**
@@ -390,5 +405,30 @@ abstract class Request
     public function getApiConfig($key)
     {
         return $this->config->offsetGet($key);
+    }
+
+    /**
+     * Initialize per-request configuration
+     */
+    protected function initConfiguration()
+    {
+
+    }
+
+    /**
+     * Set the *required fields for the request
+     */
+    protected function setRequiredFields()
+    {
+
+    }
+
+    /**
+     * Create the Tree structure and populate
+     * the fields with the set parameters.
+     */
+    protected function populateStructure()
+    {
+
     }
 }

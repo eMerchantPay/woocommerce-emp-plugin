@@ -23,17 +23,30 @@
 namespace Genesis\Exceptions;
 
 /**
- * Class MissingComponent
+ * Class ErrorAPI
+ *
+ * Used to indicate an unsuccessful API request
+ *
+ * For example - invalid card, invalid data, insufficient funds etc.
  *
  * @package Genesis\Exceptions
  */
-class MissingComponent extends \Exception
+class ErrorAPI extends \Exception
 {
+    /**
+     * Construct
+     *
+     * @param string $message
+     * @param int $code
+     * @param null $previous
+     */
     public function __construct($message = '', $code = 0, $previous = null)
     {
-        if (empty($message)) {
-            $message = "Missing component, update and verify your installation!";
-        }
+        $error          = empty($message) ? 'Unknown error' : $message;
+        $description    = \Genesis\API\Constants\Errors::getErrorDescription($code);
+
+        $message = 'Message: ' . $error . PHP_EOL .
+                   'Details: ' . $description;
 
         parent::__construct($message, $code, $previous);
     }

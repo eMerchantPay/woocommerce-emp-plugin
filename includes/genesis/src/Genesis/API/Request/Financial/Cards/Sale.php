@@ -350,7 +350,7 @@ class Sale extends \Genesis\API\Request
                 'format'   => 'xml',
             ));
 
-        parent::setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
     }
 
     /**
@@ -362,21 +362,12 @@ class Sale extends \Genesis\API\Request
     {
         $requiredFields = array(
             'transaction_id',
-            'remote_ip',
             'amount',
             'currency',
             'card_holder',
             'card_number',
-            'cvv',
             'expiration_month',
             'expiration_year',
-            'customer_email',
-            'billing_first_name',
-            'billing_last_name',
-            'billing_address1',
-            'billing_zip_code',
-            'billing_city',
-            'billing_country'
         );
 
         $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
@@ -397,7 +388,7 @@ class Sale extends \Genesis\API\Request
                 'gaming'                    => $this->gaming,
                 'moto'                      => $this->moto,
                 'remote_ip'                 => $this->remote_ip,
-                'amount'                    => parent::transform('amount', array(
+                'amount'                    => $this->transform('amount', array(
                         $this->amount,
                         $this->currency,
                     )),

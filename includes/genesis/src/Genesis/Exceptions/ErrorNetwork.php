@@ -23,12 +23,23 @@
 namespace Genesis\Exceptions;
 
 /**
- * Class NetworkError
+ * Class ErrorNetwork
+ *
+ * Used to indicate a problem with network transport
+ *
+ * e.g. Timeouts, SSL verification issues, DNS resolve etc.
  *
  * @package Genesis\Exceptions
  */
-class NetworkError extends \Exception
+class ErrorNetwork extends \Exception
 {
+    /**
+     * Construct
+     *
+     * @param string $message
+     * @param int $code
+     * @param null $previous
+     */
     public function __construct($message = '', $code = 0, $previous = null)
     {
         if (empty($message)) {

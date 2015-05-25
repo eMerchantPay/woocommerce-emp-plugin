@@ -23,26 +23,25 @@
 namespace Genesis\Exceptions;
 
 /**
- * Class InvalidMethod
+ * Class ErrorParameter
+ *
+ * Used to indicate a problem with transaction's parameters
  *
  * @package Genesis\Exceptions
  */
-class InvalidMethod extends \Exception
+class ErrorParameter extends \Exception
 {
     /**
      * Construct
      *
      * @param string $message
-     * @param int $code
-     * @param null $previous
+     * @param bool   $code
+     * @param null   $previous
      */
-    public function __construct($message = '', $code = 0, $previous = null)
+    public function __construct($message = '', $code = false, $previous = null)
     {
-        if (empty($message)) {
-            $message =
-                'You\'re trying to call a non-existent method!' . PHP_EOL .
-                'For proper usage, please refer to the documentation!';
-        }
+        $message = 'Please verify the following transaction parameters:' . PHP_EOL .
+                    $message;
 
         parent::__construct($message, $code, $previous);
     }

@@ -53,26 +53,62 @@ class Response
      */
     public function __construct($networkContext = null)
     {
-        if (is_a($networkContext, '\Genesis\Network')) {
+        if (!is_null($networkContext) && is_a($networkContext, '\Genesis\Network')) {
             $this->parseResponse($networkContext->getResponseBody());
         }
     }
 
     /**
-     * Parse Genesis response to SimpleXMLElement
+     * Parse Genesis response to stdClass and
+     * apply transformation to known fields
      *
      * @param string $response
      *
+     * @throws \Genesis\Exceptions\ErrorAPI
      * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidResponse
      */
     public function parseResponse($response)
     {
-        if (empty($response)) {
-            throw new \Genesis\Exceptions\InvalidArgument('Invalid document!');
+        // Save a copy of the incoming response
+        $this->responseRaw = $response;
+
+        // Parse the incoming response to stdClass
+        try {
+            $parser = new \Genesis\Parser('xml');
+            $parser->skipRootNode();
+            $parser->parseDocument($response);
+
+            $this->responseObj = $parser->getObject();
+        } catch (\Exception $e) {
+            throw new \Genesis\Exceptions\InvalidResponse(
+                $e->getMessage(),
+                $e->getCode()
+            );
         }
 
-        $this->responseRaw = $response;
-        $this->responseObj = \Genesis\Utils\Common::xmlToObj($response);
+        if (isset($this->responseObj->status)) {
+            $state = new Constants\Transaction\States($this->responseObj->status);
+
+            if (!$state->isValid()) {
+                throw new \Genesis\Exceptions\InvalidArgument(
+                    'Unknown transaction status',
+                    isset($this->responseObj->code) ? $this->responseObj->code : 0
+                );
+            }
+
+            if ($state->isError()) {
+                throw new \Genesis\Exceptions\ErrorAPI(
+                    $this->responseObj->technical_message,
+                    isset($this->responseObj->code) ? $this->responseObj->code : 0
+                );
+            }
+        }
+
+        // Transform Amount from Major to Minor unit
+        $this->transformAmountUnit();
+        // Transform Timestamp from String to DateTime
+        $this->transformTimestamp();
     }
 
     /**
@@ -85,25 +121,22 @@ class Response
      */
     public function isSuccessful()
     {
-        $status = false;
-
-        $successfulStatuses = array(
-            \Genesis\API\Constants\Transaction\States::APPROVED,
-            \Genesis\API\Constants\Transaction\States::PENDING_ASYNC,
-            \Genesis\API\Constants\Transaction\States::NEW_STATUS,
+        $status = new Constants\Transaction\States(
+            isset($this->responseObj->status) ? $this->responseObj->status : ''
         );
 
-        if (isset($this->responseObj->status) && in_array($this->responseObj->status,
-                $successfulStatuses)
-        ) {
-            $status = true;
+        if ($status->isValid()) {
+            if ($status->isError()) {
+                $result = false;
+            } else {
+                $result = true;
+            }
+        } else {
+            // return null if status is inapplicable
+            $result = null;
         }
 
-        if (!isset($this->responseObj->status)) {
-            $status = null;
-        }
-
-        return $status;
+        return $result;
     }
 
     /**
@@ -111,23 +144,21 @@ class Response
      *
      * @see Genesis_API_Documentation for more information
      *
-     * @return bool
+     * @return bool | null (if inapplicable)
      */
     public function isPartiallyApproved()
     {
         if (isset($this->responseObj->partial_approval)) {
-            if (\Genesis\Utils\Common::stringToBoolean($this->responseObj->partial_approval)) {
-                return true;
-            }
+            return \Genesis\Utils\Common::stringToBoolean($this->responseObj->partial_approval);
         }
 
-        return false;
+        return null;
     }
 
     /**
      * Try to fetch a description of the received Error Code
      *
-     * @return string | null (if no code/issuer_code is available)
+     * @return string | null (if inapplicable)
      */
     public function getErrorDescription()
     {
@@ -165,14 +196,16 @@ class Response
     /**
      * Get formatted amount (instead of ISO4217, return in float)
      *
-     * @return String | null (if no amount&currency is available)
+     * @return String | null (if amount/currency are unavailable)
      */
-    public function getFormattedAmount()
+    private function transformAmountUnit()
     {
         if (isset($this->responseObj->currency) && !empty($this->responseObj->currency)) {
             if (isset($this->responseObj->amount) && !empty($this->responseObj->amount)) {
-                return \Genesis\Utils\Currency::exponentToAmount($this->responseObj->amount,
-                    $this->responseObj->currency);
+                $this->responseObj->amount = \Genesis\Utils\Currency::exponentToAmount(
+                    $this->responseObj->amount,
+                    $this->responseObj->currency
+                );
             }
         }
 
@@ -184,10 +217,15 @@ class Response
      *
      * @return \DateTime|null (if invalid timestamp)
      */
-    public function getFormattedTimestamp()
+    private function transformTimestamp()
     {
         if (isset($this->responseObj->timestamp) && !empty($this->responseObj->timestamp)) {
-            return new \DateTime($this->responseObj->timestamp);
+            try {
+                $this->responseObj->timestamp = new \DateTime($this->responseObj->timestamp);
+            } catch (\Exception $e) {
+                // Just log the attempt
+                error_log($e->getMessage());
+            }
         }
 
         return null;

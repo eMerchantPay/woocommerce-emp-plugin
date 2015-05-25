@@ -72,7 +72,7 @@ class Void extends \Genesis\API\Request
                 'format'   => 'xml',
             ));
 
-        parent::setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
     }
 
     /**
@@ -84,7 +84,6 @@ class Void extends \Genesis\API\Request
     {
         $requiredFields = array(
             'transaction_id',
-            'remote_ip',
             'reference_id',
         );
 

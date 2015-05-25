@@ -32,7 +32,7 @@ class Genesis
     /**
      * Store the Network Request Instance
      *
-     * @var \Genesis\API\Request
+     * @var mixed
      */
     protected $requestCtx;
 
@@ -46,7 +46,7 @@ class Genesis
     /**
      * Store the Network Request Instance
      *
-     * @var \Genesis\Network\
+     * @var \Genesis\Network
      */
     protected $networkCtx;
 
@@ -60,7 +60,7 @@ class Genesis
     public function __construct($request)
     {
         // Verify system requirements
-        \Genesis\Utils\Common::checkRequirements();
+        \Genesis\Utils\Requirements::verify();
 
         // Initialize the request
         $request = sprintf('\Genesis\API\Request\%s', $request);
@@ -68,8 +68,57 @@ class Genesis
         if (class_exists($request)) {
             $this->requestCtx = new $request;
         } else {
-            throw new \Genesis\Exceptions\InvalidMethod('The select request is invalid!');
+            throw new \Genesis\Exceptions\InvalidMethod(
+                'The selected transaction type is invalid!'
+            );
         }
+
+        // Initialize the Network
+        $this->networkCtx = new \Genesis\Network();
+
+        // Initialize Response Object
+        $this->responseCtx = new \Genesis\API\Response();
+    }
+
+    /**
+     * Get request instance
+     *
+     * @return mixed
+     */
+    public function request()
+    {
+        return $this->requestCtx;
+    }
+
+    /**
+     * Get Response instance
+     *
+     * @return \Genesis\API\Response
+     */
+    public function response()
+    {
+        return $this->responseCtx;
+    }
+
+    /*
+      * Send the request
+      *
+      * @return void
+      */
+    public function execute()
+    {
+        // Build the previously set data
+        $this->networkCtx->setApiCtxData(
+            $this->requestCtx
+        );
+
+        // Send the request
+        $this->networkCtx->sendRequest();
+
+        // Parse the response
+        $this->responseCtx->parseResponse(
+            $this->networkCtx->getResponseBody()
+        );
     }
 
     /**
@@ -88,80 +137,36 @@ class Genesis
      * Get description for an error, based
      * on the Error Code
      *
-     * @param $error_code
+     * @param $errorCode
      *
      * @return string
      */
-    public static function getErrorDescription($error_code)
+    public static function getErrorDescription($errorCode)
     {
-        return \Genesis\API\Constants\Errors::getErrorDescription($error_code);
+        return \Genesis\API\Constants\Errors::getErrorDescription($errorCode);
     }
-
-    /*
-     * Send the request
-     *
-     * @return void
-     */
 
     /**
      * Get a country full name by an ISO-4217 code
      *
-     * @param $iso_code - ISO-4217 compliant code of the country
+     * @param $isoCode - ISO-4217 compliant code of the country
      *
      * @return mixed - full name of the country
      */
-    public static function getFullCountryName($iso_code)
+    public static function getFullCountryName($isoCode)
     {
-        return \Genesis\Utils\Country::getCountryName($iso_code);
+        return \Genesis\Utils\Country::getCountryName($isoCode);
     }
 
     /**
      * Get a country ISO-4217 code by its name
      *
-     * @param string $country_name - country name
+     * @param string $countryName - country name
      *
      * @return string
      */
-    public static function getCountryISOCode($country_name)
+    public static function getCountryISOCode($countryName)
     {
-        return \Genesis\Utils\Country::getCountryISO($country_name);
-    }
-
-    /**
-     * Get request instance
-     *
-     * @return \Genesis\API\Request
-     */
-    public function request()
-    {
-        return $this->requestCtx;
-    }
-
-    /**
-     * Get Response instance
-     *
-     * @return \Genesis\API\Response
-     */
-    public function response()
-    {
-        return $this->responseCtx;
-    }
-
-    /*
-     * Get a country ISO code, by its full name in English
-     *
-     * @param $country_name - Name of the country in plain English
-     *
-     * @return mixed - ISO-4217 country code
-     */
-    public function execute()
-    {
-        // Send the request
-        $this->networkCtx = new Network();
-        $this->networkCtx->setApiCtxData($this->requestCtx);
-        $this->networkCtx->sendRequest();
-
-        // Parse the response
-        $this->responseCtx = new \Genesis\API\Response($this->networkCtx);
+        return \Genesis\Utils\Country::getCountryISO($countryName);
     }
 }

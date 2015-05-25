@@ -74,7 +74,7 @@ class cURL implements \Genesis\Interfaces\Network
      */
     public function getStatus()
     {
-        return curl_getinfo($this->curlHandle, CURLINFO_HTTP_CODE);
+        return (int)curl_getinfo($this->curlHandle, CURLINFO_HTTP_CODE);
     }
 
     /**
@@ -117,14 +117,19 @@ class cURL implements \Genesis\Interfaces\Network
     public function prepareRequestBody($requestData)
     {
         $options = array(
-            CURLOPT_ENCODING       => 'gzip',
-            CURLOPT_HEADER         => true,
-            CURLOPT_HTTPHEADER     => array('Content-Type: text/xml', 'Expect:'),
-            CURLOPT_HTTPAUTH       => CURLAUTH_BASIC,
             CURLOPT_URL            => $requestData['url'],
             CURLOPT_TIMEOUT        => $requestData['timeout'],
             CURLOPT_USERAGENT      => $requestData['user_agent'],
             CURLOPT_USERPWD        => $requestData['user_login'],
+            CURLOPT_HTTPAUTH       => CURLAUTH_BASIC,
+            CURLOPT_ENCODING       => 'gzip',
+            CURLOPT_HTTPHEADER     => array(
+                'Content-Type: text/xml',
+                // Workaround to prevent cURL from parsing HTTP 100 as separate request
+                'Expect:'
+            ),
+            CURLOPT_HEADER         => true,
+            CURLOPT_FAILONERROR    => true,
             CURLOPT_RETURNTRANSFER => true,
             // SSL/TLS Configuration
             CURLOPT_CAINFO         => $requestData['ca_bundle'],
@@ -164,15 +169,15 @@ class cURL implements \Genesis\Interfaces\Network
      * Check whether or not a cURL request is successful
      *
      * @return string
-     * @throws \Genesis\Exceptions\NetworkError
+     * @throws \Genesis\Exceptions\ErrorNetwork
      */
-    private function checkForErrors()
+    public function checkForErrors()
     {
-        $errNo = curl_errno($this->curlHandle);
+        $errNo  = curl_errno($this->curlHandle);
         $errStr = curl_error($this->curlHandle);
 
-        if ($errStr) {
-            throw new \Genesis\Exceptions\NetworkError($errStr, $errNo);
+        if ($errNo > 0) {
+            throw new \Genesis\Exceptions\ErrorNetwork($errStr, $errNo);
         }
     }
 }

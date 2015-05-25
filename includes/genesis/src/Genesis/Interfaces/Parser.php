@@ -20,30 +20,37 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-namespace Genesis\Exceptions;
+namespace Genesis\Interfaces;
 
 /**
- * Class InvalidMethod
+ * An interface for every parser abstraction (XML, JSON etc.)
  *
- * @package Genesis\Exceptions
+ * @package Genesis\Interfaces
  */
-class InvalidMethod extends \Exception
+interface Parser
 {
     /**
-     * Construct
+     * Get the parsed object
      *
-     * @param string $message
-     * @param int $code
-     * @param null $previous
+     * @return mixed
      */
-    public function __construct($message = '', $code = 0, $previous = null)
-    {
-        if (empty($message)) {
-            $message =
-                'You\'re trying to call a non-existent method!' . PHP_EOL .
-                'For proper usage, please refer to the documentation!';
-        }
+    public function getObject();
 
-        parent::__construct($message, $code, $previous);
-    }
+    /**
+     * Parse the provided document
+     *
+     * @param mixed $document
+     *
+     * @return mixed
+     */
+    public function parseDocument($document);
+
+    /**
+     * Set a flag, indicating, if the root
+     * node of a document should be skipped
+     * during parsing
+     *
+     * @return bool
+     */
+    public function skipRootNode();
 }

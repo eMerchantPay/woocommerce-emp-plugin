@@ -20,67 +20,71 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-namespace Genesis\API\Request\WPF;
+namespace Genesis;
 
 /**
- * Web-Payment-Form Reconcile
+ * Parser handler
  *
- * @package    Genesis
- * @subpackage Request
+ * @package Genesis
  */
-class Reconcile extends \Genesis\API\Request
+class Parser
 {
     /**
-     * Unique id of an existing WPF transaction
+     * Instance of the selected builder wrapper
      *
-     * @var string
+     * @var object
      */
-    protected $unique_id;
+    private $context;
 
     /**
-     * Set the per-request configuration
+     * Initialize the required builder, based on the use's
+     * preference (set inside the configuration ini file)
      *
-     * @return void
+     * @param string $interface
      */
-    protected function initConfiguration()
+    public function __construct($interface = null)
     {
-        $this->config = \Genesis\Utils\Common::createArrayObject(array(
-                'protocol' => 'https',
-                'port'     => 443,
-                'type'     => 'POST',
-                'format'   => 'xml',
-            ));
+        $interface = $interface ?: \Genesis\Config::getInterface('parser');
 
-        $this->setApiConfig('url', $this->buildRequestURL('wpf', 'wpf/reconcile', false));
+        switch ($interface) {
+            default:
+            case 'xml':
+                $this->context = new Parsers\XML();
+                break;
+            case 'json':
+                break;
+        }
     }
 
     /**
-     * Set the required fields
+     * Get the printable Builder Output
      *
-     * @return void
+     * @return \stdClass
      */
-    protected function setRequiredFields()
+    public function getObject()
     {
-        $requiredFields = array(
-            'unique_id',
-        );
-
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        return $this->context->getObject();
     }
 
     /**
-     * Create the request's Tree structure
+     * Parse tree-structure into Builder document
      *
-     * @return void
+     * @param mixed $document
      */
-    protected function populateStructure()
+    public function parseDocument($document)
     {
-        $treeStructure = array(
-            'wpf_reconcile' => array(
-                'unique_id' => $this->unique_id,
-            )
-        );
+        $this->context->parseDocument($document);
+    }
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+    /**
+     * Set a flag, indicating, if the root
+     * node of a document should be skipped
+     * during parsing
+     *
+     * @return bool
+     */
+    public function skipRootNode()
+    {
+        $this->context->skipRootNode();
     }
 }

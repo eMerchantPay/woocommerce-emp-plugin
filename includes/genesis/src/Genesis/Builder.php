@@ -45,15 +45,15 @@ class Builder
      */
     public function __construct($interface = null)
     {
-        $interface = $interface ?: \Genesis\Config::getInterfaceSetup('builder');
+        $interface = $interface ?: \Genesis\Config::getInterface('builder');
 
         switch ($interface) {
-            case 'json':
-                $this->context = new Builders\JSON();
-                break;
             default:
             case 'xml':
                 $this->context = new Builders\XML();
+                break;
+            case 'json':
+                $this->context = new Builders\JSON();
                 break;
         }
     }

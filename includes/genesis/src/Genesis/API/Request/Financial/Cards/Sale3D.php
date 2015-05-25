@@ -395,7 +395,7 @@ class Sale3D extends \Genesis\API\Request
                 'format'   => 'xml',
             ));
 
-        parent::setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
     }
 
     /**
@@ -407,21 +407,12 @@ class Sale3D extends \Genesis\API\Request
     {
         $requiredFields = array(
             'transaction_id',
-            'remote_ip',
             'amount',
             'currency',
             'card_holder',
             'card_number',
-            'cvv',
             'expiration_month',
             'expiration_year',
-            'customer_email',
-            'billing_first_name',
-            'billing_last_name',
-            'billing_address1',
-            'billing_zip_code',
-            'billing_city',
-            'billing_country',
         );
 
         $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
@@ -463,7 +454,7 @@ class Sale3D extends \Genesis\API\Request
                 'notification_url'          => $this->notification_url,
                 'return_success_url'        => $this->return_success_url,
                 'return_failure_url'        => $this->return_failure_url,
-                'amount'                    => parent::transform('amount', array(
+                'amount'                    => $this->transform('amount', array(
                         $this->amount,
                         $this->currency,
                     )),

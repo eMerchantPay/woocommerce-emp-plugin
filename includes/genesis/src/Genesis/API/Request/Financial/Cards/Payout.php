@@ -247,7 +247,7 @@ class Payout extends \Genesis\API\Request
                 'format'   => 'xml',
             ));
 
-        parent::setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
     }
 
     /**
@@ -259,21 +259,12 @@ class Payout extends \Genesis\API\Request
     {
         $requiredFields = array(
             'transaction_id',
-            'remote_ip',
             'amount',
             'currency',
             'card_holder',
             'card_number',
-            'cvv',
             'expiration_month',
             'expiration_year',
-            'customer_email',
-            'billing_first_name',
-            'billing_last_name',
-            'billing_address1',
-            'billing_zip_code',
-            'billing_city',
-            'billing_country'
         );
 
         $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
@@ -288,10 +279,10 @@ class Payout extends \Genesis\API\Request
     {
         $treeStructure = array(
             'payment_transaction' => array(
-                'transaction_type' => \Genesis\API\Constants\Transaction\Types::CREDIT,
+                'transaction_type' => \Genesis\API\Constants\Transaction\Types::PAYOUT,
                 'transaction_id'   => $this->transaction_id,
                 'usage'            => $this->usage,
-                'amount'           => parent::transform('amount', array(
+                'amount'           => $this->transform('amount', array(
                         $this->amount,
                         $this->currency,
                     )),

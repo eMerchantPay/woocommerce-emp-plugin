@@ -28,6 +28,14 @@ namespace Genesis\API\Constants\Transaction;
  * Transaction states of a Genesis Transaction
  *
  * @package Genesis\API\Constants\Transaction
+ *
+ * @method bool isApproved()
+ * @method bool isDeclined()
+ * @method bool isPending()
+ * @method bool isPendingAsync()
+ * @method bool isError()
+ * @method bool isRefunded()
+ * @method bool isVoided()
  */
 class States
 {
@@ -57,9 +65,29 @@ class States
     const PENDING_ASYNC = 'pending_async';
 
     /**
+     * Transaction is in-progress
+     */
+    const IN_PROGRESS = 'in_progress';
+
+    /**
+     * Once an approved transaction is refunded the state changes to refunded.
+     */
+    const REFUNDED = 'refunded';
+
+    /**
+     * Transaction was authorized, but later the merchant canceled it.
+     */
+    const VOIDED = 'voided';
+
+    /**
      * An error has occurred while negotiating with the schemes.
      */
     const ERROR = 'error';
+
+    /**
+     * Transaction failed, but it was not declined
+     */
+    const UNSUCCESSFUL = 'unsuccessful';
 
     /**
      * WPF initial status
@@ -67,9 +95,14 @@ class States
     const NEW_STATUS = 'new';
 
     /**
-     * Once an approved transaction is refunded the state changes to refunded.
+     * WPF in-progress status
      */
-    const REFUNDED = 'refunded';
+    const USER = 'user';
+
+    /**
+     * WPF timeout has occurred
+     */
+    const TIMEOUT = 'timeout';
 
     /**
      * Once an approved transaction is chargeback the state changes to change- backed.
@@ -92,7 +125,95 @@ class States
     const PRE_ARBITRATED = 'pre_arbitrated';
 
     /**
-     * Transaction was authorized, but later the merchant canceled it.
+     * Store the state of transaction for comparison
+     *
+     * @var string
      */
-    const VOIDED = 'voided';
+    private $status;
+
+    /**
+     * Set the status if one is being passed
+     *
+     * @param $status
+     */
+    public function __construct($status = null)
+    {
+        if (!is_null($status)) {
+            $this->status = $status;
+        }
+    }
+
+    /**
+     * Handle "magic" calls
+     *
+     * @param $method
+     * @param $args
+     *
+     * @return $this|bool
+     */
+    public function __call($method, $args)
+    {
+        list($action, $target) = \Genesis\Utils\Common::resolveDynamicMethod($method);
+
+        switch ($action) {
+            case 'is':
+                if (isset($this->status)) {
+                    return $this->compare($target);
+                }
+
+                break;
+            default:
+                break;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if the status is the same passed as parameter
+     *
+     * @param $subject
+     *
+     * @return bool
+     */
+    public function compare($subject)
+    {
+        if ($this->status == constant('self::' . strtoupper($subject))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether this is a valid (known) status
+     *
+     * @return bool
+     */
+    public function isValid()
+    {
+        $statusList = array(
+            self::APPROVED,
+            self::DECLINED,
+            self::PENDING,
+            self::PENDING_ASYNC,
+            self::REFUNDED,
+            self::VOIDED,
+            self::ERROR,
+            self::UNSUCCESSFUL,
+            self::IN_PROGRESS,
+            self::NEW_STATUS,
+            self::USER,
+            self::TIMEOUT,
+            self::CHARGEBACKED,
+            self::CHARGEBACK_REVERSED,
+            self::PRE_ARBITRATED,
+        );
+
+        if (in_array(strtolower($this->status), $statusList)) {
+            return true;
+        }
+
+        return false;
+    }
 }

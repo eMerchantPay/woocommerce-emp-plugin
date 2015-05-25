@@ -20,7 +20,7 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-namespace Genesis\API\Request\NonFinancial\Fraud;
+namespace Genesis\API\Request\NonFinancial;
 
 /**
  * Blacklist Request
@@ -58,7 +58,7 @@ class Blacklist extends \Genesis\API\Request
                 'format'   => 'xml',
             ));
 
-        parent::setApiConfig('url', $this->buildRequestURL('gateway', 'blacklists', false));
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'blacklists', false));
     }
 
     /**

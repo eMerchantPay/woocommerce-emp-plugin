@@ -86,7 +86,7 @@ class RecurringSale extends \Genesis\API\Request
                 'format'   => 'xml',
             ));
 
-        parent::setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'process', true));
     }
 
     /**
@@ -98,7 +98,6 @@ class RecurringSale extends \Genesis\API\Request
     {
         $requiredFields = array(
             'transaction_id',
-            'remote_ip',
             'reference_id',
             'amount',
             'currency'
@@ -121,7 +120,7 @@ class RecurringSale extends \Genesis\API\Request
                 'usage'            => $this->usage,
                 'remote_ip'        => $this->remote_ip,
                 'reference_id'     => $this->reference_id,
-                'amount'           => parent::transform('amount', array(
+                'amount'           => $this->transform('amount', array(
                         $this->amount,
                         $this->currency,
                     )),
