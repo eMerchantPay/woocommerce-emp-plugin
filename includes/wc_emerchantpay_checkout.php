@@ -87,45 +87,36 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
             'enabled'       => array(
                 'type'    => 'checkbox',
                 'title'   => __( 'Enable/Disable', self::LANG_DOMAIN ),
-                'label'   => __( 'Enable eMerchangPay Checkout', self::LANG_DOMAIN ),
+                'label'   => __( 'Enable eMerchantPay Checkout', self::LANG_DOMAIN ),
                 'default' => 'no'
             ),
             'title'         => array(
                 'type'        => 'text',
                 'title'       => __( 'Title:', self::LANG_DOMAIN ),
-                'description' => __(
-                    'Title for this payment method, during customer checkout.',
-                    self::LANG_DOMAIN
-                ),
+                'description' => __( 'Title for this payment method, during customer checkout.',  self::LANG_DOMAIN),
                 'default'     => $this->method_title,
                 'desc_tip'    => true
             ),
             'description'   => array(
                 'type'        => 'textarea',
-                'title'       => __( 'Description:', self::LANG_DOMAIN ),
-                'description' => __(
-                    'Text describing this payment method to the customer, during checkout.',
-                    self::LANG_DOMAIN
-                ),
-                'default'     => __(
-                    'Pay safely through eMerchantPay\'s Secure Gateway.' .
-                    self::LANG_DOMAIN
-                ),
+                'title'       => __('Description:', self::LANG_DOMAIN),
+                'description' => __('Text describing this payment method to the customer, during checkout.', self::LANG_DOMAIN),
+                'default'     => __('Pay safely through E-ComProcessing\'s Secure Gateway.', self::LANG_DOMAIN),
                 'desc_tip'    => true
             ),
             'transaction_types' => array(
                 'type'        => 'multiselect',
-                'title'       => __( 'Transaction Type', self::LANG_DOMAIN ),
+                'title'       => __('Transaction Type', self::LANG_DOMAIN),
                 'options'     => array(
                     'sale'      => __('Sale', self::LANG_DOMAIN),
                     'sale3d'    => __('Sale 3D-Secure', self::LANG_DOMAIN),
                 ),
-                'description' => __( 'Select transaction type for the payment transaction' ),
+                'description' => __('Select transaction type for the payment transaction', self::LANG_DOMAIN),
                 'desc_tip'    => true,
             ),
             'checkout_language' => array(
                 'type'      => 'select',
-                'title'     => __( 'Checkout Language', self::LANG_DOMAIN ),
+                'title'     => __('Checkout Language', self::LANG_DOMAIN),
                 'options'   => array(
                     'en' => __(\Genesis\API\Constants\i18n::EN, self::LANG_DOMAIN),
                     'es' => __(\Genesis\API\Constants\i18n::ES, self::LANG_DOMAIN),
@@ -141,43 +132,35 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
                     'bg' => __(\Genesis\API\Constants\i18n::BG, self::LANG_DOMAIN),
                     'hi' => __(\Genesis\API\Constants\i18n::HI, self::LANG_DOMAIN),
                 ),
-                'description' => __( 'Select language for the customer UI on the remote server' ),
+                'description' => __('Select language for the customer UI on the remote server', self::LANG_DOMAIN),
                 'desc_tip'    => true,
             ),
             'api_credentials'   => array(
                 'type'        => 'title',
-                'title'       => __( 'API Credentials', self::LANG_DOMAIN ),
-                'description' => sprintf(__(
-                        'Enter Genesis API Credentials below, in order to access the Gateway.' .
-                        'If you don\'t have credentials, %sget in touch%s with our technical support.',
-                        self::LANG_DOMAIN
-                    ),
-                    '<a href="mailto:tech-support@emerchantpay.com">',
+                'title'       => __('API Credentials', self::LANG_DOMAIN),
+                'description' => sprintf(
+                    __('Enter Genesis API Credentials below, in order to access the Gateway.' . 'If you don\'t have credentials, %sget in touch%s with our technical support.', self::LANG_DOMAIN),
+                    '<a href="mailto:tech-support@e-comprocessing.com">',
                     '</a>'
                 ),
             ),
             'test_mode'         => array(
                 'type'        => 'checkbox',
-                'title'       => __( 'Test Mode', self::LANG_DOMAIN ),
-                'label'       => __( 'Use test (staging) environment', self::LANG_DOMAIN ),
-                'description' => __(
-                    'Selecting this would route all requests through our test environment.' .
-                    '<br/>' .
-                    'NO Funds WILL BE transferred!',
-                    self::LANG_DOMAIN
-                ),
+                'title'       => __('Test Mode', self::LANG_DOMAIN),
+                'label'       => __('Use test (staging) environment', self::LANG_DOMAIN),
+                'description' => __('Selecting this would route all requests through our test environment.' . '<br/>' . 'NO Funds WILL BE transferred!', self::LANG_DOMAIN),
                 'desc_tip'    => true,
             ),
             'username'          => array(
                 'type'        => 'text',
-                'title'       => __( 'Username', self::LANG_DOMAIN ),
-                'description' => __( 'This is your Genesis username.' ),
+                'title'       => __('Username', self::LANG_DOMAIN),
+                'description' => __('This is your Genesis username.', self::LANG_DOMAIN),
                 'desc_tip'    => true,
             ),
             'password'          => array(
                 'type'        => 'text',
-                'title'       => __( 'Password', self::LANG_DOMAIN ),
-                'description' => __( 'This is your Genesis password.', self::LANG_DOMAIN ),
+                'title'       => __('Password', self::LANG_DOMAIN),
+                'description' => __('This is your Genesis password.', self::LANG_DOMAIN),
                 'desc_tip'    => true,
             ),
         );
@@ -295,17 +278,17 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
                 if ($notification->isAuthentic()) {
                     $notification->initReconciliation();
 
+                    $order = $this->get_order_by_id(
+                        $notification->getReconciliationObject()->unique_id
+                    );
+
+                    if (!$order instanceof WC_Order) {
+                        throw new \Exception('Invalid WooCommerce Order!');
+                    }
+
                     $reconcile = $notification->getReconciliationObject()->payment_transaction;
 
                     if ($reconcile) {
-                        $order = $this->get_order_by_id(
-                            $notification->getReconciliationObject()->unique_id
-                        );
-
-                        if (!$order instanceof WC_Order) {
-                            throw new \Exception('Invalid WooCommerce Order!');
-                        }
-
                         switch ($reconcile->status) {
                             case \Genesis\API\Constants\Transaction\States::APPROVED:
                                 $order->add_order_note(
@@ -346,9 +329,9 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
 
                         // Save the terminal token, through which we processed the transaction
                         update_post_meta($order->id, '_transaction_terminal_token', $reconcile->terminal_token);
-
-                        $notification->renderResponse();
                     }
+
+                    $notification->renderResponse();
                 }
             } catch(\Exception $e) {
                 header('HTTP/1.1 403 Forbidden');
