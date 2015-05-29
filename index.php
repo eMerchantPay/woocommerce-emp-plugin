@@ -1,37 +1,49 @@
 <?php
 /*
-Plugin Name: WooCommerce eMerchantPay Payment Gateway Client
-Description: Extends WooCommerce's Checkout with eMerchantPay/Genesis Gateway
-Version: 1.1.0
+ * Plugin Name: WooCommerce eMerchantPay Payment Gateway Client
+ * Description: Extend WooCommerce's Checkout options with eMerchantPay's Genesis Gateway
+ * Text Domain: woocommerce-emerchantpay
+ * Author: eMerchantPay
+ * Version: 1.2.0
 */
 
-if ( !function_exists('woocommerce_emerchantpay_init') ):
-	function woocommerce_emerchantpay_init()
-	{
-	    if ( !class_exists( 'WC_Payment_Gateway' ) ) return;
+if ( !function_exists('woocommerce_emerchantpay_init') ) {
+    function woocommerce_emerchantpay_init()
+    {
+        if (!class_exists('WC_Payment_Gateway')) {
+            return;
+        }
 
-		// Load text Domain
-	    load_plugin_textdomain('woocommerce_emerchantpay', false, 'languages');
+        $translation = load_plugin_textdomain(
+            'woocommerce-emerchantpay', false, basename(__DIR__) . DIRECTORY_SEPARATOR . 'languages');
 
-		// Get Genesis class
-		include dirname(__FILE__) . '/includes/WC_EMerchantPay_Checkout.php';
+        if (!$translation) {
+            error_log('Unable to load language file for locale: ' . get_locale());
+        }
 
-		/**
-		 * Add the eMerchantPay's Genesis Gateway to WooCommerce
-		 * list of installed gateways
-		 *
-		 * @param $methods Array of existing Payment Gateways
-		 *
-		 * @return array $methods Appended Payment Gateway
-		 */
-		if ( !function_exists('woocommerce_add_emerchantpay_gateway') ):
-		    function woocommerce_add_emerchantpay_gateway($methods) {
-			    array_push($methods, 'WC_EMerchantPay_Checkout');
-		        return $methods;
-		    }
-		endif;
+        include dirname(__FILE__) . '/libraries/genesis/vendor/autoload.php';
 
-	    add_filter('woocommerce_payment_gateways', 'woocommerce_add_emerchantpay_gateway' );
-	}
-endif;
+        include dirname(__FILE__) . '/includes/wc_emerchantpay_checkout.php';
+
+        /**
+         * Add the eMerchantPay Gateway to WooCommerce's
+         * list of installed gateways
+         *
+         * @param $methods Array of existing Payment Gateways
+         *
+         * @return array $methods Appended Payment Gateway
+         */
+        if (!function_exists('woocommerce_add_emerchantpay_gateway')) {
+            function woocommerce_add_emerchantpay_gateway($methods)
+            {
+                array_push($methods, 'WC_eMerchantPay_Checkout');
+
+                return $methods;
+            }
+        }
+
+        add_filter('woocommerce_payment_gateways', 'woocommerce_add_emerchantpay_gateway');
+    }
+}
+
 add_action('plugins_loaded', 'woocommerce_emerchantpay_init', 0);
