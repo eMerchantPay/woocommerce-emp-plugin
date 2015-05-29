@@ -1,0 +1,189 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce eMerchantPay Payment Gateway Client\n"
+"POT-Creation-Date: 2015-05-29 11:18+0200\n"
+"PO-Revision-Date: 2015-05-29 11:19+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.6\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: includes/wc_emerchantpay_checkout.php:52
+msgid "eMerchantPay"
+msgstr "eMerchantPay"
+
+#: includes/wc_emerchantpay_checkout.php:54
+msgid ""
+"eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS "
+"certified) server."
+msgstr ""
+"eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS "
+"certified) server."
+
+#: includes/wc_emerchantpay_checkout.php:89
+msgid "Enable/Disable"
+msgstr "Enable/Disable"
+
+#: includes/wc_emerchantpay_checkout.php:90
+msgid "Enable eMerchangPay Checkout"
+msgstr "Enable eMerchangPay Checkout"
+
+#: includes/wc_emerchantpay_checkout.php:95
+msgid "Title:"
+msgstr "Title:"
+
+#: includes/wc_emerchantpay_checkout.php:97
+msgid "Title for this payment method, during customer checkout."
+msgstr "Title for this payment method, during customer checkout."
+
+#: includes/wc_emerchantpay_checkout.php:105
+msgid "Description:"
+msgstr "Description:"
+
+#: includes/wc_emerchantpay_checkout.php:107
+msgid "Text describing this payment method to the customer, during checkout."
+msgstr "Text describing this payment method to the customer, during checkout."
+
+#: includes/wc_emerchantpay_checkout.php:111
+msgid "Pay safely through eMerchantPay's Secure Gateway."
+msgstr "Pay safely through eMerchantPay's Secure Gateway."
+
+#: includes/wc_emerchantpay_checkout.php:118
+msgid "Transaction Type"
+msgstr "Transaction Type"
+
+#: includes/wc_emerchantpay_checkout.php:120
+msgid "Sale"
+msgstr "Sale"
+
+#: includes/wc_emerchantpay_checkout.php:121
+msgid "Sale 3D-Secure"
+msgstr "Sale 3D-Secure"
+
+#: includes/wc_emerchantpay_checkout.php:123
+msgid "Select transaction type for the payment transaction"
+msgstr "Select transaction type for the payment transaction"
+
+#: includes/wc_emerchantpay_checkout.php:128
+msgid "Checkout Language"
+msgstr "Checkout Language"
+
+#: includes/wc_emerchantpay_checkout.php:144
+msgid "Select language for the customer UI on the remote server"
+msgstr "Select language for the customer UI on the remote server"
+
+#: includes/wc_emerchantpay_checkout.php:149
+msgid "API Credentials"
+msgstr "API Credentials"
+
+#: includes/wc_emerchantpay_checkout.php:151
+#, php-format
+msgid ""
+"Enter Genesis API Credentials below, in order to access the Gateway.If you "
+"don't have credentials, %sget in touch%s with our technical support."
+msgstr ""
+"Enter Genesis API Credentials below, in order to access the Gateway.If you "
+"don't have credentials, %sget in touch%s with our technical support."
+
+#: includes/wc_emerchantpay_checkout.php:161
+msgid "Test Mode"
+msgstr "Test Mode"
+
+#: includes/wc_emerchantpay_checkout.php:162
+msgid "Use test (staging) environment"
+msgstr "Use test (staging) environment"
+
+#: includes/wc_emerchantpay_checkout.php:164
+msgid ""
+"Selecting this would route all requests through our test environment.<br/>NO "
+"Funds WILL BE transferred!"
+msgstr ""
+"Selecting this would route all requests through our test environment.<br/>NO "
+"Funds WILL BE transferred!"
+
+#: includes/wc_emerchantpay_checkout.php:173
+msgid "Username"
+msgstr "Username"
+
+#: includes/wc_emerchantpay_checkout.php:174
+msgid "This is your Genesis username."
+msgstr "This is your Genesis username."
+
+#: includes/wc_emerchantpay_checkout.php:179
+msgid "Password"
+msgstr "Password"
+
+#: includes/wc_emerchantpay_checkout.php:180
+msgid "This is your Genesis password."
+msgstr "This is your Genesis password."
+
+#: includes/wc_emerchantpay_checkout.php:248
+msgid "Your payment has been completed successfully."
+msgstr "Your payment has been completed successfully."
+
+#: includes/wc_emerchantpay_checkout.php:256
+msgid "Payment has been declined!"
+msgstr "Payment has been declined!"
+
+#: includes/wc_emerchantpay_checkout.php:263
+msgid "Your payment has been declined, please check your data and try again"
+msgstr "Your payment has been declined, please check your data and try again"
+
+#: includes/wc_emerchantpay_checkout.php:271
+msgid "The customer cancelled their payment session"
+msgstr "The customer cancelled their payment session"
+
+#: includes/wc_emerchantpay_checkout.php:312
+msgid "Payment transaction has been approved!"
+msgstr "Payment transaction has been approved!"
+
+#: includes/wc_emerchantpay_checkout.php:314
+msgid "Id:"
+msgstr "Id:"
+
+#: includes/wc_emerchantpay_checkout.php:316
+msgid "Total:"
+msgstr "Total:"
+
+#: includes/wc_emerchantpay_checkout.php:323
+msgid "Payment transaction has been declined!"
+msgstr "Payment transaction has been declined!"
+
+#: includes/wc_emerchantpay_checkout.php:330
+msgid "Payment transaction returned an error!"
+msgstr "Payment transaction returned an error!"
+
+#: includes/wc_emerchantpay_checkout.php:337
+msgid "Payment transaction has been refunded!"
+msgstr "Payment transaction has been refunded!"
+
+#: includes/wc_emerchantpay_checkout.php:464
+msgid ""
+"We were unable to process your order!<br/>Please double check your data and "
+"try again."
+msgstr ""
+"We were unable to process your order!<br/>Please double check your data and "
+"try again."
+
+#: includes/wc_emerchantpay_checkout.php:523
+msgid "Refund completed!"
+msgstr "Refund completed!"
+
+#: includes/wc_emerchantpay_checkout.php:525
+msgid "Id: "
+msgstr "Id: "
+
+#: includes/wc_emerchantpay_checkout.php:527
+msgid "Refunded amount: "
+msgstr "Refunded amount: "
