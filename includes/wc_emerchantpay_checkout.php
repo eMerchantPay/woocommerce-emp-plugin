@@ -101,7 +101,7 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
                 'type'        => 'textarea',
                 'title'       => __('Description:', self::LANG_DOMAIN),
                 'description' => __('Text describing this payment method to the customer, during checkout.', self::LANG_DOMAIN),
-                'default'     => __('Pay safely through E-ComProcessing\'s Secure Gateway.', self::LANG_DOMAIN),
+                'default'     => __('Pay safely through eMerchantPay\'s Secure Gateway.', self::LANG_DOMAIN),
                 'desc_tip'    => true
             ),
             'transaction_types' => array(
@@ -140,7 +140,7 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
                 'title'       => __('API Credentials', self::LANG_DOMAIN),
                 'description' => sprintf(
                     __('Enter Genesis API Credentials below, in order to access the Gateway.' . 'If you don\'t have credentials, %sget in touch%s with our technical support.', self::LANG_DOMAIN),
-                    '<a href="mailto:tech-support@e-comprocessing.com">',
+                    '<a href="mailto:tech-support@emerchantpay.com">',
                     '</a>'
                 ),
             ),
