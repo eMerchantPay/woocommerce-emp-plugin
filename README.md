@@ -1,7 +1,7 @@
 eMerchantPay Gateway Module for WooCommerce
 ===========================================
 
-This is a Payment Module for eMerchantPay that gives you the ability to process payments through eMerchantPay's Payment Gateway - Genesis.
+This is a Payment Module for WooCommerce that gives you the ability to process payments through eMerchantPay's Payment Gateway - Genesis.
 
 Requirements
 ------------

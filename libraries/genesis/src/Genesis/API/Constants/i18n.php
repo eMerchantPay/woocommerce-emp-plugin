@@ -29,7 +29,9 @@ namespace Genesis\API\Constants;
  *
  * @package Genesis\API\Constants
  */
+// @codingStandardsIgnoreStart
 class i18n
+// @codingStandardsIgnoreEnd
 {
     /**
      * Arabic locale and language
@@ -82,6 +84,11 @@ class i18n
     const PT = 'Portuguese';
 
     /**
+     * Polish locale and language
+     */
+    const PL = 'Polish';
+
+    /**
      * Russian locale and language
      */
     const RU = 'Russian';
@@ -95,4 +102,19 @@ class i18n
      * Mandarin Chinese locale and language
      */
     const ZH = 'Chinese (Mandarin)';
+
+    /**
+     * Check if a language code is supported
+     *
+     * @param $languageCode
+     * @return string
+     */
+    public static function isValidLanguageCode($languageCode)
+    {
+        if (@constant('self::' . strtoupper($languageCode))) {
+            return true;
+        }
+
+        return false;
+    }
 }
