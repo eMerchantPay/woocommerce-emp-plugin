@@ -28,7 +28,7 @@ Installation
 * Navigate to ```Plugins -> Add New```
 * Install through the Marketplace/ Select the downloaded ```.zip``` File
 * Activate the newly installed ```WooCommerce eMerchantPay Payment Gateway Client``` plugin
-* Navigate to ```WooCommerce -> Settings -> Checkout -> E-ComProcessing```
+* Navigate to ```WooCommerce -> Settings -> Checkout -> eMerchantPay```
 * Check ```Enable```, set the correct credentials and click "Save changes"
 
 You're now ready to process payments through our gateway.
