@@ -125,8 +125,6 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
                         __('Authorize (3D-Secure)', self::LANG_DOMAIN),
                     \Genesis\API\Constants\Transaction\Types::CASHU =>
                         __('CashU', self::LANG_DOMAIN),
-                    \Genesis\API\Constants\Payment\Methods::ELV =>
-                        __('ELV', self::LANG_DOMAIN),
                     \Genesis\API\Constants\Payment\Methods::EPS =>
                         __('eps', self::LANG_DOMAIN),
                     \Genesis\API\Constants\Payment\Methods::GIRO_PAY =>
@@ -745,8 +743,6 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
         $selected_types = $this->settings['transaction_types'];
 
         $alias_map = array(
-            \Genesis\API\Constants\Payment\Methods::ELV         =>
-                \Genesis\API\Constants\Transaction\Types::PPRO,
             \Genesis\API\Constants\Payment\Methods::EPS         =>
                 \Genesis\API\Constants\Transaction\Types::PPRO,
             \Genesis\API\Constants\Payment\Methods::GIRO_PAY    =>
