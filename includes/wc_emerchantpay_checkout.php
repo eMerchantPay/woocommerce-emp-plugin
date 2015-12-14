@@ -133,10 +133,16 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
                         __('Neteller', self::LANG_DOMAIN),
                     \Genesis\API\Constants\Payment\Methods::QIWI =>
                         __('Qiwi', self::LANG_DOMAIN),
+                    \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_SALE =>
+                        __('PayByVoucher (Sale)', self::LANG_DOMAIN),
+                    \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY =>
+                        __('PayByVoucher (oBeP)', self::LANG_DOMAIN),
                     \Genesis\API\Constants\Transaction\Types::PAYSAFECARD =>
                         __('PaySafeCard', self::LANG_DOMAIN),
                     \Genesis\API\Constants\Payment\Methods::PRZELEWY24 =>
                         __('Przelewy24', self::LANG_DOMAIN),
+                    \Genesis\API\Constants\Transaction\Types::POLI =>
+                        __('POLi', self::LANG_DOMAIN),
                     \Genesis\API\Constants\Payment\Methods::SAFETY_PAY =>
                         __('SafetyPay', self::LANG_DOMAIN),
                     \Genesis\API\Constants\Transaction\Types::SALE =>
@@ -149,6 +155,8 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
                         __('TeleIngreso', self::LANG_DOMAIN),
                     \Genesis\API\Constants\Payment\Methods::TRUST_PAY =>
                         __('TrustPay', self::LANG_DOMAIN),
+                    \Genesis\API\Constants\Transaction\Types::WEBMONEY =>
+                        __('WebMoney', self::LANG_DOMAIN),
                 ),
                 'description' => __( 'Select transaction type for the payment transaction' ),
                 'desc_tip'    => true,
