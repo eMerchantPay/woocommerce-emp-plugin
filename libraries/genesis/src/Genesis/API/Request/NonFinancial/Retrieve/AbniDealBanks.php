@@ -20,30 +20,17 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-namespace Genesis\API\Request\NonFinancial\Fraud\Retrieval;
+namespace Genesis\API\Request\NonFinancial\Retrieve;
 
 /**
- * Retrieval request by ARN/Unique Transaction Id
+ * Class AbniDealBanks
  *
- * @package    Genesis
- * @subpackage Request
+ * Retrieve the available Banks for iDEAL payment via ABN
+ *
+ * @package Genesis\API\Request\NonFinancial\Retrieve
  */
-class Transaction extends \Genesis\API\Request
+class AbniDealBanks extends \Genesis\API\Request
 {
-    /**
-     * Acquirer's Reference Number
-     *
-     * @var string
-     */
-    protected $arn;
-
-    /**
-     * Unique ID  of the original (reference) transaction
-     *
-     * @var string
-     */
-    protected $original_transaction_unique_id;
-
     /**
      * Set the per-request configuration
      *
@@ -55,43 +42,11 @@ class Transaction extends \Genesis\API\Request
             array(
                 'protocol' => 'https',
                 'port'     => 443,
-                'type'     => 'POST',
-                'format'   => 'xml',
+                'type'     => 'GET',
+                'format'   => 'plain',
             )
         );
 
-        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'retrieval_requests', false));
-    }
-
-    /**
-     * Set the required fields
-     *
-     * @return void
-     */
-    protected function setRequiredFields()
-    {
-        $requiredFieldsOR = array(
-            'arn',
-            'original_transaction_unique_id'
-        );
-
-        $this->requiredFieldsOR = \Genesis\Utils\Common::createArrayObject($requiredFieldsOR);
-    }
-
-    /**
-     * Create the request's Tree structure
-     *
-     * @return void
-     */
-    protected function populateStructure()
-    {
-        $treeStructure = array(
-            'retrieval_request_request' => array(
-                'arn'                            => $this->arn,
-                'original_transaction_unique_id' => $this->original_transaction_unique_id,
-            )
-        );
-
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->setApiConfig('url', $this->buildRequestURL('gateway', 'retrieve_abn_ideal_banks', false));
     }
 }
