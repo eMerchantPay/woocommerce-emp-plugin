@@ -7,7 +7,7 @@ Requirements
 ------------
 
 * WooCommerce 2.x
-* GenesisPHP 1.2
+* GenesisPHP 1.4
 
 GenesisPHP Requirements
 ------------
