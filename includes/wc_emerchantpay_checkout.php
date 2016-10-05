@@ -21,59 +21,126 @@ if (!defined( 'ABSPATH' )) {
     exit(0);
 }
 
+if (!class_exists('WC_eMerchantPay_Method')) {
+    require_once dirname(dirname(__FILE__)) . '/classes/wc_emerchantpay_method_base.php';
+}
+
 /**
  * eMerchantPay Checkout
  *
  * @class   WC_eMerchantPay_Checkout
  * @extends WC_Payment_Gateway
  */
-class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
+class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
 {
     /**
-     * Language domain
+     * Payment Method Code
+     *
+     * @var null|string
      */
-    const LANG_DOMAIN = 'woocommerce-emerchantpay';
+    protected static $method_code = 'emerchantpay_checkout';
+
+    /**
+     * Additional Method Setting Keys
+     */
+    const SETTING_KEY_TRANSACTION_TYPES = 'transaction_types';
+    const SETTING_KEY_CHECKOUT_LANGUAGE = 'checkout_language';
+
+    /**
+     * Additional Order Meta Constants
+     */
+    const META_CHECKOUT_TRANSACTION_ID = '_genesis_checkout_id';
+
+    /**
+     * Holds the Meta Key used to extract the checkout Transaction
+     *   - Checkout Method -> WPF Unique Id
+     *
+     * @return string
+     */
+    protected function getCheckoutTransactionIdMetaKey()
+    {
+        return self::META_CHECKOUT_TRANSACTION_ID;
+    }
+
+    /**
+     * Determines if the a post notification is a valida Gateway Notification
+     *
+     * @param array $postValues
+     * @return bool
+     */
+    protected function getIsValidNotification($postValues)
+    {
+        return
+            parent::getIsValidNotification($postValues) &&
+            isset($postValues['wpf_unique_id']);
+    }
 
     /**
      * Setup and initialize this module
      */
     public function __construct()
     {
-        $this->id           = 'emerchantpay';
-        $this->supports     = array('products', 'refunds');
-        $this->icon         = plugins_url( 'assets/images/logo.png', plugin_dir_path( __FILE__ ) );
-        $this->has_fields   = false;
+        parent::__construct();
+    }
 
-        // Public title/description
-        $this->title        = $this->get_option('title');
-        $this->description  = $this->get_option('description');
+    /**
+     * Check if this gateway is enabled and all dependencies are fine.
+     * Disable the plugin if dependencies fail.
+     *
+     * @access      public
+     * @return      bool
+     */
+    public function is_available() {
+        return
+            parent::is_available() &&
+            !empty($this->settings[self::SETTING_KEY_TRANSACTION_TYPES]);
+    }
 
-        // Admin title/description
-        $this->method_title         = __( 'eMerchantPay', self::LANG_DOMAIN );
-        $this->method_description   = __(
-            'eMerchantPay\'s Gateway works by sending your client, to our secure (PCI-DSS certified) server.',
-            self::LANG_DOMAIN
-        );
+    /**
+     * Determines if the Payment Method can be used for the configured Store
+     *
+     * @return bool
+     */
+    protected function is_applicable()
+    {
+        return parent::is_applicable();
+    }
 
-        // Register the method callback
-        add_action( 'woocommerce_api_' . strtolower( get_class( $this ) ), array( $this, 'callback_handler' ) );
+    /**
+     * Event Handler for displaying Admin Notices
+     *
+     * @return bool
+     */
+    public function admin_notices()
+    {
+        if (!parent::admin_notices()) {
+            return false;
+        }
 
-        // Save admin-panel options
-        if ( defined( 'WOOCOMMERCE_VERSION' ) && version_compare( WOOCOMMERCE_VERSION, '2.0.0', '>=' ) ) {
-            add_action(
-                'woocommerce_update_options_payment_gateways_' . $this->id,
-                array( $this, 'process_admin_options' )
+        $areApiTransactionTypesDefined = true;
+
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            if (empty($this->settings[self::SETTING_KEY_TRANSACTION_TYPES])) {
+                $areApiTransactionTypesDefined = false;
+            }
+        } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $transactionTypesPostParamName = $this->getMethodAdminSettingPostParamName(
+                self::SETTING_KEY_TRANSACTION_TYPES
+            );
+
+            if (!isset($_POST[$transactionTypesPostParamName]) || empty($_POST[$transactionTypesPostParamName])) {
+                $areApiTransactionTypesDefined = false;;
+            }
+        }
+
+        if (!$areApiTransactionTypesDefined) {
+            WC_eMerchantPay_Helper::printWpNotice(
+                static::getTranslatedText('You must specify at least one transaction type in order to be able to use this payment method!'),
+                WC_eMerchantPay_Helper::WP_NOTICE_TYPE_ERROR
             );
         }
-        else {
-            add_action( 'woocommerce_update_options_payment_gateways', array( $this, 'process_admin_options' ) );
-        }
 
-        // Initialize admin options
-        $this->init_form_fields();
-
-        // Fetch module settings
-        $this->init_settings();
+        return true;
     }
 
     /**
@@ -83,321 +150,109 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
      */
     public function init_form_fields()
     {
-        $this->form_fields = array(
-            'enabled'       => array(
-                'type'    => 'checkbox',
-                'title'   => __( 'Enable/Disable', self::LANG_DOMAIN ),
-                'label'   => __( 'Enable eMerchangPay Checkout', self::LANG_DOMAIN ),
-                'default' => 'no'
-            ),
-            'title'         => array(
-                'type'        => 'text',
-                'title'       => __( 'Title:', self::LANG_DOMAIN ),
-                'description' => __(
-                    'Title for this payment method, during customer checkout.',
-                    self::LANG_DOMAIN
-                ),
-                'default'     => $this->method_title,
-                'desc_tip'    => true
-            ),
-            'description'   => array(
-                'type'        => 'textarea',
-                'title'       => __( 'Description:', self::LANG_DOMAIN ),
-                'description' => __(
-                    'Text describing this payment method to the customer, during checkout.',
-                    self::LANG_DOMAIN
-                ),
-                'default'     => __(
-                    'Pay safely through eMerchantPay\'s Secure Gateway.' .
-                    self::LANG_DOMAIN
-                ),
-                'desc_tip'    => true
-            ),
-            'transaction_types' => array(
+        // Admin title/description
+        $this->method_title         =
+            static::getTranslatedText('eMerchantPay Checkout');
+        $this->method_description   =
+            static::getTranslatedText('eMerchantPay\'s Gateway works by sending your client, to our secure (PCI-DSS certified) server.');
+
+        parent::init_form_fields();
+
+        $this->form_fields += array(
+            self::SETTING_KEY_TRANSACTION_TYPES => array(
                 'type'        => 'multiselect',
-                'title'       => __( 'Transaction Type', self::LANG_DOMAIN ),
+                'title'       => static::getTranslatedText( 'Transaction Type'),
                 'options'     => array(
                     \Genesis\API\Constants\Transaction\Types::ABNIDEAL =>
-                        __('ABN iDEAL', self::LANG_DOMAIN),
+                        static::getTranslatedText('ABN iDEAL'),
                     \Genesis\API\Constants\Transaction\Types::AUTHORIZE =>
-                        __('Authorize', self::LANG_DOMAIN),
+                        static::getTranslatedText('Authorize'),
                     \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D =>
-                        __('Authorize (3D-Secure)', self::LANG_DOMAIN),
+                        static::getTranslatedText('Authorize (3D-Secure)'),
                     \Genesis\API\Constants\Transaction\Types::CASHU =>
-                        __('CashU', self::LANG_DOMAIN),
+                        static::getTranslatedText('CashU'),
                     \Genesis\API\Constants\Payment\Methods::EPS =>
-                        __('eps', self::LANG_DOMAIN),
+                        static::getTranslatedText('eps'),
                     \Genesis\API\Constants\Payment\Methods::GIRO_PAY =>
-                        __('GiroPay', self::LANG_DOMAIN),
+                        static::getTranslatedText('GiroPay'),
                     \Genesis\API\Constants\Transaction\Types::NETELLER =>
-                        __('Neteller', self::LANG_DOMAIN),
+                        static::getTranslatedText('Neteller'),
                     \Genesis\API\Constants\Payment\Methods::QIWI =>
-                        __('Qiwi', self::LANG_DOMAIN),
+                        static::getTranslatedText('Qiwi'),
                     \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_SALE =>
-                        __('PayByVoucher (Sale)', self::LANG_DOMAIN),
+                        static::getTranslatedText('PayByVoucher (Sale)'),
                     \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY =>
-                        __('PayByVoucher (oBeP)', self::LANG_DOMAIN),
+                        static::getTranslatedText('PayByVoucher (oBeP)'),
                     \Genesis\API\Constants\Transaction\Types::PAYSAFECARD =>
-                        __('PaySafeCard', self::LANG_DOMAIN),
+                        static::getTranslatedText('PaySafeCard'),
                     \Genesis\API\Constants\Payment\Methods::PRZELEWY24 =>
-                        __('Przelewy24', self::LANG_DOMAIN),
+                        static::getTranslatedText('Przelewy24'),
                     \Genesis\API\Constants\Transaction\Types::POLI =>
-                        __('POLi', self::LANG_DOMAIN),
+                        static::getTranslatedText('POLi'),
                     \Genesis\API\Constants\Payment\Methods::SAFETY_PAY =>
-                        __('SafetyPay', self::LANG_DOMAIN),
+                        static::getTranslatedText('SafetyPay'),
                     \Genesis\API\Constants\Transaction\Types::SALE =>
-                        __('Sale', self::LANG_DOMAIN),
+                        static::getTranslatedText('Sale'),
                     \Genesis\API\Constants\Transaction\Types::SALE_3D =>
-                        __('Sale (3D-Secure)', self::LANG_DOMAIN),
+                        static::getTranslatedText('Sale (3D-Secure)'),
                     \Genesis\API\Constants\Transaction\Types::SOFORT =>
-                        __('SOFORT', self::LANG_DOMAIN),
+                        static::getTranslatedText('SOFORT'),
                     \Genesis\API\Constants\Payment\Methods::TELEINGRESO =>
-                        __('TeleIngreso', self::LANG_DOMAIN),
+                        static::getTranslatedText('TeleIngreso'),
                     \Genesis\API\Constants\Payment\Methods::TRUST_PAY =>
-                        __('TrustPay', self::LANG_DOMAIN),
+                        static::getTranslatedText('TrustPay'),
                     \Genesis\API\Constants\Transaction\Types::WEBMONEY =>
-                        __('WebMoney', self::LANG_DOMAIN),
+                        static::getTranslatedText('WebMoney'),
                 ),
-                'description' => __( 'Select transaction type for the payment transaction' ),
+                'description' => static::getTranslatedText( 'Select transaction type for the payment transaction' ),
                 'desc_tip'    => true,
             ),
-            'checkout_language' => array(
+            self::SETTING_KEY_CHECKOUT_LANGUAGE => array(
                 'type'      => 'select',
-                'title'     => __( 'Checkout Language', self::LANG_DOMAIN ),
+                'title'     => static::getTranslatedText( 'Checkout Language' ),
                 'options'   => array(
-                    'en' => __(\Genesis\API\Constants\i18n::EN, self::LANG_DOMAIN),
-                    'es' => __(\Genesis\API\Constants\i18n::ES, self::LANG_DOMAIN),
-                    'fr' => __(\Genesis\API\Constants\i18n::FR, self::LANG_DOMAIN),
-                    'de' => __(\Genesis\API\Constants\i18n::DE, self::LANG_DOMAIN),
-                    'it' => __(\Genesis\API\Constants\i18n::IT, self::LANG_DOMAIN),
-                    'ja' => __(\Genesis\API\Constants\i18n::JA, self::LANG_DOMAIN),
-                    'zh' => __(\Genesis\API\Constants\i18n::ZH, self::LANG_DOMAIN),
-                    'ar' => __(\Genesis\API\Constants\i18n::AR, self::LANG_DOMAIN),
-                    'pt' => __(\Genesis\API\Constants\i18n::PT, self::LANG_DOMAIN),
-                    'tr' => __(\Genesis\API\Constants\i18n::TR, self::LANG_DOMAIN),
-                    'ru' => __(\Genesis\API\Constants\i18n::RU, self::LANG_DOMAIN),
-                    'bg' => __(\Genesis\API\Constants\i18n::BG, self::LANG_DOMAIN),
-                    'hi' => __(\Genesis\API\Constants\i18n::HI, self::LANG_DOMAIN),
+                    'en' => static::getTranslatedText(\Genesis\API\Constants\i18n::EN),
+                    'es' => static::getTranslatedText(\Genesis\API\Constants\i18n::ES),
+                    'fr' => static::getTranslatedText(\Genesis\API\Constants\i18n::FR),
+                    'de' => static::getTranslatedText(\Genesis\API\Constants\i18n::DE),
+                    'it' => static::getTranslatedText(\Genesis\API\Constants\i18n::IT),
+                    'ja' => static::getTranslatedText(\Genesis\API\Constants\i18n::JA),
+                    'zh' => static::getTranslatedText(\Genesis\API\Constants\i18n::ZH),
+                    'ar' => static::getTranslatedText(\Genesis\API\Constants\i18n::AR),
+                    'pt' => static::getTranslatedText(\Genesis\API\Constants\i18n::PT),
+                    'tr' => static::getTranslatedText(\Genesis\API\Constants\i18n::TR),
+                    'ru' => static::getTranslatedText(\Genesis\API\Constants\i18n::RU),
+                    'bg' => static::getTranslatedText(\Genesis\API\Constants\i18n::BG),
+                    'hi' => static::getTranslatedText(\Genesis\API\Constants\i18n::HI),
                 ),
                 'description' => __( 'Select language for the customer UI on the remote server' ),
                 'desc_tip'    => true,
             ),
-            'api_credentials'   => array(
-                'type'        => 'title',
-                'title'       => __( 'API Credentials', self::LANG_DOMAIN ),
-                'description' => sprintf(__(
-                        'Enter Genesis API Credentials below, in order to access the Gateway.' .
-                        'If you don\'t have credentials, %sget in touch%s with our technical support.',
-                        self::LANG_DOMAIN
-                    ),
-                    '<a href="mailto:tech-support@emerchantpay.com">',
-                    '</a>'
-                ),
-            ),
-            'test_mode'         => array(
-                'type'        => 'checkbox',
-                'title'       => __( 'Test Mode', self::LANG_DOMAIN ),
-                'label'       => __( 'Use test (staging) environment', self::LANG_DOMAIN ),
-                'description' => __(
-                    'Selecting this would route all requests through our test environment.' .
-                    '<br/>' .
-                    'NO Funds WILL BE transferred!',
-                    self::LANG_DOMAIN
-                ),
-                'desc_tip'    => true,
-            ),
-            'username'          => array(
-                'type'        => 'text',
-                'title'       => __( 'Username', self::LANG_DOMAIN ),
-                'description' => __( 'This is your Genesis username.' ),
-                'desc_tip'    => true,
-            ),
-            'password'          => array(
-                'type'        => 'text',
-                'title'       => __( 'Password', self::LANG_DOMAIN ),
-                'description' => __( 'This is your Genesis password.', self::LANG_DOMAIN ),
-                'desc_tip'    => true,
-            ),
         );
     }
 
     /**
-     * Render the HTML for the Admin settings
+     * Returns a list with data used for preparing a request to the gateway
      *
-     * @return void
+     * @param WC_Order $order
+     * @return array
      */
-    public function admin_options()
+    protected function populateGateRequestData($order)
     {
-        ?>
-        <h3>
-            <?php echo $this->method_title; ?>
-        </h3>
-        <p>
-            <?php echo $this->method_description; ?>
-        </p>
-        <table class="form-table">
-            <?php $this->generate_settings_html(); ?>
-        </table>
-        <?php
-    }
+        $data = parent::populateGateRequestData($order);
 
-    /**
-     * Handle URL callback
-     *
-     * @return void
-     */
-    public function callback_handler()
-    {
-        @ob_clean();
-
-        $this->set_credentials(
-            $this->settings
+        return array_merge(
+            $data,
+            array(
+                'return_cancel_url' => $order->get_cancel_order_url_raw()
+            )
         );
-
-        // Handle Customer returns
-        $this->handle_return();
-
-        // Handle Gateway notifications
-        $this->handle_notification();
-
-        exit(0);
-    }
-
-    /**
-     * Handle customer return and update their order status
-     *
-     * @return void
-     */
-    private function handle_return( )
-    {
-        if ( isset($_GET['act']) && isset($_GET['oid']) ) {
-            $order_id   = absint( $_GET['oid'] );
-            $order      = wc_get_order( $order_id );
-
-            if ($this->get_one_time_token($order_id) == '|CLEAR|') {
-                wp_redirect(wc_get_page_permalink('cart'));
-            }
-            else {
-                $this->set_one_time_token($order_id, '|CLEAR|');
-
-                switch (esc_sql($_GET['act'])) {
-                    case 'success':
-                        $notice = __(
-                            'Your payment has been completed successfully.',
-                            self::LANG_DOMAIN
-                        );
-
-                        wc_add_notice($notice, 'success');
-                        break;
-                    case 'failure':
-                        $status = __(
-                            'Payment has been declined!',
-                            self::LANG_DOMAIN
-                        );
-
-                        $order->update_status('on-hold', $status);
-
-                        $notice = __(
-                            'Your payment has been declined, please check your data and try again',
-                            self::LANG_DOMAIN
-                        );
-
-                        wc_add_notice($notice, 'error');
-                        break;
-                    case 'cancel':
-                        $note = __(
-                            'The customer cancelled their payment session',
-                            self::LANG_DOMAIN
-                        );
-
-                        $order->cancel_order($note);
-                        break;
-                }
-
-                header('Location: ' . $order->get_view_order_url());
-            }
-        }
-    }
-
-    /**
-     * Handle gateway notifications
-     *
-     * @return void
-     */
-    private function handle_notification()
-    {
-        if ( isset( $_POST['wpf_unique_id'] ) ) {
-            try {
-                $notification = new \Genesis\API\Notification($_POST);
-
-                if ($notification->isAuthentic()) {
-                    $notification->initReconciliation();
-
-                    $reconcile = $notification->getReconciliationObject()->payment_transaction;
-
-                    if ($reconcile) {
-                        $order = $this->get_order_by_id(
-                            $notification->getReconciliationObject()->unique_id
-                        );
-
-                        if (!$order instanceof WC_Order) {
-                            throw new \Exception('Invalid WooCommerce Order!');
-                        }
-
-                        switch ($reconcile->status) {
-                            case \Genesis\API\Constants\Transaction\States::APPROVED:
-                                $order->add_order_note(
-                                    __('Payment transaction has been approved!', self::LANG_DOMAIN)
-                                    . PHP_EOL . PHP_EOL .
-                                    __('Id:', self::LANG_DOMAIN) . ' ' . $reconcile->unique_id
-                                    . PHP_EOL . PHP_EOL .
-                                    __('Total:', self::LANG_DOMAIN) . ' ' . $reconcile->amount . ' ' . $reconcile->currency
-                                );
-
-                                $order->payment_complete($reconcile->unique_id);
-                                break;
-                            case \Genesis\API\Constants\Transaction\States::DECLINED:
-                                $order->add_order_note(
-                                    __('Payment transaction has been declined!', self::LANG_DOMAIN)
-                                );
-
-                                $order->update_status('failed', $reconcile->technical_message);
-                                break;
-                            case \Genesis\API\Constants\Transaction\States::ERROR:
-                                $order->add_order_note(
-                                    __('Payment transaction returned an error!', self::LANG_DOMAIN)
-                                );
-
-                                $order->update_status('failed', $reconcile->technical_message);
-                                break;
-                            case \Genesis\API\Constants\Transaction\States::REFUNDED:
-                                $order->add_order_note(
-                                    __('Payment transaction has been refunded!', self::LANG_DOMAIN)
-                                );
-
-                                $order->update_status('refunded', $reconcile->technical_message);
-                                break;
-                        }
-
-                        // Update the order, just to be sure, sometimes transaction is not being set!
-                        update_post_meta($order->id, '_transaction_id', $reconcile->unique_id);
-
-                        // Save the terminal token, through which we processed the transaction
-                        update_post_meta($order->id, '_transaction_terminal_token', $reconcile->terminal_token);
-
-                        $notification->renderResponse();
-                    }
-                }
-            } catch(\Exception $e) {
-                header('HTTP/1.1 403 Forbidden');
-            }
-        }
     }
 
     /**
      * Initiate Checkout session
      *
-     * @param $order_id
+     * @param int $order_id
      *
      * @return string HTML form
      */
@@ -405,73 +260,101 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
     {
         $order = new WC_Order( absint($order_id)  );
 
-        $urls = array(
-            // Notification URLs
-            'notify'  => WC()->api_request_url( get_class( $this ) ),
-            // Customer URLs
-            'success' => $this->append_to_url(
-                WC()->api_request_url( get_class( $this ) ),
-                 array (
-                     'act'  => 'success',
-                     'oid'  => $order_id,
-                 )
-            ),
-            'failure' => $this->append_to_url(
-                WC()->api_request_url( get_class( $this ) ),
-                array (
-                    'act'  => 'failure',
-                    'oid'  => $order_id,
-                )
-            ),
-            'cancel' => $this->append_to_url(
-                WC()->api_request_url( get_class( $this ) ),
-                array (
-                    'act'  => 'cancel',
-                    'oid'  => $order_id,
-                )
-            )
-        );
+        $data = $this->populateGateRequestData($order);
 
         try {
             $this->set_credentials(
                 $this->settings
             );
 
+            $description = $this->get_item_description( $order );
+
             $genesis = new \Genesis\Genesis( 'WPF\Create' );
 
             $genesis
                 ->request()
                     ->setTransactionId(
-                        $this->generate_id( $order_id )
+                        $data['transaction_id']
                     )
-                    ->setCurrency( $order->get_order_currency() )
-                    ->setAmount( $this->get_order_total() )
+                    ->setCurrency(
+                        $data['currency']
+                    )
+                    ->setAmount(
+                        $data['amount']
+                    )
                     ->setUsage(
-                        sprintf( '%s Payment Transaction', get_bloginfo( 'name' ) )
+                        $data['usage']
                     )
-                    ->setDescription( $this->get_item_description( $order ) )
-                    ->setCustomerEmail( $order->billing_email )
-                    ->setCustomerPhone( $order->billing_phone )
-                    ->setNotificationUrl( $urls['notify'] )
-                    ->setReturnSuccessUrl( $urls['success'] )
-                    ->setReturnFailureUrl( $urls['failure'] )
-                    ->setReturnCancelUrl( $urls['cancel'] )
-                    ->setBillingFirstName( $order->billing_first_name )
-                    ->setBillingLastName( $order->billing_last_name )
-                    ->setBillingAddress1( $order->billing_address_1 )
-                    ->setBillingAddress2( $order->billing_address_2 )
-                    ->setBillingZipCode( $order->billing_postcode )
-                    ->setBillingCity( $order->billing_city )
-                    ->setBillingState( $order->billing_state )
-                    ->setBillingCountry( $order->billing_country )
-                    ->setShippingFirstName( $order->shipping_first_name )
-                    ->setShippingLastName( $order->shipping_last_name )
-                    ->setShippingAddress1( $order->shipping_address_1 )
-                    ->setShippingAddress2( $order->shipping_address_2 )
-                    ->setShippingZipCode( $order->shipping_postcode )
-                    ->setShippingCity( $order->shipping_city )
-                    ->setShippingState( $order->shipping_state )
-                    ->setShippingCountry( $order->shipping_country );
+                    ->setDescription(
+                        $description
+                    )
+                    ->setCustomerEmail(
+                        $data['customer_email']
+                    )
+                    ->setCustomerPhone(
+                        $data['customer_phone']
+                    )
+                    ->setNotificationUrl(
+                        $data['notification_url']
+                    )
+                    ->setReturnSuccessUrl(
+                        $data['return_success_url']
+                    )
+                    ->setReturnFailureUrl(
+                        $data['return_failure_url']
+                    )
+                    ->setReturnCancelUrl(
+                        $data['return_cancel_url']
+                    )
+                    ->setBillingFirstName(
+                        $data['billing']['first_name']
+                    )
+                    ->setBillingLastName(
+                        $data['billing']['first_name']
+                    )
+                    ->setBillingAddress1(
+                        $data['billing']['address1']
+                    )
+                    ->setBillingAddress2(
+                        $data['billing']['address2']
+                    )
+                    ->setBillingZipCode(
+                        $data['billing']['zip_code']
+                    )
+                    ->setBillingCity(
+                        $data['billing']['city']
+                    )
+                    ->setBillingState(
+                        $data['billing']['state']
+                    )
+                    ->setBillingCountry(
+                        $data['billing']['country']
+                    )
+                    //Shipping
+                    ->setShippingFirstName(
+                        $data['shipping']['first_name']
+                    )
+                    ->setShippingLastName(
+                        $data['shipping']['last_name']
+                    )
+                    ->setShippingAddress1(
+                        $data['shipping']['address1']
+                    )
+                    ->setShippingAddress2(
+                        $data['shipping']['address2']
+                    )
+                    ->setShippingZipCode(
+                        $data['shipping']['zip_code']
+                    )
+                    ->setShippingCity(
+                        $data['shipping']['city']
+                    )
+                    ->setShippingState(
+                        $data['shipping']['state']
+                    )
+                    ->setShippingCountry(
+                        $data['shipping']['country']
+                    );
 
             foreach ($this->get_payment_types() as $type ) {
                 if (is_array($type)) {
@@ -482,15 +365,34 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
                                 $type['parameters']
                             );
                 } else {
-                    $genesis
-                        ->request()
-                            ->addTransactionType( $type );
+                    if (\Genesis\API\Constants\Transaction\Types::isPayByVoucher($type)) {
+                        $parameters = [
+                            'card_type' =>
+                                \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\CardTypes::VIRTUAL,
+                            'redeem_type' =>
+                                \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\RedeemTypes::INSTANT
+                        ];
+                        if ($type == \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY) {
+                            $parameters['product_name'] = $description;
+                            $parameters['product_category'] = $description;
+                        }
+                        $genesis
+                            ->request()
+                                ->addTransactionType(
+                                    $type,
+                                    $parameters
+                                );
+                    } else {
+                        $genesis
+                            ->request()
+                                ->addTransactionType( $type );
+                    }
                 }
             }
 
-            if (isset($this->settings['checkout_language'])) {
+            if (isset($this->settings[self::SETTING_KEY_CHECKOUT_LANGUAGE])) {
                 $genesis->request()->setLanguage(
-                    $this->settings['checkout_language']
+                    $this->settings[self::SETTING_KEY_CHECKOUT_LANGUAGE]
                 );
             }
 
@@ -498,245 +400,72 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
 
             $response = $genesis->response()->getResponseObject();
 
-            // Save the Checkout Id
-            update_post_meta($order->id, '_genesis_checkout_id', $response->unique_id);
+            $isWpfSuccessfullyCreated =
+                ($response->status == \Genesis\API\Constants\Transaction\States::NEW_STATUS) &&
+                isset($response->redirect_url);
 
-            // Create One-time token to prevent redirect abuse
-            $this->set_one_time_token($order_id, $this->generate_id());
+            if ($isWpfSuccessfullyCreated) {
+                // Save the Checkout Id
+                update_post_meta(
+                    $order->id,
+                    self::META_CHECKOUT_TRANSACTION_ID,
+                    $response->unique_id
+                );
 
-            return array(
-                'result'   => 'success',
-                'redirect' => $response->redirect_url
-            );
+                // Create One-time token to prevent redirect abuse
+                $this->set_one_time_token($order_id, $this->generateTransactionId());
+
+                return array(
+                    'result'   => 'success',
+                    'redirect' => $response->redirect_url
+                );
+            } else {
+                throw new \Exception(
+                    static::getTranslatedText(
+                        'An error has been encountered while initiating Web Payment Form! Please try again later.'
+                    )
+                );
+            }
+
         } catch (\Exception $e) {
-
             if (isset($genesis) && isset($genesis->response()->getResponseObject()->message)) {
                 $error_message = $genesis->response()->getResponseObject()->message;
             } else {
-                $error_message = __(
+                $error_message = self::getTranslatedText(
                     'We were unable to process your order!' . '<br/>' .
-                    'Please double check your data and try again.',
-                    self::LANG_DOMAIN
+                    'Please double check your data and try again.'
                 );
             }
 
             wc_add_notice($error_message, 'error');
 
+            error_log($e->getMessage());
+
             return false;
         }
-    }
-
-    /**
-     * Process Refund transaction
-     *
-     * @param int    $order_id
-     * @param null   $amount
-     * @param string $reason
-     *
-     * @return bool
-     */
-    public function process_refund( $order_id, $amount = null, $reason = '' )
-    {
-        $order = new \WC_Order( $order_id );
-
-        if ( !$order || !$order->get_transaction_id() ) {
-            return false;
-        }
-
-        try {
-            $this->set_credentials(
-                $this->settings
-            );
-
-            $this->set_terminal_token( $order->id );
-
-            $genesis = new \Genesis\Genesis('Financial\Refund');
-
-            $genesis
-                ->request()
-                    ->setTransactionId( $this->generate_id( $order_id ) )
-                    ->setUsage( $reason )
-                    ->setRemoteIp( $_SERVER['REMOTE_ADDR'] )
-                    ->setReferenceId( $order->get_transaction_id() )
-                    ->setCurrency( $order->get_order_currency() )
-                    ->setAmount( $amount );
-
-            $genesis->execute();
-
-            $response = $genesis->response()->getResponseObject();
-
-            // Update the order with the refund id
-            update_post_meta( $order->id, '_transaction_refund_id', $response->unique_id );
-
-            $order->add_order_note(
-                __( 'Refund completed!',
-                    self::LANG_DOMAIN ) . PHP_EOL . PHP_EOL .
-                __( 'Id: ',
-                    self::LANG_DOMAIN ) . $response->unique_id . PHP_EOL .
-                __( 'Refunded amount: ',
-                    self::LANG_DOMAIN ) . $response->amount . PHP_EOL
-            );
-
-            return true;
-        } catch(\Exception $e) {
-            return new \WP_Error($e->getCode(), $e->getMessage());
-        }
-    }
-
-    /**
-     * Generate transaction id, unique to this instance
-     *
-     * @param string $input
-     *
-     * @return array|string
-     */
-    private function generate_id( $input = '' )
-    {
-        // Try to gather more entropy
-
-        $unique = sprintf('|%s|%s|%s|%s|', @$_SERVER['REMOTE_ADDR'], microtime( true ), @$_SERVER['HTTP_USER_AGENT'], $input );
-
-        return strtolower( md5( $unique . md5(uniqid(mt_rand(), true)) ) );
-    }
-
-    /**
-     * Get WC_Order instance by UniqueId saved during checkout
-     *
-     * @param string $unique_id
-     *
-     * @return WC_Order|bool
-     */
-    private function get_order_by_id( $unique_id = '' )
-    {
-        $unique_id = esc_sql( trim( $unique_id ) );
-
-        $query = new WP_Query(
-            array(
-                'post_status' => 'any',
-                'post_type'   => 'shop_order',
-                'meta_key'    => '_genesis_checkout_id',
-                'meta_value'  => $unique_id
-            )
-        );
-
-        if ( isset( $query->post->ID ) ) {
-            return new WC_Order( $query->post->ID );
-        }
-
-        return false;
     }
 
     /**
      * Set the Terminal token associated with an order
      *
-     * @param $order_id
+     * @param $order
      *
      * @return bool
      */
-    private function set_terminal_token( $order_id )
+    protected function set_terminal_token( $order )
     {
-        $order_id = absint( $order_id );
+         $token = WC_eMerchantPay_Helper::getOrderMetaData(
+             $order->id,
+             self::META_TRANSACTION_TERMINAL_TOKEN
+         );
 
-        $token = get_post_meta( $order_id, '_transaction_terminal_token', true );
+         if (empty( $token ) ) {
+             return false;
+         }
 
-        if ( ! empty( $token ) ) {
-            \Genesis\Config::setToken( $token );
+         \Genesis\Config::setToken( $token );
 
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the Order items in the following format:
-     *
-     * "%name% x%quantity%"
-     *
-     * @param WC_Order $order
-     *
-     * @return string
-     */
-    private function get_item_description( WC_Order $order )
-    {
-        $items = array();
-
-        foreach ( $order->get_items() as $item ) {
-            $items[] = sprintf( '%s x%d', $item['name'], reset( $item['item_meta']['_qty'] ) );
-        }
-
-        return implode( PHP_EOL, $items );
-    }
-
-    /**
-     * Append parameters to a base URL
-     *
-     * @param $base
-     * @param $args
-     *
-     * @return string
-     */
-    private function append_to_url($base, $args)
-    {
-        if(!is_array($args)) {
-            return $base;
-        }
-
-        $info = parse_url($base);
-
-        $query = array();
-
-        if(isset($info['query'])) {
-            parse_str($info['query'], $query);
-        }
-
-        if(!is_array($query)) {
-            $query = array();
-        }
-
-        $params = array_merge($query, $args);
-
-        $result = '';
-
-        if($info['scheme']) {
-            $result .= $info['scheme'] . ':';
-        }
-
-        if($info['host']) {
-            $result .= '//' . $info['host'];
-        }
-
-        if($info['path']) {
-            $result .= $info['path'];
-        }
-
-        if($params) {
-            $result .= '?' . http_build_query($params);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get a one-time token
-     *
-     * @param      $order_id
-     *
-     * @return mixed|string
-     */
-    private function get_one_time_token($order_id)
-    {
-        return get_post_meta( $order_id, '_checkout_return_token', true );
-    }
-
-    /**
-     * Set one-time token
-     *
-     * @param $order_id
-     */
-    private function set_one_time_token($order_id, $value)
-    {
-        update_post_meta($order_id, '_checkout_return_token', $value);
+         return true;
     }
 
     /**
@@ -748,7 +477,7 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
     {
         $processed_list = array();
 
-        $selected_types = $this->settings['transaction_types'];
+        $selected_types = $this->settings[self::SETTING_KEY_TRANSACTION_TYPES];
 
         $alias_map = array(
             \Genesis\API\Constants\Payment\Methods::EPS         =>
@@ -783,28 +512,6 @@ class WC_eMerchantPay_Checkout extends WC_Payment_Gateway
 
         return $processed_list;
     }
-
-    /**
-     * Set the Genesis PHP Lib Credentials, based on the customer's
-     * admin settings
-     *
-     * @param array $settings WooCommerce settings array
-     *
-     * @return void
-     */
-    private function set_credentials( $settings = array() )
-    {
-        \Genesis\Config::setEndpoint(
-            \Genesis\API\Constants\Endpoints::EMERCHANTPAY
-        );
-
-        \Genesis\Config::setUsername( $settings['username'] );
-        \Genesis\Config::setPassword( $settings['password'] );
-
-        \Genesis\Config::setEnvironment(
-            ( isset( $settings['test_mode'] ) && $settings['test_mode'] === 'yes' )
-                ? \Genesis\API\Constants\Environments::STAGING
-                : \Genesis\API\Constants\Environments::PRODUCTION
-        );
-    }
 }
+
+WC_eMerchantPay_Checkout::registerStaticActions();

@@ -4,7 +4,7 @@
  * Description: Extend WooCommerce's Checkout options with eMerchantPay's Genesis Gateway
  * Text Domain: woocommerce-emerchantpay
  * Author: eMerchantPay
- * Version: 1.2.3
+ * Version: 1.3.0
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -32,6 +32,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
             include dirname(__FILE__) . '/includes/wc_emerchantpay_checkout.php';
 
+            include dirname(__FILE__) . '/includes/wc_emerchantpay_direct.php';
+
             /**
              * Add the eMerchantPay Gateway to WooCommerce's
              * list of installed gateways
@@ -44,6 +46,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
                 function woocommerce_add_emerchantpay_gateway($methods)
                 {
                     array_push($methods, 'WC_eMerchantPay_Checkout');
+                    array_push($methods, 'WC_eMerchantPay_Direct');
 
                     return $methods;
                 }
