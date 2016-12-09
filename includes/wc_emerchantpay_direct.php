@@ -144,10 +144,11 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
      * Add additional fields just above the credit card form
      *
      * @access      public
+     * @param       string $payment_method
      * @return      void
      */
-    public function before_cc_form() {
-        if ( $this->settings[self::SETTING_KEY_SHOW_CC_HOLDER] !== 'yes' ) {
+    public function before_cc_form($payment_method) {
+        if ( ($payment_method != $this->id) || ($this->settings[self::SETTING_KEY_SHOW_CC_HOLDER] !== 'yes') ) {
             return;
         }
 

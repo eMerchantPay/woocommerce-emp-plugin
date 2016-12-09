@@ -332,7 +332,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      * Retrieves a translated text by key
      *
      * @param string $text
-     * @return string|void
+     * @return string
      */
     public static function getTranslatedText($text)
     {
@@ -457,10 +457,10 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
         $order_id = absint( $_POST['order_id'] );
 
-        if (!static::getCanCaptureOrder($order_id)) {
+        if (!static::getCanCaptureOrder($order_id, true)) {
             wp_send_json_error(
                 array(
-                    'error' => static::getTranslatedText('You cannot capture non-authorize transaction!')
+                    'error' => static::getTranslatedText('You can do this only on a not-fully captured Authorize Transaction!')
                 )
             );
             return;
@@ -659,7 +659,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             return;
         }
 
-        if (static::getCanCaptureOrder($order)) {
+        if (static::getCanCaptureOrder($order, false)) {
             $this->fetchTemplate(
                 'admin/order/totals/capture.php',
                 array(
@@ -692,7 +692,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             return;
         }
 
-        if (static::getCanVoidOrder($order)) {
+        if (static::getCanVoidOrder($order) || static::getHasOrderValidMeta($order, self::META_TRANSACTION_VOID_ID)) {
             $this->fetchTemplate(
                 'admin/order/totals/void.php',
                 array(
@@ -715,8 +715,17 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             return;
         }
 
-        $canCaptureOrder = static::getCanCaptureOrder($order);
+        $canCaptureOrder = static::getCanCaptureOrder($order, true);
         $canVoidOrder = static::getCanVoidOrder($order);
+
+        $this->fetchTemplate(
+            'admin/order/dialogs/common.php',
+            array(
+                'order'             => $order,
+                'payment_method'    => $this,
+                'is_refund_allowed' => static::getCanRefundOrder($order)
+            )
+        );
 
         if (!$canCaptureOrder && !$canVoidOrder) {
             return;
@@ -741,14 +750,6 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 )
             );
         }
-
-        $this->fetchTemplate(
-            'admin/order/dialogs/common.php',
-            array(
-                'order'          => $order,
-                'payment_method' => $this
-            )
-        );
 
         if ($canCaptureOrder) {
             $this->fetchTemplate(
@@ -1129,6 +1130,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
         switch ($backendTranType) {
             case \Genesis\API\Constants\Transaction\Types::CAPTURE:
+
                 return
                     $isOrderTranTypeAuthorize &&
                     (empty($void_unique_id));
@@ -1158,17 +1160,54 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     }
 
     /**
+     * Determines if Order has valid Meta Data for a specific key
+     * @param int|WC_Order $order
+     * @param string $meta_key
+     * @return bool
+     */
+    protected static function getHasOrderValidMeta($order, $meta_key) {
+        if ( ! is_object( $order ) ) {
+            $order = WC_eMerchantPay_Helper::getOrderById($order);
+        }
+
+        $data = WC_eMerchantPay_Helper::getOrderMetaData(
+            $order->id,
+            $meta_key
+        );
+
+        return !empty($data);
+    }
+
+    /**
      * Determines if the user can process a Capture Transaction
      *
      * @param int|WC_Order $order
+     * @param bool $checkCapturedAmount
      * @return bool
      */
-    protected static function getCanCaptureOrder($order)
+    protected static function getCanCaptureOrder($order, $checkCapturedAmount)
     {
-        return static::getCanProcessRefBackendTran(
+        $canCapture = static::getCanProcessRefBackendTran(
             $order,
             \Genesis\API\Constants\Transaction\Types::CAPTURE
         );
+
+        if (!$checkCapturedAmount || !$canCapture) {
+            return $canCapture;
+        }
+
+        if ( ! is_object( $order ) ) {
+            $order = WC_EComProcessing_Helper::getOrderById($order);
+        }
+
+        $totalCapturedAmount = WC_eMerchantPay_Helper::getOrderAmountMetaData(
+            $order->id,
+            self::META_CAPTURED_AMOUNT
+        );
+
+        $totalAmountToCapture = $order->get_total() - $totalCapturedAmount;
+
+        return $totalAmountToCapture > 0;
     }
 
     /**
@@ -1321,7 +1360,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      * @param null   $amount
      * @param string $reason
      *
-     * @return bool
+     * @return bool|\WP_Error
      */
     public function process_refund( $order_id, $amount = null, $reason = '' )
     {

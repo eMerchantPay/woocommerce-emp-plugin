@@ -33,6 +33,14 @@ Installation
 * Select your preferred payment method ```eMerchantPay Checkout``` or ```eMerchantPay Direct```
 * Check ```Enable```, set the correct credentials and click "Save changes"
 
+Enable WooCommerce Secure Checkout
+------------
+This steps should be followed if you with to use the ```eMerchantPay Direct``` Method
+* Ensure you have installed and configured a SSL Certificate on your PCI-DSS Certified Server
+* Login into your WordPress Admin Panel with Administrator privileges
+* Navigate to ```WooCommerce``` - > ```Settings``` -> ```Checkout```
+* In Section ```Checkout Process``` check ```Force secure checkout```
+
 _Note_: If you have trouble with your credentials or terminal configuration, get in touch with our [support] team
 
 You're now ready to process payments through our gateway.

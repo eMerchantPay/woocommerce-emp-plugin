@@ -32,6 +32,10 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
             return ($element.length > 0);
         };
+
+        <?php if (!$is_refund_allowed) { ?>
+            jQuery( '#woocommerce-order-items' ).find( 'button.refund-items').hide();
+        <?php } ?>
     });
 
     function doCreateEMerchantPayNotice(message, type, containerSelector, prepend) {
