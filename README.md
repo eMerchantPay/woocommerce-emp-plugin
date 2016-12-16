@@ -6,7 +6,8 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WooCommerce 2.x (Tested up to 2.6.4)
+* WordPress 4.x (Tested up to 4.7)
+* WooCommerce 2.x (Tested up to 2.6.9)
 * [GenesisPHP v1.4.3](https://github.com/GenesisGateway/genesis_php) - (Integrated in Module)
 * PCI-certified server in order to use ```eMerchantPay Direct```
 
@@ -35,7 +36,7 @@ Installation
 
 Enable WooCommerce Secure Checkout
 ------------
-This steps should be followed if you with to use the ```eMerchantPay Direct``` Method
+This steps should be followed if you wish to use the ```eMerchantPay Direct``` Method
 * Ensure you have installed and configured a SSL Certificate on your PCI-DSS Certified Server
 * Login into your WordPress Admin Panel with Administrator privileges
 * Navigate to ```WooCommerce``` - > ```Settings``` -> ```Checkout```

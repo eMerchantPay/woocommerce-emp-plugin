@@ -366,12 +366,12 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                             );
                 } else {
                     if (\Genesis\API\Constants\Transaction\Types::isPayByVoucher($type)) {
-                        $parameters = [
+                        $parameters = array(
                             'card_type' =>
                                 \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\CardTypes::VIRTUAL,
                             'redeem_type' =>
                                 \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\RedeemTypes::INSTANT
-                        ];
+                        );
                         if ($type == \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY) {
                             $parameters['product_name'] = $description;
                             $parameters['product_category'] = $description;

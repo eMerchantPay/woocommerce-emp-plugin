@@ -1197,7 +1197,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
         }
 
         if ( ! is_object( $order ) ) {
-            $order = WC_EComProcessing_Helper::getOrderById($order);
+            $order = WC_eMerchantPay_Helper::getOrderById($order);
         }
 
         $totalCapturedAmount = WC_eMerchantPay_Helper::getOrderAmountMetaData(
