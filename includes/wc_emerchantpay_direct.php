@@ -33,6 +33,9 @@ if (!class_exists('WC_eMerchantPay_Method')) {
  */
 class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
 {
+    const FEATURE_DEFAULT_CREDIT_CARD_FORM = 'default_credit_card_form';
+    const WC_ACTION_CREDIT_CARD_FORM_START = 'woocommerce_credit_card_form_start';
+
     /**
      * Payment Method Code
      *
@@ -43,9 +46,10 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     /**
      * Additional Method Setting Keys
      */
-    const SETTING_KEY_TOKEN            = 'token';
-    const SETTING_KEY_TRANSACTION_TYPE = 'transaction_type';
-    const SETTING_KEY_SHOW_CC_HOLDER   = 'show_cc_holder';
+    const SETTING_KEY_TOKEN                     = 'token';
+    const SETTING_KEY_TRANSACTION_TYPE          = 'transaction_type';
+    const SETTING_KEY_SHOW_CC_HOLDER            = 'show_cc_holder';
+    const SETTING_KEY_INIT_RECURRING_TXN_TYPE   = 'init_recurring_txn_type';
 
     /**
      * Holds the Meta Key used to extract the checkout Transaction
@@ -80,7 +84,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
 
         array_push(
             $this->supports,
-            'default_credit_card_form'
+            self::FEATURE_DEFAULT_CREDIT_CARD_FORM
         );
     }
 
@@ -93,12 +97,9 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     {
         parent::registerCustomActions();
 
-        add_action(
-            'woocommerce_credit_card_form_start',
-            array(
-                $this,
-                'before_cc_form'
-            )
+        $this->addWPSimpleActions(
+            self::WC_ACTION_CREDIT_CARD_FORM_START,
+            'before_cc_form'
         );
     }
 
@@ -148,7 +149,11 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
      * @return      void
      */
     public function before_cc_form($payment_method) {
-        if ( ($payment_method != $this->id) || ($this->settings[self::SETTING_KEY_SHOW_CC_HOLDER] !== 'yes') ) {
+        if ($payment_method != $this->id) {
+            return;
+        }
+
+        if (!$this->getMethodBoolSetting(self::SETTING_KEY_SHOW_CC_HOLDER)) {
             return;
         }
 
@@ -278,34 +283,82 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
                 'title'       => static::getTranslatedText('Show CC Owner Field'),
                 'label'       => static::getTranslatedText('Show / Hide Credit Card Owner Field on the Checkout Page'),
                 'description' => static::getTranslatedText('Decide whether to show or hide Credit Card Owner Field'),
-                'default'     => 'yes',
+                'default'     => static::SETTING_VALUE_YES,
                 'desc_tip'    => true,
             ),
+        );
+
+        $this->form_fields += $this->build_subscription_form_fields();
+    }
+
+    /**
+     * Admin Panel Subscription Field Definition
+     *
+     * @return array
+     */
+    protected function build_subscription_form_fields()
+    {
+        $subscription_form_fields = parent::build_subscription_form_fields();
+
+        return array_merge(
+            $subscription_form_fields,
+            array(
+                self::SETTING_KEY_INIT_RECURRING_TXN_TYPE => array(
+                    'type'        => 'select',
+                    'title'       => static::getTranslatedText('Init Recurring Transaction Type'),
+                    'options'     => array(
+                        \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE =>
+                            static::getTranslatedText('Init Recurring Sale'),
+                        \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D =>
+                            static::getTranslatedText('Init Recurring Sale (3D-Secure)')
+                    ),
+                    'description' => static::getTranslatedText('Select transaction type for the initial recurring transaction'),
+                    'desc_tip'    => true,
+                ),
+            )
         );
     }
 
     /**
      * Check - transaction type is 3D-Secure
      *
+     * @param bool $isRecurring
      * @return boolean
      */
-    private function is3DTransaction()
+    private function is3DTransaction($isRecurring = false)
     {
-        return in_array($this->settings[self::SETTING_KEY_TRANSACTION_TYPE], array(
+        if ($isRecurring) {
+            $threeDRecurringTxnTypes = array(
+                \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D
+            );
+
+            return
+                in_array(
+                    $this->getMethodSetting(self::SETTING_KEY_INIT_RECURRING_TXN_TYPE),
+                    $threeDRecurringTxnTypes
+                );
+        }
+
+        $threeDTransactionTypes = array(
             \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D,
             \Genesis\API\Constants\Transaction\Types::SALE_3D
-        ));
+        );
+
+        $selectedTransactionType = $this->getMethodSetting(self::SETTING_KEY_TRANSACTION_TYPE);
+
+        return in_array($selectedTransactionType, $threeDTransactionTypes);
     }
 
     /**
      * Returns a list with data used for preparing a request to the gateway
      *
      * @param WC_Order $order
+     * @param bool $isRecurring
      * @return array
      */
-    protected function populateGateRequestData($order)
+    protected function populateGateRequestData($order, $isRecurring = false)
     {
-        $data = parent::populateGateRequestData($order);
+        $data = parent::populateGateRequestData($order, $isRecurring);
 
         $card_info = array(
             'holder'     =>
@@ -330,9 +383,14 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
         return array_merge(
             $data,
             array(
-                'remote_ip'        => WC_eMerchantPay_Helper::getClientRemoteIpAddress(),
-                'transaction_type' => $this->settings[self::SETTING_KEY_TRANSACTION_TYPE],
-                'card'             => $card_info
+                'remote_ip'        =>
+                    WC_eMerchantPay_Helper::getClientRemoteIpAddress(),
+                'transaction_type' =>
+                    $isRecurring
+                        ? $this->getMethodSetting(self::SETTING_KEY_INIT_RECURRING_TXN_TYPE)
+                        : $this->getMethodSetting(self::SETTING_KEY_TRANSACTION_TYPE),
+                'card'             =>
+                    $card_info
             )
         );
     }
@@ -341,10 +399,9 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
      * Initiate Gateway Payment Session
      *
      * @param int $order_id
-     *
-     * @return string HTML form
+     * @return bool|array
      */
-    public function process_payment( $order_id )
+    protected function process_order_payment( $order_id )
     {
         global $woocommerce;
 
@@ -353,83 +410,18 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
         $data = $this->populateGateRequestData($order);
 
         try {
-            static::set_credentials(
-                $this->settings
-            );
+            $this->set_credentials();
 
-            switch ($data['transaction_type']) {
-                default:
-                case \Genesis\API\Constants\Transaction\Types::AUTHORIZE:
-                    $genesis = new \Genesis\Genesis('Financial\Cards\Authorize');
-                    break;
-                case \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D:
-                    $genesis = new \Genesis\Genesis('Financial\Cards\Authorize3D');
-                    break;
-                case \Genesis\API\Constants\Transaction\Types::SALE:
-                    $genesis = new \Genesis\Genesis('Financial\Cards\Sale');
-                    break;
-                case \Genesis\API\Constants\Transaction\Types::SALE_3D:
-                    $genesis = new \Genesis\Genesis('Financial\Cards\Sale3D');
-                    break;
-            }
-            $response = null;
+            $genesis = $this->prepareInitialGenesisRequest($data);
 
-            if (isset($genesis)) {
-                $genesis
-                    ->request()
-                        ->setTransactionId($data['transaction_id'])
-                        ->setRemoteIp($data['remote_ip'])
-                        ->setUsage($data['usage'])
-                        ->setCurrency($data['currency'])
-                        ->setAmount($data['amount'])
-                        ->setCardHolder($data['card']['holder'])
-                        ->setCardNumber($data['card']['number'])
-                        ->setExpirationYear($data['card']['expire_year'])
-                        ->setExpirationMonth($data['card']['expire_month'])
-                        ->setCvv($data['card']['cvv'])
-                        ->setCustomerEmail($data['customer_email'])
-                        ->setCustomerPhone($data['customer_phone'])
-                        //Billing
-                        ->setBillingFirstName($data['billing']['first_name'])
-                        ->setBillingLastName($data['billing']['first_name'])
-                        ->setBillingAddress1($data['billing']['address1'])
-                        ->setBillingAddress2($data['billing']['address2'])
-                        ->setBillingZipCode($data['billing']['zip_code'])
-                        ->setBillingCity($data['billing']['city'])
-                        ->setBillingState($data['billing']['state'])
-                        ->setBillingCountry($data['billing']['country'])
-                        //Shipping
-                        ->setShippingFirstName($data['shipping']['first_name'])
-                        ->setShippingLastName($data['shipping']['last_name'])
-                        ->setShippingAddress1($data['shipping']['address1'])
-                        ->setShippingAddress2($data['shipping']['address2'])
-                        ->setShippingZipCode($data['shipping']['zip_code'])
-                        ->setShippingCity($data['shipping']['city'])
-                        ->setShippingState($data['shipping']['state'])
-                        ->setShippingCountry($data['shipping']['country']);
+            $genesis->execute();
 
-                if ($this->is3DTransaction()) {
-                    $genesis
-                        ->request()
-                            ->setNotificationUrl($data['notification_url'])
-                            ->setReturnSuccessUrl($data['return_success_url'])
-                            ->setReturnFailureUrl($data['return_failure_url']);
-                }
-
-                $genesis->execute();
-                $response = $genesis->response()->getResponseObject();
-            }
+            $response = $genesis->response()->getResponseObject();
 
             // Create One-time token to prevent redirect abuse
             $this->set_one_time_token($order_id, static::generateTransactionId());
 
-            $paymentSuccessful =
-                isset($response->unique_id) &&
-                isset($response->status) &&
-                (
-                    ($response->status == \Genesis\API\Constants\Transaction\States::APPROVED) ||
-                    ($response->status == \Genesis\API\Constants\Transaction\States::PENDING_ASYNC)
-                );
+            $paymentSuccessful = WC_eMerchantPay_Helper::isInitGatewayResponseSuccessful($response);
 
             if ($paymentSuccessful) {
                 // Save the Checkout Id
@@ -438,14 +430,16 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
 
                 if (isset($response->redirect_url)) {
                     return array(
-                        'result'   => 'success',
+                        'result'   => static::RESPONSE_SUCCESS,
                         'redirect' => $response->redirect_url
                     );
                 } else {
                     $woocommerce->cart->empty_cart();
+
                     $this->updateOrderStatus($order, $response);
+
                     return array(
-                        'result' => 'success',
+                        'result' => static::RESPONSE_SUCCESS,
                         'redirect' => $data['return_success_url']
                     );
                 }
@@ -459,11 +453,11 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
                     );
                 }
 
-                wc_add_notice($error_message, 'error');
+                WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
 
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
 
             if (isset($genesis) && isset($genesis->response()->getResponseObject()->message)) {
                 $error_message = $genesis->response()->getResponseObject()->message;
@@ -474,25 +468,190 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
                 );
             }
 
-            wc_add_notice($error_message, 'error');
+            WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
+
+            WC_eMerchantPay_Helper::logException($exception);
 
             return false;
         }
     }
 
     /**
-     * Set the Genesis PHP Lib Credentials, based on the customer's
-     * admin settings
+     * @param array $data
+     * @return \Genesis\Genesis
+     */
+    protected function prepareInitialGenesisRequest($data)
+    {
+        $genesis = WC_eMerchantPay_Helper::getGatewayRequestByTxnType( $data['transaction_type'] );
+
+        $genesis
+            ->request()
+                ->setTransactionId($data['transaction_id'])
+                ->setRemoteIp($data['remote_ip'])
+                ->setUsage($data['usage'])
+                ->setCurrency($data['currency'])
+                ->setAmount($data['amount'])
+                ->setCardHolder($data['card']['holder'])
+                ->setCardNumber($data['card']['number'])
+                ->setExpirationYear($data['card']['expire_year'])
+                ->setExpirationMonth($data['card']['expire_month'])
+                ->setCvv($data['card']['cvv'])
+                ->setCustomerEmail($data['customer_email'])
+                ->setCustomerPhone($data['customer_phone']);
+
+        //Billing
+        $genesis
+            ->request()
+                ->setBillingFirstName($data['billing']['first_name'])
+                ->setBillingLastName($data['billing']['first_name'])
+                ->setBillingAddress1($data['billing']['address1'])
+                ->setBillingAddress2($data['billing']['address2'])
+                ->setBillingZipCode($data['billing']['zip_code'])
+                ->setBillingCity($data['billing']['city'])
+                ->setBillingState($data['billing']['state'])
+                ->setBillingCountry($data['billing']['country']);
+
+        //Shipping
+        $genesis
+            ->request()
+                ->setShippingFirstName($data['shipping']['first_name'])
+                ->setShippingLastName($data['shipping']['last_name'])
+                ->setShippingAddress1($data['shipping']['address1'])
+                ->setShippingAddress2($data['shipping']['address2'])
+                ->setShippingZipCode($data['shipping']['zip_code'])
+                ->setShippingCity($data['shipping']['city'])
+                ->setShippingState($data['shipping']['state'])
+                ->setShippingCountry($data['shipping']['country']);
+
+        $isRecurring = WC_eMerchantPay_Helper::isInitRecurring(
+            $data['transaction_type']
+        );
+
+        if ($this->is3DTransaction($isRecurring)) {
+            $genesis
+                ->request()
+                    ->setNotificationUrl($data['notification_url'])
+                    ->setReturnSuccessUrl($data['return_success_url'])
+                    ->setReturnFailureUrl($data['return_failure_url']);
+        }
+
+        return $genesis;
+    }
+
+    /**
+     * Initiate Gateway Payment Session
      *
-     * @param array $settings WooCommerce settings array
+     * @param int $order_id
+     * @return bool|array
+     */
+    protected function process_init_subscription_payment( $order_id )
+    {
+        global $woocommerce;
+
+        $order = WC_eMerchantPay_Helper::getOrderById($order_id);
+
+        $data = $this->populateGateRequestData($order, true);
+
+        try {
+            $this->set_credentials();
+
+            $genesis = $this->prepareInitialGenesisRequest($data);
+
+            $genesis->execute();
+
+            $response = $genesis->response()->getResponseObject();
+
+            // Create One-time token to prevent redirect abuse
+            $this->set_one_time_token($order_id, static::generateTransactionId());
+
+            $paymentSuccessful = WC_eMerchantPay_Helper::isInitGatewayResponseSuccessful($response);
+
+            if ($paymentSuccessful) {
+                // Save the Checkout Id
+                WC_eMerchantPay_Helper::setOrderMetaData($order_id, $this->getCheckoutTransactionIdMetaKey(), $response->unique_id);
+                WC_eMerchantPay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_TYPE, $response->transaction_type);
+
+                if (isset($response->redirect_url)) {
+                    return array(
+                        'result'   => static::RESPONSE_SUCCESS,
+                        'redirect' => $response->redirect_url
+                    );
+                } else {
+                    $this->updateOrderStatus($order, $response);
+
+                    if (!$this->process_after_init_recurring_payment( $order, $response)) {
+                        return false;
+                    }
+
+                    $woocommerce->cart->empty_cart();
+
+                    return array(
+                        'result'   => static::RESPONSE_SUCCESS,
+                        'redirect' => $data['return_success_url']
+                    );
+                }
+            } else {
+                if (isset($genesis) && isset($genesis->response()->getResponseObject()->message)) {
+                    $error_message = $genesis->response()->getResponseObject()->message;
+                } else {
+                    $error_message = static::getTranslatedText(
+                        'We were unable to process your order!' . '<br/>' .
+                        'Please double check your data and try again.'
+                    );
+                }
+
+                WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
+
+                return false;
+            }
+        } catch (\Exception $exception) {
+
+            if (isset($genesis) && isset($genesis->response()->getResponseObject()->message)) {
+                $error_message = $genesis->response()->getResponseObject()->message;
+            } else {
+                $error_message = static::getTranslatedText(
+                    'We were unable to process your order!' . '<br/>' .
+                    'Please double check your data and try again.'
+                );
+            }
+
+            WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
+
+            WC_eMerchantPay_Helper::logException($exception);
+
+            return false;
+        }
+    }
+
+    /**
+     * Set the Genesis PHP Lib Credentials, based on the customer's admin settings
      *
      * @return void
      */
-    protected static function set_credentials( $settings = array() )
+    protected function set_credentials()
     {
-        parent::set_credentials($settings);
+        parent::set_credentials();
 
-        \Genesis\Config::setToken( $settings[self::SETTING_KEY_TOKEN] );
+        \Genesis\Config::setToken(
+            $this->getMethodSetting(self::SETTING_KEY_TOKEN)
+        );
+    }
+
+    /**
+     * Determines the Recurring Token, which needs to used for the RecurringSale Transactions
+     *
+     * @param WC_Order $order
+     * @return string
+     */
+    protected function getRecurringToken( $order )
+    {
+        $recurringToken = parent::getRecurringToken( $order );
+
+        if (!empty($recurringToken)) {
+            return $recurringToken;
+        }
+
+        return $this->getMethodSetting(self::SETTING_KEY_TOKEN);
     }
 }
 

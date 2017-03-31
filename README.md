@@ -10,6 +10,7 @@ Requirements
 * WooCommerce 2.x (Tested up to 2.6.9)
 * [GenesisPHP v1.4.3](https://github.com/GenesisGateway/genesis_php) - (Integrated in Module)
 * PCI-certified server in order to use ```eMerchantPay Direct```
+* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) in order to use **Subscriptions**
 
 GenesisPHP Requirements
 ------------
@@ -42,6 +43,103 @@ This steps should be followed if you wish to use the ```eMerchantPay Direct``` M
 * Navigate to ```WooCommerce``` - > ```Settings``` -> ```Checkout```
 * In Section ```Checkout Process``` check ```Force secure checkout```
 
+Subscriptions
+------------
+In order to process **Subscriptions** the [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/)
+needs to be installed, which will add **Subscription Support** to the **WooCommerce Plugin**.
+
+**Add Subscription Product**
+
+* Login to the WordPress Admin Panel
+* Go to ```Products``` -> ```Products```
+* Click ```Add Product``` or choose a product to edit
+* Choose ```Simple subscription``` from the **Product Data** dropdown menu
+* Check ```Virtual``` or ```Downloadable``` if needed
+* In tab ```General``` you can define your subscription details
+    * **Subscription price** - will be used for the **Recurring Sale** Transactions
+    * **Subscription length**
+    * **Sign-up fee** - will be used once for the **InitRecurring** Transaction
+    * **Free trial** - define the period, which the consumer will not pay the subscription price in.
+* In tab ```Inventory``` check ```Sold individually``` if you don't want the subscription's quantity to be increased in the shopping cart.
+
+**Manage Subscriptions:**
+* Navigate to ```WooCommerce``` -> ```Subscriptions``` and choose your **Subscription**
+* You can ```Suspend``` or ```Cancel``` a **Subscription** by using the links next to the Subscription's status label or change manually the Status
+* When you enter into a **Subscription**, you can preview also the **Related Orders** and modify the **Billing Schedule**
+* If you wish to perform a manual re-billing, choose ```Process renewal``` from the ```Subscriptions Actions``` dropdown list on the Right and click the button next to the dropdown.
+
+**Refund a Subscription:**
+
+You are only allowed to refund the `Sign-Up Fee` for a Subscription
+
+* Navigate to ```WooCommerce``` -> ```Subscriptions``` and choose your Subscription
+* Scroll down to the ```Related Orders``` and click on the ```Parent Order```
+* Scroll down to the Order Items and click the **Refund** button.
+* Define your amount for refund. Have in mind that the refundable amount may be lower than the total order amount, because the **Parent Order** might be related to **Init Recurring** & **Recurring Sale** Transactions.
+  You are only allowed to **refund** the amount of the **Init Recurring** Transaction.
+
+After a **Refund** is processed, the related **Subscription** should be marked as ```Canceled``` and a **Note** should be added to the **Subscription**
+
+**Processing Recurring Transactions**
+
+* Recurring payments are scheduled and executed by the **WooCommerce Subscription Plugin** and information email should be sent.
+
+**Configuring WordPress Cron**
+
+* If your **WordPress Site** is on a **Hosting**, login to your **C-Panel** and add a **Cron Job** for executing the WP Cron
+```bash
+cd /path/to/wordpress/root; php -q wp-cron.php
+```
+
+* If your Site is hosted at your **Server**, connect to the machine using **SSH** and type the following command in the **terminal** to edit your **Cron Jobs**
+  Do not forget to replace `www-data` with your **WebServer User**
+```bash
+sudo crontab -u www-data -e
+```
+
+and add the following line to execute the **WordPress Cron** once per 10 Minutes
+
+```sh
+*/10 * * * * cd /path/to/wordpress/root && php -q wp-cron.php
+```
+
+Supported Transactions
+------------
+* ```eMerchantPay Direct``` Payment Method
+	* __Authorize__
+	* __Authorize (3D-Secure)__
+	* __InitRecurringSale__
+	* __InitRecurringSale (3D-Secure)__
+	* __RecurringSale__
+	* __Sale__
+	* __Sale (3D-Secure)__
+
+* ```eMerchantPay Checkout``` Payment Method
+    * __ABN iDEAL__
+    * __Authorize__
+    * __Authorize (3D-Secure)__
+    * __CashU__
+    * __InitRecurringSale__
+	* __InitRecurringSale (3D-Secure)__
+    * __Neteller__
+    * __PaySafeCard__
+    * __PayByVoucher (Sale)__
+    * __PayByVoucher (oBeP)__
+    * __POLi__
+    * __PPRO__
+    	* __eps__
+    	* __GiroPay__
+    	* __Qiwi__
+    	* __Przelewy24__
+    	* __SafetyPay__
+    	* __TeleIngreso__
+    	* __TrustPay__
+    * __RecurringSale__
+    * __Sale__
+    * __Sale (3D-Secure)__
+    * __SOFORT__
+    * __WebMoney__
+    
 _Note_: If you have trouble with your credentials or terminal configuration, get in touch with our [support] team
 
 You're now ready to process payments through our gateway.

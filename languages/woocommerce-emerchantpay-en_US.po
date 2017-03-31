@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce eMerchantPay Payment Gateway Client\n"
 "POT-Creation-Date: 2015-08-03 15:05+0300\n"
-"PO-Revision-Date: 2015-08-03 15:06+0300\n"
+"PO-Revision-Date: 2017-03-30 17:53+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.3\n"
+"X-Generator: Poedit 2.0\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
@@ -19,11 +19,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: includes/wc_emerchantpay_checkout.php:52
 msgid "eMerchantPay"
 msgstr "eMerchantPay"
 
-#: includes/wc_emerchantpay_checkout.php:54
 msgid ""
 "eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS "
 "certified) server."
@@ -31,124 +29,99 @@ msgstr ""
 "eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS "
 "certified) server."
 
-#: includes/wc_emerchantpay_checkout.php:89
 msgid "Enable/Disable"
 msgstr "Enable/Disable"
 
-#: includes/wc_emerchantpay_checkout.php:90
 msgid "Enable eMerchangPay Checkout"
 msgstr "Enable eMerchangPay Checkout"
 
-#: includes/wc_emerchantpay_checkout.php:95
 msgid "Title:"
 msgstr "Title:"
 
-#: includes/wc_emerchantpay_checkout.php:97
 msgid "Title for this payment method, during customer checkout."
 msgstr "Title for this payment method, during customer checkout."
 
-#: includes/wc_emerchantpay_checkout.php:105
 msgid "Description:"
 msgstr "Description:"
 
-#: includes/wc_emerchantpay_checkout.php:107
 msgid "Text describing this payment method to the customer, during checkout."
 msgstr "Text describing this payment method to the customer, during checkout."
 
-#: includes/wc_emerchantpay_checkout.php:111
 msgid "Pay safely through eMerchantPay's Secure Gateway."
 msgstr "Pay safely through eMerchantPay's Secure Gateway."
 
-#: includes/wc_emerchantpay_checkout.php:118
 msgid "Transaction Type"
 msgstr "Transaction Type"
 
-#: includes/wc_emerchantpay_checkout.php:121
 msgid "ABN iDEAL"
 msgstr "ABN iDEAL"
 
-#: includes/wc_emerchantpay_checkout.php:123
 msgid "Authorize"
 msgstr "Authorize"
 
-#: includes/wc_emerchantpay_checkout.php:125
 msgid "Authorize (3D-Secure)"
 msgstr "Authorize (3D-Secure)"
 
-#: includes/wc_emerchantpay_checkout.php:127
 msgid "CashU"
 msgstr "CashU"
 
-#: includes/wc_emerchantpay_checkout.php:129
 msgid "ELV"
 msgstr "ELV"
 
-#: includes/wc_emerchantpay_checkout.php:131
 msgid "eps"
 msgstr "eps"
 
-#: includes/wc_emerchantpay_checkout.php:133
 msgid "GiroPay"
 msgstr "GiroPay"
 
-#: includes/wc_emerchantpay_checkout.php:135
 msgid "Neteller"
 msgstr "Neteller"
 
-#: includes/wc_emerchantpay_checkout.php:137
 msgid "Qiwi"
 msgstr "Qiwi"
 
-#: includes/wc_emerchantpay_checkout.php:139
 msgid "PaySafeCard"
 msgstr "PaySafeCard"
 
-#: includes/wc_emerchantpay_checkout.php:141
 msgid "Przelewy24"
 msgstr "Przelewy24"
 
-#: includes/wc_emerchantpay_checkout.php:143
 msgid "SafetyPay"
 msgstr "SafetyPay"
 
-#: includes/wc_emerchantpay_checkout.php:145
 msgid "Sale"
 msgstr "Sale"
 
-#: includes/wc_emerchantpay_checkout.php:147
 msgid "Sale (3D-Secure)"
 msgstr "Sale (3D-Secure)"
 
-#: includes/wc_emerchantpay_checkout.php:149
 msgid "SOFORT"
 msgstr "SOFORT"
 
-#: includes/wc_emerchantpay_checkout.php:151
 msgid "TeleIngreso"
 msgstr "TeleIngreso"
 
-#: includes/wc_emerchantpay_checkout.php:153
 msgid "TrustPay"
 msgstr "TrustPay"
 
-#: includes/wc_emerchantpay_checkout.php:155
+msgid "Init Recurring Sale"
+msgstr "Init Recurring Sale"
+
+msgid "Init Recurring Sale (3D-Secure)"
+msgstr "Init Recurring Sale (3D-Secure)"
+
 msgid "Select transaction type for the payment transaction"
 msgstr "Select transaction type for the payment transaction"
 
-#: includes/wc_emerchantpay_checkout.php:160
 msgid "Checkout Language"
 msgstr "Checkout Language"
 
-#: includes/wc_emerchantpay_checkout.php:176
 msgid "Select language for the customer UI on the remote server"
 msgstr "Select language for the customer UI on the remote server"
 
-#: includes/wc_emerchantpay_checkout.php:181
 msgid "API Credentials"
 msgstr "API Credentials"
 
-#: includes/wc_emerchantpay_checkout.php:183
-#, php-format
 msgid ""
 "Enter Genesis API Credentials below, in order to access the Gateway.If you "
 "don't have credentials, %sget in touch%s with our technical support."
@@ -156,15 +129,33 @@ msgstr ""
 "Enter Genesis API Credentials below, in order to access the Gateway.If you "
 "don't have credentials, %sget in touch%s with our technical support."
 
-#: includes/wc_emerchantpay_checkout.php:193
 msgid "Test Mode"
 msgstr "Test Mode"
 
-#: includes/wc_emerchantpay_checkout.php:194
+msgid "Enable Captures"
+msgstr "Enable Captures"
+
+msgid "Enable / Disable Captures on the Order Preview Page"
+msgstr "Enable / Disable Captures on the Order Preview Page"
+
+msgid "Decide whether to Enable / Disable online Captures on the Order Preview Page."
+msgstr "Decide whether to Enable / Disable online Captures on the Order Preview Page."
+
+msgid "It depends on how the genesis gateway is configured"
+msgstr "It depends on how the genesis gateway is configured"
+
+msgid "Enable Refunds"
+msgstr "Enable Refunds"
+
+msgid "Enable / Disable Refunds on the Order Preview Page"
+msgstr "Enable / Disable Refunds on the Order Preview Page"
+
+msgid "Decide whether to Enable / Disable online Refunds on the Order Preview Page."
+msgstr "Decide whether to Enable / Disable online Refunds on the Order Preview Page."
+
 msgid "Use test (staging) environment"
 msgstr "Use test (staging) environment"
 
-#: includes/wc_emerchantpay_checkout.php:196
 msgid ""
 "Selecting this would route all requests through our test environment.<br/>NO "
 "Funds WILL BE transferred!"
@@ -172,63 +163,73 @@ msgstr ""
 "Selecting this would route all requests through our test environment.<br/>NO "
 "Funds WILL BE transferred!"
 
-#: includes/wc_emerchantpay_checkout.php:205
 msgid "Username"
 msgstr "Username"
 
-#: includes/wc_emerchantpay_checkout.php:206
 msgid "This is your Genesis username."
 msgstr "This is your Genesis username."
 
-#: includes/wc_emerchantpay_checkout.php:211
 msgid "Password"
 msgstr "Password"
 
-#: includes/wc_emerchantpay_checkout.php:212
 msgid "This is your Genesis password."
 msgstr "This is your Genesis password."
 
-#: includes/wc_emerchantpay_checkout.php:280
+msgid "Subscription Settings"
+msgstr "Subscription Settings"
+
+msgid "Here you can manage additional settings for the recurring payments (Subscriptions)"
+msgstr "Here you can manage additional settings for the recurring payments (Subscriptions)"
+
+msgid "Enable/Disable Subscription Payments"
+msgstr "Enable/Disable Subscription Payments"
+
+msgid "Recurring Token"
+msgstr "Recurring Token"
+
+msgid ""
+"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF)."
+"Leave it empty in order to use the token, which has been used for the processing transaction."
+msgstr ""
+"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF)."
+"Leave it empty in order to use the token, which has been used for the processing transaction."
+
+msgid "Init Recurring Transaction Types"
+msgstr "Init Recurring Transaction Types"
+
+msgid "Select transaction types for the initial recurring transaction"
+msgstr "Select transaction types for the initial recurring transaction"
+
 msgid "Your payment has been completed successfully."
 msgstr "Your payment has been completed successfully."
 
-#: includes/wc_emerchantpay_checkout.php:288
 msgid "Payment has been declined!"
 msgstr "Payment has been declined!"
 
-#: includes/wc_emerchantpay_checkout.php:295
 msgid "Your payment has been declined, please check your data and try again"
 msgstr "Your payment has been declined, please check your data and try again"
 
-#: includes/wc_emerchantpay_checkout.php:303
 msgid "The customer cancelled their payment session"
 msgstr "The customer cancelled their payment session"
 
-#: includes/wc_emerchantpay_checkout.php:344
 msgid "Payment transaction has been approved!"
 msgstr "Payment transaction has been approved!"
 
-#: includes/wc_emerchantpay_checkout.php:346
 msgid "Id:"
 msgstr "Id:"
 
-#: includes/wc_emerchantpay_checkout.php:348
 msgid "Total:"
 msgstr "Total:"
 
-#: includes/wc_emerchantpay_checkout.php:355
 msgid "Payment transaction has been declined!"
 msgstr "Payment transaction has been declined!"
 
-#: includes/wc_emerchantpay_checkout.php:362
 msgid "Payment transaction returned an error!"
 msgstr "Payment transaction returned an error!"
 
-#: includes/wc_emerchantpay_checkout.php:369
 msgid "Payment transaction has been refunded!"
 msgstr "Payment transaction has been refunded!"
 
-#: includes/wc_emerchantpay_checkout.php:511
 msgid ""
 "We were unable to process your order!<br/>Please double check your data and "
 "try again."
@@ -236,17 +237,60 @@ msgstr ""
 "We were unable to process your order!<br/>Please double check your data and "
 "try again."
 
-#: includes/wc_emerchantpay_checkout.php:566
 msgid "Refund completed!"
 msgstr "Refund completed!"
 
-#: includes/wc_emerchantpay_checkout.php:568
 msgid "Id: "
 msgstr "Id: "
 
-#: includes/wc_emerchantpay_checkout.php:570
 msgid "Refunded amount: "
 msgstr "Refunded amount: "
 
-#~ msgid "Sale 3D-Secure"
-#~ msgstr "Sale 3D-Secure"
+msgid ""
+"You cannot refund this payment, because the payment is not captured yet or "
+"the gateway does not support refunds for this transaction type!"
+msgstr ""
+"You cannot refund this payment, because the payment is not captured yet or "
+"the gateway does not support refunds for this transaction type!"
+
+msgid "You cannot refund a payment, which has not been captured yet!"
+msgstr "You cannot refund a payment, which has not been captured yet!"
+
+msgid "You cannot refund a payment, because the order status is not yet updated from the payment gateway!"
+msgstr "You cannot refund a payment, because the order status is not yet updated from the payment gateway!"
+
+msgid "You cannot refund '%s', because the whole amount has already been refunded in the payment gateway!"
+msgstr "You cannot refund '%s', because the whole amount has already been refunded in the payment gateway!"
+
+msgid "You cannot refund '%s', because the available amount for refund in the payment gateway is '%s'!"
+msgstr "You cannot refund '%s', because the available amount for refund in the payment gateway is '%s'!"
+
+msgid "Subscription cancelled due to Refunded Order #%s"
+msgstr "Subscription cancelled due to Refunded Order #%s"
+
+msgid "You can do this only on a not-fully captured Authorize Transaction!"
+msgstr "You can do this only on a not-fully captured Authorize Transaction!"
+
+msgid "Invalid capture amount"
+msgstr "Invalid capture amount"
+
+msgid "You cannot void non-authorize payment or already captured payment!"
+msgstr "You cannot void non-authorize payment or already captured payment!"
+
+msgid "An error has been encountered while initiating Web Payment Form! Please try again later."
+msgstr "An error has been encountered while initiating Web Payment Form! Please try again later."
+
+msgid "Checkout Settings"
+msgstr "Checkout Settings"
+
+msgid "Here you can manage additional settings for the checkout page of the front site"
+msgstr "Here you can manage additional settings for the checkout page of the front site"
+
+msgid "Show CC Owner Field"
+msgstr "Show CC Owner Field"
+
+msgid "Show / Hide Credit Card Owner Field on the Checkout Page"
+msgstr "Show / Hide Credit Card Owner Field on the Checkout Page"
+
+msgid "Decide whether to show or hide Credit Card Owner Field"
+msgstr "Decide whether to show or hide Credit Card Owner Field"

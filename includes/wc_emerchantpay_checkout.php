@@ -43,8 +43,9 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
     /**
      * Additional Method Setting Keys
      */
-    const SETTING_KEY_TRANSACTION_TYPES = 'transaction_types';
-    const SETTING_KEY_CHECKOUT_LANGUAGE = 'checkout_language';
+    const SETTING_KEY_TRANSACTION_TYPES          = 'transaction_types';
+    const SETTING_KEY_CHECKOUT_LANGUAGE          = 'checkout_language';
+    const SETTING_KEY_INIT_RECURRING_TXN_TYPES   = 'init_recurring_txn_types';
 
     /**
      * Additional Order Meta Constants
@@ -93,7 +94,9 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
     public function is_available() {
         return
             parent::is_available() &&
-            !empty($this->settings[self::SETTING_KEY_TRANSACTION_TYPES]);
+            $this->getMethodHasSetting(
+                self::SETTING_KEY_TRANSACTION_TYPES
+            );
     }
 
     /**
@@ -120,7 +123,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
         $areApiTransactionTypesDefined = true;
 
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            if (empty($this->settings[self::SETTING_KEY_TRANSACTION_TYPES])) {
+            if (!$this->getMethodHasSetting(self::SETTING_KEY_TRANSACTION_TYPES)) {
                 $areApiTransactionTypesDefined = false;
             }
         } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -229,17 +232,48 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 'desc_tip'    => true,
             ),
         );
+
+        $this->form_fields += $this->build_subscription_form_fields();
+    }
+
+    /**
+     * Admin Panel Subscription Field Definition
+     *
+     * @return array
+     */
+    protected function build_subscription_form_fields()
+    {
+        $subscription_form_fields = parent::build_subscription_form_fields();
+
+        return array_merge(
+            $subscription_form_fields,
+            array(
+                self::SETTING_KEY_INIT_RECURRING_TXN_TYPES => array(
+                    'type'        => 'multiselect',
+                    'title'       => static::getTranslatedText('Init Recurring Transaction Types'),
+                    'options'     => array(
+                        \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE =>
+                            static::getTranslatedText('Init Recurring Sale'),
+                        \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D =>
+                            static::getTranslatedText('Init Recurring Sale (3D-Secure)')
+                    ),
+                    'description' => static::getTranslatedText('Select transaction types for the initial recurring transaction'),
+                    'desc_tip'    => true,
+                ),
+            )
+        );
     }
 
     /**
      * Returns a list with data used for preparing a request to the gateway
      *
      * @param WC_Order $order
+     * @param bool $isRecurring
      * @return array
      */
-    protected function populateGateRequestData($order)
+    protected function populateGateRequestData($order, $isRecurring = false)
     {
-        $data = parent::populateGateRequestData($order);
+        $data = parent::populateGateRequestData($order, $isRecurring);
 
         return array_merge(
             $data,
@@ -250,151 +284,226 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
     }
 
     /**
-     * Initiate Checkout session
-     *
-     * @param int $order_id
-     *
-     * @return string HTML form
+     * @param array $data
+     * @return \Genesis\Genesis
      */
-    public function process_payment( $order_id )
+    protected function prepareInitialGenesisRequest($data)
     {
-        $order = new WC_Order( absint($order_id)  );
+        $genesis = new \Genesis\Genesis( 'WPF\Create' );
 
-        $data = $this->populateGateRequestData($order);
+        $genesis
+            ->request()
+                ->setTransactionId(
+                    $data['transaction_id']
+                )
+                ->setCurrency(
+                    $data['currency']
+                )
+                ->setAmount(
+                    $data['amount']
+                )
+                ->setUsage(
+                    $data['usage']
+                )
+                ->setDescription(
+                    $data['description']
+                )
+                ->setCustomerEmail(
+                    $data['customer_email']
+                )
+                ->setCustomerPhone(
+                    $data['customer_phone']
+                );
 
-        try {
-            $this->set_credentials(
-                $this->settings
+        /**
+         * Notification & Urls
+         */
+        $genesis
+            ->request()
+                ->setNotificationUrl(
+                    $data['notification_url']
+                )
+                ->setReturnSuccessUrl(
+                    $data['return_success_url']
+                )
+                ->setReturnFailureUrl(
+                    $data['return_failure_url']
+                )
+                ->setReturnCancelUrl(
+                    $data['return_cancel_url']
+                );
+
+        /**
+         * Billing
+         */
+        $genesis
+            ->request()
+                ->setBillingFirstName(
+                    $data['billing']['first_name']
+                )
+                ->setBillingLastName(
+                    $data['billing']['first_name']
+                )
+                ->setBillingAddress1(
+                    $data['billing']['address1']
+                )
+                ->setBillingAddress2(
+                    $data['billing']['address2']
+                )
+                ->setBillingZipCode(
+                    $data['billing']['zip_code']
+                )
+                ->setBillingCity(
+                    $data['billing']['city']
+                )
+                ->setBillingState(
+                    $data['billing']['state']
+                )
+                ->setBillingCountry(
+                    $data['billing']['country']
+                );
+
+        /**
+         * Shipping
+         */
+        $genesis
+            ->request()
+                ->setShippingFirstName(
+                    $data['shipping']['first_name']
+                )
+                ->setShippingLastName(
+                    $data['shipping']['last_name']
+                )
+                ->setShippingAddress1(
+                    $data['shipping']['address1']
+                )
+                ->setShippingAddress2(
+                    $data['shipping']['address2']
+                )
+                ->setShippingZipCode(
+                    $data['shipping']['zip_code']
+                )
+                ->setShippingCity(
+                    $data['shipping']['city']
+                )
+                ->setShippingState(
+                    $data['shipping']['state']
+                )
+                ->setShippingCountry(
+                    $data['shipping']['country']
+                );
+
+        /**
+         * WPF Language
+         */
+        if ($this->getMethodHasSetting(self::SETTING_KEY_CHECKOUT_LANGUAGE)) {
+            $genesis->request()->setLanguage(
+                $this->getMethodSetting(self::SETTING_KEY_CHECKOUT_LANGUAGE)
             );
+        }
 
-            $description = $this->get_item_description( $order );
+        return $genesis;
+    }
 
-            $genesis = new \Genesis\Genesis( 'WPF\Create' );
+    /**
+     * @param \Genesis\Genesis $genesis
+     * @param array $requestData
+     * @param bool $isRecurring
+     * @return void
+     */
+    protected function addTransactionTypesToGatewayRequest($genesis, $requestData, $isRecurring)
+    {
+        if ($isRecurring) {
+            foreach ($this->get_recurring_payment_types() as $type ) {
+                $genesis
+                    ->request()
+                        ->addTransactionType( $type );
+            }
+
+            return;
+        }
+
+        foreach ($this->get_payment_types() as $type ) {
+            if (is_array($type)) {
+                $genesis
+                    ->request()
+                        ->addTransactionType(
+                            $type['name'],
+                            $type['parameters']
+                        );
+
+                continue;
+            } elseif (\Genesis\API\Constants\Transaction\Types::isPayByVoucher($type)) {
+                $parameters = array(
+                    'card_type'   =>
+                        \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\CardTypes::VIRTUAL,
+                    'redeem_type' =>
+                        \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\RedeemTypes::INSTANT
+                );
+
+                if ($type == \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY) {
+                    $parameters['product_name']     = $requestData['description'];
+                    $parameters['product_category'] = $requestData['description'];
+                }
+
+                $genesis
+                    ->request()
+                        ->addTransactionType(
+                            $type,
+                            $parameters
+                        );
+
+                continue;
+            }
 
             $genesis
                 ->request()
-                    ->setTransactionId(
-                        $data['transaction_id']
-                    )
-                    ->setCurrency(
-                        $data['currency']
-                    )
-                    ->setAmount(
-                        $data['amount']
-                    )
-                    ->setUsage(
-                        $data['usage']
-                    )
-                    ->setDescription(
-                        $description
-                    )
-                    ->setCustomerEmail(
-                        $data['customer_email']
-                    )
-                    ->setCustomerPhone(
-                        $data['customer_phone']
-                    )
-                    ->setNotificationUrl(
-                        $data['notification_url']
-                    )
-                    ->setReturnSuccessUrl(
-                        $data['return_success_url']
-                    )
-                    ->setReturnFailureUrl(
-                        $data['return_failure_url']
-                    )
-                    ->setReturnCancelUrl(
-                        $data['return_cancel_url']
-                    )
-                    ->setBillingFirstName(
-                        $data['billing']['first_name']
-                    )
-                    ->setBillingLastName(
-                        $data['billing']['first_name']
-                    )
-                    ->setBillingAddress1(
-                        $data['billing']['address1']
-                    )
-                    ->setBillingAddress2(
-                        $data['billing']['address2']
-                    )
-                    ->setBillingZipCode(
-                        $data['billing']['zip_code']
-                    )
-                    ->setBillingCity(
-                        $data['billing']['city']
-                    )
-                    ->setBillingState(
-                        $data['billing']['state']
-                    )
-                    ->setBillingCountry(
-                        $data['billing']['country']
-                    )
-                    //Shipping
-                    ->setShippingFirstName(
-                        $data['shipping']['first_name']
-                    )
-                    ->setShippingLastName(
-                        $data['shipping']['last_name']
-                    )
-                    ->setShippingAddress1(
-                        $data['shipping']['address1']
-                    )
-                    ->setShippingAddress2(
-                        $data['shipping']['address2']
-                    )
-                    ->setShippingZipCode(
-                        $data['shipping']['zip_code']
-                    )
-                    ->setShippingCity(
-                        $data['shipping']['city']
-                    )
-                    ->setShippingState(
-                        $data['shipping']['state']
-                    )
-                    ->setShippingCountry(
-                        $data['shipping']['country']
-                    );
+                    ->addTransactionType( $type );
+        }
+    }
 
-            foreach ($this->get_payment_types() as $type ) {
-                if (is_array($type)) {
-                    $genesis
-                        ->request()
-                            ->addTransactionType(
-                                $type['name'],
-                                $type['parameters']
-                            );
-                } else {
-                    if (\Genesis\API\Constants\Transaction\Types::isPayByVoucher($type)) {
-                        $parameters = array(
-                            'card_type' =>
-                                \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\CardTypes::VIRTUAL,
-                            'redeem_type' =>
-                                \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\RedeemTypes::INSTANT
-                        );
-                        if ($type == \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY) {
-                            $parameters['product_name'] = $description;
-                            $parameters['product_category'] = $description;
-                        }
-                        $genesis
-                            ->request()
-                                ->addTransactionType(
-                                    $type,
-                                    $parameters
-                                );
-                    } else {
-                        $genesis
-                            ->request()
-                                ->addTransactionType( $type );
-                    }
-                }
-            }
+    /**
+     * Initiate Order Checkout session
+     *
+     * @param int $order_id
+     * @return array|bool
+     */
+    protected function process_order_payment( $order_id )
+    {
+        return $this->process_common_payment( $order_id, false);
+    }
 
-            if (isset($this->settings[self::SETTING_KEY_CHECKOUT_LANGUAGE])) {
-                $genesis->request()->setLanguage(
-                    $this->settings[self::SETTING_KEY_CHECKOUT_LANGUAGE]
-                );
-            }
+    /**
+     * Initiate Gateway Payment Session
+     *
+     * @param int $order_id
+     * @return array|bool
+     */
+    protected function process_init_subscription_payment( $order_id )
+    {
+        return $this->process_common_payment( $order_id, true);
+    }
+
+    /**
+     * Initiate Order Checkout session
+     *   or
+     * Init Recurring Checkout
+     *
+     * @param int $order_id
+     * @param bool $isRecurring
+     * @return array|bool
+     */
+    protected function process_common_payment( $order_id, $isRecurring )
+    {
+        $order = new WC_Order( absint($order_id)  );
+
+        $data = $this->populateGateRequestData($order, $isRecurring);
+
+        try {
+            $this->set_credentials();
+
+            $genesis = $this->prepareInitialGenesisRequest($data);
+            $this->addTransactionTypesToGatewayRequest($genesis, $data, $isRecurring);
 
             $genesis->execute();
 
@@ -416,7 +525,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 $this->set_one_time_token($order_id, $this->generateTransactionId());
 
                 return array(
-                    'result'   => 'success',
+                    'result'   => static::RESPONSE_SUCCESS,
                     'redirect' => $response->redirect_url
                 );
             } else {
@@ -427,7 +536,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 );
             }
 
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             if (isset($genesis) && isset($genesis->response()->getResponseObject()->message)) {
                 $error_message = $genesis->response()->getResponseObject()->message;
             } else {
@@ -437,9 +546,9 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 );
             }
 
-            wc_add_notice($error_message, 'error');
+            WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
 
-            error_log($e->getMessage());
+            WC_eMerchantPay_Helper::logException($exception);
 
             return false;
         }
@@ -477,7 +586,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
     {
         $processed_list = array();
 
-        $selected_types = $this->settings[self::SETTING_KEY_TRANSACTION_TYPES];
+        $selected_types = $this->getMethodSetting(self::SETTING_KEY_TRANSACTION_TYPES);
 
         $alias_map = array(
             \Genesis\API\Constants\Payment\Methods::EPS         =>
@@ -511,6 +620,43 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
         }
 
         return $processed_list;
+    }
+
+    /**
+     * @return array
+     */
+    protected function get_recurring_payment_types()
+    {
+        return $this->getMethodSetting(self::SETTING_KEY_INIT_RECURRING_TXN_TYPES);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isSubscriptionEnabled()
+    {
+        return
+            parent::isSubscriptionEnabled() &&
+            $this->getMethodHasSetting(
+                self::SETTING_KEY_INIT_RECURRING_TXN_TYPES
+            );
+    }
+
+    /**
+     * Determines the Recurring Token, which needs to used for the RecurringSale Transactions
+     *
+     * @param WC_Order $order
+     * @return string
+     */
+    protected function getRecurringToken( $order )
+    {
+        $recurringToken = parent::getRecurringToken( $order );
+
+        if (!empty($recurringToken)) {
+            return $recurringToken;
+        }
+
+        return WC_eMerchantPay_Subscription_Helper::getTerminalTokenMetaFromSubscriptionOrder( $order->id );
     }
 }
 
