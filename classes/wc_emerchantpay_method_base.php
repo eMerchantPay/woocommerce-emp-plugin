@@ -111,6 +111,11 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     protected static $method_code = null;
 
     /**
+     * @return string
+     */
+    abstract protected function getModuleTitle();
+
+    /**
      * Holds the Meta Key used to extract the checkout Transaction
      *   - Checkout Method -> WPF Unique Id
      *   - Direct Method   -> Transaction Unique Id
@@ -232,6 +237,29 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             }
         } else {
             return false;
+        }
+
+        if ($this->is_ssl_required() && !WC_eMerchantPay_Helper::getStoreOverSecuredConnection()) {
+            WC_eMerchantPay_Helper::printWpNotice(
+                static::getTranslatedText(
+                    sprintf(
+                        '%s payment method requires HTTPS connection in order to process payment data!',
+                        $this->getModuleTitle()
+                    )
+                ),
+                WC_eMerchantPay_Helper::WP_NOTICE_TYPE_ERROR
+            );
+        }
+
+        $genesisRequirementsVerified = WC_eMerchantPay_Helper::checkGenesisRequirementsVerified();
+
+        if ($genesisRequirementsVerified !== true) {
+            WC_eMerchantPay_Helper::printWpNotice(
+                static::getTranslatedText(
+                    $genesisRequirementsVerified->get_error_message()
+                ),
+                WC_eMerchantPay_Helper::WP_NOTICE_TYPE_ERROR
+            );
         }
 
         $areApiCredentialsDefined = true;
@@ -1034,7 +1062,16 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      */
     protected function is_applicable()
     {
-        return true;
+        return WC_eMerchantPay_Helper::checkGenesisRequirementsVerified() === true;
+    }
+
+    /**
+     * Determines if the Payment Module Requires Securect HTTPS Connection
+     * @return bool
+     */
+    protected function is_ssl_required()
+    {
+        return false;
     }
 
     /**
@@ -1044,6 +1081,9 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      */
     public function init_form_fields()
     {
+        // Admin title/description
+        $this->method_title = $this->getModuleTitle();
+
         $this->form_fields = array(
             self::SETTING_KEY_ENABLED => array(
                 'type'    => 'checkbox',

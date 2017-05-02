@@ -53,6 +53,14 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
     const META_CHECKOUT_TRANSACTION_ID = '_genesis_checkout_id';
 
     /**
+     * @return string
+     */
+    protected function getModuleTitle()
+    {
+        return static::getTranslatedText('eMerchantPay Checkout');
+    }
+
+    /**
      * Holds the Meta Key used to extract the checkout Transaction
      *   - Checkout Method -> WPF Unique Id
      *
@@ -153,9 +161,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
      */
     public function init_form_fields()
     {
-        // Admin title/description
-        $this->method_title         =
-            static::getTranslatedText('eMerchantPay Checkout');
+        // Admin description
         $this->method_description   =
             static::getTranslatedText('eMerchantPay\'s Gateway works by sending your client, to our secure (PCI-DSS certified) server.');
 

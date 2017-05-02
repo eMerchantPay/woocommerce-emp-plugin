@@ -52,6 +52,14 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     const SETTING_KEY_INIT_RECURRING_TXN_TYPE   = 'init_recurring_txn_type';
 
     /**
+     * @return string
+     */
+    protected function getModuleTitle()
+    {
+        return static::getTranslatedText('eMerchantPay Direct');
+    }
+
+    /**
      * Holds the Meta Key used to extract the checkout Transaction
      *   - Direct Method -> Transaction Unique Id
      *
@@ -121,27 +129,6 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     }
 
     /**
-     * Event Handler for displaying Admin Notices
-     *
-     * @return bool
-     */
-    public function admin_notices()
-    {
-        if (!parent::admin_notices()) {
-            return false;
-        }
-
-        if (!$this->is_applicable()) {
-            WC_eMerchantPay_Helper::printWpNotice(
-                static::getTranslatedText('eMerchantPay Direct payment method requires HTTPS connection in order to process payment data!'),
-                WC_eMerchantPay_Helper::WP_NOTICE_TYPE_ERROR
-            );
-        }
-
-        return true;
-    }
-
-    /**
      * Add additional fields just above the credit card form
      *
      * @access      public
@@ -202,6 +189,15 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     }
 
     /**
+     * Determines if the Payment Module Requires Securect HTTPS Connection
+     * @return bool
+     */
+    protected function is_ssl_required()
+    {
+        return true;
+    }
+
+    /**
      * Output payment fields, optional additional fields and wooCommerce CC Form
      *
      * @access      public
@@ -219,9 +215,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
      */
     public function init_form_fields()
     {
-        // Admin title/description
-        $this->method_title         =
-            static::getTranslatedText('eMerchantPay Direct');
+        // Admin description
         $this->method_description   =
             static::getTranslatedText('eMerchantPay\'s Gateway offers a secure way to pay for your order, using Credit/Debit Card.') .
             '<br />' .

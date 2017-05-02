@@ -199,7 +199,7 @@ class WC_eMerchantPay_Helper
      */
     public static function getStoreOverSecuredConnection()
     {
-        return ( is_ssl() || get_option('woocommerce_force_ssl_checkout') == 'yes' );
+        return ( is_ssl() && get_option('woocommerce_force_ssl_checkout') == 'yes' );
     }
 
     /**
@@ -408,7 +408,7 @@ class WC_eMerchantPay_Helper
     {
         if ($exception instanceof \Exception) {
             return new \WP_Error(
-                $exception->getCode(),
+                $exception->getCode() ?: 999,
                 $exception->getMessage()
             );
         }
@@ -543,5 +543,21 @@ class WC_eMerchantPay_Helper
             $isRecurring ? '%s Recurring Transaction' : '%s Payment Transaction',
             get_bloginfo( 'name' )
         );
+    }
+
+    /**
+     * Makes a check if all the requirements of Genesis Lib are verified
+     *
+     * @return true|WP_Error (True -> verified; WP_Error -> Exception Message)
+     */
+    public static function checkGenesisRequirementsVerified()
+    {
+        try {
+            \Genesis\Utils\Requirements::verify();
+
+            return true;
+        } catch (\Exception $exception) {
+            return static::getWPError($exception);
+        }
     }
 }
