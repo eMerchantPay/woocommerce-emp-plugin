@@ -22,12 +22,8 @@ msgstr ""
 msgid "eMerchantPay"
 msgstr "eMerchantPay"
 
-msgid ""
-"eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS "
-"certified) server."
-msgstr ""
-"eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS "
-"certified) server."
+msgid "eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS certified) server."
+msgstr "eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS certified) server."
 
 msgid "Enable/Disable"
 msgstr "Enable/Disable"
@@ -65,26 +61,59 @@ msgstr "Authorize (3D-Secure)"
 msgid "CashU"
 msgstr "CashU"
 
-msgid "ELV"
-msgstr "ELV"
+msgid "Citadel"
+msgstr "Citadel"
 
 msgid "eps"
 msgstr "eps"
 
+msgid "eZeeWallet"
+msgstr "eZeeWallet"
+
 msgid "GiroPay"
 msgstr "GiroPay"
+
+msgid "iDebit"
+msgstr "iDebit"
+
+msgid "INPay"
+msgstr "INPay"
+
+msgid "InstaDebit"
+msgstr"InstaDebit"
+
+msgid "Mr.Cash"
+msgstr "Mr.Cash"
+
+msgid "MyBank"
+msgstr "MyBank"
 
 msgid "Neteller"
 msgstr "Neteller"
 
-msgid "Qiwi"
-msgstr "Qiwi"
+msgid "P24"
+msgstr "P24"
+
+msgid "PayByVoucher (Sale)"
+msgstr "PayByVoucher (Sale)"
+
+msgid "PayByVoucher (oBeP)"
+msgstr "PayByVoucher (oBeP)"
+
+msgid "PayPal Express"
+msgstr "PayPal Express"
 
 msgid "PaySafeCard"
 msgstr "PaySafeCard"
 
+msgid "POLi"
+msgstr "POLi"
+
 msgid "Przelewy24"
 msgstr "Przelewy24"
+
+msgid "Qiwi"
+msgstr "Qiwi"
 
 msgid "SafetyPay"
 msgstr "SafetyPay"
@@ -95,14 +124,23 @@ msgstr "Sale"
 msgid "Sale (3D-Secure)"
 msgstr "Sale (3D-Secure)"
 
+msgid "Sepa Direct Debit"
+msgstr "Sepa Direct Debit"
+
 msgid "SOFORT"
 msgstr "SOFORT"
 
 msgid "TeleIngreso"
 msgstr "TeleIngreso"
 
+msgid "Trustly"
+msgstr "Trustly"
+
 msgid "TrustPay"
 msgstr "TrustPay"
+
+msgid "WebMoney"
+msgstr "WebMoney"
 
 msgid "Init Recurring Sale"
 msgstr "Init Recurring Sale"
@@ -123,11 +161,11 @@ msgid "API Credentials"
 msgstr "API Credentials"
 
 msgid ""
-"Enter Genesis API Credentials below, in order to access the Gateway.If you "
-"don't have credentials, %sget in touch%s with our technical support."
+"Enter Genesis API Credentials below, in order to access the Gateway.If you don't have credentials, %sget "
+"in touch%s with our technical support."
 msgstr ""
-"Enter Genesis API Credentials below, in order to access the Gateway.If you "
-"don't have credentials, %sget in touch%s with our technical support."
+"Enter Genesis API Credentials below, in order to access the Gateway.If you don't have credentials, %sget "
+"in touch%s with our technical support."
 
 msgid "Test Mode"
 msgstr "Test Mode"
@@ -157,11 +195,9 @@ msgid "Use test (staging) environment"
 msgstr "Use test (staging) environment"
 
 msgid ""
-"Selecting this would route all requests through our test environment.<br/>NO "
-"Funds WILL BE transferred!"
+"Selecting this would route all requests through our test environment.<br/>NO Funds WILL BE transferred!"
 msgstr ""
-"Selecting this would route all requests through our test environment.<br/>NO "
-"Funds WILL BE transferred!"
+"Selecting this would route all requests through our test environment.<br/>NO Funds WILL BE transferred!"
 
 msgid "Username"
 msgstr "Username"
@@ -188,11 +224,11 @@ msgid "Recurring Token"
 msgstr "Recurring Token"
 
 msgid ""
-"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF)."
-"Leave it empty in order to use the token, which has been used for the processing transaction."
+"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF).Leave it empty in order to use "
+"the token, which has been used for the processing transaction."
 msgstr ""
-"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF)."
-"Leave it empty in order to use the token, which has been used for the processing transaction."
+"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF).Leave it empty in order to use "
+"the token, which has been used for the processing transaction."
 
 msgid "Init Recurring Transaction Types"
 msgstr "Init Recurring Transaction Types"
@@ -230,12 +266,8 @@ msgstr "Payment transaction returned an error!"
 msgid "Payment transaction has been refunded!"
 msgstr "Payment transaction has been refunded!"
 
-msgid ""
-"We were unable to process your order!<br/>Please double check your data and "
-"try again."
-msgstr ""
-"We were unable to process your order!<br/>Please double check your data and "
-"try again."
+msgid "We were unable to process your order!<br/>Please double check your data and try again."
+msgstr "We were unable to process your order!<br/>Please double check your data and try again."
 
 msgid "Refund completed!"
 msgstr "Refund completed!"
@@ -247,11 +279,11 @@ msgid "Refunded amount: "
 msgstr "Refunded amount: "
 
 msgid ""
-"You cannot refund this payment, because the payment is not captured yet or "
-"the gateway does not support refunds for this transaction type!"
+"You cannot refund this payment, because the payment is not captured yet or the gateway does not support "
+"refunds for this transaction type!"
 msgstr ""
-"You cannot refund this payment, because the payment is not captured yet or "
-"the gateway does not support refunds for this transaction type!"
+"You cannot refund this payment, because the payment is not captured yet or the gateway does not support "
+"refunds for this transaction type!"
 
 msgid "You cannot refund a payment, which has not been captured yet!"
 msgstr "You cannot refund a payment, which has not been captured yet!"

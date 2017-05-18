@@ -180,34 +180,56 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                         static::getTranslatedText('Authorize (3D-Secure)'),
                     \Genesis\API\Constants\Transaction\Types::CASHU =>
                         static::getTranslatedText('CashU'),
+                    \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN =>
+                        static::getTranslatedText('Citadel'),
                     \Genesis\API\Constants\Payment\Methods::EPS =>
                         static::getTranslatedText('eps'),
+                    \Genesis\API\Constants\Transaction\Types::EZEEWALLET =>
+                        static::getTranslatedText('eZeeWallet'),
                     \Genesis\API\Constants\Payment\Methods::GIRO_PAY =>
                         static::getTranslatedText('GiroPay'),
+                    \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN =>
+                        static::getTranslatedText('iDebit'),
+                    \Genesis\API\Constants\Transaction\Types::INPAY =>
+                        static::getTranslatedText('INPay'),
+                    \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN =>
+                        static::getTranslatedText('InstaDebit'),
+                    \Genesis\API\Constants\Payment\Methods::BCMC =>
+                        static::getTranslatedText('Mr.Cash'),
+                    \Genesis\API\Constants\Payment\Methods::MYBANK =>
+                        static::getTranslatedText('MyBank'),
                     \Genesis\API\Constants\Transaction\Types::NETELLER =>
                         static::getTranslatedText('Neteller'),
-                    \Genesis\API\Constants\Payment\Methods::QIWI =>
-                        static::getTranslatedText('Qiwi'),
+                    \Genesis\API\Constants\Transaction\Types::P24 =>
+                        static::getTranslatedText('P24'),
                     \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_SALE =>
                         static::getTranslatedText('PayByVoucher (Sale)'),
                     \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY =>
                         static::getTranslatedText('PayByVoucher (oBeP)'),
+                    \Genesis\API\Constants\Transaction\Types::PAYPAL_EXPRESS =>
+                        static::getTranslatedText('PayPal Express'),
                     \Genesis\API\Constants\Transaction\Types::PAYSAFECARD =>
                         static::getTranslatedText('PaySafeCard'),
-                    \Genesis\API\Constants\Payment\Methods::PRZELEWY24 =>
-                        static::getTranslatedText('Przelewy24'),
                     \Genesis\API\Constants\Transaction\Types::POLI =>
                         static::getTranslatedText('POLi'),
+                    \Genesis\API\Constants\Payment\Methods::PRZELEWY24 =>
+                        static::getTranslatedText('Przelewy24'),
+                    \Genesis\API\Constants\Payment\Methods::QIWI =>
+                        static::getTranslatedText('Qiwi'),
                     \Genesis\API\Constants\Payment\Methods::SAFETY_PAY =>
                         static::getTranslatedText('SafetyPay'),
                     \Genesis\API\Constants\Transaction\Types::SALE =>
                         static::getTranslatedText('Sale'),
                     \Genesis\API\Constants\Transaction\Types::SALE_3D =>
                         static::getTranslatedText('Sale (3D-Secure)'),
+                    \Genesis\API\Constants\Transaction\Types::SDD_SALE =>
+                        static::getTranslatedText('Sepa Direct Debit'),
                     \Genesis\API\Constants\Transaction\Types::SOFORT =>
                         static::getTranslatedText('SOFORT'),
                     \Genesis\API\Constants\Payment\Methods::TELEINGRESO =>
                         static::getTranslatedText('TeleIngreso'),
+                    \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE =>
+                        static::getTranslatedText('Trustly'),
                     \Genesis\API\Constants\Payment\Methods::TRUST_PAY =>
                         static::getTranslatedText('TrustPay'),
                     \Genesis\API\Constants\Transaction\Types::WEBMONEY =>
@@ -297,113 +319,112 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
     {
         $genesis = new \Genesis\Genesis( 'WPF\Create' );
 
-        $genesis
-            ->request()
-                ->setTransactionId(
-                    $data['transaction_id']
-                )
-                ->setCurrency(
-                    $data['currency']
-                )
-                ->setAmount(
-                    $data['amount']
-                )
-                ->setUsage(
-                    $data['usage']
-                )
-                ->setDescription(
-                    $data['description']
-                )
-                ->setCustomerEmail(
-                    $data['customer_email']
-                )
-                ->setCustomerPhone(
-                    $data['customer_phone']
-                );
+        /** @var \Genesis\API\Request\WPF\Create $wpfRequest */
+        $wpfRequest = $genesis->request();
+
+        $wpfRequest
+            ->setTransactionId(
+                $data['transaction_id']
+            )
+            ->setCurrency(
+                $data['currency']
+            )
+            ->setAmount(
+                $data['amount']
+            )
+            ->setUsage(
+                $data['usage']
+            )
+            ->setDescription(
+                $data['description']
+            )
+            ->setCustomerEmail(
+                $data['customer_email']
+            )
+            ->setCustomerPhone(
+                $data['customer_phone']
+            );
 
         /**
          * Notification & Urls
          */
-        $genesis
-            ->request()
-                ->setNotificationUrl(
-                    $data['notification_url']
-                )
-                ->setReturnSuccessUrl(
-                    $data['return_success_url']
-                )
-                ->setReturnFailureUrl(
-                    $data['return_failure_url']
-                )
-                ->setReturnCancelUrl(
-                    $data['return_cancel_url']
-                );
+        $wpfRequest
+            ->setNotificationUrl(
+                $data['notification_url']
+            )
+            ->setReturnSuccessUrl(
+                $data['return_success_url']
+            )
+            ->setReturnFailureUrl(
+                $data['return_failure_url']
+            )
+            ->setReturnCancelUrl(
+                $data['return_cancel_url']
+            );
 
         /**
          * Billing
          */
-        $genesis
-            ->request()
-                ->setBillingFirstName(
-                    $data['billing']['first_name']
-                )
-                ->setBillingLastName(
-                    $data['billing']['first_name']
-                )
-                ->setBillingAddress1(
-                    $data['billing']['address1']
-                )
-                ->setBillingAddress2(
-                    $data['billing']['address2']
-                )
-                ->setBillingZipCode(
-                    $data['billing']['zip_code']
-                )
-                ->setBillingCity(
-                    $data['billing']['city']
-                )
-                ->setBillingState(
-                    $data['billing']['state']
-                )
-                ->setBillingCountry(
-                    $data['billing']['country']
-                );
+        $wpfRequest
+            ->setBillingFirstName(
+                $data['billing']['first_name']
+            )
+            ->setBillingLastName(
+                $data['billing']['first_name']
+            )
+            ->setBillingAddress1(
+                $data['billing']['address1']
+            )
+            ->setBillingAddress2(
+                $data['billing']['address2']
+            )
+            ->setBillingZipCode(
+                $data['billing']['zip_code']
+            )
+            ->setBillingCity(
+                $data['billing']['city']
+            )
+            ->setBillingState(
+                $data['billing']['state']
+            )
+            ->setBillingCountry(
+                $data['billing']['country']
+            );
 
         /**
          * Shipping
          */
-        $genesis
-            ->request()
-                ->setShippingFirstName(
-                    $data['shipping']['first_name']
-                )
-                ->setShippingLastName(
-                    $data['shipping']['last_name']
-                )
-                ->setShippingAddress1(
-                    $data['shipping']['address1']
-                )
-                ->setShippingAddress2(
-                    $data['shipping']['address2']
-                )
-                ->setShippingZipCode(
-                    $data['shipping']['zip_code']
-                )
-                ->setShippingCity(
-                    $data['shipping']['city']
-                )
-                ->setShippingState(
-                    $data['shipping']['state']
-                )
-                ->setShippingCountry(
-                    $data['shipping']['country']
-                );
+        $wpfRequest
+            ->setShippingFirstName(
+                $data['shipping']['first_name']
+            )
+            ->setShippingLastName(
+                $data['shipping']['last_name']
+            )
+            ->setShippingAddress1(
+                $data['shipping']['address1']
+            )
+            ->setShippingAddress2(
+                $data['shipping']['address2']
+            )
+            ->setShippingZipCode(
+                $data['shipping']['zip_code']
+            )
+            ->setShippingCity(
+                $data['shipping']['city']
+            )
+            ->setShippingState(
+                $data['shipping']['state']
+            )
+            ->setShippingCountry(
+                $data['shipping']['country']
+            );
 
         /**
          * WPF Language
          */
         if ($this->getMethodHasSetting(self::SETTING_KEY_CHECKOUT_LANGUAGE)) {
-            $genesis->request()->setLanguage(
+            $wpfRequest->setLanguage(
                 $this->getMethodSetting(self::SETTING_KEY_CHECKOUT_LANGUAGE)
             );
         }
@@ -419,52 +440,58 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
      */
     protected function addTransactionTypesToGatewayRequest($genesis, $requestData, $isRecurring)
     {
+        /** @var \Genesis\API\Request\WPF\Create $wpfRequest */
+        $wpfRequest = $genesis->request();
+
         if ($isRecurring) {
             foreach ($this->get_recurring_payment_types() as $type ) {
-                $genesis
-                    ->request()
-                        ->addTransactionType( $type );
+                $wpfRequest->addTransactionType( $type );
             }
 
             return;
         }
 
+        $userIdHash = WC_eMerchantPay_Helper::getCurrentUserIdHash();
+
+        $transactionsCustomParams = array(
+            \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_SALE   => array(
+                'card_type'   =>
+                    \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\CardTypes::VIRTUAL,
+                'redeem_type' =>
+                    \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\RedeemTypes::INSTANT
+            ),
+            \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY => array(
+                'card_type'        =>
+                    \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\CardTypes::VIRTUAL,
+                'redeem_type'      =>
+                    \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\RedeemTypes::INSTANT,
+                'product_name'     => $requestData['description'],
+                'product_category' => $requestData['description']
+            ),
+            \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN       => array(
+                'merchant_customer_id' => $userIdHash
+            ),
+            \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN        => array(
+                'customer_account_id' => $userIdHash
+            ),
+            \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN   => array(
+                'customer_account_id' => $userIdHash
+            )
+        );
+
         foreach ($this->get_payment_types() as $type ) {
             if (is_array($type)) {
-                $genesis
-                    ->request()
-                        ->addTransactionType(
-                            $type['name'],
-                            $type['parameters']
-                        );
-
-                continue;
-            } elseif (\Genesis\API\Constants\Transaction\Types::isPayByVoucher($type)) {
-                $parameters = array(
-                    'card_type'   =>
-                        \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\CardTypes::VIRTUAL,
-                    'redeem_type' =>
-                        \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\RedeemTypes::INSTANT
-                );
-
-                if ($type == \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY) {
-                    $parameters['product_name']     = $requestData['description'];
-                    $parameters['product_category'] = $requestData['description'];
-                }
-
-                $genesis
-                    ->request()
-                        ->addTransactionType(
-                            $type,
-                            $parameters
-                        );
+                $wpfRequest->addTransactionType($type['name'], $type['parameters']);
 
                 continue;
             }
 
-            $genesis
-                ->request()
-                    ->addTransactionType( $type );
+            $transactionCustomParams = WC_eMerchantPay_Helper::getArrayItemsByKey(
+                $transactionsCustomParams,
+                $type
+            );
+
+            $wpfRequest->addTransactionType($type, $transactionCustomParams);
         }
     }
 
@@ -608,6 +635,10 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
             \Genesis\API\Constants\Payment\Methods::TELEINGRESO =>
                 \Genesis\API\Constants\Transaction\Types::PPRO,
             \Genesis\API\Constants\Payment\Methods::TRUST_PAY   =>
+                \Genesis\API\Constants\Transaction\Types::PPRO,
+            \Genesis\API\Constants\Payment\Methods::BCMC   =>
+                \Genesis\API\Constants\Transaction\Types::PPRO,
+            \Genesis\API\Constants\Payment\Methods::MYBANK   =>
                 \Genesis\API\Constants\Transaction\Types::PPRO,
         );
 

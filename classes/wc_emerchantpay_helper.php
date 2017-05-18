@@ -560,4 +560,45 @@ class WC_eMerchantPay_Helper
             return static::getWPError($exception);
         }
     }
+
+    /**
+     * @param array $arr
+     * @param string $key
+     * @return array|mixed
+     */
+    public static function getArrayItemsByKey($arr, $key, $default = array())
+    {
+        if (!is_array($arr)) {
+            return $default;
+        }
+
+        if (!array_key_exists($key, $arr)) {
+            return $default;
+        }
+
+        return $arr[$key];
+    }
+
+    /**
+     * Retrieves the consumer's user id
+     *
+     * @return int
+     */
+    public static function getCurrentUserId()
+    {
+        return get_current_user_id();
+    }
+
+    /**
+     * @param int $length
+     * @return string
+     */
+    public static function getCurrentUserIdHash($length = 20)
+    {
+        $userId = self::getCurrentUserId();
+
+        $userHash = $userId > 0 ? sha1($userId) : WC_eMerchantPay_Method::generateTransactionId();
+
+        return substr($userHash, 0, $length);
+    }
 }

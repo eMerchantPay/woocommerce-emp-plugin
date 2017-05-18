@@ -60,26 +60,59 @@ msgstr "Authorize (3D-Secure)"
 msgid "CashU"
 msgstr "CashU"
 
-msgid "ELV"
-msgstr "ELV"
+msgid "Citadel"
+msgstr "Citadel"
 
 msgid "eps"
 msgstr "eps"
 
+msgid "eZeeWallet"
+msgstr "eZeeWallet"
+
 msgid "GiroPay"
 msgstr "GiroPay"
+
+msgid "iDebit"
+msgstr "iDebit"
+
+msgid "INPay"
+msgstr "INPay"
+
+msgid "InstaDebit"
+msgstr"InstaDebit"
+
+msgid "Mr.Cash"
+msgstr "Mr.Cash"
+
+msgid "MyBank"
+msgstr "MyBank"
 
 msgid "Neteller"
 msgstr "Neteller"
 
-msgid "Qiwi"
-msgstr "Qiwi"
+msgid "P24"
+msgstr "P24"
+
+msgid "PayByVoucher (Sale)"
+msgstr "PayByVoucher (Sale)"
+
+msgid "PayByVoucher (oBeP)"
+msgstr "PayByVoucher (oBeP)"
+
+msgid "PayPal Express"
+msgstr "PayPal Express"
 
 msgid "PaySafeCard"
 msgstr "PaySafeCard"
 
+msgid "POLi"
+msgstr "POLi"
+
 msgid "Przelewy24"
 msgstr "Przelewy24"
+
+msgid "Qiwi"
+msgstr "Qiwi"
 
 msgid "SafetyPay"
 msgstr "SafetyPay"
@@ -90,14 +123,23 @@ msgstr "Sale"
 msgid "Sale (3D-Secure)"
 msgstr "Sale (3D-Secure)"
 
+msgid "Sepa Direct Debit"
+msgstr "Sepa Direct Debit"
+
 msgid "SOFORT"
 msgstr "SOFORT"
 
 msgid "TeleIngreso"
 msgstr "TeleIngreso"
 
+msgid "Trustly"
+msgstr "Trustly"
+
 msgid "TrustPay"
 msgstr "TrustPay"
+
+msgid "WebMoney"
+msgstr "WebMoney"
 
 msgid "Init Recurring Sale"
 msgstr "Init Recurring Sale"

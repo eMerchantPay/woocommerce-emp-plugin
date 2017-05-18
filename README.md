@@ -6,16 +6,18 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x (Tested up to 4.7)
-* WooCommerce 2.x (Tested up to 2.6.9)
-* [GenesisPHP v1.4.3](https://github.com/GenesisGateway/genesis_php) - (Integrated in Module)
+* WordPress 4.x (Tested up to 4.7.5)
+* WooCommerce 2.x (Tested up to 2.6.14)
+* [GenesisPHP v1.7.0](https://github.com/GenesisGateway/genesis_php/tree/1.7.0) - (Integrated in Module)
 * PCI-certified server in order to use ```eMerchantPay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) in order to use **Subscriptions**
-
+    * WooCommerce Subscription does not have support for WooCommerce 3.x yet
+    * Please use WooCommerce 2.4.x for Subscriptions 2.1, more info [here](https://docs.woocommerce.com/document/subscriptions/upgrade-instructions/#section-2)
+    
 GenesisPHP Requirements
 ------------
 
-* PHP version 5.3.2 or newer
+* PHP version 5.5.9 or newer
 * PHP Extensions:
     * [BCMath](https://php.net/bcmath)
     * [CURL](https://php.net/curl) (required, only if you use the curl network interface)
@@ -119,12 +121,19 @@ Supported Transactions
     * __Authorize__
     * __Authorize (3D-Secure)__
     * __CashU__
+    * __Citadel__
+    * __eZeeWallet__
+    * __iDebit__
+    * __INPay__
+    * __InstaDebit__
     * __InitRecurringSale__
 	* __InitRecurringSale (3D-Secure)__
     * __Neteller__
-    * __PaySafeCard__
+    * __P24__
     * __PayByVoucher (Sale)__
     * __PayByVoucher (oBeP)__
+    * __PayPal Express__
+    * __PaySafeCard__
     * __POLi__
     * __PPRO__
     	* __eps__
@@ -134,10 +143,14 @@ Supported Transactions
     	* __SafetyPay__
     	* __TeleIngreso__
     	* __TrustPay__
+    	* __Mr.Cash__
+    	* __MyBank__
     * __RecurringSale__
     * __Sale__
     * __Sale (3D-Secure)__
+    * __Sepa Direct Debit__
     * __SOFORT__
+    * __Trustly__
     * __WebMoney__
     
 _Note_: If you have trouble with your credentials or terminal configuration, get in touch with our [support] team

@@ -831,7 +831,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
             $payment_gateway->set_terminal_token($order);
 
-            $void = new \Genesis\Genesis('Financial\Void');
+            $void = new \Genesis\Genesis('Financial\Cancel');
 
             $void
                 ->request()
@@ -1463,6 +1463,12 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                      \Genesis\API\Constants\Transaction\Types::SALE_3D,
                      \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE,
                      \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D,
+                     \Genesis\API\Constants\Transaction\Types::CASHU,
+                     \Genesis\API\Constants\Transaction\Types::PPRO,
+                     \Genesis\API\Constants\Transaction\Types::INPAY,
+                     \Genesis\API\Constants\Transaction\Types::P24,
+                     \Genesis\API\Constants\Transaction\Types::PAYPAL_EXPRESS,
+                     \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE
                 );
 
                 return
@@ -1471,10 +1477,13 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 break;
 
             case \Genesis\API\Constants\Transaction\Types::VOID:
+                $voidableTransactions = array(
+                    \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE
+                );
+
                 return
-                    $isOrderTranTypeAuthorize &&
-                    empty($capture_unique_id) &&
-                    empty($void_unique_id);
+                    ($isOrderTranTypeAuthorize && empty($capture_unique_id) && empty($void_unique_id)) ||
+                    (in_array($orderTransactionType, $voidableTransactions) && empty($void_unique_id));
                 break;
 
             default:
@@ -1946,7 +1955,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             $input
         );
 
-        return strtolower( md5( $unique . md5(uniqid(mt_rand(), true)) ) );
+        return strtolower( substr( sha1( $unique . md5(uniqid(mt_rand(), true)) ), 0, 30) );
     }
 
     /**
