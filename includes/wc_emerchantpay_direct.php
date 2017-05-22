@@ -497,7 +497,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
         $genesis
             ->request()
                 ->setBillingFirstName($data['billing']['first_name'])
-                ->setBillingLastName($data['billing']['first_name'])
+                ->setBillingLastName($data['billing']['last_name'])
                 ->setBillingAddress1($data['billing']['address1'])
                 ->setBillingAddress2($data['billing']['address2'])
                 ->setBillingZipCode($data['billing']['zip_code'])

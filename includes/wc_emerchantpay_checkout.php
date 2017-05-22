@@ -370,7 +370,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 $data['billing']['first_name']
             )
             ->setBillingLastName(
-                $data['billing']['first_name']
+                $data['billing']['last_name']
             )
             ->setBillingAddress1(
                 $data['billing']['address1']
