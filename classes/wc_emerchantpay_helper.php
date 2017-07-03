@@ -29,7 +29,8 @@ if (!defined( 'ABSPATH' )) {
  */
 class WC_eMerchantPay_Helper
 {
-    const WP_NOTICE_TYPE_ERROR = 'error';
+    const WP_NOTICE_TYPE_ERROR  = 'error';
+    const WP_NOTICE_TYPE_NOTICE = 'notice';
 
     /**
      * Setup and initialize this module

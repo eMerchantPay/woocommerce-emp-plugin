@@ -223,6 +223,23 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      */
     public function admin_notices()
     {
+        if ( !$this->should_show_admin_notices() ) {
+            return false;
+        }
+
+        $this->admin_notices_genesis_requirements();
+        $this->admin_notices_api_credentials();
+        $this->admin_notices_subscriptions();
+
+        return true;
+    }
+
+    /**
+     * Checks if page is settings and plug-in is enabled.
+     * @return bool
+     */
+    protected function should_show_admin_notices()
+    {
         if (!$this->getIsModuleSettingsPage()) {
             return false;
         }
@@ -239,6 +256,14 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             return false;
         }
 
+        return true;
+    }
+
+    /**
+     * Checks if SSL is enabled and if Genesis requirements are met.
+     */
+    protected function admin_notices_genesis_requirements()
+    {
         if ($this->is_ssl_required() && !WC_eMerchantPay_Helper::getStoreOverSecuredConnection()) {
             WC_eMerchantPay_Helper::printWpNotice(
                 static::getTranslatedText(
@@ -261,7 +286,13 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 WC_eMerchantPay_Helper::WP_NOTICE_TYPE_ERROR
             );
         }
+    }
 
+    /**
+     * Check if required plug-ins settings are set.
+     */
+    protected function admin_notices_api_credentials()
+    {
         $areApiCredentialsDefined = true;
         if (WC_eMerchantPay_Helper::isGetRequest()) {
             foreach ($this->getRequiredApiSettingKeys() as $requiredApiSetting) {
@@ -289,13 +320,19 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 WC_eMerchantPay_Helper::WP_NOTICE_TYPE_ERROR
             );
         }
+    }
 
-        if (!WC_eMerchantPay_Subscription_Helper::isWCSubscriptionsInstalled()) {
-            $isSubscriptionsAllowed =
-                WC_eMerchantPay_Helper::isGetRequest() && $this->isSubscriptionEnabled() ||
-                WC_eMerchantPay_Helper::isPostRequest() && $this->getPostBoolSettingValue(self::SETTING_KEY_ALLOW_SUBSCRIPTIONS);
-
-            if ($isSubscriptionsAllowed) {
+    /**
+     * Shows subscription notices, if subscriptions are enabled and WooCommerce is missing.
+     * Also shows general information about subscriptions, if they are enabled.
+     */
+    protected function admin_notices_subscriptions()
+    {
+        $isSubscriptionsAllowed =
+            WC_eMerchantPay_Helper::isGetRequest() && $this->isSubscriptionEnabled() ||
+            WC_eMerchantPay_Helper::isPostRequest() && $this->getPostBoolSettingValue(self::SETTING_KEY_ALLOW_SUBSCRIPTIONS);
+        if ($isSubscriptionsAllowed) {
+            if (!WC_eMerchantPay_Subscription_Helper::isWCSubscriptionsInstalled()) {
                 WC_eMerchantPay_Helper::printWpNotice(
                     static::getTranslatedText(
                         sprintf(
@@ -305,10 +342,17 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                     ),
                     WC_eMerchantPay_Helper::WP_NOTICE_TYPE_ERROR
                 );
+            } else {
+                WC_eMerchantPay_Helper::printWpNotice(
+                    static::getTranslatedText(
+                        "Subscriptions notices:<br />
+                        - Only subscription products with setup sign-up fee can be processed by this method<br />
+                        - Subscription orders can have only a single subscription product and no other products"
+                    ),
+                    WC_eMerchantPay_Helper::WP_NOTICE_TYPE_NOTICE
+                );
             }
         }
-
-        return true;
     }
 
     /**
@@ -1037,7 +1081,8 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      * @access      public
      * @return      bool
      */
-    public function is_available() {
+    public function is_available()
+    {
         if ( $this->enabled !== self::SETTING_VALUE_YES ) {
             return false;
         }
@@ -1048,7 +1093,24 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             }
         }
 
+        if (!$this->checkSubscriptionRequirements()) {
+            return false;
+        }
+
         return $this->is_applicable();
+    }
+
+    /**
+     * If subscriptions are enabled, default sign-up fee must be set.
+     * @return bool
+     */
+    public function checkSubscriptionRequirements()
+    {
+        if (!$this->isSubscriptionEnabled()) {
+            return true;
+        }
+
+        return WC_eMerchantPay_Subscription_Helper::isCartValid();
     }
 
     /**
@@ -1356,10 +1418,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
         return
             array(
                 'transaction_id'   => static::generateTransactionId( $order->id ),
-                'amount'           =>
-                    $isRecurring
-                        ? WC_eMerchantPay_Subscription_Helper::getOrderSubscriptionSignUpFee( $order )
-                        : $this->get_order_total(),
+                'amount'           => $this->getAmount($order, $isRecurring),
                 'currency'         => $order->get_order_currency(),
                 'usage'            => WC_eMerchantPay_Helper::getPaymentTransactionUsage(false),
                 'description'      => $this->get_item_description( $order ),
@@ -1398,6 +1457,25 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                     'country'    => $order->shipping_country
                 )
             );
+    }
+
+    /**
+     * Returns proper amount depending, if order is for subscription or not.
+     * @param \WC_Order $order
+     * @param bool $isRecurring
+     * @return float
+     * @throws \Exception If the order is for subscription and there's no sign-up fee
+     */
+    protected function getAmount($order, $isRecurring)
+    {
+        if ($isRecurring) {
+            $amount = WC_eMerchantPay_Subscription_Helper::getOrderSubscriptionSignUpFee( $order );
+            if (!is_null($amount)) {
+                return $amount;
+            }
+            throw new \Exception('Cannot process subscription orders without sign-up fee.');
+        }
+        return $this->get_order_total();
     }
 
     /**

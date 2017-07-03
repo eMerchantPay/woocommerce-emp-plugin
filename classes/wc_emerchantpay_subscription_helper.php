@@ -129,6 +129,54 @@ class WC_eMerchantPay_Subscription_Helper
     }
 
     /**
+     * @return bool
+     */
+    public static function isCartValid()
+    {
+        $cart = WC()->cart->cart_contents;
+        $hasProducts = false;
+        $hasSubscriptions = false;
+
+        foreach ( $cart AS $product ) {
+            if ( !self::isSubscriptionProduct($product['data']) ) {
+                if ( $hasSubscriptions ) {
+                    return false;
+                }
+
+                $hasProducts = true;
+                continue;
+            }
+
+            if ( $hasProducts ) {
+                return false;
+            }
+
+            $hasSubscriptions = true;
+            /** @var \WC_Product_Subscription|\WC_Product_Subscription_Variation $product['data'] */
+            $fee = floatval( $product['data']->get_sign_up_fee() );
+            if ($fee === 0.0) {
+                return false;
+            }
+        }
+
+        if ( $hasSubscriptions ) {
+            return !$hasProducts;
+        }
+
+        return $hasProducts;
+    }
+
+    /**
+     * @param \WC_Product $product
+     * @return bool
+     */
+    public static function isSubscriptionProduct(\WC_Product $product)
+    {
+        return $product instanceof \WC_Product_Subscription ||
+               $product instanceof \WC_Product_Subscription_Variation;
+    }
+
+    /**
      * Retrieves the Sign Up Fee for the Init Recurring Transactions
      *
      * @param WC_Order $order
@@ -136,11 +184,11 @@ class WC_eMerchantPay_Subscription_Helper
      */
     public static function getOrderSubscriptionSignUpFee( $order )
     {
-        if ( ! static::isWCSubscriptionsInstalled() ) {
+        if ( !static::isWCSubscriptionsInstalled() ) {
             return null;
         }
 
-        if ( ! WC_eMerchantPay_Helper::isValidOrder( $order )) {
+        if ( !WC_eMerchantPay_Helper::isValidOrder( $order ) ) {
             return null;
         }
 
@@ -150,42 +198,23 @@ class WC_eMerchantPay_Subscription_Helper
          * It is supposed to be only one item
          * P.S WC-Subscription-Plugin does not allow to add different subscriptions for the same cart
          */
-        $recurringItems = static::getOrderRecurringItems( $order );
+        $recurringItems = $order->get_items();
 
         /**
          * This is needed, because
          *    WC_Subscriptions_Order::get_sign_up_fee
          * returns the Sign-Up fee for the Subscription (Qty = 1)
          * We need to calculate the real sign-up fee
+         * @var string $key
+         * @var \WC_Product_Subscription $recurringItem
          */
-        foreach ($recurringItems as $key => $recurringItem) {
-            if (!array_key_exists('qty', $recurringItem)) {
-                continue;
-            }
-
-            $quantity = (int) $recurringItem['qty'];
+        foreach ( $recurringItems as $key => $recurringItem ) {
+            $quantity = (int) $recurringItem->get_quantity();
 
             $signUpFee = (float) ($quantity * $signUpFee);
         }
 
         return $signUpFee > 0 ? $signUpFee : null;
-    }
-
-    /**
-     * @param WC_Order $order
-     * @return array
-     */
-    protected static function getOrderRecurringItems( $order )
-    {
-        if (!static::isWCSubscriptionsInstalled()) {
-            return array();
-        }
-
-        if ( ! WC_eMerchantPay_Helper::isValidOrder( $order )) {
-            return array();
-        }
-
-        return WC_Subscriptions_Order::get_recurring_items($order);
     }
 
     /**

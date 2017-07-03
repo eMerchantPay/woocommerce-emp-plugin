@@ -6,14 +6,12 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x (Tested up to 4.7.5)
-* WooCommerce 2.x (Tested up to 2.6.14)
+* WordPress 4.x (Tested up to 4.8)
+* WooCommerce 2.x or 3.x (Tested up to 3.0.9)
 * [GenesisPHP v1.7.0](https://github.com/GenesisGateway/genesis_php/tree/1.7.0) - (Integrated in Module)
 * PCI-certified server in order to use ```eMerchantPay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) in order to use **Subscriptions**
-    * WooCommerce Subscription does not have support for WooCommerce 3.x yet
-    * Please use WooCommerce 2.4.x for Subscriptions 2.1, more info [here](https://docs.woocommerce.com/document/subscriptions/upgrade-instructions/#section-2)
-    
+
 GenesisPHP Requirements
 ------------
 
