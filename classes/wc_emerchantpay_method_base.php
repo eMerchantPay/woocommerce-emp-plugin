@@ -203,16 +203,30 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     }
 
     /**
-     * Determines if the user is currently reviewing the module settings page
-     * Used to display Admin Notices
+     * Determines if the user is currently reviewing
+     * WooCommerce settings checkout page
      *
      * @return bool
      */
-    protected function getIsModuleSettingsPage()
+    protected function getIsSettingsCheckoutPage()
     {
         return
             isset($_GET['page']) && ($_GET['page'] == 'wc-settings') &&
-            isset($_GET['tab']) && ($_GET['tab'] == 'checkout') &&
+            isset($_GET['tab']) && ($_GET['tab'] == 'checkout');
+    }
+
+    /**
+     * Determines if the user is currently reviewing
+     * WooCommerce settings checkout page with the module selected
+     *
+     * @return bool
+     */
+    protected function getIsSettingsCheckoutModulePage()
+    {
+        if (!$this->getIsSettingsCheckoutPage()) {
+            return false;
+        }
+        return
             isset($_GET['section']) && WC_eMerchantPay_Helper::getStringEndsWith($_GET['section'], $this->id);
     }
 
@@ -240,7 +254,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      */
     protected function should_show_admin_notices()
     {
-        if (!$this->getIsModuleSettingsPage()) {
+        if (!$this->getIsSettingsCheckoutModulePage()) {
             return false;
         }
 
@@ -1083,6 +1097,10 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      */
     public function is_available()
     {
+        if ($this->getIsSettingsCheckoutPage()) {
+            return true;
+        }
+
         if ( $this->enabled !== self::SETTING_VALUE_YES ) {
             return false;
         }

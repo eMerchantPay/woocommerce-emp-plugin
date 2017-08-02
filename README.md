@@ -7,7 +7,7 @@ Requirements
 ------------
 
 * WordPress 4.x (Tested up to 4.8)
-* WooCommerce 2.x or 3.x (Tested up to 3.0.9)
+* WooCommerce 2.x or 3.x (Tested up to 3.1.1)
 * [GenesisPHP v1.7.0](https://github.com/GenesisGateway/genesis_php/tree/1.7.0) - (Integrated in Module)
 * PCI-certified server in order to use ```eMerchantPay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) in order to use **Subscriptions**

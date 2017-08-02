@@ -134,6 +134,10 @@ class WC_eMerchantPay_Subscription_Helper
     public static function isCartValid()
     {
         $cart = WC()->cart->cart_contents;
+        if (!$cart) {
+            return false;
+        }
+
         $hasProducts = false;
         $hasSubscriptions = false;
 
