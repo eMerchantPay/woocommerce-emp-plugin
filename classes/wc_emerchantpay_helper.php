@@ -462,44 +462,58 @@ class WC_eMerchantPay_Helper
         return new \Genesis\API\Constants\Transaction\States($response->status);
     }
 
+
     /**
      * @param WC_Order $order
-     * @return null|float
+     * @param array $trx_list_new
      */
-    public static function getOrderRefundableAmount( $order )
+    public static function saveTrxListToOrder(WC_Order $order, array $trx_list_new)
     {
-        $orderTransactionAmount = WC_eMerchantPay_Helper::getFloatOrderMetaData(
-            $order->id,
-            WC_eMerchantPay_Method::META_ORDER_TRANSACTION_AMOUNT
-        );
+        $trx_list_existing = $order->get_meta(WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST);
 
-        $refundedAmount = WC_eMerchantPay_Helper::getFloatOrderMetaData(
-            $order->id,
-            WC_eMerchantPay_Method::META_REFUNDED_AMOUNT
-        );
+        if (is_array($trx_list_existing)) {
+            $trx_hierarchy = $order->get_meta(WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_HIERARCHY);
+            if (empty($trx_hierarchy)) {
+                $trx_hierarchy = [];
+            }
 
-        $refundableAmount = $orderTransactionAmount - $refundedAmount;
+            $trx_tree = new WC_eMerchantPay_Transactions_Tree($trx_list_existing, $trx_list_new, $trx_hierarchy);
 
-        return $refundableAmount > 0 ? $refundableAmount : null;
+            static::saveTrxTree($order->get_id(), $trx_tree);
+        }
     }
 
     /**
-     * @param WC_Order $order
-     * @param float|string $amount
+     * @param int $order_id
+     * @param WC_eMerchantPay_Transactions_Tree $trx_tree
      */
-    public static function addRefundedAmountToOrder( $order, $amount)
+    public static function saveTrxTree($order_id, WC_eMerchantPay_Transactions_Tree $trx_tree)
     {
-        $refundedAmount = WC_eMerchantPay_Helper::getFloatOrderMetaData(
-            $order->id,
-            WC_eMerchantPay_Method::META_REFUNDED_AMOUNT
+        WC_eMerchantPay_Helper::setOrderMetaData(
+            $order_id,
+            WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST,
+            $trx_tree->trx_list
         );
 
-        $refundedAmount = $refundedAmount + (float) $amount;
+        WC_eMerchantPay_Helper::setOrderMetaData(
+            $order_id,
+            WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_HIERARCHY,
+            $trx_tree->trx_hierarchy
+        );
+    }
+
+    /**
+     * @param int $order_id
+     * @param stdClass $response_obj
+     */
+    public static function saveInitialTrxToOrder($order_id, $response_obj)
+    {
+        $trx = new WC_eMerchantPay_Transaction($response_obj);
 
         WC_eMerchantPay_Helper::setOrderMetaData(
-            $order->id,
-            WC_eMerchantPay_Method::META_REFUNDED_AMOUNT,
-            $refundedAmount
+            $order_id,
+            WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST,
+            [ $trx ]
         );
     }
 

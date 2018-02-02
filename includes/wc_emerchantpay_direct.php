@@ -412,6 +412,9 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
 
             $response = $genesis->response()->getResponseObject();
 
+            // Save whole trx
+            WC_eMerchantPay_Helper::saveInitialTrxToOrder($order_id, $response);
+
             // Create One-time token to prevent redirect abuse
             $this->set_one_time_token($order_id, static::generateTransactionId());
 

@@ -89,6 +89,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     const WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_TOTAL    = 'woocommerce_admin_order_totals_after_total';
     const WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_REFUNDED = 'woocommerce_admin_order_totals_after_refunded';
     const WP_ACTION_ADMIN_NOTICES                     = 'admin_notices';
+    const WP_ACTION_ADMIN_FOOTER                      = 'admin_footer';
 
     const RESPONSE_SUCCESS                            = 'success';
 
@@ -96,6 +97,8 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
         'WC_eMerchantPay_Helper'              => 'wc_emerchantpay_helper',
         'WC_eMerchantPay_Subscription_Helper' => 'wc_emerchantpay_subscription_helper',
         'WC_eMerchantPay_Message_Helper'      => 'wc_emerchantpay_message_helper',
+        'WC_eMerchantPay_Transaction'         => 'wc_emerchantpay_transaction',
+        'WC_eMerchantPay_Transaction_Tree'    => 'wc_emerchantpay_transactions_tree'
     );
 
     /**
@@ -109,6 +112,12 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      * @var null|string
      */
     protected static $method_code = null;
+
+    /**
+     * Used for hook admin_footer to check, if we should load assets for enqueueTransactionsListAssets.
+     * @var bool
+     */
+    protected $should_execute_admin_footer_hook = false;
 
     /**
      * @return string
@@ -166,6 +175,21 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     }
 
     /**
+     * @return bool
+     */
+    protected function getIsWooCommerceAdminOrder()
+    {
+        if (!is_admin()) {
+            return false;
+        }
+
+        $screen = get_current_screen();
+
+        return $screen->parent_base === 'woocommerce' &&
+               $screen->id === 'shop_order';
+    }
+
+    /**
      * Registers Helper Classes for both method classes
      *
      * @return void
@@ -188,18 +212,25 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     {
         $this->addWPSimpleActions(
             array(
-                self::WC_ACTION_ORDER_ITEM_ADD_ACTION_BUTTONS,
                 self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_TOTAL,
-                self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_REFUNDED,
                 self::WP_ACTION_ADMIN_NOTICES,
             ),
             array(
-                'displayActionButtons',
                 'displayAdminOrderAfterTotals',
-                'displayAdminOrderAfterRefunded',
                 'admin_notices'
             )
         );
+
+        // Hooks for transactions list in admin order view
+        if ($this->getIsWooCommerceAdminOrder()) {
+            $this->addWPSimpleActions([
+                self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_REFUNDED,
+                self::WP_ACTION_ADMIN_FOOTER
+            ], [
+                'displayTransactionsListForOrder',
+                'enqueueTransactionsListAssets'
+            ]);
+        }
     }
 
     /**
@@ -228,6 +259,115 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
         }
         return
             isset($_GET['section']) && WC_eMerchantPay_Helper::getStringEndsWith($_GET['section'], $this->id);
+    }
+
+    /**
+     * Adds assets needed for the transactions list in admin order
+     */
+    public function enqueueTransactionsListAssets()
+    {
+        if (!$this->should_execute_admin_footer_hook) {
+            return;
+        }
+
+        wp_enqueue_style(
+            'treegrid-css',
+            plugins_url('assets/css/treegrid.css', plugin_dir_path(__FILE__)),
+            array(),
+            '0.2.0'
+        );
+        wp_enqueue_style(
+            'order-transactions-tree',
+            plugins_url('assets/css/order_transactions_tree.css', plugin_dir_path(__FILE__)),
+            array(),
+            '0.0.1'
+        );
+        wp_enqueue_style(
+            'bootstrap',
+            plugins_url('assets/css/bootstrap/bootstrap.min.css', plugin_dir_path(__FILE__)),
+            array(),
+            '0.0.1'
+        );
+        wp_enqueue_style(
+            'bootstrap-validator',
+            plugins_url('assets/css/bootstrap/bootstrapValidator.min.css', plugin_dir_path(__FILE__)),
+            array('bootstrap'),
+            '0.0.1'
+        );
+        wp_enqueue_script(
+            'treegrid-cookie',
+            plugins_url('assets/javascript/treegrid/cookie.js', plugin_dir_path(__FILE__)),
+            array(),
+            '0.2.0',
+            true
+        );
+        wp_enqueue_script(
+            'treegrid-main',
+            plugins_url('assets/javascript/treegrid/treegrid.js', plugin_dir_path(__FILE__)),
+            array('treegrid-cookie'),
+            '0.2.0',
+            true
+        );
+        wp_enqueue_script(
+            'jquery-number',
+            plugins_url('assets/javascript/jQueryExtensions/jquery.number.min.js', plugin_dir_path(__FILE__)),
+            array('jquery'),
+            '0.0.1',
+            true
+        );
+        wp_enqueue_script(
+            'bootstrap-validator',
+            plugins_url('assets/javascript/bootstrap/bootstrapValidator.min.js', plugin_dir_path(__FILE__)),
+            array('jquery'),
+            '0.0.1',
+            true
+        );
+        wp_enqueue_script(
+            'bootstrap-modal',
+            plugins_url('assets/javascript/bootstrap/bootstrap.modal.min.js', plugin_dir_path(__FILE__)),
+            array('jquery'),
+            '0.0.1',
+            true
+        );
+        wp_enqueue_script(
+            'order-transactions-tree',
+            plugins_url('assets/javascript/order_transactions_tree.js', plugin_dir_path(__FILE__)),
+            array('treegrid-main', 'jquery-number', 'bootstrap-validator'),
+            '0.0.1',
+            true
+        );
+        wp_enqueue_script('jquery-ui-tooltip');
+    }
+
+    /**
+     * @param int $order_id
+     */
+    public function displayTransactionsListForOrder($order_id)
+    {
+        $order = WC_eMerchantPay_Helper::getOrderById($order_id);
+
+        if ($order->get_payment_method() !== $this->id) {
+            return;
+        }
+
+        $this->should_execute_admin_footer_hook = true;
+
+        $transactions = WC_eMerchantPay_Transactions_Tree::getTransactionTree(
+            $order->get_meta(
+                WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST
+            )
+        );
+
+        if (!empty($transactions)) {
+            $this->fetchTemplate(
+                'admin/order/transactions.php',
+                array(
+                    'payment_method' => $this,
+                    'order'          => $order,
+                    'transactions'   => $transactions
+                )
+            );
+        }
     }
 
     /**
@@ -583,6 +723,14 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 'void'
             )
         );
+
+        add_action(
+            'wp_ajax_' . static::$method_code . '_refund',
+            array(
+                __CLASS__,
+                'refund'
+            )
+        );
     }
 
     /**
@@ -679,6 +827,46 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     }
 
     /**
+     * @param WC_Order $order
+     * @param $unique_id
+     *
+     * @return bool
+     */
+    public static function canCapture(WC_Order $order, $unique_id)
+    {
+        return WC_eMerchantPay_Transactions_Tree::canCapture(
+            WC_eMerchantPay_Transactions_Tree::getTrxFromOrder($order, $unique_id)
+        );
+    }
+
+    /**
+     * @param WC_Order $order
+     * @param $unique_id
+     *
+     * @return bool
+     */
+    public static function canVoid(WC_Order $order, $unique_id)
+    {
+        return WC_eMerchantPay_Transactions_Tree::canVoid(
+            $trx_tree = WC_eMerchantPay_Transactions_Tree::getTransactionsListFromOrder($order),
+            WC_eMerchantPay_Transactions_Tree::getTrxFromOrder($order, $unique_id, $trx_tree)
+        );
+    }
+
+    /**
+     * @param WC_Order $order
+     * @param $unique_id
+     *
+     * @return bool
+     */
+    public static function canRefund(WC_Order $order, $unique_id)
+    {
+        return WC_eMerchantPay_Transactions_Tree::canRefund(
+            (array) WC_eMerchantPay_Transactions_Tree::getTrxFromOrder($order, $unique_id)
+        );
+    }
+
+    /**
      * Processes a capture transaction to the gateway
      *
      * @param array $data
@@ -716,7 +904,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                         WC_eMerchantPay_Helper::getClientRemoteIpAddress()
                     )
                     ->setReferenceId(
-                        $order->get_transaction_id()
+                        $data['trx_id']
                     )
                     ->setCurrency(
                         $order->get_order_currency()
@@ -730,17 +918,17 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             $response = $genesis->response()->getResponseObject();
 
             if ($response->status == \Genesis\API\Constants\Transaction\States::APPROVED) {
-                // Update the order with the refund id
                 WC_eMerchantPay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_CAPTURE_ID, $response->unique_id);
-                $totalCapturedAmount = WC_eMerchantPay_Helper::getOrderAmountMetaData($order_id, self::META_CAPTURED_AMOUNT);
-                $totalCapturedAmount += $amount;
-                WC_eMerchantPay_Helper::setOrderMetaData($order_id, self::META_CAPTURED_AMOUNT, $totalCapturedAmount);
 
                 $order->add_order_note(
                     static::getTranslatedText('Payment Captured!') . PHP_EOL . PHP_EOL .
                     static::getTranslatedText('Id: ') . $response->unique_id . PHP_EOL .
                     static::getTranslatedText('Captured amount: ') . $response->amount . PHP_EOL
                 );
+
+                $response->parent_id = $data['trx_id'];
+
+                WC_eMerchantPay_Helper::saveTrxListToOrder($order, [ $response ]);
 
                 return $response;
             }
@@ -769,26 +957,25 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             die(-1);
         }
 
-        $order_id = absint( $_POST['order_id'] );
-
-        if (!static::getCanCaptureOrder($order_id, true)) {
-            wp_send_json_error(
-                array(
-                    'error' => static::getTranslatedText('You can do this only on a not-fully captured Authorize Transaction!')
-                )
-            );
-            return;
-        }
-
-        $capture_amount  = wc_format_decimal( sanitize_text_field( $_POST['capture_amount'] ) );
-        $capture_reason  = sanitize_text_field( $_POST['capture_reason'] );
-
-        $captured_amount = WC_eMerchantPay_Helper::getOrderAmountMetaData($order_id, self::META_CAPTURED_AMOUNT);
-
         try {
-            // Validate that the refund can occur
-            $order        = WC_eMerchantPay_Helper::getOrderById($order_id);
-            $max_capture  = wc_format_decimal( $order->get_total() - $captured_amount );
+            $order_id = absint( $_POST['order_id'] );
+            $order    = WC_eMerchantPay_Helper::getOrderById($order_id);
+            $trx_id   = sanitize_text_field( $_POST['trx_id'] );
+
+            if (!static::canCapture($order, $trx_id)) {
+                wp_send_json_error(
+                    array(
+                        'error' => static::getTranslatedText('You can do this only on a not-fully captured Authorize Transaction!')
+                    )
+                );
+                return;
+            }
+
+            $capture_amount  = wc_format_decimal( sanitize_text_field( $_POST['capture_amount'] ) );
+            $capture_reason  = sanitize_text_field( $_POST['capture_reason'] );
+
+            $captured_amount = WC_eMerchantPay_Transactions_Tree::getTotalCapturedAmount($order);
+            $max_capture     = wc_format_decimal( $order->get_total() - $captured_amount );
 
             if ( ! $capture_amount || $max_capture < $capture_amount || 0 > $capture_amount ) {
                 throw new exception( static::getTranslatedText('Invalid capture amount'));
@@ -797,6 +984,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             // Create the refund object
             $gatewayResponse = static::process_capture(
                 array(
+                    'trx_id'     => $trx_id,
                     'order_id'   => $order_id,
                     'amount'     => $capture_amount,
                     'reason'     => $capture_reason,
@@ -848,7 +1036,6 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
     /**
      * Event Handler for executing void transaction
-     * Called in templates/admin/order/dialogs/void.php
      *
      * @return bool
      */
@@ -862,22 +1049,21 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             die(-1);
         }
 
-        $order_id = absint( $_POST['order_id'] );
-
-        if (!static::getCanVoidOrder($order_id)) {
-            wp_send_json_error(
-                array(
-                    'error' => static::getTranslatedText('You cannot void non-authorize payment or already captured payment!')
-                )
-            );
-            return false;
-        }
-
-        $void_reason  = sanitize_text_field( $_POST['void_reason'] );
-
         try {
-            // Validate that the refund can occur
+            $order_id     = absint( $_POST['order_id'] );
             $order        = WC_eMerchantPay_Helper::getOrderById($order_id);
+            $void_trx_id  = sanitize_text_field( $_POST['trx_id'] );
+
+            if (!static::canVoid($order, $void_trx_id)) {
+                wp_send_json_error(
+                    array(
+                        'error' => static::getTranslatedText('You cannot void non-authorize payment or already captured payment!')
+                    )
+                );
+                return false;
+            }
+
+            $void_reason  = sanitize_text_field( $_POST['void_reason'] );
 
             $payment_gateway = WC_eMerchantPay_Helper::getPaymentMethodInstanceByOrder($order);
 
@@ -903,7 +1089,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                         WC_eMerchantPay_Helper::getClientRemoteIpAddress()
                     )
                     ->setReferenceId(
-                        $order->get_transaction_id()
+                        $void_trx_id
                     );
 
             try {
@@ -918,14 +1104,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 throw new Exception( $gatewayResponse->get_error_message() );
             }
 
-            if ($gatewayResponse->status == \Genesis\API\Constants\Transaction\States::APPROVED) {
-                // Update the order with the refund id
-                WC_eMerchantPay_Helper::setOrderMetaData(
-                    $order_id,
-                    self::META_TRANSACTION_VOID_ID,
-                    $gatewayResponse->unique_id
-                );
-
+            if ($gatewayResponse->status === \Genesis\API\Constants\Transaction\States::APPROVED) {
                 $order->add_order_note(
                     static::getTranslatedText('Payment Voided!') . PHP_EOL . PHP_EOL .
                     static::getTranslatedText('Id: ') . $gatewayResponse->unique_id
@@ -935,6 +1114,10 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                     self::ORDER_STATUS_CANCELLED,
                     $gatewayResponse->technical_message
                 );
+
+                $gatewayResponse->parent_id = $void_trx_id;
+
+                WC_eMerchantPay_Helper::saveTrxListToOrder($order, [ $gatewayResponse ]);
             } else {
                 throw new Exception(
                     $gatewayResponse->message
@@ -975,12 +1158,15 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             return;
         }
 
-        if (static::getCanCaptureOrder($order, false)) {
+        $captured_amount = WC_eMerchantPay_Transactions_Tree::getTotalCapturedAmount($order);
+
+        if ($captured_amount) {
             $this->fetchTemplate(
                 'admin/order/totals/capture.php',
                 array(
-                    'payment_method' => $this,
-                    'order'          => $order
+                    'payment_method'  => $this,
+                    'order'           => $order,
+                    'captured_amount' => $captured_amount
                 )
             );
         }
@@ -992,100 +1178,6 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 'order'          => $order
             )
         );
-    }
-
-    /**
-     * Admin Action Handler for displaying custom code after order refund totals
-     *
-     * @param int $order_id
-     * @return void
-     */
-    public function displayAdminOrderAfterRefunded($order_id)
-    {
-        $order = WC_eMerchantPay_Helper::getOrderById($order_id);
-
-        if ($order->payment_method != $this->id) {
-            return;
-        }
-
-        if (static::getCanVoidOrder($order) || static::getHasOrderValidMeta($order, self::META_TRANSACTION_VOID_ID)) {
-            $this->fetchTemplate(
-                'admin/order/totals/void.php',
-                array(
-                    'payment_method' => $this,
-                    'order' => $order
-                )
-            );
-        }
-    }
-
-    /**
-     * Custom Admin Action for displaying additional order action buttons
-     *
-     * @param $order
-     * @return void
-     */
-    public function displayActionButtons($order)
-    {
-        if ($order->payment_method != $this->id) {
-            return;
-        }
-
-        $canCaptureOrder = static::getCanCaptureOrder($order, true);
-        $canVoidOrder = static::getCanVoidOrder($order);
-
-        $this->fetchTemplate(
-            'admin/order/dialogs/common.php',
-            array(
-                'order'             => $order,
-                'payment_method'    => $this,
-                'is_refund_allowed' => static::getCanRefundOrder($order)
-            )
-        );
-
-        if (!$canCaptureOrder && !$canVoidOrder) {
-            return;
-        }
-
-        if ($canCaptureOrder) {
-            $this->fetchTemplate(
-                'admin/order/actions/capture.php',
-                array(
-                    'payment_method' => $this,
-                    'order'          => $order
-                )
-            );
-        }
-
-        if ($canVoidOrder) {
-            $this->fetchTemplate(
-                'admin/order/actions/void.php',
-                array(
-                    'order'          => $order,
-                    'payment_method' => $this
-                )
-            );
-        }
-
-        if ($canCaptureOrder) {
-            $this->fetchTemplate(
-                'admin/order/dialogs/capture.php',
-                array(
-                    'order'          => $order,
-                    'payment_method' => $this
-                )
-            );
-        }
-
-        if ($canVoidOrder) {
-            $this->fetchTemplate(
-                'admin/order/dialogs/void.php',
-                array(
-                    'order'          => $order,
-                    'payment_method' => $this
-                )
-            );
-        }
     }
 
     /**
@@ -1497,97 +1589,6 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     }
 
     /**
-     * Determines if the user can process a specific Backend Transaction
-     *   - Capture
-     *   - Refund
-     *   - Void
-     *
-     * @param int|WC_Order $order
-     * @return bool
-     */
-    protected static function getCanProcessRefBackendTran($order, $backendTranType)
-    {
-        if ( ! WC_eMerchantPay_Helper::isValidOrder( $order ) ) {
-            $order = WC_eMerchantPay_Helper::getOrderById($order);
-        }
-
-        $payedOrderStatuses = array(
-            self::ORDER_STATUS_PROCESSING,
-            self::ORDER_STATUS_COMPLETED
-        );
-
-        if (!in_array($order->get_status(), $payedOrderStatuses)) {
-            return false;
-        }
-
-        $orderTransactionType = WC_eMerchantPay_Helper::getOrderMetaData(
-            $order->id,
-            self::META_TRANSACTION_TYPE
-        );
-
-        $authorizeTransactions = array(
-            \Genesis\API\Constants\Transaction\Types::AUTHORIZE,
-            \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D
-        );
-
-        $isOrderTranTypeAuthorize = in_array(
-            $orderTransactionType,
-            $authorizeTransactions
-        );
-
-        $capture_unique_id = WC_eMerchantPay_Helper::getOrderMetaData(
-            $order->id,
-            self::META_TRANSACTION_CAPTURE_ID
-        );
-
-        $void_unique_id = WC_eMerchantPay_Helper::getOrderMetaData(
-            $order->id,
-            self::META_TRANSACTION_VOID_ID
-        );
-
-        switch ($backendTranType) {
-            case \Genesis\API\Constants\Transaction\Types::CAPTURE:
-
-                return
-                    $isOrderTranTypeAuthorize &&
-                    (empty($void_unique_id));
-                break;
-
-            case \Genesis\API\Constants\Transaction\Types::REFUND:
-                $refundableGatewayTransactionTypes = array(
-                     \Genesis\API\Constants\Transaction\Types::SALE,
-                     \Genesis\API\Constants\Transaction\Types::SALE_3D,
-                     \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE,
-                     \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D,
-                     \Genesis\API\Constants\Transaction\Types::CASHU,
-                     \Genesis\API\Constants\Transaction\Types::PPRO,
-                     \Genesis\API\Constants\Transaction\Types::INPAY,
-                     \Genesis\API\Constants\Transaction\Types::P24,
-                     \Genesis\API\Constants\Transaction\Types::PAYPAL_EXPRESS,
-                     \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE
-                );
-
-                return
-                    ($isOrderTranTypeAuthorize && !empty($capture_unique_id) && empty($void_unique_id)) ||
-                    (!$isOrderTranTypeAuthorize && in_array($orderTransactionType, $refundableGatewayTransactionTypes));
-                break;
-
-            case \Genesis\API\Constants\Transaction\Types::VOID:
-                $voidableTransactions = array(
-                    \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE
-                );
-
-                return
-                    ($isOrderTranTypeAuthorize && empty($capture_unique_id) && empty($void_unique_id)) ||
-                    (in_array($orderTransactionType, $voidableTransactions) && empty($void_unique_id));
-                break;
-
-            default:
-                return false;
-        }
-    }
-
-    /**
      * Determines if Order has valid Meta Data for a specific key
      * @param int|WC_Order $order
      * @param string $meta_key
@@ -1604,66 +1605,6 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
         );
 
         return !empty($data);
-    }
-
-    /**
-     * Determines if the user can process a Capture Transaction
-     *
-     * @param int|WC_Order $order
-     * @param bool $checkCapturedAmount
-     * @return bool
-     */
-    protected static function getCanCaptureOrder($order, $checkCapturedAmount)
-    {
-        $canCapture = static::getCanProcessRefBackendTran(
-            $order,
-            \Genesis\API\Constants\Transaction\Types::CAPTURE
-        );
-
-        if (!$checkCapturedAmount || !$canCapture) {
-            return $canCapture;
-        }
-
-        if ( ! WC_eMerchantpay_Helper::isValidOrder( $order ) ) {
-            $order = WC_eMerchantPay_Helper::getOrderById( $order );
-        }
-
-        $totalCapturedAmount = WC_eMerchantPay_Helper::getOrderAmountMetaData(
-            $order->id,
-            self::META_CAPTURED_AMOUNT
-        );
-
-        $totalAmountToCapture = $order->get_total() - $totalCapturedAmount;
-
-        return $totalAmountToCapture > 0;
-    }
-
-    /**
-     * Determines if the user can process a Refund Transaction
-     *
-     * @param int|WC_Order $order
-     * @return bool
-     */
-    protected static function getCanRefundOrder($order)
-    {
-        return static::getCanProcessRefBackendTran(
-            $order,
-            \Genesis\API\Constants\Transaction\Types::REFUND
-        );
-    }
-
-    /**
-     * Determines if the user can process a Void Transaction
-     *
-     * @param int|WC_Order $order
-     * @return bool
-     */
-    protected static function getCanVoidOrder($order)
-    {
-        return static::getCanProcessRefBackendTran(
-            $order,
-            \Genesis\API\Constants\Transaction\Types::VOID
-        );
     }
 
     /**
@@ -1693,91 +1634,196 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             return;
         }
 
+        $payment_transaction = WC_eMerchantPay_Helper::getReconcilePaymentTransaction($gatewayResponseObject);
+        $raw_trx_list = $this->get_trx_list($payment_transaction);
+
         switch ($gatewayResponseObject->status) {
             case \Genesis\API\Constants\Transaction\States::APPROVED:
-                $payment_transaction = WC_eMerchantPay_Helper::getReconcilePaymentTransaction($gatewayResponseObject);
-
-                $payment_transaction_id = $payment_transaction->unique_id;
-
-                if ($order->get_status() == self::ORDER_STATUS_PENDING) {
-                    $order->add_order_note(
-                        static::getTranslatedText('Payment transaction has been approved!')
-                        . PHP_EOL . PHP_EOL .
-                        static::getTranslatedText('Id:') . ' ' . $payment_transaction_id
-                        . PHP_EOL . PHP_EOL .
-                        static::getTranslatedText('Total:') . ' ' . $gatewayResponseObject->amount . ' ' . $gatewayResponseObject->currency
-                    );
-                }
-
-                $order->payment_complete($payment_transaction_id);
-
-                WC_eMerchantPay_Helper::setOrderMetaData(
-                    $order->id,
-                    self::META_TRANSACTION_TYPE,
-                    $payment_transaction->transaction_type
+                $this->update_order_status_approved(
+                    $order,
+                    $gatewayResponseObject,
+                    $payment_transaction,
+                    $raw_trx_list
                 );
 
-                WC_eMerchantPay_Helper::setOrderMetaData(
-                    $order->id,
-                    self::META_ORDER_TRANSACTION_AMOUNT,
-                    $payment_transaction->amount
-                );
-
-                $terminal_token =
-                    isset($payment_transaction->terminal_token)
-                        ? $payment_transaction->terminal_token
-                        : null;
-
-                if (!empty($terminal_token)) {
-                    WC_eMerchantPay_Helper::setOrderMetaData(
-                        $order->id,
-                        self::META_TRANSACTION_TERMINAL_TOKEN,
-                        $terminal_token
-                    );
-
-                    WC_eMerchantPay_Subscription_Helper::saveTerminalTokenToOrderSubscriptions(
-                        $order->id,
-                        $terminal_token
-                    );
-                }
                 break;
             case \Genesis\API\Constants\Transaction\States::DECLINED:
-                $order->add_order_note(
-                    static::getTranslatedText('Payment transaction has been declined!')
-                );
+                $this->update_order_status_declined($order, $gatewayResponseObject);
 
-                $order->update_status(
-                    self::ORDER_STATUS_FAILED,
-                    $gatewayResponseObject->technical_message
-                );
                 break;
             case \Genesis\API\Constants\Transaction\States::ERROR:
-                $order->add_order_note(
-                    static::getTranslatedText('Payment transaction returned an error!')
-                );
+                $this->update_order_status_error($order, $gatewayResponseObject);
 
-                $order->update_status(
-                    self::ORDER_STATUS_FAILED,
-                    $gatewayResponseObject->technical_message
-                );
                 break;
             case \Genesis\API\Constants\Transaction\States::REFUNDED:
-                $order->add_order_note(
-                    static::getTranslatedText('Payment transaction has been refunded!')
-                );
+                $this->update_order_status_refunded($order, $gatewayResponseObject);
 
-                $order->update_status(
-                    self::ORDER_STATUS_REFUNDED,
-                    $gatewayResponseObject->technical_message
-                );
                 break;
         }
+
+        WC_eMerchantPay_Helper::saveTrxListToOrder(
+            $order,
+            $raw_trx_list
+        );
 
         // Update the order, just to be sure, sometimes transaction is not being set!
         //WC_eMerchantPay_Helper::setOrderMetaData($order->id, self::META_TRANSACTION_ID, $gatewayResponseObject->unique_id);
 
         // Save the terminal token, through which we processed the transaction
         //WC_eMerchantPay_Helper::setOrderMetaData($order->id, self::META_TRANSACTION_TERMINAL_TOKEN, $gatewayResponseObject->terminal_token);
+    }
+
+    /**
+     * @param $payment_transaction
+     *
+     * @return array
+     */
+    protected function get_trx_list($payment_transaction)
+    {
+        if ($payment_transaction instanceof \ArrayObject) {
+            return $payment_transaction->getArrayCopy();
+        } else {
+            return [ $payment_transaction ];
+        }
+    }
+
+    /**
+     * @param WC_Order $order
+     * @param $gatewayResponseObject
+     */
+    protected function update_order_status_refunded(WC_Order $order, $gatewayResponseObject)
+    {
+        $order->add_order_note(
+            static::getTranslatedText('Payment transaction has been refunded!')
+        );
+
+        $order->update_status(
+            self::ORDER_STATUS_REFUNDED,
+            $gatewayResponseObject->technical_message
+        );
+    }
+
+    /**
+     * @param WC_Order $order
+     * @param $gatewayResponseObject
+     */
+    protected function update_order_status_error(WC_Order $order, $gatewayResponseObject)
+    {
+        $order->add_order_note(
+            static::getTranslatedText('Payment transaction returned an error!')
+        );
+
+        $order->update_status(
+            self::ORDER_STATUS_FAILED,
+            $gatewayResponseObject->technical_message
+        );
+    }
+
+    /**
+     * @param WC_Order $order
+     * @param $gatewayResponseObject
+     */
+    protected function update_order_status_declined(WC_Order $order, $gatewayResponseObject)
+    {
+        $order->add_order_note(
+            static::getTranslatedText('Payment transaction has been declined!')
+        );
+
+        $order->update_status(
+            self::ORDER_STATUS_FAILED,
+            $gatewayResponseObject->technical_message
+        );
+    }
+
+    /**
+     * @param WC_Order $order
+     * @param $gatewayResponseObject
+     * @param $payment_transaction
+     * @param array $raw_trx_list
+     */
+    protected function update_order_status_approved(WC_Order $order, $gatewayResponseObject, $payment_transaction, array $raw_trx_list)
+    {
+        $payment_transaction_id = $this->get_trx_id($raw_trx_list);
+
+        if ($order->get_status() == self::ORDER_STATUS_PENDING) {
+            $order->add_order_note(
+                static::getTranslatedText('Payment transaction has been approved!')
+                . PHP_EOL . PHP_EOL .
+                static::getTranslatedText('Id:') . ' ' . $payment_transaction_id
+                . PHP_EOL . PHP_EOL .
+                static::getTranslatedText('Total:') . ' ' . $gatewayResponseObject->amount . ' ' . $gatewayResponseObject->currency
+            );
+        }
+
+        $order->payment_complete($payment_transaction_id);
+
+        $this->save_approved_order_meta_data($order, $payment_transaction);
+    }
+
+    /**
+     * @param array $raw_trx_list
+     *
+     * @return string
+     */
+    protected function get_trx_id(array $raw_trx_list)
+    {
+        foreach ($raw_trx_list AS $trx) {
+            if (\Genesis\API\Constants\Transaction\Types::canRefund($trx->transaction_type)) {
+                return $trx->unique_id;
+            }
+        }
+
+        return $raw_trx_list[0]->unique_id;
+    }
+
+    /**
+     * @param WC_Order $order
+     * @param $payment_transaction
+     */
+    protected function save_approved_order_meta_data(WC_Order $order, $payment_transaction)
+    {
+        $amount = 0.0;
+
+        if ($payment_transaction instanceof \ArrayObject) {
+            $trx = $payment_transaction[0];
+
+            foreach ($payment_transaction AS $t) {
+                $amount += floatval($t->amount);
+            }
+        } else {
+            $trx = $payment_transaction;
+            $amount = $trx->amount;
+        }
+
+        WC_eMerchantPay_Helper::setOrderMetaData(
+            $order->get_id(),
+            self::META_TRANSACTION_TYPE,
+            $trx->transaction_type
+        );
+
+        WC_eMerchantPay_Helper::setOrderMetaData(
+            $order->get_id(),
+            self::META_ORDER_TRANSACTION_AMOUNT,
+            $amount
+        );
+
+        $terminal_token =
+            isset($trx->terminal_token)
+                ? $trx->terminal_token
+                : null;
+
+        if (!empty($terminal_token)) {
+            WC_eMerchantPay_Helper::setOrderMetaData(
+                $order->get_id(),
+                self::META_TRANSACTION_TERMINAL_TOKEN,
+                $terminal_token
+            );
+
+            WC_eMerchantPay_Subscription_Helper::saveTerminalTokenToOrderSubscriptions(
+                $order->get_id(),
+                $terminal_token
+            );
+        }
     }
 
     /**
@@ -1793,6 +1839,56 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     }
 
     /**
+     * Refund ajax call used in transaction tree
+     * @return bool
+     */
+    public static function refund()
+    {
+        ob_start();
+
+        check_ajax_referer( 'order-item', 'security' );
+
+        if ( ! current_user_can( 'edit_shop_orders' ) ) {
+            die(-1);
+        }
+
+        $order_id = absint( $_POST['order_id'] );
+        $amount   = floatval( $_POST['amount'] );
+        $reason   = sanitize_text_field( $_POST['reason'] );
+        $trx_id   = sanitize_text_field( $_POST['trx_id'] );
+
+        $result = static::do_refund($order_id, $amount, $reason, $trx_id);
+
+        if ($result instanceof \WP_Error) {
+            wp_send_json_error(
+                array(
+                    'error' => $result->get_error_message()
+                )
+            );
+            return false;
+        }
+
+        wp_send_json_success(
+            array('gateway' => $result)
+        );
+    }
+
+    /**
+     * Called internally by WooCommerce when their internal refund is used
+     * Kept for compatibility
+     *
+     * @param $order_id
+     * @param null $amount
+     * @param string $reason
+     *
+     * @return bool|WP_Error
+     */
+    public function process_refund($order_id, $amount = null, $reason = '')
+    {
+        return static::do_refund($order_id, $amount, $reason);
+    }
+
+    /**
      * Process Refund transaction
      *
      * @param int    $order_id
@@ -1801,41 +1897,13 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
      *
      * @return bool|\WP_Error
      */
-    public function process_refund( $order_id, $amount = null, $reason = '' )
+    public static function do_refund( $order_id, $amount = null, $reason = '', $transaction_id = '' )
     {
-        $order = WC_eMerchantPay_Helper::getOrderById( $order_id );
-
-        if ( !$order || !$order->get_transaction_id() ) {
-            return false;
-        }
-
-        if (!static::getCanRefundOrder($order)) {
-            return WC_eMerchantPay_Helper::getWPError(
-                static::getTranslatedText(
-                    'You cannot refund this payment, because the payment is not captured yet or ' .
-                    'the gateway does not support refunds for this transaction type!'
-                )
-            );
-        }
-
         try {
-            $reference_transaction_id = WC_eMerchantPay_Helper::getOrderMetaData(
-                $order_id,
-                self::META_TRANSACTION_CAPTURE_ID
-            );
-
-            if (empty($reference_transaction_id)) {
-                $reference_transaction_id = $order->get_transaction_id();
+            $order = WC_eMerchantPay_Helper::getOrderById( $order_id );
+            if ( !$order || !$order->get_transaction_id() ) {
+                return false;
             }
-
-            if (empty($reference_transaction_id)) {
-                return WC_eMerchantPay_Helper::getWPError(
-                    static::getTranslatedText(
-                        'You cannot refund a payment, which has not been captured yet!'
-                    )
-                );
-            }
-
             if ($order->get_status() == self::ORDER_STATUS_PENDING) {
                 return WC_eMerchantPay_Helper::getWPError(
                     static::getTranslatedText(
@@ -1844,7 +1912,37 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 );
             }
 
-            $refundableAmount = WC_eMerchantPay_Helper::getOrderRefundableAmount( $order );
+            if (!$transaction_id) {
+                $reference_transaction_id = WC_eMerchantPay_Helper::getOrderMetaData(
+                    $order_id,
+                    self::META_TRANSACTION_CAPTURE_ID
+                );
+            } else {
+                $reference_transaction_id = $transaction_id;
+            }
+            if (empty($reference_transaction_id)) {
+                $reference_transaction_id = $order->get_transaction_id();
+            }
+            if (empty($reference_transaction_id)) {
+                return WC_eMerchantPay_Helper::getWPError(
+                    static::getTranslatedText(
+                        'You cannot refund a payment, which has not been captured yet!'
+                    )
+                );
+            }
+
+            if (!static::canRefund($order, $reference_transaction_id)) {
+                return WC_eMerchantPay_Helper::getWPError(
+                    static::getTranslatedText(
+                        'You cannot refund this payment, because the payment is not captured yet or ' .
+                        'the gateway does not support refunds for this transaction type!'
+                    )
+                );
+            }
+
+            $refundableAmount =
+                $order->get_total() -
+                WC_eMerchantPay_Transactions_Tree::getTotalRefundedAmount( $order );
 
             if (empty($refundableAmount) || $amount > $refundableAmount) {
                 if (empty($refundableAmount)) {
@@ -1869,8 +1967,9 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 );
             }
 
-            $this->set_credentials();
-            $this->set_terminal_token( $order );
+            $payment_gateway = WC_eMerchantPay_Helper::getPaymentMethodInstanceByOrder($order);
+            $payment_gateway->set_credentials();
+            $payment_gateway->set_terminal_token( $order );
 
             $genesis = new \Genesis\Genesis('Financial\Refund');
 
@@ -1899,14 +1998,20 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
             $response = $genesis->response()->getResponseObject();
 
+            $response->parent_id = $reference_transaction_id;
+
+            WC_eMerchantPay_Helper::saveTrxListToOrder($order, [ $response ]);
+
             if ($response->status != \Genesis\API\Constants\Transaction\States::APPROVED) {
                 return WC_eMerchantPay_Helper::getWPError($response->technical_message);
             }
 
-            $order->update_status(
-                self::ORDER_STATUS_REFUNDED,
-                $response->technical_message
-            );
+            if ($refundableAmount - $response->amount == 0) {
+                $order->update_status(
+                    self::ORDER_STATUS_REFUNDED,
+                    $response->technical_message
+                );
+            }
 
             $order->add_order_note(
                 static::getTranslatedText('Refund completed!') . PHP_EOL . PHP_EOL .
@@ -1914,23 +2019,14 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 static::getTranslatedText('Refunded amount:') . $response->amount . PHP_EOL
             );
 
-            WC_eMerchantPay_Helper::addRefundedAmountToOrder( $order, $response->amount);
-
-            // Update the order with the refund id
-            WC_eMerchantPay_Helper::setOrderMetaData(
-                $order_id,
-                self::META_TRANSACTION_REFUND_ID,
-                $response->unique_id
-            );
-
             /**
              * Cancel Subscription when Init Recurring
              */
             if (WC_eMerchantPay_Subscription_Helper::hasOrderSubscriptions( $order_id )) {
-                $this->cancelOrderSubscriptions( $order );
+                $payment_gateway->cancelOrderSubscriptions( $order );
             }
 
-            return true;
+            return $response;
         } catch(\Exception $exception) {
             WC_eMerchantPay_Helper::logException($exception);
 
@@ -2068,7 +2164,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
         $items = array();
 
         foreach ( $order->get_items() as $item ) {
-            $items[] = sprintf( '%s x%d', $item['name'], reset( $item['item_meta']['_qty'] ) );
+            $items[] = sprintf( '%s x %d', $item->get_product()->get_name(), $item->get_quantity() );
         }
 
         return implode( PHP_EOL, $items );

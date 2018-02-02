@@ -162,7 +162,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
     public function init_form_fields()
     {
         // Admin description
-        $this->method_description   =
+        $this->method_description =
             static::getTranslatedText('eMerchantPay\'s Gateway works by sending your client, to our secure (PCI-DSS certified) server.');
 
         parent::init_form_fields();
@@ -170,78 +170,90 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
         $this->form_fields += array(
             self::SETTING_KEY_TRANSACTION_TYPES => array(
                 'type'        => 'multiselect',
-                'title'       => static::getTranslatedText( 'Transaction Type'),
+                'title'       => static::getTranslatedText('Transaction Type'),
                 'options'     => array(
-                    \Genesis\API\Constants\Transaction\Types::ABNIDEAL =>
+                    \Genesis\API\Constants\Transaction\Types::ABNIDEAL            =>
                         static::getTranslatedText('ABN iDEAL'),
-                    \Genesis\API\Constants\Transaction\Types::AUTHORIZE =>
+                    \Genesis\API\Constants\Transaction\Types::ALIPAY              =>
+                        static::getTranslatedText('Alipay'),
+                    \Genesis\API\Constants\Transaction\Types::AUTHORIZE           =>
                         static::getTranslatedText('Authorize'),
-                    \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D =>
+                    \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D        =>
                         static::getTranslatedText('Authorize (3D-Secure)'),
-                    \Genesis\API\Constants\Transaction\Types::CASHU =>
+                    \Genesis\API\Constants\Transaction\Types::CASHU               =>
                         static::getTranslatedText('CashU'),
-                    \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN =>
+                    \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN       =>
                         static::getTranslatedText('Citadel'),
-                    \Genesis\API\Constants\Payment\Methods::EPS =>
+                    \Genesis\API\Constants\Payment\Methods::EPS                   =>
                         static::getTranslatedText('eps'),
-                    \Genesis\API\Constants\Transaction\Types::EZEEWALLET =>
+                    \Genesis\API\Constants\Transaction\Types::EZEEWALLET          =>
                         static::getTranslatedText('eZeeWallet'),
-                    \Genesis\API\Constants\Payment\Methods::GIRO_PAY =>
+                    \Genesis\API\Constants\Transaction\Types::FASHIONCHEQUE       =>
+                        static::getTranslatedText('Fashioncheque'),
+                    \Genesis\API\Constants\Payment\Methods::GIRO_PAY              =>
                         static::getTranslatedText('GiroPay'),
-                    \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN =>
+                    \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN        =>
                         static::getTranslatedText('iDebit'),
-                    \Genesis\API\Constants\Transaction\Types::INPAY =>
+                    \Genesis\API\Constants\Transaction\Types::INPAY               =>
                         static::getTranslatedText('INPay'),
-                    \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN =>
+                    \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN   =>
                         static::getTranslatedText('InstaDebit'),
-                    \Genesis\API\Constants\Payment\Methods::BCMC =>
+                    \Genesis\API\Constants\Transaction\Types::INTERSOLVE          =>
+                        static::getTranslatedText('Intersolve'),
+                    \Genesis\API\Constants\Payment\Methods::BCMC                  =>
                         static::getTranslatedText('Mr.Cash'),
-                    \Genesis\API\Constants\Payment\Methods::MYBANK =>
+                    \Genesis\API\Constants\Payment\Methods::MYBANK                =>
                         static::getTranslatedText('MyBank'),
-                    \Genesis\API\Constants\Transaction\Types::NETELLER =>
+                    \Genesis\API\Constants\Transaction\Types::NETELLER            =>
                         static::getTranslatedText('Neteller'),
-                    \Genesis\API\Constants\Transaction\Types::P24 =>
+                    \Genesis\API\Constants\Transaction\Types::P24                 =>
                         static::getTranslatedText('P24'),
-                    \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_SALE =>
+                    \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_SALE   =>
                         static::getTranslatedText('PayByVoucher (Sale)'),
                     \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY =>
                         static::getTranslatedText('PayByVoucher (oBeP)'),
-                    \Genesis\API\Constants\Transaction\Types::PAYPAL_EXPRESS =>
+                    \Genesis\API\Constants\Transaction\Types::PAYPAL_EXPRESS      =>
                         static::getTranslatedText('PayPal Express'),
-                    \Genesis\API\Constants\Transaction\Types::PAYSAFECARD =>
+                    \Genesis\API\Constants\Transaction\Types::PAYSAFECARD         =>
                         static::getTranslatedText('PaySafeCard'),
-                    \Genesis\API\Constants\Transaction\Types::POLI =>
+                    \Genesis\API\Constants\Transaction\Types::PAYSEC_PAYIN        =>
+                        static::getTranslatedText('PaySec'),
+                    \Genesis\API\Constants\Transaction\Types::POLI                =>
                         static::getTranslatedText('POLi'),
-                    \Genesis\API\Constants\Payment\Methods::PRZELEWY24 =>
+                    \Genesis\API\Constants\Payment\Methods::PRZELEWY24            =>
                         static::getTranslatedText('Przelewy24'),
-                    \Genesis\API\Constants\Payment\Methods::QIWI =>
+                    \Genesis\API\Constants\Payment\Methods::QIWI                  =>
                         static::getTranslatedText('Qiwi'),
-                    \Genesis\API\Constants\Payment\Methods::SAFETY_PAY =>
+                    \Genesis\API\Constants\Payment\Methods::SAFETY_PAY            =>
                         static::getTranslatedText('SafetyPay'),
-                    \Genesis\API\Constants\Transaction\Types::SALE =>
+                    \Genesis\API\Constants\Transaction\Types::SALE                =>
                         static::getTranslatedText('Sale'),
-                    \Genesis\API\Constants\Transaction\Types::SALE_3D =>
+                    \Genesis\API\Constants\Transaction\Types::SALE_3D             =>
                         static::getTranslatedText('Sale (3D-Secure)'),
-                    \Genesis\API\Constants\Transaction\Types::SDD_SALE =>
+                    \Genesis\API\Constants\Transaction\Types::SDD_SALE            =>
                         static::getTranslatedText('Sepa Direct Debit'),
-                    \Genesis\API\Constants\Transaction\Types::SOFORT =>
+                    \Genesis\API\Constants\Transaction\Types::SOFORT              =>
                         static::getTranslatedText('SOFORT'),
-                    \Genesis\API\Constants\Payment\Methods::TELEINGRESO =>
+                    \Genesis\API\Constants\Transaction\Types::TCS                 =>
+                        static::getTranslatedText('TCS'),
+                    \Genesis\API\Constants\Payment\Methods::TELEINGRESO           =>
                         static::getTranslatedText('TeleIngreso'),
-                    \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE =>
+                    \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE        =>
                         static::getTranslatedText('Trustly'),
-                    \Genesis\API\Constants\Payment\Methods::TRUST_PAY =>
+                    \Genesis\API\Constants\Payment\Methods::TRUST_PAY             =>
                         static::getTranslatedText('TrustPay'),
-                    \Genesis\API\Constants\Transaction\Types::WEBMONEY =>
+                    \Genesis\API\Constants\Transaction\Types::WEBMONEY            =>
                         static::getTranslatedText('WebMoney'),
+                    \Genesis\API\Constants\Transaction\Types::WECHAT              =>
+                        static::getTranslatedText('WeChat'),
                 ),
-                'description' => static::getTranslatedText( 'Select transaction type for the payment transaction' ),
+                'description' => static::getTranslatedText('Select transaction type for the payment transaction'),
                 'desc_tip'    => true,
             ),
             self::SETTING_KEY_CHECKOUT_LANGUAGE => array(
-                'type'      => 'select',
-                'title'     => static::getTranslatedText( 'Checkout Language' ),
-                'options'   => array(
+                'type'        => 'select',
+                'title'       => static::getTranslatedText('Checkout Language'),
+                'options'     => array(
                     'en' => static::getTranslatedText(\Genesis\API\Constants\i18n::EN),
                     'es' => static::getTranslatedText(\Genesis\API\Constants\i18n::ES),
                     'fr' => static::getTranslatedText(\Genesis\API\Constants\i18n::FR),
@@ -256,7 +268,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                     'bg' => static::getTranslatedText(\Genesis\API\Constants\i18n::BG),
                     'hi' => static::getTranslatedText(\Genesis\API\Constants\i18n::HI),
                 ),
-                'description' => __( 'Select language for the customer UI on the remote server' ),
+                'description' => __('Select language for the customer UI on the remote server'),
                 'desc_tip'    => true,
             ),
         );
@@ -547,12 +559,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 isset($response->redirect_url);
 
             if ($isWpfSuccessfullyCreated) {
-                // Save the Checkout Id
-                update_post_meta(
-                    $order->id,
-                    self::META_CHECKOUT_TRANSACTION_ID,
-                    $response->unique_id
-                );
+                $this->save_checkout_trx_to_order($response, $order->get_id());
 
                 // Create One-time token to prevent redirect abuse
                 $this->set_one_time_token($order_id, $this->generateTransactionId());
@@ -585,6 +592,18 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
 
             return false;
         }
+    }
+
+    protected function save_checkout_trx_to_order($response_obj, $order_id) {
+        // Save the Checkout Id
+        WC_eMerchantPay_Helper::setOrderMetaData(
+            $order_id,
+            self::META_CHECKOUT_TRANSACTION_ID,
+            $response_obj->unique_id
+        );
+
+        // Save whole trx
+        WC_eMerchantPay_Helper::saveInitialTrxToOrder($order_id, $response_obj);
     }
 
     /**

@@ -6,11 +6,11 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x (Tested up to 4.8)
-* WooCommerce 2.x or 3.x (Tested up to 3.1.1)
-* [GenesisPHP v1.7.0](https://github.com/GenesisGateway/genesis_php/tree/1.7.0) - (Integrated in Module)
+* WordPress 4.x (Tested up to 4.9.2)
+* WooCommerce 2.x or 3.x (Tested up to 3.2.6)
+* [GenesisPHP v1.9.0](https://github.com/GenesisGateway/genesis_php/releases/tag/1.9.0) - (Integrated in Module)
 * PCI-certified server in order to use ```eMerchantPay Direct```
-* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) in order to use **Subscriptions**
+* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x (Tested up to 2.2.13) in order to use **Subscriptions**
 
 GenesisPHP Requirements
 ------------
@@ -116,22 +116,26 @@ Supported Transactions
 
 * ```eMerchantPay Checkout``` Payment Method
     * __ABN iDEAL__
+    * __Alipay__
     * __Authorize__
     * __Authorize (3D-Secure)__
     * __CashU__
     * __Citadel__
     * __eZeeWallet__
+    * __Fashioncheque__
     * __iDebit__
     * __INPay__
     * __InstaDebit__
     * __InitRecurringSale__
-	* __InitRecurringSale (3D-Secure)__
+    * __InitRecurringSale (3D-Secure)__
+    * __Intersolve__
     * __Neteller__
     * __P24__
     * __PayByVoucher (Sale)__
     * __PayByVoucher (oBeP)__
     * __PayPal Express__
     * __PaySafeCard__
+    * __PaySec__
     * __POLi__
     * __PPRO__
     	* __eps__
@@ -148,8 +152,10 @@ Supported Transactions
     * __Sale (3D-Secure)__
     * __Sepa Direct Debit__
     * __SOFORT__
+    * __TCS__
     * __Trustly__
     * __WebMoney__
+    * __WeChat__
     
 _Note_: If you have trouble with your credentials or terminal configuration, get in touch with our [support] team
 

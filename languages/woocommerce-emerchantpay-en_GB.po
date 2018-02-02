@@ -51,6 +51,9 @@ msgstr "Transaction Type"
 msgid "ABN iDEAL"
 msgstr "ABN iDEAL"
 
+msgid "Alipay"
+msgstr "Alipay"
+
 msgid "Authorize"
 msgstr "Authorize"
 
@@ -69,6 +72,9 @@ msgstr "eps"
 msgid "eZeeWallet"
 msgstr "eZeeWallet"
 
+msgid "Fashioncheque"
+msgstr "Fashioncheque"
+
 msgid "GiroPay"
 msgstr "GiroPay"
 
@@ -80,6 +86,9 @@ msgstr "INPay"
 
 msgid "InstaDebit"
 msgstr"InstaDebit"
+
+msgid "Intersolve"
+msgstr"Intersolve"
 
 msgid "Mr.Cash"
 msgstr "Mr.Cash"
@@ -105,6 +114,9 @@ msgstr "PayPal Express"
 msgid "PaySafeCard"
 msgstr "PaySafeCard"
 
+msgid "PaySec"
+msgstr "PaySec"
+
 msgid "POLi"
 msgstr "POLi"
 
@@ -129,6 +141,9 @@ msgstr "Sepa Direct Debit"
 msgid "SOFORT"
 msgstr "SOFORT"
 
+msgid "TCS"
+msgstr "TCS"
+
 msgid "TeleIngreso"
 msgstr "TeleIngreso"
 
@@ -140,6 +155,9 @@ msgstr "TrustPay"
 
 msgid "WebMoney"
 msgstr "WebMoney"
+
+msgid "WeChat"
+msgstr "WeChat"
 
 msgid "Init Recurring Sale"
 msgstr "Init Recurring Sale"

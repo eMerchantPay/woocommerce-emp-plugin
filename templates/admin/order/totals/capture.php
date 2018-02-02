@@ -18,11 +18,6 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-
-$captured_amount = WC_eMerchantPay_Helper::getOrderAmountMetaData(
-    $order->id,
-    $payment_method::META_CAPTURED_AMOUNT
-);
 ?>
 <tr>
     <td class="label captured-total"><?php echo $payment_method::getTranslatedText('Captured'); ?>:</td>
