@@ -108,7 +108,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                             <div class="form-group amount-input">
                                 <label for="emerchantpay_transaction_amount"><?= $payment_method::getTranslatedText('Amount'); ?></label>
                                 <div class="input-group">
-                                    <span class="input-group-addon" data-toggle="emerchantpay-tooltip" data-placement="top" title="<?=$order->get_currency()?>"><?=get_woocommerce_currency_symbol($order->get_currency());?></span>
+                                    <span class="input-group-addon" data-toggle="emerchantpay-tooltip" data-placement="top" title="<?=$order_currency?>"><?=get_woocommerce_currency_symbol($order_currency);?></span>
                                     <input type="text" class="form-control" id="emerchantpay_transaction_amount" name="emerchantpay_transaction_amount" placeholder="<?= $payment_method::getTranslatedText('Amount'); ?>" value="<?=$order->get_total()?>" />
                                 </div>
                                 <span class="help-block" id="emerchantpay-amount-error-container"></span>
@@ -124,8 +124,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <span class="form-buttons">
-                            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true"><?= $payment_method::getTranslatedText('Cancel'); ?></button>
+                        <div class="form-group">
+                            <button id="emerchantpay-modal-close" class="btn btn-default" data-dismiss="modal" aria-hidden="true"><?= $payment_method::getTranslatedText('Close'); ?></button>
                             <button
                                     id="emerchantpay-modal-submit"
                                     class="btn btn-submit btn-primary btn-capture"
@@ -134,7 +134,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                                     data-payment_type="<?= $payment_method->id; ?>"
                                     data-payment_title="<?= htmlentities($payment_method->get_title(), ENT_QUOTES);?>"
                             ><?= $payment_method::getTranslatedText('Submit'); ?></button>
-                        </span>
+                        </div>
                     </div>
                 </div>
             </div>

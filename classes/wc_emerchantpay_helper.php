@@ -377,7 +377,7 @@ class WC_eMerchantPay_Helper
      */
     public static function getGatewayRequestByTxnType($transactionType)
     {
-        $apiRequestClassName = WC_eMerchantPay_Helper::getTransactionTypeRequestClassName(
+        $apiRequestClassName = static::getTransactionTypeRequestClassName(
             $transactionType
         );
 
@@ -469,17 +469,18 @@ class WC_eMerchantPay_Helper
      */
     public static function saveTrxListToOrder(WC_Order $order, array $trx_list_new)
     {
-        $trx_list_existing = $order->get_meta(WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST);
+        $order_id = static::getOrderProp($order, 'id');
+        $trx_list_existing = static::getOrderMetaData($order_id, WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST);
 
         if (is_array($trx_list_existing)) {
-            $trx_hierarchy = $order->get_meta(WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_HIERARCHY);
+            $trx_hierarchy = static::getOrderMetaData($order_id, WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_HIERARCHY);
             if (empty($trx_hierarchy)) {
                 $trx_hierarchy = [];
             }
 
             $trx_tree = new WC_eMerchantPay_Transactions_Tree($trx_list_existing, $trx_list_new, $trx_hierarchy);
 
-            static::saveTrxTree($order->get_id(), $trx_tree);
+            static::saveTrxTree($order_id, $trx_tree);
         }
     }
 
@@ -489,13 +490,13 @@ class WC_eMerchantPay_Helper
      */
     public static function saveTrxTree($order_id, WC_eMerchantPay_Transactions_Tree $trx_tree)
     {
-        WC_eMerchantPay_Helper::setOrderMetaData(
+        static::setOrderMetaData(
             $order_id,
             WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST,
             $trx_tree->trx_list
         );
 
-        WC_eMerchantPay_Helper::setOrderMetaData(
+        static::setOrderMetaData(
             $order_id,
             WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_HIERARCHY,
             $trx_tree->trx_hierarchy
@@ -510,7 +511,7 @@ class WC_eMerchantPay_Helper
     {
         $trx = new WC_eMerchantPay_Transaction($response_obj);
 
-        WC_eMerchantPay_Helper::setOrderMetaData(
+        static::setOrderMetaData(
             $order_id,
             WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST,
             [ $trx ]
@@ -615,5 +616,39 @@ class WC_eMerchantPay_Helper
         $userHash = $userId > 0 ? sha1($userId) : WC_eMerchantPay_Method::generateTransactionId();
 
         return substr($userHash, 0, $length);
+    }
+
+    /**
+     * WooCommerce compatibility
+     * @param mixed $item
+     * @return string
+     */
+    public static function getItemName($item)
+    {
+        return is_array($item) ? $item['name'] : $item->get_product()->get_name();
+    }
+
+    /**
+     * WooCommerce compatibility
+     * @param mixed $item
+     * @return string
+     */
+    public static function getItemQuantity($item)
+    {
+        return is_array($item) ? $item['qty'] : $item->get_quantity();
+    }
+
+    /**
+     * WooCommerce compatibility
+     * @param mixed $order
+     * @param string $prop
+     * @return string
+     */
+    public static function getOrderProp($order, $prop)
+    {
+        return is_array($order) ?
+            $order[$prop] : method_exists($order, "get_$prop") ?
+                                $order->{"get_$prop"}() :
+                                $order->{$prop};
     }
 }

@@ -1,3 +1,8 @@
+var $senderButton;
+var $closeButton;
+var $spinner;
+var $modalInputs;
+
 jQuery(document).ready(function() {
     jQuery('.tree').treegrid({
         expanderExpandedClass:  'dashicons dashicons-arrow-down',
@@ -75,6 +80,11 @@ jQuery(document).ready(function() {
     jQuery('#emerchantpay-modal-submit').on('click', transactionAction);
 
     jQuery( '#woocommerce-order-items' ).find( 'button.refund-items').remove();
+
+    $senderButton = jQuery('#emerchantpay-modal-submit');
+    $closeButton = jQuery('#emerchantpay-modal-close');
+    $spinner = jQuery('#emerchantpay-modal-spinner');
+    $modalInputs = jQuery('#emerchantpay-modal .form-group');
 });
 
 function transactionAction() {
@@ -134,9 +144,7 @@ function doVoidEMerchantPayOrderPayment(paymentType, paymentTitle, transactionId
                 );
 
                 if ($successNotice !== false) {
-                    $successNotice.slideDown('slow', function () {
-                        setTimeout(function() { window.location.reload();}, 2000);
-                    });
+                    successfulRequest($successNotice);
                 }
             }
         } else {
@@ -187,9 +195,7 @@ function doCaptureEMerchantPayOrderPaymentAmount(paymentType, paymentTitle, tran
                 );
 
                 if ($successNotice !== false) {
-                    $successNotice.slideDown('slow', function () {
-                        setTimeout(function() { window.location.reload();}, 2000);
-                    });
+                    successfulRequest($successNotice);
                 }
             }
         } else {
@@ -240,9 +246,7 @@ function doRefundEMerchantPayOrderPaymentAmount(paymentType, paymentTitle, trans
                 );
 
                 if ($successNotice !== false) {
-                    $successNotice.slideDown('slow', function () {
-                        setTimeout(function() { window.location.reload();}, 2000);
-                    });
+                    successfulRequest($successNotice);
                 }
             }
         } else {
@@ -258,6 +262,15 @@ function doRefundEMerchantPayOrderPaymentAmount(paymentType, paymentTitle, trans
             }
         }
         showHideEMerchantPayAjaxLoader(false);
+    });
+}
+
+function successfulRequest($successNotice) {
+    $modalInputs.fadeOut('fast');
+    $spinner.show();
+
+    $successNotice.slideDown('slow', function () {
+        setTimeout(function() { window.location.reload();}, 2000);
     });
 }
 
@@ -370,8 +383,9 @@ function executeBootstrapFieldValidator(formId, validatorFieldName) {
 }
 
 function transactionModal(type, id_unique, amount) {
-    if ((typeof amount == 'undefined') || (amount == null))
+    if ((typeof amount == 'undefined') || (amount == null)) {
         amount = 0;
+    }
 
     modalObj = jQuery('#emerchantpay-modal');
 
@@ -417,13 +431,13 @@ function transactionModal(type, id_unique, amount) {
     }
 
     modalObj.find('input[name="emerchantpay_transaction_type"]').val(type);
-
     modalObj.find('input[name="emerchantpay_transaction_id"]').val(id_unique);
 
     transactionAmountInput.val(amount);
 
-    modalObj.modal('show');
-
+    $modalInputs.show();
+    showHideEMerchantPayAjaxLoader(false);
+    modalObj.modal({backdrop:'static'});
 }
 
 function updateTransModalControlState(controls, visibilityStatus) {
@@ -440,14 +454,13 @@ function updateTransModalControlState(controls, visibilityStatus) {
 }
 
 function showHideEMerchantPayAjaxLoader(shouldShow) {
-    var $senderButton = jQuery('#emerchantpay-modal-submit');
-    var $spinner = jQuery('#emerchantpay-modal-spinner');
-
     if (shouldShow === true) {
-        $senderButton.hide();
+        $senderButton.fadeOut();
+        $closeButton.fadeOut();
         $spinner.show();
     } else {
         $spinner.hide();
-        $senderButton.slideDown();
+        $senderButton.fadeIn();
+        $closeButton.fadeIn();
     }
 }

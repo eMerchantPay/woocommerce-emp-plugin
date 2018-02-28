@@ -559,7 +559,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 isset($response->redirect_url);
 
             if ($isWpfSuccessfullyCreated) {
-                $this->save_checkout_trx_to_order($response, $order->get_id());
+                $this->save_checkout_trx_to_order($response, WC_eMerchantPay_Helper::getOrderProp($order, 'id'));
 
                 // Create One-time token to prevent redirect abuse
                 $this->set_one_time_token($order_id, $this->generateTransactionId());

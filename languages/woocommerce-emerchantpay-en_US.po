@@ -269,6 +269,9 @@ msgstr "The customer cancelled their payment session"
 msgid "Payment transaction has been approved!"
 msgstr "Payment transaction has been approved!"
 
+msgid "Close"
+msgstr "Close"
+
 msgid "Id:"
 msgstr "Id:"
 

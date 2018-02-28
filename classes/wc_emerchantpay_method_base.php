@@ -346,14 +346,15 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     {
         $order = WC_eMerchantPay_Helper::getOrderById($order_id);
 
-        if ($order->get_payment_method() !== $this->id) {
+        if (WC_eMerchantPay_Helper::getOrderProp($order, 'payment_method') !== $this->id) {
             return;
         }
 
         $this->should_execute_admin_footer_hook = true;
 
         $transactions = WC_eMerchantPay_Transactions_Tree::getTransactionTree(
-            $order->get_meta(
+            WC_eMerchantPay_Helper::getOrderMetaData(
+                $order_id,
                 WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST
             )
         );
@@ -364,6 +365,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 array(
                     'payment_method' => $this,
                     'order'          => $order,
+                    'order_currency' => WC_eMerchantPay_Helper::getOrderProp($order, 'currency'),
                     'transactions'   => $transactions
                 )
             );
@@ -1795,14 +1797,16 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             $amount = $trx->amount;
         }
 
+        $order_id = WC_eMerchantPay_Helper::getOrderProp($order, 'id');
+
         WC_eMerchantPay_Helper::setOrderMetaData(
-            $order->get_id(),
+            $order_id,
             self::META_TRANSACTION_TYPE,
             $trx->transaction_type
         );
 
         WC_eMerchantPay_Helper::setOrderMetaData(
-            $order->get_id(),
+            $order_id,
             self::META_ORDER_TRANSACTION_AMOUNT,
             $amount
         );
@@ -1814,13 +1818,13 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
         if (!empty($terminal_token)) {
             WC_eMerchantPay_Helper::setOrderMetaData(
-                $order->get_id(),
+                $order_id,
                 self::META_TRANSACTION_TERMINAL_TOKEN,
                 $terminal_token
             );
 
             WC_eMerchantPay_Subscription_Helper::saveTerminalTokenToOrderSubscriptions(
-                $order->get_id(),
+                $order_id,
                 $terminal_token
             );
         }
@@ -2164,7 +2168,11 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
         $items = array();
 
         foreach ( $order->get_items() as $item ) {
-            $items[] = sprintf( '%s x %d', $item->get_product()->get_name(), $item->get_quantity() );
+            $items[] = sprintf(
+                '%s x %d',
+                WC_eMerchantPay_Helper::getItemName($item),
+                WC_eMerchantPay_Helper::getItemQuantity($item)
+            );
         }
 
         return implode( PHP_EOL, $items );

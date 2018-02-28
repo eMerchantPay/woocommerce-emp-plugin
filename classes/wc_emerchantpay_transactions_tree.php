@@ -60,9 +60,10 @@ class WC_eMerchantPay_Transactions_Tree
      */
     public static function getTransactionsListFromOrder(WC_Order $order)
     {
-        return WC_eMerchantPay_Transactions_Tree::getTransactionTree(
-            $order->get_meta(
-                WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST
+        return static::getTransactionTree(
+            WC_eMerchantPay_Helper::getOrderMetaData(
+                WC_eMerchantPay_Helper::getOrderProp($order, 'id'),
+                static::META_DATA_KEY_LIST
             )
         );
     }
