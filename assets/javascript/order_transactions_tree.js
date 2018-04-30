@@ -409,7 +409,7 @@ function transactionModal(type, id_unique, amount) {
             updateTransModalControlState([modalAmountInputContainer], true);
             updateTransModalControlState([refundTransactionInfoHolder, cancelTransactionWarningHolder], false);
 
-            transactionAmountInput.removeAttr('readonly');
+            changeReadOnly(transactionAmountInput, allowPartialCapture);
             break;
 
         case 'refund':
@@ -418,7 +418,7 @@ function transactionModal(type, id_unique, amount) {
             updateTransModalControlState([refundTransactionInfoHolder], allowPartialRefund);
             updateTransModalControlState([modalAmountInputContainer], true);
 
-            transactionAmountInput.removeAttr('readonly');
+            changeReadOnly(transactionAmountInput, allowPartialRefund);
             break;
 
         case 'void':
@@ -438,6 +438,14 @@ function transactionModal(type, id_unique, amount) {
     $modalInputs.show();
     showHideEMerchantPayAjaxLoader(false);
     modalObj.modal({backdrop:'static'});
+}
+
+function changeReadOnly(transactionAmountInput, canEdit) {
+    if (canEdit) {
+        transactionAmountInput.removeAttr('readonly');
+    } else {
+        transactionAmountInput.attr('readonly', 'readonly');
+    }
 }
 
 function updateTransModalControlState(controls, visibilityStatus) {

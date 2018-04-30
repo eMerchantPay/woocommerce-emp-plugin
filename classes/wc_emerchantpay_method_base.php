@@ -352,24 +352,47 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
         $this->should_execute_admin_footer_hook = true;
 
-        $transactions = WC_eMerchantPay_Transactions_Tree::getTransactionTree(
-            WC_eMerchantPay_Helper::getOrderMetaData(
-                $order_id,
-                WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST
-            )
-        );
+        $transactions = WC_eMerchantPay_Transactions_Tree::createFromOrder($order);
 
         if (!empty($transactions)) {
             $this->fetchTemplate(
                 'admin/order/transactions.php',
                 array(
-                    'payment_method' => $this,
-                    'order'          => $order,
-                    'order_currency' => WC_eMerchantPay_Helper::getOrderProp($order, 'currency'),
-                    'transactions'   => $transactions
+                    'payment_method'        => $this,
+                    'order'                 => $order,
+                    'order_currency'        => WC_eMerchantPay_Helper::getOrderProp($order, 'currency'),
+                    'transactions'          => array_map(function ($v) {
+                        return (array)$v;
+                    }, WC_eMerchantPay_Transactions_Tree::getTransactionTree($transactions->trx_list)),
+                    'allow_partial_capture' => $this->allow_partial_capture(
+                        $transactions->getAuthorizeTrx()
+                    ),
+                    'allow_partial_refund'  => $this->allow_partial_refund(
+                        $transactions->getCaptureTrx()
+                    ),
                 )
             );
         }
+    }
+
+    /**
+     * @param WC_eMerchantPay_Transaction $authorize
+     *
+     * @return bool
+     */
+    private function allow_partial_capture($authorize)
+    {
+        return empty($authorize) ? false : $authorize->type !== \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE;
+    }
+
+    /**
+     * @param WC_eMerchantPay_Transaction $capture
+     *
+     * @return bool
+     */
+    private function allow_partial_refund($capture)
+    {
+        return empty($capture) ? false : $capture->type !== \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE;
     }
 
     /**
@@ -877,27 +900,27 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     protected static function process_capture($data)
     {
         $order_id = $data['order_id'];
-        $reason = $data['reason'];
-        $amount = $data['amount'];
+        $reason   = $data['reason'];
+        $amount   = $data['amount'];
 
         $order = WC_eMerchantPay_Helper::getOrderById($order_id);
 
         $payment_gateway = WC_eMerchantPay_Helper::getPaymentMethodInstanceByOrder($order);
 
-        if ( !$order || !$order->get_transaction_id() ) {
+        if (!$order || !$order->get_transaction_id()) {
             return WC_eMerchantPay_Helper::getWPError('No order exists with the specified reference id');
         }
         try {
             $payment_gateway->set_credentials();
+            $payment_gateway->set_terminal_token($order);
 
-            $payment_gateway->set_terminal_token( $order );
-
-            $genesis = new \Genesis\Genesis('Financial\Capture');
+            $type    = self::get_capture_trx_type($order);
+            $genesis = new \Genesis\Genesis($type);
 
             $genesis
                 ->request()
                     ->setTransactionId(
-                        $payment_gateway::generateTransactionId( $order_id )
+                        $payment_gateway::generateTransactionId($order_id)
                     )
                     ->setUsage(
                         $reason
@@ -915,12 +938,17 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                         $amount
                     );
 
+            if ($type === 'Financial\Alternatives\Klarna\Capture') {
+                $genesis->request()->setItems(WC_eMerchantPay_Helper::getKlarnaCustomParamItems($order));
+            }
+
             $genesis->execute();
 
             $response = $genesis->response()->getResponseObject();
 
             if ($response->status == \Genesis\API\Constants\Transaction\States::APPROVED) {
-                WC_eMerchantPay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_CAPTURE_ID, $response->unique_id);
+                WC_eMerchantPay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_CAPTURE_ID,
+                    $response->unique_id);
 
                 $order->add_order_note(
                     static::getTranslatedText('Payment Captured!') . PHP_EOL . PHP_EOL .
@@ -930,17 +958,42 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
                 $response->parent_id = $data['trx_id'];
 
-                WC_eMerchantPay_Helper::saveTrxListToOrder($order, [ $response ]);
+                WC_eMerchantPay_Helper::saveTrxListToOrder($order, [$response]);
 
                 return $response;
             }
 
             return WC_eMerchantPay_Helper::getWPError($response->technical_message);
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             WC_eMerchantPay_Helper::logException($exception);
 
             return WC_eMerchantPay_Helper::getWPError($exception);
         }
+    }
+
+    /**
+     * @param WC_Order $order
+     *
+     * @throws Exception If Authorize trx is missing or of unknown type
+     * @return string
+     */
+    protected static function get_capture_trx_type( WC_Order $order )
+    {
+        $auth = WC_eMerchantPay_Transactions_Tree::createFromOrder($order)->getAuthorizeTrx();
+
+        if (empty($auth)) {
+            throw new Exception('Missing Authorize transaction');
+        }
+
+        switch ($auth->type) {
+            case \Genesis\API\Constants\Transaction\Types::AUTHORIZE:
+            case \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D:
+                return 'Financial\Capture';
+            case \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE:
+                return 'Financial\Alternatives\Klarna\Capture';
+        }
+
+        throw new Exception('Invalid trx type: ' . $auth->type);
     }
 
     /**
@@ -1904,8 +1957,8 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
     public static function do_refund( $order_id, $amount = null, $reason = '', $transaction_id = '' )
     {
         try {
-            $order = WC_eMerchantPay_Helper::getOrderById( $order_id );
-            if ( !$order || !$order->get_transaction_id() ) {
+            $order = WC_eMerchantPay_Helper::getOrderById($order_id);
+            if (!$order || !$order->get_transaction_id()) {
                 return false;
             }
             if ($order->get_status() == self::ORDER_STATUS_PENDING) {
@@ -1946,7 +1999,7 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
             $refundableAmount =
                 $order->get_total() -
-                WC_eMerchantPay_Transactions_Tree::getTotalRefundedAmount( $order );
+                WC_eMerchantPay_Transactions_Tree::getTotalRefundedAmount($order);
 
             if (empty($refundableAmount) || $amount > $refundableAmount) {
                 if (empty($refundableAmount)) {
@@ -1973,14 +2026,15 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
 
             $payment_gateway = WC_eMerchantPay_Helper::getPaymentMethodInstanceByOrder($order);
             $payment_gateway->set_credentials();
-            $payment_gateway->set_terminal_token( $order );
+            $payment_gateway->set_terminal_token($order);
 
-            $genesis = new \Genesis\Genesis('Financial\Refund');
+            $type    = self::get_refund_trx_type($order);
+            $genesis = new \Genesis\Genesis($type);
 
             $genesis
                 ->request()
                     ->setTransactionId(
-                        static::generateTransactionId( $order_id )
+                        static::generateTransactionId($order_id)
                     )
                     ->setUsage(
                         $reason
@@ -1998,13 +2052,17 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                         $amount
                     );
 
+            if ($type === 'Financial\Alternatives\Klarna\Refund') {
+                $genesis->request()->setItems(WC_eMerchantPay_Helper::getKlarnaCustomParamItems($order));
+            }
+
             $genesis->execute();
 
             $response = $genesis->response()->getResponseObject();
 
             $response->parent_id = $reference_transaction_id;
 
-            WC_eMerchantPay_Helper::saveTrxListToOrder($order, [ $response ]);
+            WC_eMerchantPay_Helper::saveTrxListToOrder($order, [$response]);
 
             if ($response->status != \Genesis\API\Constants\Transaction\States::APPROVED) {
                 return WC_eMerchantPay_Helper::getWPError($response->technical_message);
@@ -2026,12 +2084,12 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
             /**
              * Cancel Subscription when Init Recurring
              */
-            if (WC_eMerchantPay_Subscription_Helper::hasOrderSubscriptions( $order_id )) {
-                $payment_gateway->cancelOrderSubscriptions( $order );
+            if (WC_eMerchantPay_Subscription_Helper::hasOrderSubscriptions($order_id)) {
+                $payment_gateway->cancelOrderSubscriptions($order);
             }
 
             return $response;
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             WC_eMerchantPay_Helper::logException($exception);
 
             return WC_eMerchantPay_Helper::getWPError($exception);
@@ -2065,6 +2123,30 @@ abstract class WC_eMerchantPay_Method extends WC_Payment_Gateway
                 $order->id
             )
         );
+    }
+
+    /**
+     * @param WC_Order $order
+     *
+     * @throws Exception If Capture trx is missing or of unknown type
+     * @return string
+     */
+    protected static function get_refund_trx_type( WC_Order $order )
+    {
+        $auth = WC_eMerchantPay_Transactions_Tree::createFromOrder($order)->getCaptureTrx();
+
+        if (empty($auth)) {
+            throw new Exception('Missing Capture transaction');
+        }
+
+        switch ($auth->type) {
+            case \Genesis\API\Constants\Transaction\Types::CAPTURE:
+                return 'Financial\Refund';
+            case \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE:
+                return 'Financial\Alternatives\Klarna\Refund';
+        }
+
+        throw new Exception('Invalid trx type: ' . $auth->type);
     }
 
     /**

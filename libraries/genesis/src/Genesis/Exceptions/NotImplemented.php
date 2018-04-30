@@ -20,45 +20,28 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-
-namespace Genesis\API\Request\Financial\Alternatives;
+namespace Genesis\Exceptions;
 
 /**
- * Class Paysafecard
+ * Class DeprecatedMethod
  *
- * Alternative payment method
- *
- * @package Genesis\API\Request\Financial\Alternatives
+ * @package Genesis\Exceptions
  */
-class Paysafecard extends \Genesis\API\Request\Base\Financial\Alternative
+class NotImplemented extends \Exception
 {
     /**
-     * Returns the Request transaction type
-     * @return string
-     */
-    protected function getTransactionType()
-    {
-        return \Genesis\API\Constants\Transaction\Types::PAYSAFECARD;
-    }
-
-    /**
-     * Set the required fields
+     * Construct
      *
-     * @return void
+     * @param string $message
+     * @param int $code
+     * @param null $previous
      */
-    protected function setRequiredFields()
+    public function __construct($message = '', $code = 0, $previous = null)
     {
-        parent::setRequiredFields();
+        if (empty($message)) {
+            $message = 'This feature is not implemented yet!';
+        }
 
-        $requiredFieldValues = [
-            'billing_country' => [
-                'AE', 'AR', 'AT', 'BE', 'CY', 'CZ', 'DK', 'FI', 'FR', 'DE', 'GR',
-                'IE', 'IT', 'KW', 'LU', 'NL', 'NO', 'PL', 'PT', 'RO', 'SK', 'SI',
-                'ES', 'SE', 'CH', 'UK', 'HU', 'HR', 'MT', 'US', 'CA', 'MX', 'TR'
-            ],
-            'currency'        => \Genesis\Utils\Currency::getList()
-        ];
-
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        parent::__construct($message, $code, $previous);
     }
 }

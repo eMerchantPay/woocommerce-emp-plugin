@@ -49,9 +49,6 @@ msgstr "Pay safely through eMerchantPay's Secure Gateway."
 msgid "Transaction Type"
 msgstr "Transaction Type"
 
-msgid "ABN iDEAL"
-msgstr "ABN iDEAL"
-
 msgid "Alipay"
 msgstr "Alipay"
 
@@ -82,9 +79,6 @@ msgstr "GiroPay"
 msgid "iDebit"
 msgstr "iDebit"
 
-msgid "INPay"
-msgstr "INPay"
-
 msgid "InstaDebit"
 msgstr"InstaDebit"
 
@@ -100,14 +94,11 @@ msgstr "MyBank"
 msgid "Neteller"
 msgstr "Neteller"
 
+msgid "Klarna"
+msgstr "Klarna"
+
 msgid "P24"
 msgstr "P24"
-
-msgid "PayByVoucher (Sale)"
-msgstr "PayByVoucher (Sale)"
-
-msgid "PayByVoucher (oBeP)"
-msgstr "PayByVoucher (oBeP)"
 
 msgid "PayPal Express"
 msgstr "PayPal Express"
@@ -144,9 +135,6 @@ msgstr "SOFORT"
 
 msgid "TCS"
 msgstr "TCS"
-
-msgid "TeleIngreso"
-msgstr "TeleIngreso"
 
 msgid "Trustly"
 msgstr "Trustly"

@@ -69,6 +69,8 @@ class WC_eMerchantPay_Transaction
         }
         if (isset($trx->transaction_type)) {
             $this->type = $trx->transaction_type;
+        } else if (isset($trx->type)) {
+            $this->type = $trx->type;
         } else {
             $this->type = static::TYPE_CHECKOUT;
         }
@@ -113,6 +115,7 @@ class WC_eMerchantPay_Transaction
     public function getStatusText()
     {
         switch ($this->type) {
+            case \Genesis\API\Constants\Transaction\Types::KLARNA_REFUND:
             case \Genesis\API\Constants\Transaction\Types::REFUND:
                 return \Genesis\API\Constants\Transaction\States::REFUNDED;
             case \Genesis\API\Constants\Transaction\Types::VOID:
@@ -120,5 +123,28 @@ class WC_eMerchantPay_Transaction
             default:
                 return $this->status;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAuthorize()
+    {
+        return in_array($this->type, array(
+            \Genesis\API\Constants\Transaction\Types::AUTHORIZE,
+            \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D,
+            \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE,
+        ));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCapture()
+    {
+        return in_array($this->type, array(
+            \Genesis\API\Constants\Transaction\Types::CAPTURE,
+            \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE
+        ));
     }
 }

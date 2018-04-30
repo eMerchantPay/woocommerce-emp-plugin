@@ -20,88 +20,60 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-namespace Genesis\API\Constants\Payment;
+
+namespace Genesis\API\Request\Financial\Alternatives\Klarna;
+
+use Genesis\API\Traits\Request\Financial\ReferenceAttributes;
 
 /**
- * Class Methods
+ * Class Refund
  *
- * Payment methods for Genesis Transactions
+ * Alternative payment method
  *
- * @package Genesis\API\Constants\Transaction
+ * @package Genesis\API\Request\Financial\Alternatives\Klarna
  */
-class Methods
+class Refund extends \Genesis\API\Request\Base\Financial\Alternative\Klarna
 {
-    /**
-     * e-payment standard
-     *
-     * PPRO transaction
-     */
-    const EPS = 'eps';
+    use ReferenceAttributes;
 
     /**
-     * GiroPay
-     *
-     * PPRO transaction
+     * Returns the Request transaction type
+     * @return string
      */
-    const GIRO_PAY = 'giropay';
+    protected function getTransactionType()
+    {
+        return \Genesis\API\Constants\Transaction\Types::KLARNA_REFUND;
+    }
 
     /**
-     * iDEAL
+     * Set the required fields
      *
-     * PPRO transaction
+     * @return void
      */
-    const IDEAL = 'ideal';
+    protected function setRequiredFields()
+    {
+        $requiredFields = [
+            'transaction_id',
+            'remote_ip',
+            'amount',
+            'currency',
+            'reference_id'
+        ];
+
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+    }
 
     /**
-     * Przelewy24
-     *
-     * PPRO transaction
-     */
-    const PRZELEWY24 = 'przelewy24';
-
-    /**
-     * QIWI
-     *
-     * PPRO transaction
-     */
-    const QIWI = 'qiwi';
-
-    /**
-     * SafetyPay
-     *
-     * PPRO transaction
-     */
-    const SAFETY_PAY = 'safetypay';
-
-    /**
-     * TrustPay
-     *
-     * PPRO transaction
-     */
-    const TRUST_PAY = 'trustpay';
-
-    /**
-     * Mr.Cash
-     *
-     * PPRO transaction
-     */
-    const BCMC = 'bcmc';
-
-    /**
-     * MyBank
-     *
-     * PPRO transaction
-     */
-    const MYBANK = 'mybank';
-
-    /**
-     * Returns all available payment methods
+     * Return additional request attributes
      * @return array
      */
-    public static function getMethods()
+    protected function getPaymentTransactionStructure()
     {
-        $methods = \Genesis\Utils\Common::getClassConstants(__CLASS__);
-
-        return array_values($methods);
+        return array_merge(
+            parent::getPaymentTransactionStructure(),
+            [
+                'reference_id' => $this->reference_id
+            ]
+        );
     }
 }

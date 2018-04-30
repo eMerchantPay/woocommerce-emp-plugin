@@ -640,6 +640,17 @@ class WC_eMerchantPay_Helper
 
     /**
      * WooCommerce compatibility
+     * @param $item
+     *
+     * @return WC_Product
+     */
+    public static function getItemProduct($item)
+    {
+        return is_array($item) ? wc_get_product($item['product_id']) : $item->get_product();
+    }
+
+    /**
+     * WooCommerce compatibility
      * @param mixed $order
      * @param string $prop
      * @return string
@@ -650,5 +661,30 @@ class WC_eMerchantPay_Helper
             $order[$prop] : method_exists($order, "get_$prop") ?
                                 $order->{"get_$prop"}() :
                                 $order->{$prop};
+    }
+
+    /**
+     * @param WC_Order $order
+     * @return \Genesis\API\Request\Financial\Alternatives\Klarna\Items $items
+     */
+    public static function getKlarnaCustomParamItems(WC_Order $order)
+    {
+        $items       = new \Genesis\API\Request\Financial\Alternatives\Klarna\Items($order->get_order_currency());
+        $order_items = $order->get_items();
+
+        foreach ( $order_items as $item ) {
+            $product = self::getItemProduct($item);
+
+            $items->addItem(new \Genesis\API\Request\Financial\Alternatives\Klarna\Item(
+                self::getItemName($item),
+                $product->is_virtual() ?
+                    \Genesis\API\Request\Financial\Alternatives\Klarna\Item::ITEM_TYPE_DIGITAL :
+                    \Genesis\API\Request\Financial\Alternatives\Klarna\Item::ITEM_TYPE_PHYSICAL,
+                self::getItemQuantity($item),
+                $product->get_price()
+            ));
+        }
+
+        return $items;
     }
 }

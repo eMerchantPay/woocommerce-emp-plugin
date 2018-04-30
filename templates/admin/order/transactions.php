@@ -83,7 +83,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
             </table>
         </section>
 
-        <div id="emerchantpay-modal" class="modal fade">
+        <div id="emerchantpay-modal" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -146,8 +146,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                 decimalSeparator  : <?= json_encode(wc_get_price_decimal_separator()); ?>,
                 thousandSeparator : <?= json_encode(wc_get_price_thousand_separator()); ?>
             },
-            allowPartialCapture = true,
-            allowPartialRefund = true;
+            allowPartialCapture = <?= json_encode($allow_partial_capture); ?>,
+            allowPartialRefund = <?= json_encode($allow_partial_refund); ?>;
         </script>
     </td>
 </tr>

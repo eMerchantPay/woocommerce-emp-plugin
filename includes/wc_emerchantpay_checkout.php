@@ -172,8 +172,6 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 'type'        => 'multiselect',
                 'title'       => static::getTranslatedText('Transaction Type'),
                 'options'     => array(
-                    \Genesis\API\Constants\Transaction\Types::ABNIDEAL            =>
-                        static::getTranslatedText('ABN iDEAL'),
                     \Genesis\API\Constants\Transaction\Types::ALIPAY              =>
                         static::getTranslatedText('Alipay'),
                     \Genesis\API\Constants\Transaction\Types::AUTHORIZE           =>
@@ -194,24 +192,20 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                         static::getTranslatedText('GiroPay'),
                     \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN        =>
                         static::getTranslatedText('iDebit'),
-                    \Genesis\API\Constants\Transaction\Types::INPAY               =>
-                        static::getTranslatedText('INPay'),
                     \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN   =>
                         static::getTranslatedText('InstaDebit'),
                     \Genesis\API\Constants\Transaction\Types::INTERSOLVE          =>
                         static::getTranslatedText('Intersolve'),
                     \Genesis\API\Constants\Payment\Methods::BCMC                  =>
                         static::getTranslatedText('Mr.Cash'),
+                    \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE    =>
+                        static::getTranslatedText('Klarna'),
                     \Genesis\API\Constants\Payment\Methods::MYBANK                =>
                         static::getTranslatedText('MyBank'),
                     \Genesis\API\Constants\Transaction\Types::NETELLER            =>
                         static::getTranslatedText('Neteller'),
                     \Genesis\API\Constants\Transaction\Types::P24                 =>
                         static::getTranslatedText('P24'),
-                    \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_SALE   =>
-                        static::getTranslatedText('PayByVoucher (Sale)'),
-                    \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY =>
-                        static::getTranslatedText('PayByVoucher (oBeP)'),
                     \Genesis\API\Constants\Transaction\Types::PAYPAL_EXPRESS      =>
                         static::getTranslatedText('PayPal Express'),
                     \Genesis\API\Constants\Transaction\Types::PAYSAFECARD         =>
@@ -236,8 +230,6 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                         static::getTranslatedText('SOFORT'),
                     \Genesis\API\Constants\Transaction\Types::TCS                 =>
                         static::getTranslatedText('TCS'),
-                    \Genesis\API\Constants\Payment\Methods::TELEINGRESO           =>
-                        static::getTranslatedText('TeleIngreso'),
                     \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE        =>
                         static::getTranslatedText('Trustly'),
                     \Genesis\API\Constants\Payment\Methods::TRUST_PAY             =>
@@ -446,62 +438,64 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
 
     /**
      * @param \Genesis\Genesis $genesis
+     * @param WC_Order $order
      * @param array $requestData
      * @param bool $isRecurring
      * @return void
      */
-    protected function addTransactionTypesToGatewayRequest($genesis, $requestData, $isRecurring)
+    protected function addTransactionTypesToGatewayRequest($genesis, $order, $requestData, $isRecurring)
     {
         /** @var \Genesis\API\Request\WPF\Create $wpfRequest */
         $wpfRequest = $genesis->request();
 
         if ($isRecurring) {
-            foreach ($this->get_recurring_payment_types() as $type ) {
+            $recurring_types = $this->get_recurring_payment_types();
+            foreach ($recurring_types as $type) {
                 $wpfRequest->addTransactionType( $type );
             }
 
             return;
         }
 
-        $userIdHash = WC_eMerchantPay_Helper::getCurrentUserIdHash();
+        $this->addCustomParametersToTrxTypes($wpfRequest, $order, $requestData);
+    }
 
-        $transactionsCustomParams = array(
-            \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_SALE   => array(
-                'card_type'   =>
-                    \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\CardTypes::VIRTUAL,
-                'redeem_type' =>
-                    \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\RedeemTypes::INSTANT
-            ),
-            \Genesis\API\Constants\Transaction\Types::PAYBYVOUCHER_YEEPAY => array(
-                'card_type'        =>
-                    \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\CardTypes::VIRTUAL,
-                'redeem_type'      =>
-                    \Genesis\API\Constants\Transaction\Parameters\PayByVouchers\RedeemTypes::INSTANT,
-                'product_name'     => $requestData['description'],
-                'product_category' => $requestData['description']
-            ),
-            \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN       => array(
-                'merchant_customer_id' => $userIdHash
-            ),
-            \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN        => array(
-                'customer_account_id' => $userIdHash
-            ),
-            \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN   => array(
-                'customer_account_id' => $userIdHash
-            )
-        );
+    /**
+     * @param \Genesis\API\Request\WPF\Create $wpfRequest $wpfRequest
+     * @param WC_Order $order
+     * @param array $requestData
+     */
+    private function addCustomParametersToTrxTypes($wpfRequest, WC_Order $order, $requestData)
+    {
+        $types = $this->get_payment_types();
 
-        foreach ($this->get_payment_types() as $type ) {
+        foreach ( $types as $type ) {
             if (is_array($type)) {
                 $wpfRequest->addTransactionType($type['name'], $type['parameters']);
 
                 continue;
             }
 
-            $transactionCustomParams = WC_eMerchantPay_Helper::getArrayItemsByKey(
-                $transactionsCustomParams,
-                $type
-            );
+            switch ($type) {
+                case \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN:
+                    $userIdHash              = WC_eMerchantPay_Helper::getCurrentUserIdHash();
+                    $transactionCustomParams = array(
+                        'merchant_customer_id' => $userIdHash
+                    );
+                    break;
+                case \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN:
+                case \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN:
+                    $userIdHash              = WC_eMerchantPay_Helper::getCurrentUserIdHash();
+                    $transactionCustomParams = array(
+                        'customer_account_id' => $userIdHash
+                    );
+                    break;
+                case \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE:
+                    $transactionCustomParams = WC_eMerchantPay_Helper::getKlarnaCustomParamItems($order)->toArray();
+                    break;
+                default:
+                    $transactionCustomParams = [];
+            }
 
             $wpfRequest->addTransactionType($type, $transactionCustomParams);
         }
@@ -548,7 +542,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
             $this->set_credentials();
 
             $genesis = $this->prepareInitialGenesisRequest($data);
-            $this->addTransactionTypesToGatewayRequest($genesis, $data, $isRecurring);
+            $this->addTransactionTypesToGatewayRequest($genesis, $order, $data, $isRecurring);
 
             $genesis->execute();
 
@@ -651,13 +645,11 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 \Genesis\API\Constants\Transaction\Types::PPRO,
             \Genesis\API\Constants\Payment\Methods::SAFETY_PAY  =>
                 \Genesis\API\Constants\Transaction\Types::PPRO,
-            \Genesis\API\Constants\Payment\Methods::TELEINGRESO =>
-                \Genesis\API\Constants\Transaction\Types::PPRO,
             \Genesis\API\Constants\Payment\Methods::TRUST_PAY   =>
                 \Genesis\API\Constants\Transaction\Types::PPRO,
-            \Genesis\API\Constants\Payment\Methods::BCMC   =>
+            \Genesis\API\Constants\Payment\Methods::BCMC        =>
                 \Genesis\API\Constants\Transaction\Types::PPRO,
-            \Genesis\API\Constants\Payment\Methods::MYBANK   =>
+            \Genesis\API\Constants\Payment\Methods::MYBANK      =>
                 \Genesis\API\Constants\Transaction\Types::PPRO,
         );
 

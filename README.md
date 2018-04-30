@@ -8,7 +8,7 @@ Requirements
 
 * WordPress 4.x (Tested up to 4.9.4)
 * WooCommerce 2.x or 3.x (Tested up to 3.3.3)
-* [GenesisPHP v1.9.0](https://github.com/GenesisGateway/genesis_php/releases/tag/1.9.0) - (Integrated in Module)
+* [GenesisPHP v1.9.3](https://github.com/GenesisGateway/genesis_php/releases/tag/1.9.3) - (Integrated in Module)
 * PCI-certified server in order to use ```eMerchantPay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x (Tested up to 2.2.13) in order to use **Subscriptions**
 
@@ -115,7 +115,6 @@ Supported Transactions
 	* __Sale (3D-Secure)__
 
 * ```eMerchantPay Checkout``` Payment Method
-    * __ABN iDEAL__
     * __Alipay__
     * __Authorize__
     * __Authorize (3D-Secure)__
@@ -124,11 +123,11 @@ Supported Transactions
     * __eZeeWallet__
     * __Fashioncheque__
     * __iDebit__
-    * __INPay__
     * __InstaDebit__
     * __InitRecurringSale__
     * __InitRecurringSale (3D-Secure)__
     * __Intersolve__
+    * __Klarna__
     * __Neteller__
     * __P24__
     * __PayByVoucher (Sale)__
@@ -143,7 +142,6 @@ Supported Transactions
     	* __Qiwi__
     	* __Przelewy24__
     	* __SafetyPay__
-    	* __TeleIngreso__
     	* __TrustPay__
     	* __Mr.Cash__
     	* __MyBank__

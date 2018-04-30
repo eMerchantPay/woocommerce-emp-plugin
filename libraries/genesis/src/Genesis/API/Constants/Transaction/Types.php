@@ -149,7 +149,7 @@ class Types
     const PAYSAFECARD = 'paysafecard';
 
     /**
-     * Supports payments via EPS, TeleIngreso, SafetyPay, TrustPay, ELV, Przelewy24, QIWI, and GiroPay
+     * Supports payments via EPS, SafetyPay, TrustPay, ELV, Przelewy24, QIWI, and GiroPay
      */
     const PPRO = 'ppro';
 
@@ -331,6 +331,30 @@ class Types
     const INTERSOLVE = 'intersolve';
 
     /**
+     * With Klarna Authorize transactions, you can confirm that an order is successful.
+     * After settling the transaction (e.g. shipping the goods), you should use klarna_capture transaction
+     * type to capture the amount.
+     * Klarna authorize transaction will automatically be cancelled after a certain time frame, most likely two weeks.
+     */
+    const KLARNA_AUTHORIZE = 'klarna_authorize';
+
+    /**
+     * Klarna capture settles a klarna_authorize transaction.
+     * Do this when you are shipping goods, for example. A klarna_capture can only be used after an
+     * klarna_authorize on the same transaction.
+     * Therefore, the reference id of the klarna authorize transaction is mandatory.
+     */
+    const KLARNA_CAPTURE = 'klarna_capture';
+
+    /**
+     * Klarna Refunds allow to return already billed amounts to customers.
+     * The amount can be fully or partially refunded. Klarna refunds can only be done on former klarna_capture(settled)
+     * transactions.
+     * Therefore, the reference id for the corresponding transaction is mandatory
+     */
+    const KLARNA_REFUND = 'klarna_refund';
+
+    /**
      * @param $type
      *
      * @return bool|string
@@ -350,6 +374,7 @@ class Types
             self::SOFORT                  => 'Alternatives\Sofort',
             self::TRUSTLY_SALE            => 'Alternatives\Trustly\Sale',
             self::TRUSTLY_WITHDRAWAL      => 'Alternatives\Trustly\Withdrawal',
+            self::KLARNA_AUTHORIZE        => 'Alternatives\Klarna\Authorize',
             self::INIT_RECURRING_SALE     => 'Cards\Recurring\InitRecurringSale',
             self::INIT_RECURRING_SALE_3D  => 'Cards\Recurring\InitRecurringSale3D',
             self::RECURRING_SALE          => 'Cards\Recurring\RecurringSale',
@@ -443,7 +468,8 @@ class Types
             self::IDEBIT_PAYIN,
             self::TCS,
             self::FASHIONCHEQUE,
-            self::INTERSOLVE
+            self::INTERSOLVE,
+            self::KLARNA_AUTHORIZE
         ];
     }
 
@@ -457,6 +483,34 @@ class Types
     public static function isValidWPFTransactionType($type)
     {
         return in_array(strtolower($type), self::getWPFTransactionTypes());
+    }
+
+    /**
+     * Get valid split payment transaction types
+     *
+     * @return array
+     */
+    public static function getSplitPaymentsTrxTypes()
+    {
+        return [
+            self::SALE,
+            self::SALE_3D,
+            self::TCS,
+            self::FASHIONCHEQUE,
+            self::INTERSOLVE
+        ];
+    }
+
+    /**
+     * Check whether this is a valid (known) split payment transaction type
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    public static function isValidSplitPaymentTrxType($type)
+    {
+        return in_array(strtolower($type), self::getSplitPaymentsTrxTypes());
     }
 
     /**
@@ -485,7 +539,8 @@ class Types
     {
         $transactionTypesList = [
             self::AUTHORIZE,
-            self::AUTHORIZE_3D
+            self::AUTHORIZE_3D,
+            self::KLARNA_AUTHORIZE
         ];
 
         return in_array(strtolower($type), $transactionTypesList);
@@ -499,7 +554,6 @@ class Types
     public static function canRefund($type)
     {
         $transactionTypesList = [
-            self::ABNIDEAL,
             self::CAPTURE,
             self::CASHU,
             self::INIT_RECURRING_SALE,
@@ -510,8 +564,10 @@ class Types
             self::PPRO,
             self::SALE,
             self::SALE_3D,
+            self::SOFORT,
             self::TRUSTLY_SALE,
-            self::FASHIONCHEQUE
+            self::FASHIONCHEQUE,
+            self::KLARNA_CAPTURE
         ];
 
         return in_array(strtolower($type), $transactionTypesList);
@@ -544,6 +600,87 @@ class Types
     public static function is3D($type)
     {
         return Common::endsWith($type, '3d');
+    }
+
+    /**
+     * @param $type
+     *
+     * @return bool
+     */
+    public static function isAuthorize($type)
+    {
+        $transactionTypesList = [
+            self::AUTHORIZE,
+            self::AUTHORIZE_3D,
+            self::KLARNA_AUTHORIZE
+        ];
+
+        return in_array(strtolower($type), $transactionTypesList);
+    }
+
+    /**
+     * @param $type
+     *
+     * @return bool
+     */
+    public static function isCapture($type)
+    {
+        $transactionTypesList = [
+            self::CAPTURE,
+            self::KLARNA_CAPTURE
+        ];
+
+        return in_array(strtolower($type), $transactionTypesList);
+    }
+
+    /**
+     * @param $type
+     *
+     * @return bool
+     */
+    public static function isRefund($type)
+    {
+        $transactionTypesList = [
+            self::REFUND,
+            self::SDD_REFUND,
+            self::KLARNA_REFUND
+        ];
+
+        return in_array(strtolower($type), $transactionTypesList);
+    }
+
+    /**
+     * Get capture transaction class from authorize type
+     *
+     * @param $authorizeType
+     * @return string
+     */
+    public static function getCaptureTransactionClass($authorizeType)
+    {
+        switch ($authorizeType) {
+            case self::AUTHORIZE:
+                return 'Financial\Capture';
+            case self::KLARNA_AUTHORIZE:
+                return 'Financial\Alternatives\Klarna\Capture';
+            break;
+        }
+    }
+
+    /**
+     * Get refund transaction class from authorize type
+     *
+     * @param $captureType
+     * @return string
+     */
+    public static function getRefundTransactionClass($captureType)
+    {
+        switch ($captureType) {
+            case self::CAPTURE:
+                return 'Financial\Refund';
+            case self::KLARNA_CAPTURE:
+                return 'Financial\Alternatives\Klarna\Refund';
+                break;
+        }
     }
 
     /**

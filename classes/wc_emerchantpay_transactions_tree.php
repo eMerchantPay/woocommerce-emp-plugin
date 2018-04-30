@@ -39,13 +39,27 @@ class WC_eMerchantPay_Transactions_Tree
     public $trx_list;
 
     /**
+     * @param WC_Order $order
+     *
+     * @return WC_eMerchantPay_Transactions_Tree
+     */
+    public static function createFromOrder(WC_Order $order)
+    {
+        return new WC_eMerchantPay_Transactions_Tree(
+            array_map(function ($v) {
+                return (object)$v;
+            }, static::getTransactionsListFromOrder($order))
+        );
+    }
+
+    /**
      * WC_eMerchantPay_Transactions_Tree constructor.
      *
      * @param array $trx_list_existing
      * @param array $trx_list_new
      * @param array $trx_hierarchy
      */
-    public function __construct(array $trx_list_existing, array $trx_list_new, array $trx_hierarchy = [])
+    public function __construct(array $trx_list_existing, array $trx_list_new = array(), array $trx_hierarchy = array())
     {
         $this->setTrxHierarchy($trx_list_existing, $trx_list_new, $trx_hierarchy);
         $this->setTrxData($trx_list_existing, $trx_list_new);
@@ -103,7 +117,9 @@ class WC_eMerchantPay_Transactions_Tree
         if (count($trx_list_existing) === 1 &&
             $trx_list_existing[0]->type === WC_eMerchantPay_Transaction::TYPE_CHECKOUT) {
             foreach ($trx_list_new AS $trx_new) {
-                $this->trx_hierarchy[$trx_new->unique_id] = $trx_list_existing[0]->unique_id;
+                if ($trx_new->unique_id !== $trx_list_existing[0]->unique_id) {
+                    $this->trx_hierarchy[$trx_new->unique_id] = $trx_list_existing[0]->unique_id;
+                }
             }
         }
     }
@@ -213,26 +229,8 @@ class WC_eMerchantPay_Transactions_Tree
             $transaction['can_capture'] = static::canCapture($transaction);
 
             if ($transaction['can_capture']) {
-                $totalAuthorizedAmount           = self::getTransactionsSumAmount(
-                    $trx_arr,
-                    $transaction['parent_id'],
-                    array(
-                        \Genesis\API\Constants\Transaction\Types::AUTHORIZE,
-                        \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D
-                    ),
-                    \Genesis\API\Constants\Transaction\States::APPROVED
-                );
-                $totalCapturedAmount             = self::getTransactionsSumAmount(
-                        $trx_arr,
-                        $transaction['unique_id'],
-                        \Genesis\API\Constants\Transaction\Types::CAPTURE,
-                        \Genesis\API\Constants\Transaction\States::APPROVED
-                    ) + self::getTransactionsSumAmount(
-                        $trx_arr,
-                        $transaction['unique_id'],
-                        \Genesis\API\Constants\Transaction\Types::CAPTURE,
-                        \Genesis\API\Constants\Transaction\States::REFUNDED
-                    );
+                $totalAuthorizedAmount           = self::getChildrenAuthorizedAmount($trx_arr, $transaction);
+                $totalCapturedAmount             = self::getChildrenCapturedAmount($trx_arr, $transaction);
                 $transaction['available_amount'] = $totalAuthorizedAmount - $totalCapturedAmount;
 
                 if ($transaction['available_amount'] == 0) {
@@ -244,12 +242,7 @@ class WC_eMerchantPay_Transactions_Tree
 
             if ($transaction['can_refund']) {
                 $totalCapturedAmount             = $transaction['amount'];
-                $totalRefundedAmount             = self::getTransactionsSumAmount(
-                    $trx_arr,
-                    $transaction['unique_id'],
-                    \Genesis\API\Constants\Transaction\Types::REFUND,
-                    \Genesis\API\Constants\Transaction\States::APPROVED
-                );
+                $totalRefundedAmount             = self::getChildrenRefundAmount($trx_arr, $transaction);
                 $transaction['available_amount'] = $totalCapturedAmount - $totalRefundedAmount;
 
                 if ($transaction['available_amount'] == 0) {
@@ -293,6 +286,85 @@ class WC_eMerchantPay_Transactions_Tree
     }
 
     /**
+     * @param array $trx_arr
+     * @param array $transaction
+     *
+     * @return float
+     */
+    private static function getChildrenAuthorizedAmount(array $trx_arr, array $transaction)
+    {
+        return self::getTransactionsSumAmount(
+            $trx_arr,
+            $transaction['parent_id'],
+            array(
+                \Genesis\API\Constants\Transaction\Types::AUTHORIZE,
+                \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D,
+                \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE
+            ),
+            \Genesis\API\Constants\Transaction\States::APPROVED
+        );
+    }
+
+    /**
+     * @param array $trx_arr
+     * @param array $transaction
+     *
+     * @return float
+     */
+    private static function getChildrenCapturedAmount(array $trx_arr, array $transaction)
+    {
+        $transactions_to_look_for = array(
+            array(
+                'type'   => \Genesis\API\Constants\Transaction\Types::CAPTURE,
+                'status' => \Genesis\API\Constants\Transaction\States::APPROVED
+            ),
+            array(
+                'type'   => \Genesis\API\Constants\Transaction\Types::CAPTURE,
+                'status' => \Genesis\API\Constants\Transaction\States::REFUNDED
+            ),
+            array(
+                'type'   => \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE,
+                'status' => \Genesis\API\Constants\Transaction\States::APPROVED
+            ),
+            array(
+                'type'   => \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE,
+                'status' => \Genesis\API\Constants\Transaction\States::REFUNDED
+            )
+        );
+
+        $sum = 0.0;
+        foreach ($transactions_to_look_for AS $trx) {
+            $sum += self::getTransactionsSumAmount(
+                $trx_arr,
+                $transaction['unique_id'],
+                $trx['type'],
+                $trx['status']
+            );
+        }
+
+        return $sum;
+    }
+
+    /**
+     * @param array $trx_arr
+     * @param array $transaction
+     *
+     * @return float
+     */
+    private static function getChildrenRefundAmount(array $trx_arr, array $transaction)
+    {
+        return self::getTransactionsSumAmount(
+            $trx_arr,
+            $transaction['unique_id'],
+            array(
+                \Genesis\API\Constants\Transaction\Types::REFUND,
+                \Genesis\API\Constants\Transaction\Types::KLARNA_REFUND
+            ),
+            \Genesis\API\Constants\Transaction\States::APPROVED
+        );
+    }
+
+    /**
      * @param array $transaction
      *
      * @return bool
@@ -329,16 +401,54 @@ class WC_eMerchantPay_Transactions_Tree
         }
 
         foreach($transactions AS $trx) {
-            $trx = (array) $trx;
+            if (!is_array($trx)) {
+                $trx = (array) $trx;
+            }
 
-            if ($trx['parent_id'] === $transaction['unique_id'] &&
-                ($trx['type'] === \Genesis\API\Constants\Transaction\Types::VOID ||
-                 $trx['type'] === \Genesis\API\Constants\Transaction\Types::CAPTURE)) {
+            if (self::isVoidAlreadyProcessed($transaction, $trx)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * @param array $parent
+     * @param array $child
+     *
+     * @return bool
+     */
+    private static function isVoidAlreadyProcessed(array $parent, array $child)
+    {
+        return $child['parent_id'] === $parent['unique_id'] &&
+               ($child['type'] === \Genesis\API\Constants\Transaction\Types::VOID ||
+                $child['type'] === \Genesis\API\Constants\Transaction\Types::CAPTURE ||
+                $child['type'] === \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE);
+    }
+
+    /**
+     * @return WC_eMerchantPay_Transaction
+     */
+    public function getAuthorizeTrx()
+    {
+        foreach($this->trx_list AS $trx) {
+            if ($trx->isAuthorize()) {
+                return $trx;
+            }
+        }
+    }
+
+    /**
+     * @return WC_eMerchantPay_Transaction
+     */
+    public function getCaptureTrx()
+    {
+        foreach($this->trx_list AS $trx) {
+            if ($trx->isCapture()) {
+                return $trx;
+            }
+        }
     }
 
     /**
@@ -419,11 +529,13 @@ class WC_eMerchantPay_Transactions_Tree
      */
     public static function getTotalCapturedAmount(WC_Order $order)
     {
+        $trx_list = static::getTransactionsListFromOrder($order);
+
         return static::getTotalAmount(
-                static::getTransactionsListFromOrder($order),
+                $trx_list,
                 \Genesis\API\Constants\Transaction\Types::CAPTURE
             ) + static::getTotalAmount(
-                static::getTransactionsListFromOrder($order),
+                $trx_list,
                 \Genesis\API\Constants\Transaction\Types::CAPTURE,
                 \Genesis\API\Constants\Transaction\States::REFUNDED
             );
