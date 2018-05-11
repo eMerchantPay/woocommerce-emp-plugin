@@ -1,7 +1,7 @@
-eMerchantPay Gateway Module for WooCommerce
+emerchantpay Gateway Module for WooCommerce
 ===========================================
 
-This is a Payment Module for WooCommerce that gives you the ability to process payments through eMerchantPay's Payment Gateway - Genesis.
+This is a Payment Module for WooCommerce that gives you the ability to process payments through emerchantpay's Payment Gateway - Genesis.
 
 Requirements
 ------------
@@ -9,7 +9,7 @@ Requirements
 * WordPress 4.x (Tested up to 4.9.4)
 * WooCommerce 2.x or 3.x (Tested up to 3.3.3)
 * [GenesisPHP v1.9.3](https://github.com/GenesisGateway/genesis_php/releases/tag/1.9.3) - (Integrated in Module)
-* PCI-certified server in order to use ```eMerchantPay Direct```
+* PCI-certified server in order to use ```emerchantpay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x (Tested up to 2.2.13) in order to use **Subscriptions**
 
 GenesisPHP Requirements
@@ -30,14 +30,14 @@ Installation
 * Login into your Wordpress Admin Panel with Administrator privileges
 * Navigate to ```Plugins -> Add New```
 * Install through the Marketplace/ Select the downloaded ```.zip``` File
-* Activate the newly installed ```WooCommerce eMerchantPay Payment Gateway Client``` plugin
+* Activate the newly installed ```WooCommerce emerchantpay Payment Gateway Client``` plugin
 * Navigate to ```WooCommerce -> Settings -> Checkout``` 
-* Select your preferred payment method ```eMerchantPay Checkout``` or ```eMerchantPay Direct```
+* Select your preferred payment method ```emerchantpay Checkout``` or ```emerchantpay Direct```
 * Check ```Enable```, set the correct credentials and click "Save changes"
 
 Enable WooCommerce Secure Checkout
 ------------
-This steps should be followed if you wish to use the ```eMerchantPay Direct``` Method
+This steps should be followed if you wish to use the ```emerchantpay Direct``` Method
 * Ensure you have installed and configured a SSL Certificate on your PCI-DSS Certified Server
 * Login into your WordPress Admin Panel with Administrator privileges
 * Navigate to ```WooCommerce``` - > ```Settings``` -> ```Checkout```
@@ -105,7 +105,7 @@ and add the following line to execute the **WordPress Cron** once per 10 Minutes
 
 Supported Transactions
 ------------
-* ```eMerchantPay Direct``` Payment Method
+* ```emerchantpay Direct``` Payment Method
 	* __Authorize__
 	* __Authorize (3D-Secure)__
 	* __InitRecurringSale__
@@ -114,7 +114,7 @@ Supported Transactions
 	* __Sale__
 	* __Sale (3D-Secure)__
 
-* ```eMerchantPay Checkout``` Payment Method
+* ```emerchantpay Checkout``` Payment Method
     * __Alipay__
     * __Authorize__
     * __Authorize (3D-Secure)__

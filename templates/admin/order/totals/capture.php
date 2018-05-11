@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 eMerchantPay Ltd.
+ * Copyright (C) 2018 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @author      eMerchantPay Ltd.
- * @copyright   2016 eMerchantPay Ltd.
+ * @author      emerchantpay Ltd.
+ * @copyright   2018 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
@@ -21,11 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 ?>
 <tr>
     <td class="label captured-total"><?php echo $payment_method::getTranslatedText('Captured'); ?>:</td>
-    <?php if (WC_eMerchantPay_Helper::getIsWooCommerceVersion('2.6', '>=')) { ?>
+    <?php if (WC_emerchantpay_Helper::getIsWooCommerceVersion('2.6', '>=')) { ?>
         <td width="1%"></td>
     <?php } ?>
     <td class="total captured-total">
-        <div class="view"><?php echo WC_eMerchantPay_Helper::formatPrice($captured_amount, $order); ?></div>
+        <div class="view"><?php echo WC_emerchantpay_Helper::formatPrice($captured_amount, $order); ?></div>
     </td>
 </tr>
 

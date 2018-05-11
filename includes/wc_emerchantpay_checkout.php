@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 eMerchantPay Ltd.
+ * Copyright (C) 2018 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @author      eMerchantPay Ltd.
- * @copyright   2016 eMerchantPay Ltd.
+ * @author      emerchantpay Ltd.
+ * @copyright   2018 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
@@ -21,17 +21,17 @@ if (!defined( 'ABSPATH' )) {
     exit(0);
 }
 
-if (!class_exists('WC_eMerchantPay_Method')) {
+if (!class_exists('WC_emerchantpay_Method')) {
     require_once dirname(dirname(__FILE__)) . '/classes/wc_emerchantpay_method_base.php';
 }
 
 /**
- * eMerchantPay Checkout
+ * emerchantpay Checkout
  *
- * @class   WC_eMerchantPay_Checkout
+ * @class   WC_emerchantpay_Checkout
  * @extends WC_Payment_Gateway
  */
-class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
+class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
 {
     /**
      * Payment Method Code
@@ -57,7 +57,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
      */
     protected function getModuleTitle()
     {
-        return static::getTranslatedText('eMerchantPay Checkout');
+        return static::getTranslatedText('emerchantpay Checkout');
     }
 
     /**
@@ -145,9 +145,9 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
         }
 
         if (!$areApiTransactionTypesDefined) {
-            WC_eMerchantPay_Helper::printWpNotice(
+            WC_emerchantpay_Helper::printWpNotice(
                 static::getTranslatedText('You must specify at least one transaction type in order to be able to use this payment method!'),
-                WC_eMerchantPay_Helper::WP_NOTICE_TYPE_ERROR
+                WC_emerchantpay_Helper::WP_NOTICE_TYPE_ERROR
             );
         }
 
@@ -163,7 +163,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
     {
         // Admin description
         $this->method_description =
-            static::getTranslatedText('eMerchantPay\'s Gateway works by sending your client, to our secure (PCI-DSS certified) server.');
+            static::getTranslatedText('emerchantpay\'s Gateway works by sending your client, to our secure (PCI-DSS certified) server.');
 
         parent::init_form_fields();
 
@@ -478,20 +478,20 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
 
             switch ($type) {
                 case \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN:
-                    $userIdHash              = WC_eMerchantPay_Helper::getCurrentUserIdHash();
+                    $userIdHash              = WC_emerchantpay_Helper::getCurrentUserIdHash();
                     $transactionCustomParams = array(
                         'merchant_customer_id' => $userIdHash
                     );
                     break;
                 case \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN:
                 case \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN:
-                    $userIdHash              = WC_eMerchantPay_Helper::getCurrentUserIdHash();
+                    $userIdHash              = WC_emerchantpay_Helper::getCurrentUserIdHash();
                     $transactionCustomParams = array(
                         'customer_account_id' => $userIdHash
                     );
                     break;
                 case \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE:
-                    $transactionCustomParams = WC_eMerchantPay_Helper::getKlarnaCustomParamItems($order)->toArray();
+                    $transactionCustomParams = WC_emerchantpay_Helper::getKlarnaCustomParamItems($order)->toArray();
                     break;
                 default:
                     $transactionCustomParams = [];
@@ -553,7 +553,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 isset($response->redirect_url);
 
             if ($isWpfSuccessfullyCreated) {
-                $this->save_checkout_trx_to_order($response, WC_eMerchantPay_Helper::getOrderProp($order, 'id'));
+                $this->save_checkout_trx_to_order($response, WC_emerchantpay_Helper::getOrderProp($order, 'id'));
 
                 // Create One-time token to prevent redirect abuse
                 $this->set_one_time_token($order_id, $this->generateTransactionId());
@@ -580,9 +580,9 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
                 );
             }
 
-            WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
+            WC_emerchantpay_Message_Helper::addErrorNotice($error_message);
 
-            WC_eMerchantPay_Helper::logException($exception);
+            WC_emerchantpay_Helper::logException($exception);
 
             return false;
         }
@@ -590,14 +590,14 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
 
     protected function save_checkout_trx_to_order($response_obj, $order_id) {
         // Save the Checkout Id
-        WC_eMerchantPay_Helper::setOrderMetaData(
+        WC_emerchantpay_Helper::setOrderMetaData(
             $order_id,
             self::META_CHECKOUT_TRANSACTION_ID,
             $response_obj->unique_id
         );
 
         // Save whole trx
-        WC_eMerchantPay_Helper::saveInitialTrxToOrder($order_id, $response_obj);
+        WC_emerchantpay_Helper::saveInitialTrxToOrder($order_id, $response_obj);
     }
 
     /**
@@ -609,7 +609,7 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
      */
     protected function set_terminal_token( $order )
     {
-         $token = WC_eMerchantPay_Helper::getOrderMetaData(
+         $token = WC_emerchantpay_Helper::getOrderMetaData(
              $order->id,
              self::META_TRANSACTION_TERMINAL_TOKEN
          );
@@ -704,8 +704,8 @@ class WC_eMerchantPay_Checkout extends WC_eMerchantPay_Method
             return $recurringToken;
         }
 
-        return WC_eMerchantPay_Subscription_Helper::getTerminalTokenMetaFromSubscriptionOrder( $order->id );
+        return WC_emerchantpay_Subscription_Helper::getTerminalTokenMetaFromSubscriptionOrder( $order->id );
     }
 }
 
-WC_eMerchantPay_Checkout::registerStaticActions();
+WC_emerchantpay_Checkout::registerStaticActions();

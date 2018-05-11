@@ -1,10 +1,10 @@
 <?php
 /*
- * Plugin Name: WooCommerce eMerchantPay Payment Gateway Client
- * Description: Extend WooCommerce's Checkout options with eMerchantPay's Genesis Gateway
+ * Plugin Name: WooCommerce emerchantpay Payment Gateway Client
+ * Description: Extend WooCommerce's Checkout options with emerchantpay's Genesis Gateway
  * Text Domain: woocommerce-emerchantpay
- * Author: eMerchantPay
- * Version: 1.7.0
+ * Author: emerchantpay
+ * Version: 1.8.0
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -35,7 +35,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
             include dirname(__FILE__) . '/includes/wc_emerchantpay_direct.php';
 
             /**
-             * Add the eMerchantPay Gateway to WooCommerce's
+             * Add the emerchantpay Gateway to WooCommerce's
              * list of installed gateways
              *
              * @param $methods Array of existing Payment Gateways
@@ -45,8 +45,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
             if (!function_exists('woocommerce_add_emerchantpay_gateway')) {
                 function woocommerce_add_emerchantpay_gateway($methods)
                 {
-                    array_push($methods, 'WC_eMerchantPay_Checkout');
-                    array_push($methods, 'WC_eMerchantPay_Direct');
+                    array_push($methods, 'WC_emerchantpay_Checkout');
+                    array_push($methods, 'WC_emerchantpay_Direct');
 
                     return $methods;
                 }

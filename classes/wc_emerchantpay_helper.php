@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2017 eMerchantPay Ltd.
+ * Copyright (C) 2018 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @author      eMerchantPay Ltd.
- * @copyright   2017 eMerchantPay Ltd.
+ * @author      emerchantpay Ltd.
+ * @copyright   2018 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
@@ -21,13 +21,15 @@ if (!defined( 'ABSPATH' )) {
     exit(0);
 }
 
+use \Genesis\API\Request\Financial\Alternatives\Klarna\Item as KlarnaItem;
+
 /**
- * eMerchantPay Helper Class
+ * emerchantpay Helper Class
  *
- * @class   WC_eMerchantPay_Helper
+ * @class   WC_emerchantpay_Helper
 
  */
-class WC_eMerchantPay_Helper
+class WC_emerchantpay_Helper
 {
     const WP_NOTICE_TYPE_ERROR  = 'error';
     const WP_NOTICE_TYPE_NOTICE = 'notice';
@@ -127,7 +129,7 @@ class WC_eMerchantPay_Helper
      * Get payment gateway class by order data.
      *
      * @param int|WC_Order $order
-     * @return WC_eMerchantPay_Method|bool
+     * @return WC_emerchantpay_Method|bool
      */
     public static function getPaymentMethodInstanceByOrder($order)
     {
@@ -470,15 +472,15 @@ class WC_eMerchantPay_Helper
     public static function saveTrxListToOrder(WC_Order $order, array $trx_list_new)
     {
         $order_id = static::getOrderProp($order, 'id');
-        $trx_list_existing = static::getOrderMetaData($order_id, WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST);
+        $trx_list_existing = static::getOrderMetaData($order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST);
 
         if (is_array($trx_list_existing)) {
-            $trx_hierarchy = static::getOrderMetaData($order_id, WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_HIERARCHY);
+            $trx_hierarchy = static::getOrderMetaData($order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_HIERARCHY);
             if (empty($trx_hierarchy)) {
                 $trx_hierarchy = [];
             }
 
-            $trx_tree = new WC_eMerchantPay_Transactions_Tree($trx_list_existing, $trx_list_new, $trx_hierarchy);
+            $trx_tree = new WC_emerchantpay_Transactions_Tree($trx_list_existing, $trx_list_new, $trx_hierarchy);
 
             static::saveTrxTree($order_id, $trx_tree);
         }
@@ -486,19 +488,19 @@ class WC_eMerchantPay_Helper
 
     /**
      * @param int $order_id
-     * @param WC_eMerchantPay_Transactions_Tree $trx_tree
+     * @param WC_emerchantpay_Transactions_Tree $trx_tree
      */
-    public static function saveTrxTree($order_id, WC_eMerchantPay_Transactions_Tree $trx_tree)
+    public static function saveTrxTree($order_id, WC_emerchantpay_Transactions_Tree $trx_tree)
     {
         static::setOrderMetaData(
             $order_id,
-            WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST,
+            WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST,
             $trx_tree->trx_list
         );
 
         static::setOrderMetaData(
             $order_id,
-            WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_HIERARCHY,
+            WC_emerchantpay_Transactions_Tree::META_DATA_KEY_HIERARCHY,
             $trx_tree->trx_hierarchy
         );
     }
@@ -509,11 +511,11 @@ class WC_eMerchantPay_Helper
      */
     public static function saveInitialTrxToOrder($order_id, $response_obj)
     {
-        $trx = new WC_eMerchantPay_Transaction($response_obj);
+        $trx = new WC_emerchantpay_Transaction($response_obj);
 
         static::setOrderMetaData(
             $order_id,
-            WC_eMerchantPay_Transactions_Tree::META_DATA_KEY_LIST,
+            WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST,
             [ $trx ]
         );
     }
@@ -613,7 +615,7 @@ class WC_eMerchantPay_Helper
     {
         $userId = self::getCurrentUserId();
 
-        $userHash = $userId > 0 ? sha1($userId) : WC_eMerchantPay_Method::generateTransactionId();
+        $userHash = $userId > 0 ? sha1($userId) : WC_emerchantpay_Method::generateTransactionId();
 
         return substr($userHash, 0, $length);
     }
@@ -671,20 +673,85 @@ class WC_eMerchantPay_Helper
     {
         $items       = new \Genesis\API\Request\Financial\Alternatives\Klarna\Items($order->get_order_currency());
         $order_items = $order->get_items();
+        $taxRates    = self::getTaxRates($order);
 
-        foreach ( $order_items as $item ) {
+        foreach ($order_items as $item) {
             $product = self::getItemProduct($item);
 
-            $items->addItem(new \Genesis\API\Request\Financial\Alternatives\Klarna\Item(
+            $klarnaItem = new KlarnaItem(
                 self::getItemName($item),
-                $product->is_virtual() ?
-                    \Genesis\API\Request\Financial\Alternatives\Klarna\Item::ITEM_TYPE_DIGITAL :
-                    \Genesis\API\Request\Financial\Alternatives\Klarna\Item::ITEM_TYPE_PHYSICAL,
+                $product->is_virtual() ? KlarnaItem::ITEM_TYPE_DIGITAL : KlarnaItem::ITEM_TYPE_PHYSICAL,
                 self::getItemQuantity($item),
-                $product->get_price()
+                $product->get_price_including_tax()
+            );
+
+            if ($taxRates) {
+                self::setKlarnaItemTaxRate($klarnaItem, $taxRates);
+            }
+
+            $items->addItem($klarnaItem);
+        }
+
+        if ($order->get_total_shipping()) {
+            $items->addItem(new KlarnaItem(
+                WC_emerchantpay_Method::getTranslatedText('Shipping Costs'),
+                KlarnaItem::ITEM_TYPE_SHIPPING_FEE,
+                1,
+                $order->get_total_shipping() + $order->get_shipping_tax()
             ));
         }
 
         return $items;
+    }
+
+    /**
+     * @param WC_Order $order
+     *
+     * @return array
+     */
+    public static function getTaxRates(WC_Order $order)
+    {
+        $taxRates = $order->get_taxes();
+
+        if (!$taxRates) {
+            return [];
+        }
+
+        return array_map(function ($tax) {
+            $tax['tax_rate'] = floatval(WC_Tax::_get_tax_rate($tax['rate_id'])['tax_rate']);
+
+            return $tax;
+        }, $taxRates);
+    }
+
+    /**
+     * @param KlarnaItem $klarnaItem
+     * @param array $taxes
+     */
+    public static function setKlarnaItemTaxRate($klarnaItem, $taxes)
+    {
+        $taxRateTotal = 0.0;
+        foreach ($taxes AS $tax) {
+            if (self::isShippingItemWithoutTax($klarnaItem, $tax)) {
+                continue;
+            }
+
+            $taxRateTotal += $tax['tax_rate'];
+        }
+
+        $klarnaItem->setTaxRate($taxRateTotal);
+    }
+
+    /**
+     * @param KlarnaItem $klarnaItem
+     * @param array $tax
+     *
+     * @return bool
+     */
+    protected static function isShippingItemWithoutTax($klarnaItem, $tax)
+    {
+        return $klarnaItem->getItemType() ===
+               KlarnaItem::ITEM_TYPE_SHIPPING_FEE &&
+               floatval($tax['shipping_tax_amount']) === 0.0;
     }
 }

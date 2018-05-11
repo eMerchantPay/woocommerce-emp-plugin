@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce eMerchantPay Payment Gateway Client\n"
+"Project-Id-Version: WooCommerce emerchantpay Payment Gateway Client\n"
 "POT-Creation-Date: 2015-08-03 15:05+0300\n"
 "PO-Revision-Date: 2017-03-30 17:53+0300\n"
 "Last-Translator: \n"
@@ -19,11 +19,11 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
-msgid "eMerchantPay"
-msgstr "eMerchantPay"
+msgid "emerchantpay"
+msgstr "emerchantpay"
 
-msgid "eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS certified) server."
-msgstr "eMerchantPay's Gateway works by sending your client, to our secure (PCI-DSS certified) server."
+msgid "emerchantpay's Gateway works by sending your client, to our secure (PCI-DSS certified) server."
+msgstr "emerchantpay's Gateway works by sending your client, to our secure (PCI-DSS certified) server."
 
 msgid "Enable/Disable"
 msgstr "Enable/Disable"
@@ -43,8 +43,8 @@ msgstr "Description:"
 msgid "Text describing this payment method to the customer, during checkout."
 msgstr "Text describing this payment method to the customer, during checkout."
 
-msgid "Pay safely through eMerchantPay's Secure Gateway."
-msgstr "Pay safely through eMerchantPay's Secure Gateway."
+msgid "Pay safely through emerchantpay's Secure Gateway."
+msgstr "Pay safely through emerchantpay's Secure Gateway."
 
 msgid "Transaction Type"
 msgstr "Transaction Type"
@@ -335,3 +335,6 @@ msgstr "Show / Hide Credit Card Owner Field on the Checkout Page"
 
 msgid "Decide whether to show or hide Credit Card Owner Field"
 msgstr "Decide whether to show or hide Credit Card Owner Field"
+
+msgid "Shipping Costs"
+msgstr "Shipping Costs"

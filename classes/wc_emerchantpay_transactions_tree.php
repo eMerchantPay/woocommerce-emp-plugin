@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2017 eMerchantPay Ltd.
+ * Copyright (C) 2018 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @author      eMerchantPay Ltd.
- * @copyright   2017 eMerchantPay Ltd.
+ * @author      emerchantpay Ltd.
+ * @copyright   2018 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
@@ -22,12 +22,12 @@ if (!defined( 'ABSPATH' )) {
 }
 
 /**
- * eMerchantPay Helper Class
+ * emerchantpay Helper Class
  *
- * @class WC_eMerchantPay_Transactions_Tree
+ * @class WC_emerchantpay_Transactions_Tree
 
  */
-class WC_eMerchantPay_Transactions_Tree
+class WC_emerchantpay_Transactions_Tree
 {
     const META_DATA_KEY_HIERARCHY = 'emp_trx_hierarchy';
     const META_DATA_KEY_LIST = 'emp_trx_list';
@@ -41,11 +41,11 @@ class WC_eMerchantPay_Transactions_Tree
     /**
      * @param WC_Order $order
      *
-     * @return WC_eMerchantPay_Transactions_Tree
+     * @return WC_emerchantpay_Transactions_Tree
      */
     public static function createFromOrder(WC_Order $order)
     {
-        return new WC_eMerchantPay_Transactions_Tree(
+        return new WC_emerchantpay_Transactions_Tree(
             array_map(function ($v) {
                 return (object)$v;
             }, static::getTransactionsListFromOrder($order))
@@ -53,7 +53,7 @@ class WC_eMerchantPay_Transactions_Tree
     }
 
     /**
-     * WC_eMerchantPay_Transactions_Tree constructor.
+     * WC_emerchantpay_Transactions_Tree constructor.
      *
      * @param array $trx_list_existing
      * @param array $trx_list_new
@@ -75,8 +75,8 @@ class WC_eMerchantPay_Transactions_Tree
     public static function getTransactionsListFromOrder(WC_Order $order)
     {
         return static::getTransactionTree(
-            WC_eMerchantPay_Helper::getOrderMetaData(
-                WC_eMerchantPay_Helper::getOrderProp($order, 'id'),
+            WC_emerchantpay_Helper::getOrderMetaData(
+                WC_emerchantpay_Helper::getOrderProp($order, 'id'),
                 static::META_DATA_KEY_LIST
             )
         );
@@ -115,7 +115,7 @@ class WC_eMerchantPay_Transactions_Tree
         // Add reference_id to checkout trx so hierarchy will work out and
         // change checkout status the same way like refunds and voids
         if (count($trx_list_existing) === 1 &&
-            $trx_list_existing[0]->type === WC_eMerchantPay_Transaction::TYPE_CHECKOUT) {
+            $trx_list_existing[0]->type === WC_emerchantpay_Transaction::TYPE_CHECKOUT) {
             foreach ($trx_list_new AS $trx_new) {
                 if ($trx_new->unique_id !== $trx_list_existing[0]->unique_id) {
                     $this->trx_hierarchy[$trx_new->unique_id] = $trx_list_existing[0]->unique_id;
@@ -146,13 +146,13 @@ class WC_eMerchantPay_Transactions_Tree
     }
 
     /**
-     * Change genesis response objects to internal WC_eMerchantPay_Transaction
+     * Change genesis response objects to internal WC_emerchantpay_Transaction
      */
     protected function parseTrxs()
     {
         foreach ($this->trx_list AS &$raw_trx) {
             if ($raw_trx instanceof stdClass) {
-                $raw_trx = new WC_eMerchantPay_Transaction(
+                $raw_trx = new WC_emerchantpay_Transaction(
                     $raw_trx,
                     $this->findParentId($raw_trx)
                 );
@@ -161,7 +161,7 @@ class WC_eMerchantPay_Transactions_Tree
     }
 
     /**
-     * @param stdClass|WC_eMerchantPay_Transaction $trx
+     * @param stdClass|WC_emerchantpay_Transaction $trx
      *
      * @return bool|string
      */
@@ -192,7 +192,7 @@ class WC_eMerchantPay_Transactions_Tree
      * every branch is a transaction related to
      * the order
      *
-     * @param $transactions array WC_eMerchantPay_Transaction
+     * @param $transactions array WC_emerchantpay_Transaction
      *
      * @return array
      */
@@ -224,7 +224,9 @@ class WC_eMerchantPay_Transactions_Tree
 
         // Process individual fields
         foreach ($trx_arr as &$transaction) {
-            $transaction['date_add'] = date("H:i:s \n m/d/Y", $transaction['date_add']);
+            if (strtotime($transaction['date_add']) === false) {
+                $transaction['date_add'] = date("H:i:s \n m/d/Y", $transaction['date_add']);
+            }
 
             $transaction['can_capture'] = static::canCapture($transaction);
 
@@ -428,7 +430,7 @@ class WC_eMerchantPay_Transactions_Tree
     }
 
     /**
-     * @return WC_eMerchantPay_Transaction
+     * @return WC_emerchantpay_Transaction
      */
     public function getAuthorizeTrx()
     {
@@ -440,7 +442,7 @@ class WC_eMerchantPay_Transactions_Tree
     }
 
     /**
-     * @return WC_eMerchantPay_Transaction
+     * @return WC_emerchantpay_Transaction
      */
     public function getCaptureTrx()
     {

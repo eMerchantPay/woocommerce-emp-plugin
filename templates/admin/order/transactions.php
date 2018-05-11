@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 eMerchantPay Ltd.
+ * Copyright (C) 2018 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @author      eMerchantPay Ltd.
- * @copyright   2016 eMerchantPay Ltd.
+ * @author      emerchantpay Ltd.
+ * @copyright   2018 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
         <section class="box bootstrap">
             <h3 class="text-left">
                 <img src="<?=plugin_dir_url( realpath(dirname(__FILE__) . '/../../' ) ) . 'assets/images/logo.png';?>" alt="eMp" class="emp-logo" />
-                <span><?= $payment_method::getTranslatedText('eMerchantPay Transactions'); ?></span>
+                <span><?= $payment_method::getTranslatedText('emerchantpay Transactions'); ?></span>
             </h3>
 
             <table class="table table-hover tree">

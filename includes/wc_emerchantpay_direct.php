@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2016 eMerchantPay Ltd.
+ * Copyright (C) 2018 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -12,8 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @author      eMerchantPay Ltd.
- * @copyright   2016 eMerchantPay Ltd.
+ * @author      emerchantpay Ltd.
+ * @copyright   2018 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
@@ -21,17 +21,17 @@ if (!defined( 'ABSPATH' )) {
     exit(0);
 }
 
-if (!class_exists('WC_eMerchantPay_Method')) {
+if (!class_exists('WC_emerchantpay_Method')) {
     require_once dirname(dirname(__FILE__)) . '/classes/wc_emerchantpay_method_base.php';
 }
 
 /**
- * eMerchantPay Direct
+ * emerchantpay Direct
  *
- * @class   WC_eMerchantPay_Direct
+ * @class   WC_emerchantpay_Direct
  * @extends WC_Payment_Gateway
  */
-class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
+class WC_emerchantpay_Direct extends WC_emerchantpay_Method
 {
     const FEATURE_DEFAULT_CREDIT_CARD_FORM = 'default_credit_card_form';
     const WC_ACTION_CREDIT_CARD_FORM_START = 'woocommerce_credit_card_form_start';
@@ -56,7 +56,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
      */
     protected function getModuleTitle()
     {
-        return static::getTranslatedText('eMerchantPay Direct');
+        return static::getTranslatedText('emerchantpay Direct');
     }
 
     /**
@@ -185,7 +185,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     {
         return
             parent::is_applicable() &&
-            WC_eMerchantPay_Helper::getStoreOverSecuredConnection();
+            WC_emerchantpay_Helper::getStoreOverSecuredConnection();
     }
 
     /**
@@ -217,7 +217,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     {
         // Admin description
         $this->method_description   =
-            static::getTranslatedText('eMerchantPay\'s Gateway offers a secure way to pay for your order, using Credit/Debit Card.') .
+            static::getTranslatedText('emerchantpay\'s Gateway offers a secure way to pay for your order, using Credit/Debit Card.') .
             '<br />' .
             static::getTranslatedText('Direct API - allow customers to enter their CreditCard information on your website.') .
             '<br />' .
@@ -378,7 +378,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
             $data,
             array(
                 'remote_ip'        =>
-                    WC_eMerchantPay_Helper::getClientRemoteIpAddress(),
+                    WC_emerchantpay_Helper::getClientRemoteIpAddress(),
                 'transaction_type' =>
                     $isRecurring
                         ? $this->getMethodSetting(self::SETTING_KEY_INIT_RECURRING_TXN_TYPE)
@@ -399,7 +399,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     {
         global $woocommerce;
 
-        $order = WC_eMerchantPay_Helper::getOrderById($order_id);
+        $order = WC_emerchantpay_Helper::getOrderById($order_id);
 
         $data = $this->populateGateRequestData($order);
 
@@ -413,17 +413,17 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
             $response = $genesis->response()->getResponseObject();
 
             // Save whole trx
-            WC_eMerchantPay_Helper::saveInitialTrxToOrder($order_id, $response);
+            WC_emerchantpay_Helper::saveInitialTrxToOrder($order_id, $response);
 
             // Create One-time token to prevent redirect abuse
             $this->set_one_time_token($order_id, static::generateTransactionId());
 
-            $paymentSuccessful = WC_eMerchantPay_Helper::isInitGatewayResponseSuccessful($response);
+            $paymentSuccessful = WC_emerchantpay_Helper::isInitGatewayResponseSuccessful($response);
 
             if ($paymentSuccessful) {
                 // Save the Checkout Id
-                WC_eMerchantPay_Helper::setOrderMetaData($order_id, $this->getCheckoutTransactionIdMetaKey(), $response->unique_id);
-                WC_eMerchantPay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_TYPE, $response->transaction_type);
+                WC_emerchantpay_Helper::setOrderMetaData($order_id, $this->getCheckoutTransactionIdMetaKey(), $response->unique_id);
+                WC_emerchantpay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_TYPE, $response->transaction_type);
 
                 if (isset($response->redirect_url)) {
                     return array(
@@ -450,7 +450,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
                     );
                 }
 
-                WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
+                WC_emerchantpay_Message_Helper::addErrorNotice($error_message);
 
                 return false;
             }
@@ -465,9 +465,9 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
                 );
             }
 
-            WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
+            WC_emerchantpay_Message_Helper::addErrorNotice($error_message);
 
-            WC_eMerchantPay_Helper::logException($exception);
+            WC_emerchantpay_Helper::logException($exception);
 
             return false;
         }
@@ -479,7 +479,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
      */
     protected function prepareInitialGenesisRequest($data)
     {
-        $genesis = WC_eMerchantPay_Helper::getGatewayRequestByTxnType( $data['transaction_type'] );
+        $genesis = WC_emerchantpay_Helper::getGatewayRequestByTxnType( $data['transaction_type'] );
 
         $genesis
             ->request()
@@ -520,7 +520,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
                 ->setShippingState($data['shipping']['state'])
                 ->setShippingCountry($data['shipping']['country']);
 
-        $isRecurring = WC_eMerchantPay_Helper::isInitRecurring(
+        $isRecurring = WC_emerchantpay_Helper::isInitRecurring(
             $data['transaction_type']
         );
 
@@ -545,7 +545,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     {
         global $woocommerce;
 
-        $order = WC_eMerchantPay_Helper::getOrderById($order_id);
+        $order = WC_emerchantpay_Helper::getOrderById($order_id);
 
         $data = $this->populateGateRequestData($order, true);
 
@@ -561,12 +561,12 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
             // Create One-time token to prevent redirect abuse
             $this->set_one_time_token($order_id, static::generateTransactionId());
 
-            $paymentSuccessful = WC_eMerchantPay_Helper::isInitGatewayResponseSuccessful($response);
+            $paymentSuccessful = WC_emerchantpay_Helper::isInitGatewayResponseSuccessful($response);
 
             if ($paymentSuccessful) {
                 // Save the Checkout Id
-                WC_eMerchantPay_Helper::setOrderMetaData($order_id, $this->getCheckoutTransactionIdMetaKey(), $response->unique_id);
-                WC_eMerchantPay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_TYPE, $response->transaction_type);
+                WC_emerchantpay_Helper::setOrderMetaData($order_id, $this->getCheckoutTransactionIdMetaKey(), $response->unique_id);
+                WC_emerchantpay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_TYPE, $response->transaction_type);
 
                 if (isset($response->redirect_url)) {
                     return array(
@@ -597,7 +597,7 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
                     );
                 }
 
-                WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
+                WC_emerchantpay_Message_Helper::addErrorNotice($error_message);
 
                 return false;
             }
@@ -612,9 +612,9 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
                 );
             }
 
-            WC_eMerchantPay_Message_Helper::addErrorNotice($error_message);
+            WC_emerchantpay_Message_Helper::addErrorNotice($error_message);
 
-            WC_eMerchantPay_Helper::logException($exception);
+            WC_emerchantpay_Helper::logException($exception);
 
             return false;
         }
@@ -652,4 +652,4 @@ class WC_eMerchantPay_Direct extends WC_eMerchantPay_Method
     }
 }
 
-WC_eMerchantPay_Direct::registerStaticActions();
+WC_emerchantpay_Direct::registerStaticActions();
