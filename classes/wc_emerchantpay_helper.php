@@ -31,6 +31,7 @@ use \Genesis\API\Request\Financial\Alternatives\Klarna\Item as KlarnaItem;
  */
 class WC_emerchantpay_Helper
 {
+    const LOG_NAME              = 'emerchantpay';
     const WP_NOTICE_TYPE_ERROR  = 'error';
     const WP_NOTICE_TYPE_NOTICE = 'notice';
 
@@ -346,7 +347,7 @@ class WC_emerchantpay_Helper
      * @param string $operator
      * @return bool|mixed
      */
-    public static function getIsWooCommerceVersion($version, $operator)
+    public static function isWooCommerceVersion($version, $operator)
     {
         if (defined('WOOCOMMERCE_VERSION')) {
             return version_compare(WOOCOMMERCE_VERSION, $version, $operator);
@@ -522,15 +523,22 @@ class WC_emerchantpay_Helper
 
     /**
      * Writes a message / Exception to the error log
-     * @param \Exception|string $exception
+     *
+     * @param \Exception|string $error
      */
-    public static function logException($exception)
+    public static function logException($error)
     {
-        error_log(
-            $exception instanceof \Exception
-                ? $exception->getMessage()
-                : $exception
-        );
+        $error_message = $error instanceof \Exception
+            ? $error->getMessage()
+            : $error;
+
+        error_log($error_message);
+
+        if (self::isWooCommerceVersion('2.7', '>=')) {
+            wc_get_logger()->error($error_message, ['source' => self::LOG_NAME]);
+        } else {
+            (new WC_Logger())->add(self::LOG_NAME, $error_message);
+        }
     }
 
     /**

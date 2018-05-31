@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 ?>
 <tr>
     <td class="label captured-total"><?php echo $payment_method::getTranslatedText('Captured'); ?>:</td>
-    <?php if (WC_emerchantpay_Helper::getIsWooCommerceVersion('2.6', '>=')) { ?>
+    <?php if (WC_emerchantpay_Helper::isWooCommerceVersion('2.6', '>=')) { ?>
         <td width="1%"></td>
     <?php } ?>
     <td class="total captured-total">

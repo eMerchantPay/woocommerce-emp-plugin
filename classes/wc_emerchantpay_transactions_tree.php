@@ -444,10 +444,10 @@ class WC_emerchantpay_Transactions_Tree
     /**
      * @return WC_emerchantpay_Transaction
      */
-    public function getCaptureTrx()
+    public function getSettlementTrx()
     {
         foreach($this->trx_list AS $trx) {
-            if ($trx->isCapture()) {
+            if ($trx->isSettlement()) {
                 return $trx;
             }
         }

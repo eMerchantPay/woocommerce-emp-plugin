@@ -368,7 +368,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                         $transactions->getAuthorizeTrx()
                     ),
                     'allow_partial_refund'  => $this->allow_partial_refund(
-                        $transactions->getCaptureTrx()
+                        $transactions->getSettlementTrx()
                     ),
                 )
             );
@@ -2132,7 +2132,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected static function get_refund_trx_type( WC_Order $order )
     {
-        $auth = WC_emerchantpay_Transactions_Tree::createFromOrder($order)->getCaptureTrx();
+        $auth = WC_emerchantpay_Transactions_Tree::createFromOrder($order)->getSettlementTrx();
 
         if (empty($auth)) {
             throw new Exception('Missing Capture transaction');
@@ -2140,6 +2140,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
 
         switch ($auth->type) {
             case \Genesis\API\Constants\Transaction\Types::CAPTURE:
+            case \Genesis\API\Constants\Transaction\Types::SALE:
+            case \Genesis\API\Constants\Transaction\Types::SALE_3D:
                 return 'Financial\Refund';
             case \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE:
                 return 'Financial\Alternatives\Klarna\Refund';

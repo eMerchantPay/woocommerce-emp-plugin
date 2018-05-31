@@ -140,10 +140,12 @@ class WC_emerchantpay_Transaction
     /**
      * @return bool
      */
-    public function isCapture()
+    public function isSettlement()
     {
         return in_array($this->type, array(
             \Genesis\API\Constants\Transaction\Types::CAPTURE,
+            \Genesis\API\Constants\Transaction\Types::SALE,
+            \Genesis\API\Constants\Transaction\Types::SALE_3D,
             \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE
         ));
     }
