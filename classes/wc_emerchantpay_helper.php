@@ -681,7 +681,6 @@ class WC_emerchantpay_Helper
     {
         $items       = new \Genesis\API\Request\Financial\Alternatives\Klarna\Items($order->get_order_currency());
         $order_items = $order->get_items();
-        $taxRates    = self::getTaxRates($order);
 
         foreach ($order_items as $item) {
             $product = self::getItemProduct($item);
@@ -690,76 +689,42 @@ class WC_emerchantpay_Helper
                 self::getItemName($item),
                 $product->is_virtual() ? KlarnaItem::ITEM_TYPE_DIGITAL : KlarnaItem::ITEM_TYPE_PHYSICAL,
                 self::getItemQuantity($item),
-                $product->get_price_including_tax()
+                $product->get_price_excluding_tax()
             );
-
-            if ($taxRates) {
-                self::setKlarnaItemTaxRate($klarnaItem, $taxRates);
-            }
 
             $items->addItem($klarnaItem);
         }
 
-        if ($order->get_total_shipping()) {
+        $taxes = floatval($order->get_total_tax());
+        if ($taxes) {
+            $items->addItem(new KlarnaItem(
+                WC_emerchantpay_Method::getTranslatedText('Taxes'),
+                KlarnaItem::ITEM_TYPE_SURCHARGE,
+                1,
+                $taxes
+            ));
+        }
+
+        $discount = floatval($order->get_discount_total());
+        if ($discount) {
+            $items->addItem(new KlarnaItem(
+                WC_emerchantpay_Method::getTranslatedText('Discount'),
+                KlarnaItem::ITEM_TYPE_DISCOUNT,
+                1,
+                -$discount
+            ));
+        }
+
+        $total_shipping_cost = floatval($order->get_shipping_total());
+        if ($total_shipping_cost) {
             $items->addItem(new KlarnaItem(
                 WC_emerchantpay_Method::getTranslatedText('Shipping Costs'),
                 KlarnaItem::ITEM_TYPE_SHIPPING_FEE,
                 1,
-                $order->get_total_shipping() + $order->get_shipping_tax()
+                $total_shipping_cost
             ));
         }
 
         return $items;
-    }
-
-    /**
-     * @param WC_Order $order
-     *
-     * @return array
-     */
-    public static function getTaxRates(WC_Order $order)
-    {
-        $taxRates = $order->get_taxes();
-
-        if (!$taxRates) {
-            return [];
-        }
-
-        return array_map(function ($tax) {
-            $tax['tax_rate'] = floatval(WC_Tax::_get_tax_rate($tax['rate_id'])['tax_rate']);
-
-            return $tax;
-        }, $taxRates);
-    }
-
-    /**
-     * @param KlarnaItem $klarnaItem
-     * @param array $taxes
-     */
-    public static function setKlarnaItemTaxRate($klarnaItem, $taxes)
-    {
-        $taxRateTotal = 0.0;
-        foreach ($taxes AS $tax) {
-            if (self::isShippingItemWithoutTax($klarnaItem, $tax)) {
-                continue;
-            }
-
-            $taxRateTotal += $tax['tax_rate'];
-        }
-
-        $klarnaItem->setTaxRate($taxRateTotal);
-    }
-
-    /**
-     * @param KlarnaItem $klarnaItem
-     * @param array $tax
-     *
-     * @return bool
-     */
-    protected static function isShippingItemWithoutTax($klarnaItem, $tax)
-    {
-        return $klarnaItem->getItemType() ===
-               KlarnaItem::ITEM_TYPE_SHIPPING_FEE &&
-               floatval($tax['shipping_tax_amount']) === 0.0;
     }
 }
