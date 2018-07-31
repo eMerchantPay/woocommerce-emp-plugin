@@ -136,17 +136,4 @@ class WC_emerchantpay_Transaction
             \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE,
         ));
     }
-
-    /**
-     * @return bool
-     */
-    public function isSettlement()
-    {
-        return in_array($this->type, array(
-            \Genesis\API\Constants\Transaction\Types::CAPTURE,
-            \Genesis\API\Constants\Transaction\Types::SALE,
-            \Genesis\API\Constants\Transaction\Types::SALE_3D,
-            \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE
-        ));
-    }
 }

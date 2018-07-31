@@ -1575,52 +1575,85 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected function populateGateRequestData($order, $isRecurring = false)
     {
-        if ( ! WC_emerchantpay_Helper::isValidOrder( $order )) {
+        if (!WC_emerchantpay_Helper::isValidOrder($order)) {
             throw new \Exception('Invalid WooCommerce Order!');
         }
 
-        return
-            array(
-                'transaction_id'   => static::generateTransactionId( $order->id ),
-                'amount'           => $this->getAmount($order, $isRecurring),
-                'currency'         => $order->get_order_currency(),
-                'usage'            => WC_emerchantpay_Helper::getPaymentTransactionUsage(false),
-                'description'      => $this->get_item_description( $order ),
-                'customer_email'   => $order->billing_email,
-                'customer_phone'   => $order->billing_phone,
-                // URLs
-                'notification_url'  => WC()->api_request_url( get_class( $this ) ),
-                'return_success_url' => $this->get_return_url($order),
-                'return_failure_url' => $this->append_to_url(
-                    WC()->api_request_url( get_class( $this ) ),
-                    array (
-                        'act'  => 'failure',
-                        'oid'  => $order->id,
-                    )
-                ),
-                //Billing
-                'billing' => array(
-                    'first_name' => $order->billing_first_name,
-                    'last_name'  => $order->billing_last_name,
-                    'address1'   => $order->billing_address_1,
-                    'address2'   => $order->billing_address_2,
-                    'zip_code'   => $order->billing_postcode,
-                    'city'       => $order->billing_city,
-                    'state'      => $order->billing_state,
-                    'country'    => $order->billing_country
-                ),
-                //Shipping
-                'shipping' => array(
-                    'first_name' => $order->shipping_first_name,
-                    'last_name'  => $order->shipping_last_name,
-                    'address1'   => $order->shipping_address_1,
-                    'address2'   => $order->shipping_address_2,
-                    'zip_code'   => $order->shipping_postcode,
-                    'city'       => $order->shipping_city,
-                    'state'      => $order->shipping_state,
-                    'country'    => $order->shipping_country
+        $data = array(
+            'transaction_id'     => static::generateTransactionId($order->id),
+            'amount'             => $this->getAmount($order, $isRecurring),
+            'currency'           => $order->get_order_currency(),
+            'usage'              => WC_emerchantpay_Helper::getPaymentTransactionUsage(false),
+            'description'        => $this->get_item_description($order),
+            'customer_email'     => $order->billing_email,
+            'customer_phone'     => $order->billing_phone,
+            // URLs
+            'notification_url'   => WC()->api_request_url(get_class($this)),
+            'return_success_url' => $this->get_return_url($order),
+            'return_failure_url' => $this->append_to_url(
+                WC()->api_request_url(get_class($this)),
+                array(
+                    'act' => 'failure',
+                    'oid' => $order->id,
                 )
-            );
+            ),
+            'billing'            => self::getOrderBillingAddress($order),
+            'shipping'           => self::getOrderShippingAddress($order),
+        );
+
+        return $data;
+    }
+
+    /**
+     * @param WC_Order $order
+     *
+     * @return array
+     */
+    protected static function getOrderBillingAddress(WC_Order $order)
+    {
+        return [
+            'first_name' => $order->billing_first_name,
+            'last_name'  => $order->billing_last_name,
+            'address1'   => $order->billing_address_1,
+            'address2'   => $order->billing_address_2,
+            'zip_code'   => $order->billing_postcode,
+            'city'       => $order->billing_city,
+            'state'      => $order->billing_state,
+            'country'    => $order->billing_country
+        ];
+    }
+
+    /**
+     * @param WC_Order $order
+     *
+     * @return array
+     */
+    protected static function getOrderShippingAddress(WC_Order $order)
+    {
+        if (self::isShippingAddressMissing($order)) {
+            return self::getOrderBillingAddress($order);
+        }
+
+        return [
+            'first_name' => $order->shipping_first_name,
+            'last_name'  => $order->shipping_last_name,
+            'address1'   => $order->shipping_address_1,
+            'address2'   => $order->shipping_address_2,
+            'zip_code'   => $order->shipping_postcode,
+            'city'       => $order->shipping_city,
+            'state'      => $order->shipping_state,
+            'country'    => $order->shipping_country
+        ];
+    }
+
+    /**
+     * @param WC_Order $order
+     *
+     * @return bool
+     */
+    protected static function isShippingAddressMissing(WC_Order $order)
+    {
+        return empty($order->shipping_country) || empty($order->shipping_city) || empty($order->shipping_address_1);
     }
 
     /**
@@ -2132,22 +2165,18 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected static function get_refund_trx_type( WC_Order $order )
     {
-        $auth = WC_emerchantpay_Transactions_Tree::createFromOrder($order)->getSettlementTrx();
+        $settlement = WC_emerchantpay_Transactions_Tree::createFromOrder($order)->getSettlementTrx();
 
-        if (empty($auth)) {
-            throw new Exception('Missing Capture transaction');
+        if (empty($settlement)) {
+            throw new Exception('Missing Settlement Transaction');
         }
 
-        switch ($auth->type) {
-            case \Genesis\API\Constants\Transaction\Types::CAPTURE:
-            case \Genesis\API\Constants\Transaction\Types::SALE:
-            case \Genesis\API\Constants\Transaction\Types::SALE_3D:
-                return 'Financial\Refund';
+        switch ($settlement->type) {
             case \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE:
                 return 'Financial\Alternatives\Klarna\Refund';
+            default:
+                return 'Financial\Refund';
         }
-
-        throw new Exception('Invalid trx type: ' . $auth->type);
     }
 
     /**

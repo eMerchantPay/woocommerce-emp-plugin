@@ -170,6 +170,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
         $this->form_fields += array(
             self::SETTING_KEY_TRANSACTION_TYPES => array(
                 'type'        => 'multiselect',
+                'css'         => 'height:auto',
                 'title'       => static::getTranslatedText('Transaction Type'),
                 'options'     => array(
                     \Genesis\API\Constants\Transaction\Types::ALIPAY              =>
@@ -282,6 +283,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
             array(
                 self::SETTING_KEY_INIT_RECURRING_TXN_TYPES => array(
                     'type'        => 'multiselect',
+                    'css'         => 'height:auto',
                     'title'       => static::getTranslatedText('Init Recurring Transaction Types'),
                     'options'     => array(
                         \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE =>

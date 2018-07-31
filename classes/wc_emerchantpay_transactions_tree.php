@@ -224,7 +224,7 @@ class WC_emerchantpay_Transactions_Tree
 
         // Process individual fields
         foreach ($trx_arr as &$transaction) {
-            if (strtotime($transaction['date_add']) === false) {
+            if (is_numeric($transaction['date_add'])) {
                 $transaction['date_add'] = date("H:i:s \n m/d/Y", $transaction['date_add']);
             }
 
@@ -447,7 +447,7 @@ class WC_emerchantpay_Transactions_Tree
     public function getSettlementTrx()
     {
         foreach($this->trx_list AS $trx) {
-            if ($trx->isSettlement()) {
+            if (\Genesis\API\Constants\Transaction\Types::canRefund($trx->type)) {
                 return $trx;
             }
         }
