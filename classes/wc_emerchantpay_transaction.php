@@ -25,7 +25,8 @@ if (!defined( 'ABSPATH' )) {
  * emerchantpay Helper Class
  *
  * @class WC_emerchantpay_Transaction
-
+ *
+ * @SuppressWarnings(PHPMD)
  */
 class WC_emerchantpay_Transaction
 {

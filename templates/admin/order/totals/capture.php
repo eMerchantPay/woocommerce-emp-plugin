@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
         <td width="1%"></td>
     <?php } ?>
     <td class="total captured-total">
-        <div class="view"><?php echo WC_emerchantpay_Helper::formatPrice($captured_amount, $order); ?></div>
+        <div class="view"><?php echo WC_emerchantpay_Order_Helper::formatPrice($captured_amount, $order); ?></div>
     </td>
 </tr>
 

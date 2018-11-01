@@ -25,7 +25,8 @@ if (!defined( 'ABSPATH' )) {
  * emerchantpay Helper Class
  *
  * @class WC_emerchantpay_Transactions_Tree
-
+ *
+ * @SuppressWarnings(PHPMD)
  */
 class WC_emerchantpay_Transactions_Tree
 {
@@ -75,8 +76,8 @@ class WC_emerchantpay_Transactions_Tree
     public static function getTransactionsListFromOrder(WC_Order $order)
     {
         return static::getTransactionTree(
-            WC_emerchantpay_Helper::getOrderMetaData(
-                WC_emerchantpay_Helper::getOrderProp($order, 'id'),
+            WC_emerchantpay_Order_Helper::getOrderMetaData(
+                WC_emerchantpay_Order_Helper::getOrderProp($order, 'id'),
                 static::META_DATA_KEY_LIST
             )
         );

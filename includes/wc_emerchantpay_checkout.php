@@ -30,6 +30,8 @@ if (!class_exists('WC_emerchantpay_Method')) {
  *
  * @class   WC_emerchantpay_Checkout
  * @extends WC_Payment_Gateway
+ *
+ * @SuppressWarnings(PHPMD)
  */
 class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
 {
@@ -480,20 +482,20 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
 
             switch ($type) {
                 case \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN:
-                    $userIdHash              = WC_emerchantpay_Helper::getCurrentUserIdHash();
+                    $userIdHash              = WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash();
                     $transactionCustomParams = array(
                         'merchant_customer_id' => $userIdHash
                     );
                     break;
                 case \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN:
                 case \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN:
-                    $userIdHash              = WC_emerchantpay_Helper::getCurrentUserIdHash();
+                    $userIdHash              = WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash();
                     $transactionCustomParams = array(
                         'customer_account_id' => $userIdHash
                     );
                     break;
                 case \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE:
-                    $transactionCustomParams = WC_emerchantpay_Helper::getKlarnaCustomParamItems($order)->toArray();
+                    $transactionCustomParams = WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems($order)->toArray();
                     break;
                 default:
                     $transactionCustomParams = [];
@@ -555,7 +557,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
                 isset($response->redirect_url);
 
             if ($isWpfSuccessfullyCreated) {
-                $this->save_checkout_trx_to_order($response, WC_emerchantpay_Helper::getOrderProp($order, 'id'));
+                $this->save_checkout_trx_to_order($response, WC_emerchantpay_Order_Helper::getOrderProp($order, 'id'));
 
                 // Create One-time token to prevent redirect abuse
                 $this->set_one_time_token($order_id, $this->generateTransactionId());
@@ -592,14 +594,14 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
 
     protected function save_checkout_trx_to_order($response_obj, $order_id) {
         // Save the Checkout Id
-        WC_emerchantpay_Helper::setOrderMetaData(
+        WC_emerchantpay_Order_Helper::setOrderMetaData(
             $order_id,
             self::META_CHECKOUT_TRANSACTION_ID,
             $response_obj->unique_id
         );
 
         // Save whole trx
-        WC_emerchantpay_Helper::saveInitialTrxToOrder($order_id, $response_obj);
+        WC_emerchantpay_Order_Helper::saveInitialTrxToOrder($order_id, $response_obj);
     }
 
     /**
@@ -611,7 +613,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
      */
     protected function set_terminal_token( $order )
     {
-         $token = WC_emerchantpay_Helper::getOrderMetaData(
+         $token = WC_emerchantpay_Order_Helper::getOrderMetaData(
              $order->id,
              self::META_TRANSACTION_TERMINAL_TOKEN
          );

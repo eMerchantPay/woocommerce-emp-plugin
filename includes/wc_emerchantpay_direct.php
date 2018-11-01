@@ -30,6 +30,8 @@ if (!class_exists('WC_emerchantpay_Method')) {
  *
  * @class   WC_emerchantpay_Direct
  * @extends WC_Payment_Gateway
+ *
+ * @SuppressWarnings(PHPMD)
  */
 class WC_emerchantpay_Direct extends WC_emerchantpay_Method
 {
@@ -185,7 +187,7 @@ class WC_emerchantpay_Direct extends WC_emerchantpay_Method
     {
         return
             parent::is_applicable() &&
-            WC_emerchantpay_Helper::getStoreOverSecuredConnection();
+            WC_emerchantpay_Helper::isStoreOverSecuredConnection();
     }
 
     /**
@@ -399,7 +401,7 @@ class WC_emerchantpay_Direct extends WC_emerchantpay_Method
     {
         global $woocommerce;
 
-        $order = WC_emerchantpay_Helper::getOrderById($order_id);
+        $order = WC_emerchantpay_Order_Helper::getOrderById($order_id);
 
         $data = $this->populateGateRequestData($order);
 
@@ -413,17 +415,17 @@ class WC_emerchantpay_Direct extends WC_emerchantpay_Method
             $response = $genesis->response()->getResponseObject();
 
             // Save whole trx
-            WC_emerchantpay_Helper::saveInitialTrxToOrder($order_id, $response);
+            WC_emerchantpay_Order_Helper::saveInitialTrxToOrder($order_id, $response);
 
             // Create One-time token to prevent redirect abuse
             $this->set_one_time_token($order_id, static::generateTransactionId());
 
-            $paymentSuccessful = WC_emerchantpay_Helper::isInitGatewayResponseSuccessful($response);
+            $paymentSuccessful = WC_emerchantpay_Subscription_Helper::isInitGatewayResponseSuccessful($response);
 
             if ($paymentSuccessful) {
                 // Save the Checkout Id
-                WC_emerchantpay_Helper::setOrderMetaData($order_id, $this->getCheckoutTransactionIdMetaKey(), $response->unique_id);
-                WC_emerchantpay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_TYPE, $response->transaction_type);
+                WC_emerchantpay_Order_Helper::setOrderMetaData($order_id, $this->getCheckoutTransactionIdMetaKey(), $response->unique_id);
+                WC_emerchantpay_Order_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_TYPE, $response->transaction_type);
 
                 if (isset($response->redirect_url)) {
                     return array(
@@ -476,10 +478,11 @@ class WC_emerchantpay_Direct extends WC_emerchantpay_Method
     /**
      * @param array $data
      * @return \Genesis\Genesis
+     * @throws \Genesis\Exceptions\InvalidMethod
      */
     protected function prepareInitialGenesisRequest($data)
     {
-        $genesis = WC_emerchantpay_Helper::getGatewayRequestByTxnType( $data['transaction_type'] );
+        $genesis = WC_emerchantpay_Genesis_Helper::getGatewayRequestByTxnType( $data['transaction_type'] );
 
         $genesis
             ->request()
@@ -520,7 +523,7 @@ class WC_emerchantpay_Direct extends WC_emerchantpay_Method
                 ->setShippingState($data['shipping']['state'])
                 ->setShippingCountry($data['shipping']['country']);
 
-        $isRecurring = WC_emerchantpay_Helper::isInitRecurring(
+        $isRecurring = WC_emerchantpay_Subscription_Helper::isInitRecurring(
             $data['transaction_type']
         );
 
@@ -545,7 +548,7 @@ class WC_emerchantpay_Direct extends WC_emerchantpay_Method
     {
         global $woocommerce;
 
-        $order = WC_emerchantpay_Helper::getOrderById($order_id);
+        $order = WC_emerchantpay_Order_Helper::getOrderById($order_id);
 
         $data = $this->populateGateRequestData($order, true);
 
@@ -561,12 +564,12 @@ class WC_emerchantpay_Direct extends WC_emerchantpay_Method
             // Create One-time token to prevent redirect abuse
             $this->set_one_time_token($order_id, static::generateTransactionId());
 
-            $paymentSuccessful = WC_emerchantpay_Helper::isInitGatewayResponseSuccessful($response);
+            $paymentSuccessful = WC_emerchantpay_Subscription_Helper::isInitGatewayResponseSuccessful($response);
 
             if ($paymentSuccessful) {
                 // Save the Checkout Id
-                WC_emerchantpay_Helper::setOrderMetaData($order_id, $this->getCheckoutTransactionIdMetaKey(), $response->unique_id);
-                WC_emerchantpay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_TYPE, $response->transaction_type);
+                WC_emerchantpay_Order_Helper::setOrderMetaData($order_id, $this->getCheckoutTransactionIdMetaKey(), $response->unique_id);
+                WC_emerchantpay_Order_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_TYPE, $response->transaction_type);
 
                 if (isset($response->redirect_url)) {
                     return array(

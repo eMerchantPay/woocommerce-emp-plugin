@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ruleset name="WooCommerce EMP Plugin Coding Standards">
+    <description>Generally-applicable sniffs for WooCommerce EMP Plugin</description>
+
+    <rule ref="WordPress" />
+
+    <exclude-pattern>*/genesis/*</exclude-pattern>
+</ruleset>

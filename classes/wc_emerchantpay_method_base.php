@@ -26,6 +26,8 @@ if (!defined( 'ABSPATH' )) {
  *
  * @class   WC_emerchantpay_Method
  * @extends WC_Payment_Gateway
+ *
+ * @SuppressWarnings(PHPMD)
  */
 abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
 {
@@ -95,6 +97,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
 
     protected static $helpers = array(
         'WC_emerchantpay_Helper'              => 'wc_emerchantpay_helper',
+        'WC_emerchantpay_Genesis_Helper'      => 'wc_emerchantpay_genesis_helper',
+        'WC_emerchantpay_Order_Helper'        => 'wc_emerchantpay_order_helper',
         'WC_emerchantpay_Subscription_Helper' => 'wc_emerchantpay_subscription_helper',
         'WC_emerchantpay_Message_Helper'      => 'wc_emerchantpay_message_helper',
         'WC_emerchantpay_Transaction'         => 'wc_emerchantpay_transaction',
@@ -344,9 +348,9 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     public function displayTransactionsListForOrder($order_id)
     {
-        $order = WC_emerchantpay_Helper::getOrderById($order_id);
+        $order = WC_emerchantpay_Order_Helper::getOrderById($order_id);
 
-        if (WC_emerchantpay_Helper::getOrderProp($order, 'payment_method') !== $this->id) {
+        if (WC_emerchantpay_Order_Helper::getOrderProp($order, 'payment_method') !== $this->id) {
             return;
         }
 
@@ -360,7 +364,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                 array(
                     'payment_method'        => $this,
                     'order'                 => $order,
-                    'order_currency'        => WC_emerchantpay_Helper::getOrderProp($order, 'currency'),
+                    'order_currency'        => WC_emerchantpay_Order_Helper::getOrderProp($order, 'currency'),
                     'transactions'          => array_map(function ($v) {
                         return (array)$v;
                     }, WC_emerchantpay_Transactions_Tree::getTransactionTree($transactions->trx_list)),
@@ -443,7 +447,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected function admin_notices_genesis_requirements()
     {
-        if ($this->is_ssl_required() && !WC_emerchantpay_Helper::getStoreOverSecuredConnection()) {
+        if ($this->is_ssl_required() && !WC_emerchantpay_Helper::isStoreOverSecuredConnection()) {
             WC_emerchantpay_Helper::printWpNotice(
                 static::getTranslatedText(
                     sprintf(
@@ -455,7 +459,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
             );
         }
 
-        $genesisRequirementsVerified = WC_emerchantpay_Helper::checkGenesisRequirementsVerified();
+        $genesisRequirementsVerified = WC_emerchantpay_Genesis_Helper::checkGenesisRequirementsVerified();
 
         if ($genesisRequirementsVerified !== true) {
             WC_emerchantpay_Helper::printWpNotice(
@@ -789,9 +793,9 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
             return false;
         }
 
-        $paymentTransactionResponse = WC_emerchantpay_Helper::getReconcilePaymentTransaction($gatewayResponse);
+        $paymentTransactionResponse = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction($gatewayResponse);
 
-        $paymentTxnStatus = WC_emerchantpay_Helper::getGatewayStatusInstance($paymentTransactionResponse);
+        $paymentTxnStatus = WC_emerchantpay_Genesis_Helper::getGatewayStatusInstance($paymentTransactionResponse);
 
         if (!$paymentTxnStatus->isApproved()) {
             return false;
@@ -824,7 +828,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
             return false;
         }
 
-        $recurringSaleSuccessful = WC_emerchantpay_Helper::isInitGatewayResponseSuccessful($recurringSaleResponse);
+        $recurringSaleSuccessful = WC_emerchantpay_Subscription_Helper::isInitGatewayResponseSuccessful($recurringSaleResponse);
 
         $order->add_order_note(
             static::getTranslatedText(
@@ -903,9 +907,9 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
         $reason   = $data['reason'];
         $amount   = $data['amount'];
 
-        $order = WC_emerchantpay_Helper::getOrderById($order_id);
+        $order = WC_emerchantpay_Order_Helper::getOrderById($order_id);
 
-        $payment_gateway = WC_emerchantpay_Helper::getPaymentMethodInstanceByOrder($order);
+        $payment_gateway = WC_emerchantpay_Order_Helper::getPaymentMethodInstanceByOrder($order);
 
         if (!$order || !$order->get_transaction_id()) {
             return WC_emerchantpay_Helper::getWPError('No order exists with the specified reference id');
@@ -939,7 +943,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                     );
 
             if ($type === 'Financial\Alternatives\Klarna\Capture') {
-                $genesis->request()->setItems(WC_emerchantpay_Helper::getKlarnaCustomParamItems($order));
+                $genesis->request()->setItems(WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems($order));
             }
 
             $genesis->execute();
@@ -947,7 +951,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
             $response = $genesis->response()->getResponseObject();
 
             if ($response->status == \Genesis\API\Constants\Transaction\States::APPROVED) {
-                WC_emerchantpay_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_CAPTURE_ID, $response->unique_id);
+                WC_emerchantpay_Order_Helper::setOrderMetaData($order_id, self::META_TRANSACTION_CAPTURE_ID, $response->unique_id);
 
                 $order->add_order_note(
                     static::getTranslatedText('Payment Captured!') . PHP_EOL . PHP_EOL .
@@ -957,7 +961,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
 
                 $response->parent_id = $data['trx_id'];
 
-                WC_emerchantpay_Helper::saveTrxListToOrder($order, [ $response ]);
+                WC_emerchantpay_Order_Helper::saveTrxListToOrder($order, [ $response ]);
 
                 return $response;
             }
@@ -1013,7 +1017,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
 
         try {
             $order_id = absint( $_POST['order_id'] );
-            $order    = WC_emerchantpay_Helper::getOrderById($order_id);
+            $order    = WC_emerchantpay_Order_Helper::getOrderById($order_id);
             $trx_id   = sanitize_text_field( $_POST['trx_id'] );
 
             if (!static::canCapture($order, $trx_id)) {
@@ -1066,14 +1070,14 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                     'capture' => array(
                         'total' => array(
                             'amount' => $captured_amount,
-                            'formatted' => WC_emerchantpay_Helper::formatPrice(
+                            'formatted' => WC_emerchantpay_Order_Helper::formatPrice(
                                 $captured_amount,
                                 $order
                             )
                         ),
                         'total_available' => array(
                             'amount' => $capture_left > 0 ? $capture_left : "",
-                            'formatted' => WC_emerchantpay_Helper::formatPrice(
+                            'formatted' => WC_emerchantpay_Order_Helper::formatPrice(
                                 $capture_left,
                                 $order
                             )
@@ -1105,7 +1109,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
 
         try {
             $order_id     = absint( $_POST['order_id'] );
-            $order        = WC_emerchantpay_Helper::getOrderById($order_id);
+            $order        = WC_emerchantpay_Order_Helper::getOrderById($order_id);
             $void_trx_id  = sanitize_text_field( $_POST['trx_id'] );
 
             if (!static::canVoid($order, $void_trx_id)) {
@@ -1119,7 +1123,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
 
             $void_reason  = sanitize_text_field( $_POST['void_reason'] );
 
-            $payment_gateway = WC_emerchantpay_Helper::getPaymentMethodInstanceByOrder($order);
+            $payment_gateway = WC_emerchantpay_Order_Helper::getPaymentMethodInstanceByOrder($order);
 
             if ( !$order || !$order->get_transaction_id() ) {
                 return false;
@@ -1171,7 +1175,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
 
                 $gatewayResponse->parent_id = $void_trx_id;
 
-                WC_emerchantpay_Helper::saveTrxListToOrder($order, [ $gatewayResponse ]);
+                WC_emerchantpay_Order_Helper::saveTrxListToOrder($order, [ $gatewayResponse ]);
             } else {
                 throw new Exception(
                     $gatewayResponse->message
@@ -1206,7 +1210,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     public function displayAdminOrderAfterTotals($order_id)
     {
-        $order = WC_emerchantpay_Helper::getOrderById($order_id);
+        $order = WC_emerchantpay_Order_Helper::getOrderById($order_id);
 
         if ($order->payment_method != $this->id) {
             return;
@@ -1288,7 +1292,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected function is_applicable()
     {
-        return WC_emerchantpay_Helper::checkGenesisRequirementsVerified() === true;
+        return WC_emerchantpay_Genesis_Helper::checkGenesisRequirementsVerified() === true;
     }
 
     /**
@@ -1532,18 +1536,18 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                 $reconcile = $notification->getReconciliationObject();
 
                 if ($reconcile) {
-                    $order = WC_emerchantpay_Helper::getOrderByGatewayUniqueId(
+                    $order = WC_emerchantpay_Order_Helper::getOrderByGatewayUniqueId(
                         $reconcile->unique_id,
                         $this->getCheckoutTransactionIdMetaKey()
                     );
 
-                    if ( ! WC_emerchantpay_Helper::isValidOrder($order) || $order->payment_method != $this->id) {
+                    if ( ! WC_emerchantpay_Order_Helper::isValidOrder($order) || $order->payment_method != $this->id) {
                         throw new \Exception('Invalid WooCommerce Order!');
                     }
 
                     $this->updateOrderStatus($order, $reconcile);
 
-                    if (WC_emerchantpay_Helper::isReconcileInitRecurring($reconcile)) {
+                    if (WC_emerchantpay_Subscription_Helper::isInitRecurringReconciliation($reconcile)) {
                         $this->process_init_recurring_reconciliation($order, $reconcile);
                     }
 
@@ -1575,7 +1579,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected function populateGateRequestData($order, $isRecurring = false)
     {
-        if (!WC_emerchantpay_Helper::isValidOrder($order)) {
+        if (!WC_emerchantpay_Order_Helper::isValidOrder($order)) {
             throw new \Exception('Invalid WooCommerce Order!');
         }
 
@@ -1583,7 +1587,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
             'transaction_id'     => static::generateTransactionId($order->id),
             'amount'             => $this->getAmount($order, $isRecurring),
             'currency'           => $order->get_order_currency(),
-            'usage'              => WC_emerchantpay_Helper::getPaymentTransactionUsage(false),
+            'usage'              => WC_emerchantpay_Genesis_Helper::getPaymentTransactionUsage(false),
             'description'        => $this->get_item_description($order),
             'customer_email'     => $order->billing_email,
             'customer_phone'     => $order->billing_phone,
@@ -1682,11 +1686,11 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      * @return bool
      */
     protected static function getHasOrderValidMeta($order, $meta_key) {
-        if ( ! WC_emerchantpay_Helper::isValidOrder( $order ) ) {
-            $order = WC_emerchantpay_Helper::getOrderById( $order );
+        if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
+            $order = WC_emerchantpay_Order_Helper::getOrderById( $order );
         }
 
-        $data = WC_emerchantpay_Helper::getOrderMetaData(
+        $data = WC_emerchantpay_Order_Helper::getOrderMetaData(
             $order->id,
             $meta_key
         );
@@ -1704,7 +1708,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected function updateOrderStatus($order, $gatewayResponseObject)
     {
-        if ( ! WC_emerchantpay_Helper::isValidOrder( $order ) ) {
+        if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
             throw new \Exception('Invalid WooCommerce Order!');
         }
 
@@ -1721,7 +1725,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
             return;
         }
 
-        $payment_transaction = WC_emerchantpay_Helper::getReconcilePaymentTransaction($gatewayResponseObject);
+        $payment_transaction = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction($gatewayResponseObject);
         $raw_trx_list = $this->get_trx_list($payment_transaction);
 
         switch ($gatewayResponseObject->status) {
@@ -1748,16 +1752,16 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                 break;
         }
 
-        WC_emerchantpay_Helper::saveTrxListToOrder(
+        WC_emerchantpay_Order_Helper::saveTrxListToOrder(
             $order,
             $raw_trx_list
         );
 
         // Update the order, just to be sure, sometimes transaction is not being set!
-        //WC_emerchantpay_Helper::setOrderMetaData($order->id, self::META_TRANSACTION_ID, $gatewayResponseObject->unique_id);
+        //WC_emerchantpay_Order_Helper::setOrderMetaData($order->id, self::META_TRANSACTION_ID, $gatewayResponseObject->unique_id);
 
         // Save the terminal token, through which we processed the transaction
-        //WC_emerchantpay_Helper::setOrderMetaData($order->id, self::META_TRANSACTION_TERMINAL_TOKEN, $gatewayResponseObject->terminal_token);
+        //WC_emerchantpay_Order_Helper::setOrderMetaData($order->id, self::META_TRANSACTION_TERMINAL_TOKEN, $gatewayResponseObject->terminal_token);
     }
 
     /**
@@ -1882,15 +1886,15 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
             $amount = $trx->amount;
         }
 
-        $order_id = WC_emerchantpay_Helper::getOrderProp($order, 'id');
+        $order_id = WC_emerchantpay_Order_Helper::getOrderProp($order, 'id');
 
-        WC_emerchantpay_Helper::setOrderMetaData(
+        WC_emerchantpay_Order_Helper::setOrderMetaData(
             $order_id,
             self::META_TRANSACTION_TYPE,
             $trx->transaction_type
         );
 
-        WC_emerchantpay_Helper::setOrderMetaData(
+        WC_emerchantpay_Order_Helper::setOrderMetaData(
             $order_id,
             self::META_ORDER_TRANSACTION_AMOUNT,
             $amount
@@ -1902,7 +1906,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                 : null;
 
         if (!empty($terminal_token)) {
-            WC_emerchantpay_Helper::setOrderMetaData(
+            WC_emerchantpay_Order_Helper::setOrderMetaData(
                 $order_id,
                 self::META_TRANSACTION_TERMINAL_TOKEN,
                 $terminal_token
@@ -1989,7 +1993,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
     public static function do_refund( $order_id, $amount = null, $reason = '', $transaction_id = '' )
     {
         try {
-            $order = WC_emerchantpay_Helper::getOrderById( $order_id );
+            $order = WC_emerchantpay_Order_Helper::getOrderById( $order_id );
             if ( !$order || !$order->get_transaction_id() ) {
                 return false;
             }
@@ -2002,7 +2006,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
             }
 
             if (!$transaction_id) {
-                $reference_transaction_id = WC_emerchantpay_Helper::getOrderMetaData(
+                $reference_transaction_id = WC_emerchantpay_Order_Helper::getOrderMetaData(
                     $order_id,
                     self::META_TRANSACTION_CAPTURE_ID
                 );
@@ -2040,7 +2044,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                             static::getTranslatedText(
                                 'You cannot refund \'%s\', because the whole amount has already been refunded in the payment gateway!'
                             ),
-                            WC_emerchantpay_Helper::formatMoney($amount, $order)
+                            WC_emerchantpay_Order_Helper::formatMoney($amount, $order)
                         )
                     );
                 }
@@ -2050,13 +2054,13 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                         static::getTranslatedText(
                             'You cannot refund \'%s\', because the available amount for refund in the payment gateway is \'%s\'!'
                         ),
-                        WC_emerchantpay_Helper::formatMoney($amount, $order),
-                        WC_emerchantpay_Helper::formatMoney($refundableAmount, $order)
+                        WC_emerchantpay_Order_Helper::formatMoney($amount, $order),
+                        WC_emerchantpay_Order_Helper::formatMoney($refundableAmount, $order)
                     )
                 );
             }
 
-            $payment_gateway = WC_emerchantpay_Helper::getPaymentMethodInstanceByOrder($order);
+            $payment_gateway = WC_emerchantpay_Order_Helper::getPaymentMethodInstanceByOrder($order);
             $payment_gateway->set_credentials();
             $payment_gateway->set_terminal_token($order);
 
@@ -2085,7 +2089,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                     );
 
             if ($type === 'Financial\Alternatives\Klarna\Refund') {
-                $genesis->request()->setItems(WC_emerchantpay_Helper::getKlarnaCustomParamItems($order));
+                $genesis->request()->setItems(WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems($order));
             }
 
             $genesis->execute();
@@ -2094,7 +2098,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
 
             $response->parent_id = $reference_transaction_id;
 
-            WC_emerchantpay_Helper::saveTrxListToOrder($order, [ $response ]);
+            WC_emerchantpay_Order_Helper::saveTrxListToOrder($order, [ $response ]);
 
             if ($response->status != \Genesis\API\Constants\Transaction\States::APPROVED) {
                 return WC_emerchantpay_Helper::getWPError($response->technical_message);
@@ -2136,12 +2140,12 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected function cancelOrderSubscriptions( $order )
     {
-        $orderTransactionType = WC_emerchantpay_Helper::getOrderMetaData(
+        $orderTransactionType = WC_emerchantpay_Order_Helper::getOrderMetaData(
             $order->id,
             self::META_TRANSACTION_TYPE
         );
 
-        if (!WC_emerchantpay_Helper::isInitRecurring($orderTransactionType)) {
+        if (!WC_emerchantpay_Subscription_Helper::isInitRecurring($orderTransactionType)) {
             return;
         }
 
@@ -2202,6 +2206,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      * @param float $amount The amount to charge.
      * @access public
      * @return \stdClass|\WP_Error
+     * @throws \Genesis\Exceptions\InvalidMethod
      */
     protected function process_subscription_payment( $order, $amount )
     {
@@ -2211,7 +2216,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
             $this->getRecurringToken( $order )
         );
 
-        $genesis = WC_emerchantpay_Helper::getGatewayRequestByTxnType(
+        $genesis = WC_emerchantpay_Genesis_Helper::getGatewayRequestByTxnType(
             \Genesis\API\Constants\Transaction\Types::RECURRING_SALE
         );
 
@@ -2224,7 +2229,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
                     $referenceId
                 )
                 ->setUsage(
-                    WC_emerchantpay_Helper::getPaymentTransactionUsage(true)
+                    WC_emerchantpay_Genesis_Helper::getPaymentTransactionUsage(true)
                 )
                 ->setRemoteIp(
                     WC_emerchantpay_Helper::getClientRemoteIpAddress()
@@ -2282,8 +2287,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
         foreach ( $order->get_items() as $item ) {
             $items[] = sprintf(
                 '%s x %d',
-                WC_emerchantpay_Helper::getItemName($item),
-                WC_emerchantpay_Helper::getItemQuantity($item)
+                WC_emerchantpay_Order_Helper::getItemName($item),
+                WC_emerchantpay_Order_Helper::getItemQuantity($item)
             );
         }
 
@@ -2348,7 +2353,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected function get_one_time_token($order_id)
     {
-        return WC_emerchantpay_Helper::getOrderMetaData(
+        return WC_emerchantpay_Order_Helper::getOrderMetaData(
             $order_id,
             self::META_CHECKOUT_RETURN_TOKEN
         );
@@ -2361,7 +2366,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
      */
     protected function set_one_time_token($order_id, $value)
     {
-        WC_emerchantpay_Helper::setOrderMetaData(
+        WC_emerchantpay_Order_Helper::setOrderMetaData(
             $order_id,
             self::META_CHECKOUT_RETURN_TOKEN,
             $value
