@@ -2178,6 +2178,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway
         switch ($settlement->type) {
             case \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE:
                 return 'Financial\Alternatives\Klarna\Refund';
+            case \Genesis\API\Constants\Transaction\Types::BITPAY_SALE:
+                return 'Financial\Crypto\BitPay\Refund';
             default:
                 return 'Financial\Refund';
         }

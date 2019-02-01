@@ -361,7 +361,8 @@ class WC_emerchantpay_Transactions_Tree
             $transaction['unique_id'],
             array(
                 \Genesis\API\Constants\Transaction\Types::REFUND,
-                \Genesis\API\Constants\Transaction\Types::KLARNA_REFUND
+                \Genesis\API\Constants\Transaction\Types::KLARNA_REFUND,
+                \Genesis\API\Constants\Transaction\Types::BITPAY_REFUND,
             ),
             \Genesis\API\Constants\Transaction\States::APPROVED
         );

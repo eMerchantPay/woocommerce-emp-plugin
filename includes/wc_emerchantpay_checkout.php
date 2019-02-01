@@ -181,10 +181,14 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
                         static::getTranslatedText('Authorize'),
                     \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D        =>
                         static::getTranslatedText('Authorize (3D-Secure)'),
+                    \Genesis\API\Constants\Transaction\Types::BITPAY_SALE         =>
+                        static::getTranslatedText( 'BitPay' ),
+                    \Genesis\API\Constants\Transaction\Types::BANCO_DO_BRASIL     =>
+                        static::getTranslatedText( 'Banco do Brasil' ),
                     \Genesis\API\Constants\Transaction\Types::CASHU               =>
                         static::getTranslatedText('CashU'),
-                    \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN       =>
-                        static::getTranslatedText('Citadel'),
+                    \Genesis\API\Constants\Transaction\Types::ENTERCASH           =>
+                        static::getTranslatedText( 'Entercash' ),
                     \Genesis\API\Constants\Payment\Methods::EPS                   =>
                         static::getTranslatedText('eps'),
                     \Genesis\API\Constants\Transaction\Types::EZEEWALLET          =>
@@ -197,6 +201,8 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
                         static::getTranslatedText('iDebit'),
                     \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN   =>
                         static::getTranslatedText('InstaDebit'),
+                    \Genesis\API\Constants\Transaction\Types::INSTANT_TRANSFER    =>
+                        static::getTranslatedText( 'InstantTransfer' ),
                     \Genesis\API\Constants\Transaction\Types::INTERSOLVE          =>
                         static::getTranslatedText('Intersolve'),
                     \Genesis\API\Constants\Payment\Methods::BCMC                  =>
@@ -205,6 +211,8 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
                         static::getTranslatedText('Klarna'),
                     \Genesis\API\Constants\Payment\Methods::MYBANK                =>
                         static::getTranslatedText('MyBank'),
+                    \Genesis\API\Constants\Transaction\Types::MULTIBANCO          =>
+                        static::getTranslatedText( 'Multibanco' ),
                     \Genesis\API\Constants\Transaction\Types::NETELLER            =>
                         static::getTranslatedText('Neteller'),
                     \Genesis\API\Constants\Transaction\Types::P24                 =>
@@ -213,8 +221,8 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
                         static::getTranslatedText('PayPal Express'),
                     \Genesis\API\Constants\Transaction\Types::PAYSAFECARD         =>
                         static::getTranslatedText('PaySafeCard'),
-                    \Genesis\API\Constants\Transaction\Types::PAYSEC_PAYIN        =>
-                        static::getTranslatedText('PaySec'),
+                    \Genesis\API\Constants\Transaction\Types::PAYU                =>
+                        static::getTranslatedText( 'PayU' ),
                     \Genesis\API\Constants\Transaction\Types::POLI                =>
                         static::getTranslatedText('POLi'),
                     \Genesis\API\Constants\Payment\Methods::PRZELEWY24            =>
@@ -241,6 +249,8 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
                         static::getTranslatedText('WebMoney'),
                     \Genesis\API\Constants\Transaction\Types::WECHAT              =>
                         static::getTranslatedText('WeChat'),
+                    \Genesis\API\Constants\Transaction\Types::ZIMPLER             =>
+                        static::getTranslatedText( 'Zimpler' ),
                 ),
                 'description' => static::getTranslatedText('Select transaction type for the payment transaction'),
                 'desc_tip'    => true,
@@ -481,12 +491,6 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
             }
 
             switch ($type) {
-                case \Genesis\API\Constants\Transaction\Types::CITADEL_PAYIN:
-                    $userIdHash              = WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash();
-                    $transactionCustomParams = array(
-                        'merchant_customer_id' => $userIdHash
-                    );
-                    break;
                 case \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN:
                 case \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN:
                     $userIdHash              = WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash();

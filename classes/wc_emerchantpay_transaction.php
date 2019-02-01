@@ -118,6 +118,7 @@ class WC_emerchantpay_Transaction
         switch ($this->type) {
             case \Genesis\API\Constants\Transaction\Types::KLARNA_REFUND:
             case \Genesis\API\Constants\Transaction\Types::REFUND:
+            case \Genesis\API\Constants\Transaction\Types::BITPAY_REFUND:
                 return \Genesis\API\Constants\Transaction\States::REFUNDED;
             case \Genesis\API\Constants\Transaction\Types::VOID:
                 return \Genesis\API\Constants\Transaction\States::VOIDED;

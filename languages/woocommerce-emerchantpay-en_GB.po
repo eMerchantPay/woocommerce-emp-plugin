@@ -57,11 +57,20 @@ msgstr "Authorize"
 msgid "Authorize (3D-Secure)"
 msgstr "Authorize (3D-Secure)"
 
+msgid "BitPay"
+msgstr "BitPay"
+
+msgid "Banco do Brasil"
+msgstr "Banco do Brasil"
+
 msgid "CashU"
 msgstr "CashU"
 
 msgid "Citadel"
 msgstr "Citadel"
+
+msgid "Entercash"
+msgstr "Entercash"
 
 msgid "eps"
 msgstr "eps"
@@ -79,16 +88,22 @@ msgid "iDebit"
 msgstr "iDebit"
 
 msgid "InstaDebit"
-msgstr"InstaDebit"
+msgstr "InstaDebit"
+
+msgid "InstantTransfer"
+msgstr "InstantTransfer"
 
 msgid "Intersolve"
-msgstr"Intersolve"
+msgstr "Intersolve"
 
 msgid "Mr.Cash"
 msgstr "Mr.Cash"
 
 msgid "MyBank"
 msgstr "MyBank"
+
+msgid "Multibanco"
+msgstr "Multibanco"
 
 msgid "Neteller"
 msgstr "Neteller"
@@ -107,6 +122,9 @@ msgstr "PaySafeCard"
 
 msgid "PaySec"
 msgstr "PaySec"
+
+msgid "PayU"
+msgstr "PayU"
 
 msgid "POLi"
 msgstr "POLi"
@@ -146,6 +164,9 @@ msgstr "WebMoney"
 
 msgid "WeChat"
 msgstr "WeChat"
+
+msgid "Zimpler"
+msgstr "Zimpler"
 
 msgid "Init Recurring Sale"
 msgstr "Init Recurring Sale"

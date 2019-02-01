@@ -21,45 +21,53 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Traits\Request\CustomerAddress;
+namespace Genesis\API\Traits;
 
-use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidMethod;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
- * Trait CustomerInfoAttributes
- * @package Genesis\API\Traits\Request\CustomerAddress
+ * Trait MagicAccessors
  *
- * @method $this setCustomerPhone($value) Set Phone number of the Customer
+ * Provides magic setters and getters for existing fields
+ *
+ * @package Genesis\API\Traits
  */
-trait CustomerInfoAttributes
+trait MagicAccessors
 {
     /**
-     * Email address of the Customer
+     * Convert Pascal to Camel case and set the correct property
      *
-     * @var string
-     */
-    protected $customer_email;
-
-    /**
-     * @param string $value
+     * @param $method
+     * @param $args
      *
-     * @return $this
-     * @throws ErrorParameter
+     * @throws InvalidMethod
+     * @return mixed
      */
-    public function setCustomerEmail($value)
+    public function __call($method, $args)
     {
-        if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
-            throw new ErrorParameter('Please, enter a valid email');
+        list($action, $target) = CommonUtils::resolveDynamicMethod($method);
+
+        switch ($action) {
+            case 'get':
+                if (property_exists($this, $target)) {
+                    return $this->$target;
+                }
+                break;
+            case 'set':
+                if (property_exists($this, $target)) {
+                    $this->$target = trim(reset($args));
+                    return $this;
+                }
+                break;
         }
 
-        $this->customer_email = $value;
-        return $this;
+        throw new InvalidMethod(
+            sprintf(
+                'You\'re trying to call a non-existent method %s of class %s!',
+                $method,
+                static::class
+            )
+        );
     }
-
-    /**
-     * Phone number of the customer
-     *
-     * @var string
-     */
-    protected $customer_phone;
 }
