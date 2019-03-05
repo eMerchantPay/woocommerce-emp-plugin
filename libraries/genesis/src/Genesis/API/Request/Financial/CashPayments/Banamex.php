@@ -21,45 +21,35 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Traits\Request\CustomerAddress;
-
-use Genesis\Exceptions\ErrorParameter;
+namespace Genesis\API\Request\Financial\CashPayments;
 
 /**
- * Trait CustomerInfoAttributes
- * @package Genesis\API\Traits\Request\CustomerAddress
+ * Class Banamex
  *
- * @method $this setCustomerPhone($value) Set Phone number of the Customer
+ * Banamex - oBeP-style alternative payment method
+ *
+ * @package Genesis\API\Request\Financial\CashPayments
+ *
+ * @method string getConsumerReference()
+ * @method string getNationalId()
+ * @method string getBirthDate()
  */
-trait CustomerInfoAttributes
+class Banamex extends \Genesis\API\Request\Base\Financial\SouthAmericanPayment
 {
     /**
-     * Email address of the Customer
-     *
-     * @var string
+     * Returns the Request transaction type
+     * @return string
      */
-    protected $customer_email;
-
-    /**
-     * @param string $value
-     *
-     * @return $this
-     * @throws ErrorParameter
-     */
-    public function setCustomerEmail($value)
+    protected function getTransactionType()
     {
-        if ($value !== null && filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
-            throw new ErrorParameter('Please, enter a valid email');
-        }
-
-        $this->customer_email = $value;
-        return $this;
+        return \Genesis\API\Constants\Transaction\Types::BANAMEX;
     }
 
     /**
-     * Phone number of the customer
-     *
-     * @var string
+     * @return array
      */
-    protected $customer_phone;
+    public function getAllowedBillingCountries()
+    {
+        return ['MX'];
+    }
 }

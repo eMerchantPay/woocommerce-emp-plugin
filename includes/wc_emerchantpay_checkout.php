@@ -45,14 +45,16 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
     /**
      * Additional Method Setting Keys
      */
-    const SETTING_KEY_TRANSACTION_TYPES          = 'transaction_types';
-    const SETTING_KEY_CHECKOUT_LANGUAGE          = 'checkout_language';
-    const SETTING_KEY_INIT_RECURRING_TXN_TYPES   = 'init_recurring_txn_types';
+    const SETTING_KEY_TRANSACTION_TYPES        = 'transaction_types';
+    const SETTING_KEY_CHECKOUT_LANGUAGE        = 'checkout_language';
+    const SETTING_KEY_INIT_RECURRING_TXN_TYPES = 'init_recurring_txn_types';
+    const SETTING_KEY_TOKENIZATION             = 'tokenization';
 
     /**
-     * Additional Order Meta Constants
+     * Additional Order/User Meta Constants
      */
-    const META_CHECKOUT_TRANSACTION_ID = '_genesis_checkout_id';
+    const META_CHECKOUT_TRANSACTION_ID  = '_genesis_checkout_id';
+    const META_TOKENIZATION_CONSUMER_ID = '_consumer_id';
 
     /**
      * @return string
@@ -149,6 +151,16 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
         if (!$areApiTransactionTypesDefined) {
             WC_emerchantpay_Helper::printWpNotice(
                 static::getTranslatedText('You must specify at least one transaction type in order to be able to use this payment method!'),
+                WC_emerchantpay_Helper::WP_NOTICE_TYPE_ERROR
+            );
+        }
+
+        if ($this->getMethodBoolSetting(self::SETTING_KEY_TOKENIZATION)) {
+            WC_emerchantpay_Helper::printWpNotice(
+                static::getTranslatedText(
+                    'Tokenization is enabled for Web Payment Form, ' .
+                    'please make sure Guest Checkout is disabled.'
+                ),
                 WC_emerchantpay_Helper::WP_NOTICE_TYPE_ERROR
             );
         }
@@ -276,6 +288,12 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
                 'description' => __('Select language for the customer UI on the remote server'),
                 'desc_tip'    => true,
             ),
+            self::SETTING_KEY_TOKENIZATION => array(
+                'type'    => 'checkbox',
+                'title'   => static::getTranslatedText('Enable/Disable'),
+                'label'   => static::getTranslatedText('Enable Tokenization'),
+                'default' => self::SETTING_VALUE_NO
+            )
         );
 
         $this->form_fields += $this->build_subscription_form_fields();
@@ -447,7 +465,75 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
             );
         }
 
+        if ($this->isTokenizationAvailable($data['customer_email'])) {
+            $consumerId = $this->getGatewayConsumerIdFor($data['customer_email']);
+
+            if ($consumerId) {
+                $wpfRequest->setConsumerId($consumerId);
+            }
+
+            $wpfRequest->setRememberCard(true);
+        }
+
         return $genesis;
+    }
+
+    /**
+     * @param $customerEmail
+     *
+     * @return bool
+     */
+    protected function isTokenizationAvailable($customerEmail)
+    {
+        return !empty($customerEmail) &&
+               $this->getMethodBoolSetting(self::SETTING_KEY_TOKENIZATION) &&
+               get_current_user_id() !== 0;
+    }
+
+    /**
+     * @param $customerEmail
+     *
+     * @return string|null
+     */
+    protected function getGatewayConsumerIdFor($customerEmail)
+    {
+        $meta = $this->getMetaConsumerIdForLoggedUser();
+
+        return !empty($meta[$customerEmail]) ? $meta[$customerEmail] : null;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getMetaConsumerIdForLoggedUser()
+    {
+        if (!WC_emerchantpay_Helper::isUserLogged()) {
+            return [];
+        }
+
+        $meta = json_decode(
+            get_user_meta(get_current_user_id(), self::META_TOKENIZATION_CONSUMER_ID, true),
+            true
+        );
+
+        return is_array($meta) ? $meta : [];
+    }
+
+    /**
+     * @param $customerEmail
+     * @param $consumerId
+     */
+    protected function setGatewayConsumerIdFor($customerEmail, $consumerId)
+    {
+        if (!WC_emerchantpay_Helper::isUserLogged()) {
+            return;
+        }
+
+        $meta = $this->getMetaConsumerIdForLoggedUser();
+
+        $meta[$customerEmail] = $consumerId;
+
+        update_user_meta(get_current_user_id(), self::META_TOKENIZATION_CONSUMER_ID, json_encode($meta));
     }
 
     /**
@@ -563,6 +649,10 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
             if ($isWpfSuccessfullyCreated) {
                 $this->save_checkout_trx_to_order($response, WC_emerchantpay_Order_Helper::getOrderProp($order, 'id'));
 
+                if ($this->isTokenizationAvailable($data['customer_email'])) {
+                    $this->save_tokenization_data($data['customer_email'], $response);
+                }
+
                 // Create One-time token to prevent redirect abuse
                 $this->set_one_time_token($order_id, $this->generateTransactionId());
 
@@ -606,6 +696,17 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method
 
         // Save whole trx
         WC_emerchantpay_Order_Helper::saveInitialTrxToOrder($order_id, $response_obj);
+    }
+
+    /**
+     * @param $customer_email
+     * @param $response_obj
+     */
+    protected function save_tokenization_data($customer_email, $response_obj)
+    {
+        if (!empty($response_obj->consumer_id)) {
+            $this->setGatewayConsumerIdFor($customer_email, $response_obj->consumer_id);
+        }
     }
 
     /**

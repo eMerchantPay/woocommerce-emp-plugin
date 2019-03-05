@@ -121,9 +121,6 @@ msgstr "PayPal Express"
 msgid "PaySafeCard"
 msgstr "PaySafeCard"
 
-msgid "PaySec"
-msgstr "PaySec"
-
 msgid "PayU"
 msgstr "PayU"
 

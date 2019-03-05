@@ -6,9 +6,9 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x or 5.x (Tested up to 5.0.0)
-* WooCommerce 2.x or 3.x (Tested up to 3.5.0)
-* [GenesisPHP v1.11.0](https://github.com/GenesisGateway/genesis_php/releases/tag/1.11.0) - (Integrated in Module)
+* WordPress 4.x or 5.x (Tested up to 5.1)
+* WooCommerce 2.x or 3.x (Tested up to 3.5.5)
+* [GenesisPHP v1.12.0](https://github.com/GenesisGateway/genesis_php/releases/tag/1.12.0) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x (Tested up to 2.2.13) in order to use **Subscriptions**
 
@@ -42,6 +42,8 @@ This steps should be followed if you wish to use the ```emerchantpay Direct``` M
 * Login into your WordPress Admin Panel with Administrator privileges
 * Navigate to ```WooCommerce``` - > ```Settings``` -> ```Checkout```
 * In Section ```Checkout Process``` check ```Force secure checkout```
+
+__If you are using Tokenization for Web Payment Form, please make sure Guest Checkout is disabled.__
 
 Subscriptions
 ------------
@@ -118,23 +120,27 @@ Supported Transactions
     * __Alipay__
     * __Authorize__
     * __Authorize (3D-Secure)__
+    * __Banco do Brasil__
+    * __BitPay__
     * __CashU__
-    * __Citadel__
+    * __Entercash__
     * __eZeeWallet__
     * __Fashioncheque__
     * __iDebit__
     * __InstaDebit__
+    * __InstantTransfer__
     * __InitRecurringSale__
     * __InitRecurringSale (3D-Secure)__
     * __Intersolve__
     * __Klarna__
     * __Neteller__
+    * __Multibanco__
     * __P24__
     * __PayByVoucher (Sale)__
     * __PayByVoucher (oBeP)__
     * __PayPal Express__
     * __PaySafeCard__
-    * __PaySec__
+    * __PayU__
     * __POLi__
     * __PPRO__
     	* __eps__
@@ -154,6 +160,7 @@ Supported Transactions
     * __Trustly__
     * __WebMoney__
     * __WeChat__
+    * __Zimpler__
     
 _Note_: If you have trouble with your credentials or terminal configuration, get in touch with our [support] team
 

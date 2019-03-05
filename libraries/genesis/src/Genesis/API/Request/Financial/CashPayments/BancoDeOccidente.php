@@ -21,45 +21,38 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Traits\Request\CustomerAddress;
+namespace Genesis\API\Request\Financial\CashPayments;
 
-use Genesis\Exceptions\ErrorParameter;
+use Genesis\API\Traits\Request\AddressInfoAttributes;
+use Genesis\API\Traits\Request\Financial\AsyncAttributes;
+use Genesis\API\Traits\Request\Financial\PaymentAttributes;
+use Genesis\API\Traits\Request\Financial\PproAttributes;
 
 /**
- * Trait CustomerInfoAttributes
- * @package Genesis\API\Traits\Request\CustomerAddress
+ * Class BancoDeOccidente
  *
- * @method $this setCustomerPhone($value) Set Phone number of the Customer
+ * BancoDeOccidente - oBeP-style alternative payment method
+ *
+ * @package Genesis\API\Request\Financial\CashPayments
  */
-trait CustomerInfoAttributes
+class BancoDeOccidente extends \Genesis\API\Request\Base\Financial\SouthAmericanPayment
 {
-    /**
-     * Email address of the Customer
-     *
-     * @var string
-     */
-    protected $customer_email;
+    use AsyncAttributes, PaymentAttributes, AddressInfoAttributes, PproAttributes;
 
     /**
-     * @param string $value
-     *
-     * @return $this
-     * @throws ErrorParameter
+     * Returns the Request transaction type
+     * @return string
      */
-    public function setCustomerEmail($value)
+    protected function getTransactionType()
     {
-        if ($value !== null && filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
-            throw new ErrorParameter('Please, enter a valid email');
-        }
-
-        $this->customer_email = $value;
-        return $this;
+        return \Genesis\API\Constants\Transaction\Types::BANCO_DE_OCCIDENTE;
     }
 
     /**
-     * Phone number of the customer
-     *
-     * @var string
+     * @return array
      */
-    protected $customer_phone;
+    public function getAllowedBillingCountries()
+    {
+        return ['CO'];
+    }
 }
