@@ -17,8 +17,8 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
-if (!defined( 'ABSPATH' )) {
-    exit(0);
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
 }
 
 /**
@@ -28,114 +28,112 @@ if (!defined( 'ABSPATH' )) {
  *
  * @SuppressWarnings(PHPMD)
  */
-class WC_emerchantpay_Transaction
-{
-    const TYPE_CHECKOUT = 'checkout';
+class WC_emerchantpay_Transaction {
 
-    public $unique_id;
-    public $parent_id;
-    public $date_add;
-    public $type;
-    public $status;
-    public $message;
-    public $currency;
-    public $amount;
-    public $terminal;
+	const TYPE_CHECKOUT = 'checkout';
 
-    public function __construct($response = null, $parent_id = false, $type = '')
-    {
-        if ($response) {
-            $this->importResponse($response);
-        }
+	public $unique_id;
+	public $parent_id;
+	public $date_add;
+	public $type;
+	public $status;
+	public $message;
+	public $currency;
+	public $amount;
+	public $terminal;
 
-        $this->parent_id = $parent_id;
-    }
+	public function __construct( $response = null, $parent_id = false, $type = '' ) {
+		if ( $response ) {
+			$this->importResponse( $response );
+		}
 
-    /**
-     * Import a Genesis Response Object
-     *
-     * @param stdClass|WC_emerchantpay_Transaction $trx
-     */
-    public function importResponse($trx)
-    {
-        if (isset($trx->unique_id)) {
-            $this->unique_id = $trx->unique_id;
-        }
-        if (isset($trx->timestamp) && $trx->timestamp instanceof DateTime) {
-            $this->date_add = $trx->timestamp->getTimestamp();
-        } else if (isset($trx->date_add)) {
-            $this->date_add = $trx->date_add;
-        } else {
-            $this->date_add = time();
-        }
-        if (isset($trx->transaction_type)) {
-            $this->type = $trx->transaction_type;
-        } else if (isset($trx->type)) {
-            $this->type = $trx->type;
-        } else {
-            $this->type = static::TYPE_CHECKOUT;
-        }
-        if (isset($trx->status)) {
-            $this->status = $trx->status;
-        }
-        if (isset($trx->message)) {
-            $this->message = $trx->message;
-        }
-        if (isset($trx->currency)) {
-            $this->currency = $trx->currency;
-        }
-        if (isset($trx->amount)) {
-            $this->amount = $trx->amount;
-        }
-        if (isset($trx->terminal_token)) {
-            $this->terminal = $trx->terminal_token;
-        }
-        if (isset($trx->payment_transaction->terminal_token)) {
-            $this->terminal = $trx->payment_transaction->terminal_token;
-        }
-    }
+		$this->parent_id = $parent_id;
+	}
 
-    /**
-     * @param string $parentType
-     *
-     * @return bool
-     */
-    public function shouldChangeParentStatus($parentType)
-    {
-        switch ($parentType) {
-            case static::TYPE_CHECKOUT:
-                return true;
-            default:
-                return $this->status === \Genesis\API\Constants\Transaction\States::APPROVED;
-        }
-    }
+	/**
+	 * Import a Genesis Response Object
+	 *
+	 * @param stdClass|WC_emerchantpay_Transaction $trx
+	 */
+	public function importResponse( $trx ) {
+		if ( isset( $trx->unique_id ) ) {
+			$this->unique_id = $trx->unique_id;
+		}
+		if ( isset( $trx->timestamp ) && $trx->timestamp instanceof DateTime ) {
+			$this->date_add = $trx->timestamp->getTimestamp();
+		} elseif ( isset( $trx->date_add ) ) {
+			$this->date_add = $trx->date_add;
+		} else {
+			$this->date_add = time();
+		}
+		if ( isset( $trx->transaction_type ) ) {
+			$this->type = $trx->transaction_type;
+		} elseif ( isset( $trx->type ) ) {
+			$this->type = $trx->type;
+		} else {
+			$this->type = static::TYPE_CHECKOUT;
+		}
+		if ( isset( $trx->status ) ) {
+			$this->status = $trx->status;
+		}
+		if ( isset( $trx->message ) ) {
+			$this->message = $trx->message;
+		}
+		if ( isset( $trx->currency ) ) {
+			$this->currency = $trx->currency;
+		}
+		if ( isset( $trx->amount ) ) {
+			$this->amount = $trx->amount;
+		}
+		if ( isset( $trx->terminal_token ) ) {
+			$this->terminal = $trx->terminal_token;
+		}
+		if ( isset( $trx->payment_transaction->terminal_token ) ) {
+			$this->terminal = $trx->payment_transaction->terminal_token;
+		}
+	}
 
-    /**
-     * @return string
-     */
-    public function getStatusText()
-    {
-        switch ($this->type) {
-            case \Genesis\API\Constants\Transaction\Types::KLARNA_REFUND:
-            case \Genesis\API\Constants\Transaction\Types::REFUND:
-            case \Genesis\API\Constants\Transaction\Types::BITPAY_REFUND:
-                return \Genesis\API\Constants\Transaction\States::REFUNDED;
-            case \Genesis\API\Constants\Transaction\Types::VOID:
-                return \Genesis\API\Constants\Transaction\States::VOIDED;
-            default:
-                return $this->status;
-        }
-    }
+	/**
+	 * @param string $parentType
+	 *
+	 * @return bool
+	 */
+	public function shouldChangeParentStatus( $parentType ) {
+		switch ( $parentType ) {
+			case static::TYPE_CHECKOUT:
+				return true;
+			default:
+				return $this->status === \Genesis\API\Constants\Transaction\States::APPROVED;
+		}
+	}
 
-    /**
-     * @return bool
-     */
-    public function isAuthorize()
-    {
-        return in_array($this->type, array(
-            \Genesis\API\Constants\Transaction\Types::AUTHORIZE,
-            \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D,
-            \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE,
-        ));
-    }
+	/**
+	 * @return string
+	 */
+	public function getStatusText() {
+		switch ( $this->type ) {
+			case \Genesis\API\Constants\Transaction\Types::KLARNA_REFUND:
+			case \Genesis\API\Constants\Transaction\Types::REFUND:
+			case \Genesis\API\Constants\Transaction\Types::BITPAY_REFUND:
+				return \Genesis\API\Constants\Transaction\States::REFUNDED;
+			case \Genesis\API\Constants\Transaction\Types::VOID:
+				return \Genesis\API\Constants\Transaction\States::VOIDED;
+			default:
+				return $this->status;
+		}
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isAuthorize() {
+		return in_array(
+			$this->type,
+			array(
+				\Genesis\API\Constants\Transaction\Types::AUTHORIZE,
+				\Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D,
+				\Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE,
+			)
+		);
+	}
 }

@@ -111,6 +111,9 @@ msgstr "Neteller"
 msgid "Klarna"
 msgstr "Klarna"
 
+msgid "OnlineBanking"
+msgstr "OnlineBanking"
+
 msgid "P24"
 msgstr "P24"
 

@@ -135,6 +135,7 @@ Supported Transactions
     * __Klarna__
     * __Neteller__
     * __Multibanco__
+    * __Online Banking__
     * __P24__
     * __PayByVoucher (Sale)__
     * __PayByVoucher (oBeP)__

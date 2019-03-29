@@ -17,359 +17,344 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
-if (!defined( 'ABSPATH' )) {
-    exit(0);
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
 }
 
 /**
  * emerchantpay Subscription Helper Class
  *
  * Class WC_emerchantpay_Subscription_Helper
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class WC_emerchantpay_Subscription_Helper
-{
-    const META_INIT_RECURRING_ID        = '_init_recurring_id';
-    const META_RECURRING_TERMINAL_TOKEN = '_recurring_terminal_token';
-    const META_INIT_RECURRING_FINISHED  = '_init_recurring_finished';
+class WC_emerchantpay_Subscription_Helper {
 
-    const WC_SUBSCRIPTIONS_PLUGIN_FILTER = 'woocommerce-subscriptions/woocommerce-subscriptions.php';
+	const META_INIT_RECURRING_ID        = '_init_recurring_id';
+	const META_RECURRING_TERMINAL_TOKEN = '_recurring_terminal_token';
+	const META_INIT_RECURRING_FINISHED  = '_init_recurring_finished';
 
-    const WC_SUBSCRIPTIONS_PLUGIN_URL    = 'https://woocommerce.com/products/woocommerce-subscriptions/';
-    const WC_SUBSCRIPTIONS_ORDER_CLASS   = 'WC_Subscriptions_Order';
+	const WC_SUBSCRIPTIONS_PLUGIN_FILTER = 'woocommerce-subscriptions/woocommerce-subscriptions.php';
 
-    const WC_SUBSCRIPTION_STATUS_ACTIVE   = 'active';
-    const WC_SUBSCRIPTION_STATUS_ON_HOLD  = 'on-hold';
-    const WC_SUBSCRIPTION_STATUS_CANCELED = 'cancelled';
+	const WC_SUBSCRIPTIONS_PLUGIN_URL  = 'https://woocommerce.com/products/woocommerce-subscriptions/';
+	const WC_SUBSCRIPTIONS_ORDER_CLASS = 'WC_Subscriptions_Order';
 
-    /**
-     * Is $order_id a subscription?
-     * @param  int  $order_id
-     * @return boolean
-     */
-    public static function hasOrderSubscriptions( $order_id )
-    {
-        if ( ! WC_emerchantpay_Order_Helper::isValidOrderId( $order_id )) {
-            return false;
-        }
+	const WC_SUBSCRIPTION_STATUS_ACTIVE   = 'active';
+	const WC_SUBSCRIPTION_STATUS_ON_HOLD  = 'on-hold';
+	const WC_SUBSCRIPTION_STATUS_CANCELED = 'cancelled';
 
-        return
-            function_exists( 'wcs_order_contains_subscription' ) &&
-            (
-                wcs_order_contains_subscription( $order_id ) ||
-                wcs_is_subscription( $order_id ) ||
-                wcs_order_contains_renewal( $order_id )
-            );
-    }
+	/**
+	 * Is $order_id a subscription?
+	 *
+	 * @param  int $order_id
+	 * @return boolean
+	 */
+	public static function hasOrderSubscriptions( $order_id ) {
+		if ( ! WC_emerchantpay_Order_Helper::isValidOrderId( $order_id ) ) {
+			return false;
+		}
 
-    /**
-     * Detects if Subscriptions Extension for WC is installed
-     * @return bool
-     */
-    public static function isWCSubscriptionsInstalled()
-    {
-        return
-            WC_emerchantpay_Helper::isWPPluginActive( self::WC_SUBSCRIPTIONS_PLUGIN_FILTER ) &&
-            class_exists( self::WC_SUBSCRIPTIONS_ORDER_CLASS );
-    }
+		return function_exists( 'wcs_order_contains_subscription' ) &&
+			(
+				wcs_order_contains_subscription( $order_id ) ||
+				wcs_is_subscription( $order_id ) ||
+				wcs_order_contains_renewal( $order_id )
+			);
+	}
 
-    /**
-     * Retrieves a list with Subscriptions for a specific order
-     *
-     * @param $orderId
-     * @return array
-     */
-    public static function getOrderSubscriptions( $orderId )
-    {
-        if ( ! static::isWCSubscriptionsInstalled() ) {
-            return array();
-        }
+	/**
+	 * Detects if Subscriptions Extension for WC is installed
+	 *
+	 * @return bool
+	 */
+	public static function isWCSubscriptionsInstalled() {
+		return WC_emerchantpay_Helper::isWPPluginActive( self::WC_SUBSCRIPTIONS_PLUGIN_FILTER ) &&
+			class_exists( self::WC_SUBSCRIPTIONS_ORDER_CLASS );
+	}
 
-        if ( ! WC_emerchantpay_Order_Helper::isValidOrderId( $orderId )) {
-            return array();
-        }
+	/**
+	 * Retrieves a list with Subscriptions for a specific order
+	 *
+	 * @param $orderId
+	 * @return array
+	 */
+	public static function getOrderSubscriptions( $orderId ) {
+		if ( ! static::isWCSubscriptionsInstalled() ) {
+			return array();
+		}
 
-        // Also store it on the subscriptions being purchased or paid for in the order
-        if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $orderId ) ) {
-            return wcs_get_subscriptions_for_order( $orderId );
-        } elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $orderId ) ) {
-            return wcs_get_subscriptions_for_renewal_order( $orderId );
-        }
+		if ( ! WC_emerchantpay_Order_Helper::isValidOrderId( $orderId ) ) {
+			return array();
+		}
 
-        return array();
-    }
+		// Also store it on the subscriptions being purchased or paid for in the order
+		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $orderId ) ) {
+			return wcs_get_subscriptions_for_order( $orderId );
+		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $orderId ) ) {
+			return wcs_get_subscriptions_for_renewal_order( $orderId );
+		}
 
-    /**
-     * Saves additional data from the Init Recurring Response to the Order Subscriptions
-     *
-     * @param int $orderId
-     * @param \stdClass $response
-     */
-    public static function saveInitRecurringResponseToOrderSubscriptions( $orderId, $response)
-    {
-        if ( ! WC_emerchantpay_Order_Helper::isValidOrderId( $orderId ) ) {
-            return;
-        }
+		return array();
+	}
 
-        $subscriptions = static::getOrderSubscriptions( $orderId );
+	/**
+	 * Saves additional data from the Init Recurring Response to the Order Subscriptions
+	 *
+	 * @param int       $orderId
+	 * @param \stdClass $response
+	 */
+	public static function saveInitRecurringResponseToOrderSubscriptions( $orderId, $response ) {
+		if ( ! WC_emerchantpay_Order_Helper::isValidOrderId( $orderId ) ) {
+			return;
+		}
 
-        foreach ( $subscriptions as $subscription ) {
-            update_post_meta( $subscription->id, self::META_INIT_RECURRING_ID, $response->unique_id );
-        }
+		$subscriptions = static::getOrderSubscriptions( $orderId );
 
-        WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_INIT_RECURRING_ID, $response->unique_id );
-    }
+		foreach ( $subscriptions as $subscription ) {
+			update_post_meta( $subscription->id, self::META_INIT_RECURRING_ID, $response->unique_id );
+		}
 
-    /**
-     * @param int $orderId
-     * @return mixed
-     */
-    public static function getOrderInitRecurringIdMeta( $orderId )
-    {
-        return WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_INIT_RECURRING_ID);
-    }
+		WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_INIT_RECURRING_ID, $response->unique_id );
+	}
 
-    /**
-     * @return bool
-     */
-    public static function isCartValid()
-    {
-        $cart = WC()->cart->cart_contents;
-        if (!$cart) {
-            return false;
-        }
+	/**
+	 * @param int $orderId
+	 * @return mixed
+	 */
+	public static function getOrderInitRecurringIdMeta( $orderId ) {
+		return WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_INIT_RECURRING_ID );
+	}
 
-        $hasProducts = false;
-        $hasSubscriptions = false;
+	/**
+	 * @return bool
+	 */
+	public static function isCartValid() {
+		$cart = WC()->cart->cart_contents;
+		if ( ! $cart ) {
+			return false;
+		}
 
-        foreach ( $cart AS $product ) {
-            if ( !self::isSubscriptionProduct($product['data']) ) {
-                if ( $hasSubscriptions ) {
-                    return false;
-                }
+		$hasProducts      = false;
+		$hasSubscriptions = false;
 
-                $hasProducts = true;
-                continue;
-            }
+		foreach ( $cart as $product ) {
+			if ( ! self::isSubscriptionProduct( $product['data'] ) ) {
+				if ( $hasSubscriptions ) {
+					return false;
+				}
 
-            if ( $hasProducts ) {
-                return false;
-            }
+				$hasProducts = true;
+				continue;
+			}
 
-            $hasSubscriptions = true;
-            /** @var \WC_Product_Subscription|\WC_Product_Subscription_Variation $product['data'] */
-            $fee = floatval( $product['data']->get_sign_up_fee() );
-            if ($fee === 0.0) {
-                return false;
-            }
-        }
+			if ( $hasProducts ) {
+				return false;
+			}
 
-        if ( $hasSubscriptions ) {
-            return !$hasProducts;
-        }
+			$hasSubscriptions = true;
+			/** @var \WC_Product_Subscription|\WC_Product_Subscription_Variation $product['data'] */
+			$fee = floatval( $product['data']->get_sign_up_fee() );
+			if ( $fee === 0.0 ) {
+				return false;
+			}
+		}
 
-        return $hasProducts;
-    }
+		if ( $hasSubscriptions ) {
+			return ! $hasProducts;
+		}
 
-    /**
-     * @param \WC_Product $product
-     * @return bool
-     */
-    public static function isSubscriptionProduct(\WC_Product $product)
-    {
-        return $product instanceof \WC_Product_Subscription ||
-               $product instanceof \WC_Product_Subscription_Variation;
-    }
+		return $hasProducts;
+	}
 
-    /**
-     * Retrieves the Sign Up Fee for the Init Recurring Transactions
-     *
-     * @param WC_Order $order
-     * @return float|null
-     */
-    public static function getOrderSubscriptionSignUpFee( $order )
-    {
-        if ( !static::isWCSubscriptionsInstalled() ) {
-            return null;
-        }
+	/**
+	 * @param \WC_Product $product
+	 * @return bool
+	 */
+	public static function isSubscriptionProduct( \WC_Product $product ) {
+		return $product instanceof \WC_Product_Subscription ||
+			   $product instanceof \WC_Product_Subscription_Variation;
+	}
 
-        if ( !WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
-            return null;
-        }
+	/**
+	 * Retrieves the Sign Up Fee for the Init Recurring Transactions
+	 *
+	 * @param WC_Order $order
+	 * @return float|null
+	 */
+	public static function getOrderSubscriptionSignUpFee( $order ) {
+		if ( ! static::isWCSubscriptionsInstalled() ) {
+			return null;
+		}
 
-        $signUpFee = WC_Subscriptions_Order::get_sign_up_fee( $order->id );
+		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
+			return null;
+		}
 
-        /**
-         * It is supposed to be only one item
-         * P.S WC-Subscription-Plugin does not allow to add different subscriptions for the same cart
-         */
-        $recurringItems = $order->get_items();
+		$signUpFee = WC_Subscriptions_Order::get_sign_up_fee( $order->id );
 
-        /**
-         * This is needed, because
-         *    WC_Subscriptions_Order::get_sign_up_fee
-         * returns the Sign-Up fee for the Subscription (Qty = 1)
-         * We need to calculate the real sign-up fee
-         * @var \WC_Product_Subscription $recurringItem
-         */
-        foreach ( $recurringItems as $recurringItem ) {
-            $quantity = (int) $recurringItem->get_quantity();
+		/**
+		 * It is supposed to be only one item
+		 * P.S WC-Subscription-Plugin does not allow to add different subscriptions for the same cart
+		 */
+		$recurringItems = $order->get_items();
 
-            $signUpFee = (float) ($quantity * $signUpFee);
-        }
+		/**
+		 * This is needed, because
+		 *    WC_Subscriptions_Order::get_sign_up_fee
+		 * returns the Sign-Up fee for the Subscription (Qty = 1)
+		 * We need to calculate the real sign-up fee
+		 *
+		 * @var \WC_Product_Subscription $recurringItem
+		 */
+		foreach ( $recurringItems as $recurringItem ) {
+			$quantity = (int) $recurringItem->get_quantity();
 
-        return $signUpFee > 0 ? $signUpFee : null;
-    }
+			$signUpFee = (float) ( $quantity * $signUpFee );
+		}
 
-    /**
-     * Retrieve the amount got the First Subscription.
-     * Used after performing the Init Recurring Transaction
-     *
-     * @param WC_Order $order
-     * @return null|float
-     */
-    public static function getOrderSubscriptionInitialPayment( $order )
-    {
-        if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order )) {
-            return null;
-        }
+		return $signUpFee > 0 ? $signUpFee : null;
+	}
 
-        $signUpFee = static::getOrderSubscriptionSignUpFee( $order );
+	/**
+	 * Retrieve the amount got the First Subscription.
+	 * Used after performing the Init Recurring Transaction
+	 *
+	 * @param WC_Order $order
+	 * @return null|float
+	 */
+	public static function getOrderSubscriptionInitialPayment( $order ) {
+		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
+			return null;
+		}
 
-        if ($signUpFee === null) {
-            return null;
-        }
+		$signUpFee = static::getOrderSubscriptionSignUpFee( $order );
 
-        $amountToPay = $order->get_total() - $signUpFee;
+		if ( $signUpFee === null ) {
+			return null;
+		}
 
-        return $amountToPay > 0 ? $amountToPay : null;
-    }
+		$amountToPay = $order->get_total() - $signUpFee;
 
-    /**
-     * Creates a Meta for the Order to indicate the Merchant has been changed for
-     * the Initial Recurring Order
-     *    + Init Recurring Payment
-     *    + Recurring Sale (if needed - without trial period)
-     * @param int $orderId
-     */
-    public static function setInitRecurringOrderFinished( $orderId )
-    {
-        WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_INIT_RECURRING_FINISHED, true);
-    }
+		return $amountToPay > 0 ? $amountToPay : null;
+	}
 
-    /**
-     * Indicates if the Merchant has already been changed for the Init Recurring
-     *    + Init Recurring Payment
-     *    + Recurring Sale (if needed - without trial period)
-     * Will be used in Notification Handler for Init Recurring 3D (to ensure not charging the Merchant twice)
-     *
-     * @param string $orderId
-     * @return bool
-     */
-    public static function isInitRecurringOrderFinished( $orderId )
-    {
-        $orderFinished = WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_INIT_RECURRING_FINISHED);
+	/**
+	 * Creates a Meta for the Order to indicate the Merchant has been changed for
+	 * the Initial Recurring Order
+	 *    + Init Recurring Payment
+	 *    + Recurring Sale (if needed - without trial period)
+	 *
+	 * @param int $orderId
+	 */
+	public static function setInitRecurringOrderFinished( $orderId ) {
+		WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_INIT_RECURRING_FINISHED, true );
+	}
 
-        return !empty($orderFinished);
-    }
+	/**
+	 * Indicates if the Merchant has already been changed for the Init Recurring
+	 *    + Init Recurring Payment
+	 *    + Recurring Sale (if needed - without trial period)
+	 * Will be used in Notification Handler for Init Recurring 3D (to ensure not charging the Merchant twice)
+	 *
+	 * @param string $orderId
+	 * @return bool
+	 */
+	public static function isInitRecurringOrderFinished( $orderId ) {
+		$orderFinished = WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_INIT_RECURRING_FINISHED );
 
-    /**
-     * @param \stdClass $response
-     * @return bool
-     */
-    public static function isInitGatewayResponseSuccessful($response)
-    {
-        $successfulStatuses = array(
-            \Genesis\API\Constants\Transaction\States::APPROVED,
-            \Genesis\API\Constants\Transaction\States::PENDING_ASYNC
-        );
+		return ! empty( $orderFinished );
+	}
 
-        return
-            isset($response->unique_id) &&
-            isset($response->status) &&
-            in_array($response->status, $successfulStatuses);
-    }
+	/**
+	 * @param \stdClass $response
+	 * @return bool
+	 */
+	public static function isInitGatewayResponseSuccessful( $response ) {
+		$successfulStatuses = array(
+			\Genesis\API\Constants\Transaction\States::APPROVED,
+			\Genesis\API\Constants\Transaction\States::PENDING_ASYNC,
+		);
 
-    /**
-     * @param string $transactionType
-     * @return bool
-     */
-    public static function isInitRecurring($transactionType)
-    {
-        $initRecurringTxnTypes = array(
-            \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE,
-            \Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D
-        );
+		return isset( $response->unique_id ) &&
+			isset( $response->status ) &&
+			in_array( $response->status, $successfulStatuses );
+	}
 
-        return in_array($transactionType, $initRecurringTxnTypes);
-    }
+	/**
+	 * @param string $transactionType
+	 * @return bool
+	 */
+	public static function isInitRecurring( $transactionType ) {
+		$initRecurringTxnTypes = array(
+			\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE,
+			\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D,
+		);
 
-    /**
-     * @param stdClass $reconcile
-     * @return bool
-     */
-    public static function isInitRecurringReconciliation($reconcile)
-    {
-        $transactionType = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction($reconcile)->transaction_type;
+		return in_array( $transactionType, $initRecurringTxnTypes );
+	}
 
-        return static::isInitRecurring($transactionType);
-    }
+	/**
+	 * @param stdClass $reconcile
+	 * @return bool
+	 */
+	public static function isInitRecurringReconciliation( $reconcile ) {
+		$transactionType = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction( $reconcile )->transaction_type;
 
-    /**
-     * @param int $orderId
-     * @param string $terminalToken
-     * @return bool
-     */
-    public static function saveTerminalTokenToOrderSubscriptions( $orderId, $terminalToken )
-    {
-        if (!WC_emerchantpay_Subscription_Helper::hasOrderSubscriptions( $orderId )) {
-            return false;
-        }
+		return static::isInitRecurring( $transactionType );
+	}
 
-        $subscriptions = static::getOrderSubscriptions( $orderId );
+	/**
+	 * @param int    $orderId
+	 * @param string $terminalToken
+	 * @return bool
+	 */
+	public static function saveTerminalTokenToOrderSubscriptions( $orderId, $terminalToken ) {
+		if ( ! self::hasOrderSubscriptions( $orderId ) ) {
+			return false;
+		}
 
-        foreach ( $subscriptions as $subscription ) {
-            update_post_meta( $subscription->id, self::META_RECURRING_TERMINAL_TOKEN, $terminalToken );
-        }
+		$subscriptions = static::getOrderSubscriptions( $orderId );
 
-        WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_RECURRING_TERMINAL_TOKEN, $terminalToken);
+		foreach ( $subscriptions as $subscription ) {
+			update_post_meta( $subscription->id, self::META_RECURRING_TERMINAL_TOKEN, $terminalToken );
+		}
 
-        return count($subscriptions) > 0;
-    }
+		WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_RECURRING_TERMINAL_TOKEN, $terminalToken );
 
-    /**
-     * @param int $orderId
-     * @return mixed
-     */
-    public static function getTerminalTokenMetaFromSubscriptionOrder( $orderId )
-    {
-        return WC_emerchantpay_Order_Helper::getOrderMetaData($orderId, self::META_RECURRING_TERMINAL_TOKEN);
-    }
+		return count( $subscriptions ) > 0;
+	}
 
-    /**
-     * @param WC_Order $order
-     * @param string $status
-     * @param string $note
-     */
-    public static function updateOrderSubscriptionsStatus($order, $status, $note = '')
-    {
-        if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order )) {
-            return;
-        }
+	/**
+	 * @param int $orderId
+	 * @return mixed
+	 */
+	public static function getTerminalTokenMetaFromSubscriptionOrder( $orderId ) {
+		return WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_RECURRING_TERMINAL_TOKEN );
+	}
 
-        $subscriptions = static::getOrderSubscriptions( $order->id );
+	/**
+	 * @param WC_Order $order
+	 * @param string   $status
+	 * @param string   $note
+	 */
+	public static function updateOrderSubscriptionsStatus( $order, $status, $note = '' ) {
+		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
+			return;
+		}
 
-        foreach ($subscriptions as $subscription) {
-            static::updateSubscriptionStatus($subscription, $status, $note);
-        }
-    }
+		$subscriptions = static::getOrderSubscriptions( $order->id );
 
-    /**
-     * @param WC_Subscription $subscription
-     * @param string $status
-     * @param string $note
-     */
-    public static function updateSubscriptionStatus($subscription, $status, $note = '')
-    {
-        $subscription->update_status( $status, $note );
-    }
+		foreach ( $subscriptions as $subscription ) {
+			static::updateSubscriptionStatus( $subscription, $status, $note );
+		}
+	}
+
+	/**
+	 * @param WC_Subscription $subscription
+	 * @param string          $status
+	 * @param string          $note
+	 */
+	public static function updateSubscriptionStatus( $subscription, $status, $note = '' ) {
+		$subscription->update_status( $status, $note );
+	}
 }

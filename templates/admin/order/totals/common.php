@@ -18,7 +18,7 @@
  */
 ?>
 <style type="text/css">
-    #woocommerce-order-items .wc-order-totals .refunded-total {
-        color: darkorange;
-    }
+	#woocommerce-order-items .wc-order-totals .refunded-total {
+		color: darkorange;
+	}
 </style>

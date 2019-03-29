@@ -17,8 +17,8 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
-if (!defined( 'ABSPATH' )) {
-    exit(0);
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
 }
 
 use \Genesis\API\Request\Financial\Alternatives\Klarna\Item as KlarnaItem;
@@ -26,328 +26,320 @@ use \Genesis\API\Request\Financial\Alternatives\Klarna\Item as KlarnaItem;
 /**
  * Class wc_emerchantpay_order_helper
  */
-class WC_emerchantpay_Order_Helper
-{
-    /**
-     * Retrieves meta data for a specific order and key
-     *
-     * @param int $order_id
-     * @param string $meta_key
-     * @param bool $single
-     * @return mixed
-     */
-    public static function getOrderMetaData($order_id, $meta_key, $single = true)
-    {
-        return get_post_meta($order_id, $meta_key, $single);
-    }
+class WC_emerchantpay_Order_Helper {
 
-    /**
-     * Retrieves meta data for a specific order and key
-     *
-     * @param int $order_id
-     * @param string $meta_key
-     * @param float $default
-     * @return float
-     */
-    public static function getFloatOrderMetaData($order_id, $meta_key, $default = 0.0)
-    {
-        $value = static::getOrderMetaData($order_id, $meta_key);
+	/**
+	 * Retrieves meta data for a specific order and key
+	 *
+	 * @param int    $order_id
+	 * @param string $meta_key
+	 * @param bool   $single
+	 * @return mixed
+	 */
+	public static function getOrderMetaData( $order_id, $meta_key, $single = true ) {
+		return get_post_meta( $order_id, $meta_key, $single );
+	}
 
-        return empty($value) ? $default : (float) $value;
-    }
+	/**
+	 * Retrieves meta data for a specific order and key
+	 *
+	 * @param int    $order_id
+	 * @param string $meta_key
+	 * @param float  $default
+	 * @return float
+	 */
+	public static function getFloatOrderMetaData( $order_id, $meta_key, $default = 0.0 ) {
+		$value = static::getOrderMetaData( $order_id, $meta_key );
 
-    /**
-     * Retrieves meta data formatted as amount for a specific order and key
-     *
-     * @param int $order_id
-     * @param string $meta_key
-     * @param bool $single
-     * @return mixed
-     */
-    public static function getOrderAmountMetaData($order_id, $meta_key, $single = true)
-    {
-        return (double) static::getOrderMetaData($order_id, $meta_key, $single);
-    }
+		return empty( $value ) ? $default : (float) $value;
+	}
 
-    /**
-     * Stores order meta data for a specific key
-     *
-     * @param int $order_id
-     * @param string $meta_key
-     * @param mixed $meta_value
-     */
-    public static function setOrderMetaData($order_id, $meta_key, $meta_value)
-    {
-        update_post_meta($order_id, $meta_key, $meta_value);
-    }
+	/**
+	 * Retrieves meta data formatted as amount for a specific order and key
+	 *
+	 * @param int    $order_id
+	 * @param string $meta_key
+	 * @param bool   $single
+	 * @return mixed
+	 */
+	public static function getOrderAmountMetaData( $order_id, $meta_key, $single = true ) {
+		return (double) static::getOrderMetaData( $order_id, $meta_key, $single );
+	}
 
-    /**
-     * Get payment gateway class by order data.
-     *
-     * @param int|WC_Order $order
-     * @return WC_emerchantpay_Method|bool
-     */
-    public static function getPaymentMethodInstanceByOrder($order)
-    {
-        return wc_get_payment_gateway_by_order($order);
-    }
+	/**
+	 * Stores order meta data for a specific key
+	 *
+	 * @param int    $order_id
+	 * @param string $meta_key
+	 * @param mixed  $meta_value
+	 */
+	public static function setOrderMetaData( $order_id, $meta_key, $meta_value ) {
+		update_post_meta( $order_id, $meta_key, $meta_value );
+	}
 
-    /**
-     * Creates an instance of a WooCommerce Order by Id
-     *
-     * @param int $order_id
-     * @return WC_Order|null
-     */
-    public static function getOrderById($order_id)
-    {
-        if ( ! static::isValidOrderId( $order_id ) ) {
-            return null;
-        }
+	/**
+	 * Get payment gateway class by order data.
+	 *
+	 * @param int|WC_Order $order
+	 * @return WC_emerchantpay_Method|bool
+	 */
+	public static function getPaymentMethodInstanceByOrder( $order ) {
+		return wc_get_payment_gateway_by_order( $order );
+	}
 
-        return wc_get_order( (int) $order_id );
-    }
+	/**
+	 * Creates an instance of a WooCommerce Order by Id
+	 *
+	 * @param int $order_id
+	 * @return WC_Order|null
+	 */
+	public static function getOrderById( $order_id ) {
+		if ( ! static::isValidOrderId( $order_id ) ) {
+			return null;
+		}
 
-    /**
-     * Format the price with a currency symbol.
-     *
-     * @param float $price
-     * @param int|WC_Order $order
-     * @return string
-     */
-    public static function formatPrice($price, $order)
-    {
-        if ( ! static::isValidOrder( $order ) ) {
-            $order = static::getOrderById($order);
-        }
+		return wc_get_order( (int) $order_id );
+	}
 
-        if ( $order === null ) {
-            return (string) $price;
-        }
+	/**
+	 * Format the price with a currency symbol.
+	 *
+	 * @param float        $price
+	 * @param int|WC_Order $order
+	 * @return string
+	 */
+	public static function formatPrice( $price, $order ) {
+		if ( ! static::isValidOrder( $order ) ) {
+			$order = static::getOrderById( $order );
+		}
 
-        return wc_price(
-            $price,
-            array(
-                'currency' => $order->get_order_currency()
-            )
-        );
-    }
+		if ( $order === null ) {
+			return (string) $price;
+		}
 
-    /**
-     * Returns a formatted money with currency (non HTML)
-     * @param float|string $amount
-     * @param WC_Order $order
-     * @return string
-     */
-    public static function formatMoney($amount, $order)
-    {
-        $amount = (float) $amount;
-        $money = number_format($amount, 2, '.', '');
+		return wc_price(
+			$price,
+			array(
+				'currency' => $order->get_order_currency(),
+			)
+		);
+	}
 
-        if ( ! static::isValidOrder( $order ) ) {
-            return $money;
-        }
+	/**
+	 * Returns a formatted money with currency (non HTML)
+	 *
+	 * @param float|string $amount
+	 * @param WC_Order     $order
+	 * @return string
+	 */
+	public static function formatMoney( $amount, $order ) {
+		$amount = (float) $amount;
+		$money  = number_format( $amount, 2, '.', '' );
 
-        return "$money {$order->get_order_currency()}";
-    }
+		if ( ! static::isValidOrder( $order ) ) {
+			return $money;
+		}
 
-    /**
-     * Get WC_Order instance by UniqueId saved during checkout
-     *
-     * @param string $unique_id
-     *
-     * @return WC_Order|bool
-     */
-    public static function getOrderByGatewayUniqueId( $unique_id, $meta_key )
-    {
-        $unique_id = esc_sql( trim( $unique_id ) );
+		return "$money {$order->get_order_currency()}";
+	}
 
-        $query = new WP_Query(
-            array(
-                'post_status' => 'any',
-                'post_type'   => 'shop_order',
-                'meta_key'    => $meta_key,
-                'meta_value'  => $unique_id
-            )
-        );
+	/**
+	 * Get WC_Order instance by UniqueId saved during checkout
+	 *
+	 * @param string $unique_id
+	 *
+	 * @return WC_Order|bool
+	 */
+	public static function getOrderByGatewayUniqueId( $unique_id, $meta_key ) {
+		$unique_id = esc_sql( trim( $unique_id ) );
 
-        if ( isset( $query->post->ID ) ) {
-            return new WC_Order( $query->post->ID );
-        }
+		$query = new WP_Query(
+			array(
+				'post_status' => 'any',
+				'post_type'   => 'shop_order',
+				'meta_key'    => $meta_key,
+				'meta_value'  => $unique_id,
+			)
+		);
 
-        return false;
-    }
+		if ( isset( $query->post->ID ) ) {
+			return new WC_Order( $query->post->ID );
+		}
 
-    /**
-     * @param WC_Order $order
-     * @param array $trx_list_new
-     */
-    public static function saveTrxListToOrder(WC_Order $order, array $trx_list_new)
-    {
-        $order_id = static::getOrderProp($order, 'id');
-        $trx_list_existing = static::getOrderMetaData($order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST);
+		return false;
+	}
 
-        if (is_array($trx_list_existing)) {
-            $trx_hierarchy = static::getOrderMetaData($order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_HIERARCHY);
-            if (empty($trx_hierarchy)) {
-                $trx_hierarchy = [];
-            }
+	/**
+	 * @param WC_Order $order
+	 * @param array    $trx_list_new
+	 */
+	public static function saveTrxListToOrder( WC_Order $order, array $trx_list_new ) {
+		$order_id          = static::getOrderProp( $order, 'id' );
+		$trx_list_existing = static::getOrderMetaData( $order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST );
 
-            $trx_tree = new WC_emerchantpay_Transactions_Tree($trx_list_existing, $trx_list_new, $trx_hierarchy);
+		if ( is_array( $trx_list_existing ) ) {
+			$trx_hierarchy = static::getOrderMetaData( $order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_HIERARCHY );
+			if ( empty( $trx_hierarchy ) ) {
+				$trx_hierarchy = [];
+			}
 
-            static::saveTrxTree($order_id, $trx_tree);
-        }
-    }
+			$trx_tree = new WC_emerchantpay_Transactions_Tree( $trx_list_existing, $trx_list_new, $trx_hierarchy );
 
-    /**
-     * @param int $order_id
-     * @param WC_emerchantpay_Transactions_Tree $trx_tree
-     */
-    public static function saveTrxTree($order_id, WC_emerchantpay_Transactions_Tree $trx_tree)
-    {
-        static::setOrderMetaData(
-            $order_id,
-            WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST,
-            $trx_tree->trx_list
-        );
+			static::saveTrxTree( $order_id, $trx_tree );
+		}
+	}
 
-        static::setOrderMetaData(
-            $order_id,
-            WC_emerchantpay_Transactions_Tree::META_DATA_KEY_HIERARCHY,
-            $trx_tree->trx_hierarchy
-        );
-    }
+	/**
+	 * @param int                               $order_id
+	 * @param WC_emerchantpay_Transactions_Tree $trx_tree
+	 */
+	public static function saveTrxTree( $order_id, WC_emerchantpay_Transactions_Tree $trx_tree ) {
+		static::setOrderMetaData(
+			$order_id,
+			WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST,
+			$trx_tree->trx_list
+		);
 
-    /**
-     * @param int $order_id
-     * @param stdClass $response_obj
-     */
-    public static function saveInitialTrxToOrder($order_id, $response_obj)
-    {
-        $trx = new WC_emerchantpay_Transaction($response_obj);
+		static::setOrderMetaData(
+			$order_id,
+			WC_emerchantpay_Transactions_Tree::META_DATA_KEY_HIERARCHY,
+			$trx_tree->trx_hierarchy
+		);
+	}
 
-        static::setOrderMetaData(
-            $order_id,
-            WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST,
-            [ $trx ]
-        );
-    }
+	/**
+	 * @param int      $order_id
+	 * @param stdClass $response_obj
+	 */
+	public static function saveInitialTrxToOrder( $order_id, $response_obj ) {
+		$trx = new WC_emerchantpay_Transaction( $response_obj );
 
-    /**
-     * @param int $orderId
-     * @return bool
-     */
-    public static function isValidOrderId( $orderId )
-    {
-        return (int) $orderId > 0;
-    }
+		static::setOrderMetaData(
+			$order_id,
+			WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST,
+			[ $trx ]
+		);
+	}
 
-    /**
-     * @param WC_Order $order
-     * @return bool
-     */
-    public static function isValidOrder( $order )
-    {
-        return is_object( $order ) && ($order instanceof WC_Order);
-    }
+	/**
+	 * @param int $orderId
+	 * @return bool
+	 */
+	public static function isValidOrderId( $orderId ) {
+		return (int) $orderId > 0;
+	}
 
-    /**
-     * WooCommerce compatibility
-     * @param mixed $item
-     * @return string
-     */
-    public static function getItemName($item)
-    {
-        return is_array($item) ? $item['name'] : $item->get_product()->get_name();
-    }
+	/**
+	 * @param WC_Order $order
+	 * @return bool
+	 */
+	public static function isValidOrder( $order ) {
+		return is_object( $order ) && ( $order instanceof WC_Order );
+	}
 
-    /**
-     * WooCommerce compatibility
-     * @param mixed $item
-     * @return string
-     */
-    public static function getItemQuantity($item)
-    {
-        return is_array($item) ? $item['qty'] : $item->get_quantity();
-    }
+	/**
+	 * WooCommerce compatibility
+	 *
+	 * @param mixed $item
+	 * @return string
+	 */
+	public static function getItemName( $item ) {
+		return is_array( $item ) ? $item['name'] : $item->get_product()->get_name();
+	}
 
-    /**
-     * WooCommerce compatibility
-     * @param $item
-     *
-     * @return WC_Product
-     */
-    public static function getItemProduct($item)
-    {
-        return is_array($item) ? wc_get_product($item['product_id']) : $item->get_product();
-    }
+	/**
+	 * WooCommerce compatibility
+	 *
+	 * @param mixed $item
+	 * @return string
+	 */
+	public static function getItemQuantity( $item ) {
+		return is_array( $item ) ? $item['qty'] : $item->get_quantity();
+	}
 
-    /**
-     * WooCommerce compatibility
-     * @param mixed $order
-     * @param string $prop
-     * @return string
-     */
-    public static function getOrderProp($order, $prop)
-    {
-        return is_array($order) ?
-            $order[$prop] : method_exists($order, "get_$prop") ?
-                $order->{"get_$prop"}() :
-                $order->{$prop};
-    }
+	/**
+	 * WooCommerce compatibility
+	 *
+	 * @param $item
+	 *
+	 * @return WC_Product
+	 */
+	public static function getItemProduct( $item ) {
+		return is_array( $item ) ? wc_get_product( $item['product_id'] ) : $item->get_product();
+	}
 
-    /**
-     * @param WC_Order $order
-     * @return \Genesis\API\Request\Financial\Alternatives\Klarna\Items $items
-     * @throws \Genesis\Exceptions\ErrorParameter
-     */
-    public static function getKlarnaCustomParamItems(WC_Order $order)
-    {
-        $items       = new \Genesis\API\Request\Financial\Alternatives\Klarna\Items($order->get_order_currency());
-        $order_items = $order->get_items();
+	/**
+	 * WooCommerce compatibility
+	 *
+	 * @param mixed  $order
+	 * @param string $prop
+	 * @return string
+	 */
+	public static function getOrderProp( $order, $prop ) {
+		return is_array( $order ) ?
+			$order[ $prop ] : method_exists( $order, "get_$prop" ) ?
+				$order->{"get_$prop"}() :
+				$order->{$prop};
+	}
 
-        foreach ($order_items as $item) {
-            $product = self::getItemProduct($item);
+	/**
+	 * @param WC_Order $order
+	 * @return \Genesis\API\Request\Financial\Alternatives\Klarna\Items $items
+	 * @throws \Genesis\Exceptions\ErrorParameter
+	 */
+	public static function getKlarnaCustomParamItems( WC_Order $order ) {
+		$items       = new \Genesis\API\Request\Financial\Alternatives\Klarna\Items( $order->get_order_currency() );
+		$order_items = $order->get_items();
 
-            $klarnaItem = new KlarnaItem(
-                self::getItemName($item),
-                $product->is_virtual() ? KlarnaItem::ITEM_TYPE_DIGITAL : KlarnaItem::ITEM_TYPE_PHYSICAL,
-                self::getItemQuantity($item),
-                $product->get_price_excluding_tax()
-            );
+		foreach ( $order_items as $item ) {
+			$product = self::getItemProduct( $item );
 
-            $items->addItem($klarnaItem);
-        }
+			$klarnaItem = new KlarnaItem(
+				self::getItemName( $item ),
+				$product->is_virtual() ? KlarnaItem::ITEM_TYPE_DIGITAL : KlarnaItem::ITEM_TYPE_PHYSICAL,
+				self::getItemQuantity( $item ),
+				$product->get_price_excluding_tax()
+			);
 
-        $taxes = floatval($order->get_total_tax());
-        if ($taxes) {
-            $items->addItem(new KlarnaItem(
-                WC_emerchantpay_Method::getTranslatedText('Taxes'),
-                KlarnaItem::ITEM_TYPE_SURCHARGE,
-                1,
-                $taxes
-            ));
-        }
+			$items->addItem( $klarnaItem );
+		}
 
-        $discount = floatval($order->get_discount_total());
-        if ($discount) {
-            $items->addItem(new KlarnaItem(
-                WC_emerchantpay_Method::getTranslatedText('Discount'),
-                KlarnaItem::ITEM_TYPE_DISCOUNT,
-                1,
-                -$discount
-            ));
-        }
+		$taxes = floatval( $order->get_total_tax() );
+		if ( $taxes ) {
+			$items->addItem(
+				new KlarnaItem(
+					WC_emerchantpay_Method::getTranslatedText( 'Taxes' ),
+					KlarnaItem::ITEM_TYPE_SURCHARGE,
+					1,
+					$taxes
+				)
+			);
+		}
 
-        $total_shipping_cost = floatval($order->get_shipping_total());
-        if ($total_shipping_cost) {
-            $items->addItem(new KlarnaItem(
-                WC_emerchantpay_Method::getTranslatedText('Shipping Costs'),
-                KlarnaItem::ITEM_TYPE_SHIPPING_FEE,
-                1,
-                $total_shipping_cost
-            ));
-        }
+		$discount = floatval( $order->get_discount_total() );
+		if ( $discount ) {
+			$items->addItem(
+				new KlarnaItem(
+					WC_emerchantpay_Method::getTranslatedText( 'Discount' ),
+					KlarnaItem::ITEM_TYPE_DISCOUNT,
+					1,
+					-$discount
+				)
+			);
+		}
 
-        return $items;
-    }
+		$total_shipping_cost = floatval( $order->get_shipping_total() );
+		if ( $total_shipping_cost ) {
+			$items->addItem(
+				new KlarnaItem(
+					WC_emerchantpay_Method::getTranslatedText( 'Shipping Costs' ),
+					KlarnaItem::ITEM_TYPE_SHIPPING_FEE,
+					1,
+					$total_shipping_cost
+				)
+			);
+		}
+
+		return $items;
+	}
 }

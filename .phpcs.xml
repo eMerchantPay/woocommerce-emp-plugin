@@ -2,7 +2,21 @@
 <ruleset name="WooCommerce EMP Plugin Coding Standards">
     <description>Generally-applicable sniffs for WooCommerce EMP Plugin</description>
 
-    <rule ref="WordPress" />
+    <rule ref="WordPress">
+        <exclude name="Generic.Commenting.DocComment" />
+        <exclude name="Squiz.Commenting.BlockComment" />
+        <exclude name="Squiz.Commenting.ClassComment" />
+        <exclude name="Squiz.Commenting.ClosingDeclarationComment" />
+        <exclude name="Squiz.Commenting.DocCommentAlignment" />
+        <exclude name="Squiz.Commenting.EmptyCatchComment" />
+        <exclude name="Squiz.Commenting.FileComment" />
+        <exclude name="Squiz.Commenting.FunctionComment" />
+        <exclude name="Squiz.Commenting.FunctionCommentThrowTag" />
+        <exclude name="Squiz.Commenting.InlineComment" />
+        <exclude name="Squiz.Commenting.VariableComment" />
+    </rule>
 
     <exclude-pattern>*/genesis/*</exclude-pattern>
+    <exclude-pattern>*.min.js</exclude-pattern>
+    <exclude-pattern>*.min.css</exclude-pattern>
 </ruleset>
