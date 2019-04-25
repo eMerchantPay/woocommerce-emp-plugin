@@ -20,25 +20,40 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
+namespace Genesis\API\Request\NonFinancial\Consumers;
 
-namespace Genesis\API\Request\Financial\Alternatives\Trustly;
+use Genesis\API\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
 
 /**
- * Class Withdrawal
+ * Class Disable
  *
- * Trustly Withdrawal Alternative payment method
+ * Disable consumer from usage until further action.
  *
- * @package Genesis\API\Request\Financial\Alternatives\Trustly
+ * @package Genesis\API\Request\NonFinancial\Consumers
+ *
+ * @method string getEmail()
+ * @method string getConsumerId()
+ * @method Disable setEmail(string $email)
+ * @method Disable setConsumerId(string $consumerId)
  */
-class Withdrawal extends \Genesis\API\Request\Financial\Alternatives\Trustly\Sale
+class Disable extends ConsumerBaseRequest
 {
     /**
-     * Returns the Request transaction type
-     * @return string
+     * @var string
      */
-    protected function getTransactionType()
+    protected $consumer_id;
+
+    /**
+     * @var string
+     */
+    protected $email;
+
+    /**
+     * Disable constructor.
+     */
+    public function __construct()
     {
-        return \Genesis\API\Constants\Transaction\Types::TRUSTLY_WITHDRAWAL;
+        parent::__construct('disable_consumer');
     }
 
     /**
@@ -48,30 +63,22 @@ class Withdrawal extends \Genesis\API\Request\Financial\Alternatives\Trustly\Sal
      */
     protected function setRequiredFields()
     {
-        parent::setRequiredFields();
-
         $requiredFields = [
-            'transaction_id',
-            'remote_ip',
-            'amount',
-            'currency',
-            'return_success_url',
-            'return_failure_url',
-            'customer_email',
-            'birth_date',
-            'billing_country'
+            'consumer_id',
+            'email'
         ];
 
         $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+    }
 
-        $requiredFieldValues = [
-            'billing_country' => [
-                'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU',
-                'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'
-            ],
-            'currency'        => \Genesis\Utils\Currency::getList()
+    /**
+     * @return array
+     */
+    protected function getConsumerRequestStructure()
+    {
+        return [
+            'consumer_id' => $this->consumer_id,
+            'email'       => $this->email
         ];
-
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 }

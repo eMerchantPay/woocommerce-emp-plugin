@@ -346,10 +346,10 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	protected function prepareInitialGenesisRequest( $data ) {
 		$genesis = new \Genesis\Genesis( 'WPF\Create' );
 
-		/** @var \Genesis\API\Request\WPF\Create $wpfRequest */
-		$wpfRequest = $genesis->request();
+		/** @var \Genesis\API\Request\WPF\Create $wpf_request */
+		$wpf_request = $genesis->request();
 
-		$wpfRequest
+		$wpf_request
 			->setTransactionId(
 				$data['transaction_id']
 			)
@@ -375,7 +375,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		/**
 		 * Notification & Urls
 		 */
-		$wpfRequest
+		$wpf_request
 			->setNotificationUrl(
 				$data['notification_url']
 			)
@@ -392,7 +392,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		/**
 		 * Billing
 		 */
-		$wpfRequest
+		$wpf_request
 			->setBillingFirstName(
 				$data['billing']['first_name']
 			)
@@ -421,7 +421,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		/**
 		 * Shipping
 		 */
-		$wpfRequest
+		$wpf_request
 			->setShippingFirstName(
 				$data['shipping']['first_name']
 			)
@@ -451,19 +451,23 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		 * WPF Language
 		 */
 		if ( $this->getMethodHasSetting( self::SETTING_KEY_CHECKOUT_LANGUAGE ) ) {
-			$wpfRequest->setLanguage(
+			$wpf_request->setLanguage(
 				$this->getMethodSetting( self::SETTING_KEY_CHECKOUT_LANGUAGE )
 			);
 		}
 
 		if ( $this->isTokenizationAvailable( $data['customer_email'] ) ) {
-			$consumerId = $this->getGatewayConsumerIdFor( $data['customer_email'] );
+			$consumer_id = $this->getGatewayConsumerIdFor( $data['customer_email'] );
 
-			if ( $consumerId ) {
-				$wpfRequest->setConsumerId( $consumerId );
+			if ( empty( $consumer_id ) ) {
+				$consumer_id = $this->retrieveConsumerIdFromEmail( $data['customer_email'] );
 			}
 
-			$wpfRequest->setRememberCard( true );
+			if ( $consumer_id ) {
+				$wpf_request->setConsumerId( $consumer_id );
+			}
+
+			$wpf_request->setRememberCard( true );
 		}
 
 		return $genesis;
@@ -489,6 +493,30 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		$meta = $this->getMetaConsumerIdForLoggedUser();
 
 		return ! empty( $meta[ $customerEmail ] ) ? $meta[ $customerEmail ] : null;
+	}
+
+	/**
+	 * @param string $email
+	 *
+	 * @return null|int
+	 */
+	protected function retrieveConsumerIdFromEmail( $email ) {
+		try {
+			$genesis = new \Genesis\Genesis( 'NonFinancial\Consumers\Retrieve' );
+			$genesis->request()->setEmail( $email );
+
+			$genesis->execute();
+
+			$response = $genesis->response()->getResponseObject();
+
+			if ( ! empty( $response->consumer_id ) ) {
+				return $response->consumer_id;
+			}
+		} catch ( \Exception $exception ) {
+			return null;
+		}
+
+		return null;
 	}
 
 	/**
@@ -631,7 +659,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			if ( $isWpfSuccessfullyCreated ) {
 				$this->save_checkout_trx_to_order( $response, WC_emerchantpay_Order_Helper::getOrderProp( $order, 'id' ) );
 
-				if ( $this->isTokenizationAvailable( $data['customer_email'] ) ) {
+				if ( ! empty( $data['customer_email'] ) ) {
 					$this->save_tokenization_data( $data['customer_email'], $response );
 				}
 

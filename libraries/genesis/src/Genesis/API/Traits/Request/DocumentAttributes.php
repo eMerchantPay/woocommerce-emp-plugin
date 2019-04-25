@@ -21,31 +21,46 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Request\Financial\CashPayments;
+namespace Genesis\API\Traits\Request;
+
+use Genesis\Exceptions\InvalidArgument;
 
 /**
- * Class BancoDeOccidente
- *
- * BancoDeOccidente - oBeP-style alternative payment method
- *
- * @package Genesis\API\Request\Financial\CashPayments
+ * Trait DocumentAttributes
+ * @package Genesis\API\Traits\Request
  */
-class BancoDeOccidente extends \Genesis\API\Request\Base\Financial\SouthAmericanPayment
+trait DocumentAttributes
 {
     /**
-     * Returns the Request transaction type
+     * @var string
+     */
+    protected $document_id;
+
+    /**
      * @return string
      */
-    protected function getTransactionType()
+    public function getDocumentIdRegex()
     {
-        return \Genesis\API\Constants\Transaction\Types::BANCO_DE_OCCIDENTE;
+        return '/^[A-Z]{5}[0-9]{4}[A-Z0-9]$/';
     }
 
     /**
-     * @return array
+     * @param $documentId
+     *
+     * @return $this
+     * @throws InvalidArgument
      */
-    public function getAllowedBillingCountries()
+    public function setDocumentId($documentId)
     {
-        return ['CO'];
+        if (preg_match($this->getDocumentIdRegex(), $documentId)) {
+            $this->document_id = $documentId;
+
+            return $this;
+        }
+
+        throw new InvalidArgument(
+            'document_id must be a string with 10 alphanumeric letters.' .
+                     '5 letters, followed by 4 numbers, followed by 1 letter or number. Example: ABCDE1234F'
+        );
     }
 }

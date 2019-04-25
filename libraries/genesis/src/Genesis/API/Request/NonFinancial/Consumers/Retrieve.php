@@ -20,32 +20,63 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
+namespace Genesis\API\Request\NonFinancial\Consumers;
 
-namespace Genesis\API\Request\Financial\CashPayments;
+use Genesis\API\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
+use Genesis\Exceptions\ErrorParameter;
 
 /**
- * Class BancoDeOccidente
+ * Class Retrieve
  *
- * BancoDeOccidente - oBeP-style alternative payment method
+ * Retrieves consumer details based on consumer id or email.
  *
- * @package Genesis\API\Request\Financial\CashPayments
+ * @package Genesis\API\Request\NonFinancial\Consumers
+ *
+ * @method string getEmail()
+ * @method string getConsumerId()
+ * @method Retrieve setEmail(string $email)
+ * @method Retrieve setConsumerId(string $consumerId)
  */
-class BancoDeOccidente extends \Genesis\API\Request\Base\Financial\SouthAmericanPayment
+class Retrieve extends ConsumerBaseRequest
 {
     /**
-     * Returns the Request transaction type
-     * @return string
+     * @var string
      */
-    protected function getTransactionType()
+    protected $email;
+
+    /**
+     * @var int
+     */
+    protected $consumer_id;
+
+    /**
+     * Retrieve constructor.
+     */
+    public function __construct()
     {
-        return \Genesis\API\Constants\Transaction\Types::BANCO_DE_OCCIDENTE;
+        parent::__construct('retrieve_consumer');
+    }
+
+    /**
+     * @throws ErrorParameter
+     */
+    protected function checkRequirements()
+    {
+        if (empty($this->email) && empty($this->consumer_id)) {
+            throw new ErrorParameter('Either email or consumer_id field has to be set.');
+        }
+
+        parent::checkRequirements();
     }
 
     /**
      * @return array
      */
-    public function getAllowedBillingCountries()
+    protected function getConsumerRequestStructure()
     {
-        return ['CO'];
+        return [
+            'email'       => $this->email,
+            'consumer_id' => $this->consumer_id
+        ];
     }
 }
