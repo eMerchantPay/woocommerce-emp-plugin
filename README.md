@@ -6,9 +6,9 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x or 5.x (Tested up to 5.1)
-* WooCommerce 2.x or 3.x (Tested up to 3.5.5)
-* [GenesisPHP v1.14.0](https://github.com/GenesisGateway/genesis_php/releases/tag/1.14.0) - (Integrated in Module)
+* WordPress 4.x or 5.x (Tested up to 5.2)
+* WooCommerce 2.x or 3.x (Tested up to 3.6.2)
+* [GenesisPHP v1.15.1](https://github.com/GenesisGateway/genesis_php/releases/tag/1.15.1) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x (Tested up to 2.2.13) in order to use **Subscriptions**
 
@@ -120,12 +120,16 @@ Supported Transactions
     * __Alipay__
     * __Authorize__
     * __Authorize (3D-Secure)__
+    * __Bancontact__
     * __Banco do Brasil__
     * __BitPay__
     * __CashU__
     * __Entercash__
+    * __eps__
     * __eZeeWallet__
     * __Fashioncheque__
+    * __GiroPay__
+    * __iDeal__
     * __iDebit__
     * __InstaDebit__
     * __InstantTransfer__
@@ -135,6 +139,7 @@ Supported Transactions
     * __Klarna__
     * __Neteller__
     * __Multibanco__
+    * __MyBank__
     * __Online Banking__
     * __P24__
     * __PayByVoucher (Sale)__
@@ -143,22 +148,16 @@ Supported Transactions
     * __PaySafeCard__
     * __PayU__
     * __POLi__
-    * __PPRO__
-    	* __eps__
-    	* __GiroPay__
-    	* __Qiwi__
-    	* __Przelewy24__
-    	* __SafetyPay__
-    	* __TrustPay__
-    	* __Mr.Cash__
-    	* __MyBank__
+    * __Qiwi__
     * __RecurringSale__
+    * __SafetyPay__
     * __Sale__
     * __Sale (3D-Secure)__
     * __Sepa Direct Debit__
     * __SOFORT__
     * __TCS__
     * __Trustly__
+    * __TrustPay__
     * __WebMoney__
     * __WeChat__
     * __Zimpler__

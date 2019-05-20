@@ -193,14 +193,16 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 						static::getTranslatedText( 'CashU' ),
 					\Genesis\API\Constants\Transaction\Types::ENTERCASH            =>
 						static::getTranslatedText( 'Entercash' ),
-					\Genesis\API\Constants\Payment\Methods::EPS                    =>
+					\Genesis\API\Constants\Transaction\Types::EPS                  =>
 						static::getTranslatedText( 'eps' ),
 					\Genesis\API\Constants\Transaction\Types::EZEEWALLET           =>
 						static::getTranslatedText( 'eZeeWallet' ),
 					\Genesis\API\Constants\Transaction\Types::FASHIONCHEQUE        =>
 						static::getTranslatedText( 'Fashioncheque' ),
-					\Genesis\API\Constants\Payment\Methods::GIRO_PAY               =>
+					\Genesis\API\Constants\Transaction\Types::GIROPAY              =>
 						static::getTranslatedText( 'GiroPay' ),
+					\Genesis\API\Constants\Transaction\Types::IDEAL                =>
+						static::getTranslatedText( 'iDeal' ),
 					\Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN         =>
 						static::getTranslatedText( 'iDebit' ),
 					\Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN    =>
@@ -209,11 +211,11 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 						static::getTranslatedText( 'InstantTransfer' ),
 					\Genesis\API\Constants\Transaction\Types::INTERSOLVE           =>
 						static::getTranslatedText( 'Intersolve' ),
-					\Genesis\API\Constants\Payment\Methods::BCMC                   =>
-						static::getTranslatedText( 'Mr.Cash' ),
+					\Genesis\API\Constants\Transaction\Types::BANCONTACT           =>
+						static::getTranslatedText( 'Bancontact' ),
 					\Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE     =>
 						static::getTranslatedText( 'Klarna' ),
-					\Genesis\API\Constants\Payment\Methods::MYBANK                 =>
+					\Genesis\API\Constants\Transaction\Types::MY_BANK              =>
 						static::getTranslatedText( 'MyBank' ),
 					\Genesis\API\Constants\Transaction\Types::MULTIBANCO           =>
 						static::getTranslatedText( 'Multibanco' ),
@@ -231,11 +233,9 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 						static::getTranslatedText( 'PayU' ),
 					\Genesis\API\Constants\Transaction\Types::POLI                 =>
 						static::getTranslatedText( 'POLi' ),
-					\Genesis\API\Constants\Payment\Methods::PRZELEWY24             =>
-						static::getTranslatedText( 'Przelewy24' ),
-					\Genesis\API\Constants\Payment\Methods::QIWI                   =>
+					\Genesis\API\Constants\Transaction\Types::QIWI                 =>
 						static::getTranslatedText( 'Qiwi' ),
-					\Genesis\API\Constants\Payment\Methods::SAFETY_PAY             =>
+					\Genesis\API\Constants\Transaction\Types::SAFETYPAY            =>
 						static::getTranslatedText( 'SafetyPay' ),
 					\Genesis\API\Constants\Transaction\Types::SALE                 =>
 						static::getTranslatedText( 'Sale' ),
@@ -249,7 +249,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 						static::getTranslatedText( 'TCS' ),
 					\Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE         =>
 						static::getTranslatedText( 'Trustly' ),
-					\Genesis\API\Constants\Payment\Methods::TRUST_PAY              =>
+					\Genesis\API\Constants\Transaction\Types::TRUSTPAY             =>
 						static::getTranslatedText( 'TrustPay' ),
 					\Genesis\API\Constants\Transaction\Types::WEBMONEY             =>
 						static::getTranslatedText( 'WebMoney' ),
@@ -750,22 +750,10 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		$selected_types = $this->getMethodSetting( self::SETTING_KEY_TRANSACTION_TYPES );
 
 		$alias_map = array(
-			\Genesis\API\Constants\Payment\Methods::EPS    =>
-				\Genesis\API\Constants\Transaction\Types::PPRO,
-			\Genesis\API\Constants\Payment\Methods::GIRO_PAY =>
-				\Genesis\API\Constants\Transaction\Types::PPRO,
 			\Genesis\API\Constants\Payment\Methods::PRZELEWY24 =>
-				\Genesis\API\Constants\Transaction\Types::PPRO,
-			\Genesis\API\Constants\Payment\Methods::QIWI   =>
-				\Genesis\API\Constants\Transaction\Types::PPRO,
-			\Genesis\API\Constants\Payment\Methods::SAFETY_PAY =>
-				\Genesis\API\Constants\Transaction\Types::PPRO,
-			\Genesis\API\Constants\Payment\Methods::TRUST_PAY =>
-				\Genesis\API\Constants\Transaction\Types::PPRO,
-			\Genesis\API\Constants\Payment\Methods::BCMC   =>
-				\Genesis\API\Constants\Transaction\Types::PPRO,
+				\Genesis\API\Constants\Transaction\Types::P24,
 			\Genesis\API\Constants\Payment\Methods::MYBANK =>
-				\Genesis\API\Constants\Transaction\Types::PPRO,
+				\Genesis\API\Constants\Transaction\Types::MY_BANK,
 		);
 
 		foreach ( $selected_types as $selected_type ) {

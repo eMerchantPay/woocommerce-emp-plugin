@@ -155,6 +155,47 @@ class Types
     const PPRO = 'ppro';
 
     /**
+     * TrustPay is a real-time bank transfer payment service, which is widely used in the Czech Republic and Slovakia.
+     */
+    const TRUSTPAY = 'trustpay';
+
+    /**
+     * My Bank is an overlay banking system
+     */
+    const MY_BANK = 'my_bank';
+
+    /**
+     * Bancontact is a local Belgian debit card scheme. All Belgian debit cards are co-branded Bancontact and Maestro.
+     */
+    const BANCONTACT = 'bcmc';
+
+    /**
+     * QIWI Wallet is a very popular Eastern European e-wallet.
+     */
+    const QIWI = 'qiwi';
+
+    /**
+     * iDEAL
+     *
+     * Direct PPRO transaction
+     */
+    const IDEAL = 'ideal';
+
+    /**
+     * e-payment standard
+     *
+     * Direct PPRO transaction
+     */
+    const EPS = 'eps';
+
+    /**
+     * GiroPay
+     *
+     * Direct PPRO transaction
+     */
+    const GIROPAY = 'giropay';
+
+    /**
      * Bank transfer payment, popular in Germany
      */
     const SOFORT = 'sofort';
@@ -605,6 +646,7 @@ class Types
             self::AURA                    => 'Cards\Aura',
             self::AUTHORIZE               => 'Cards\Authorize',
             self::AUTHORIZE_3D            => 'Cards\Authorize3D',
+            self::BANCONTACT              => 'Cards\Bancontact',
             self::CABAL                   => 'Cards\Cabal',
             self::CENCOSUD                => 'Cards\Cencosud',
             self::CREDIT                  => 'Cards\Credit',
@@ -642,6 +684,9 @@ class Types
             self::CITADEL_PAYIN           => 'OnlineBankingPayments\Citadel\Payin',
             self::CITADEL_PAYOUT          => 'OnlineBankingPayments\Citadel\Payout',
             self::ENTERCASH               => 'OnlineBankingPayments\Entercash',
+            self::EPS                     => 'OnlineBankingPayments\Eps',
+            self::GIROPAY                 => 'OnlineBankingPayments\Giropay',
+            self::IDEAL                   => 'OnlineBankingPayments\Ideal',
             self::IDEBIT_PAYIN            => 'OnlineBankingPayments\iDebit\Payin',
             self::IDEBIT_PAYOUT           => 'OnlineBankingPayments\iDebit\Payout',
             self::INSTA_DEBIT_PAYIN       => 'OnlineBankingPayments\InstaDebit\PayIn',
@@ -649,6 +694,7 @@ class Types
             self::INSTANT_TRANSFER        => 'OnlineBankingPayments\InstantTransfer',
             self::ITAU                    => 'OnlineBankingPayments\Itau',
             self::MULTIBANCO              => 'OnlineBankingPayments\Multibanco',
+            self::MY_BANK                 => 'OnlineBankingPayments\MyBank',
             self::ONLINE_BANKING_PAYIN    => 'OnlineBankingPayments\OnlineBanking\Payin',
             self::ONLINE_BANKING_PAYOUT   => 'OnlineBankingPayments\OnlineBanking\Payout',
             self::PAYU                    => 'OnlineBankingPayments\PayU',
@@ -656,6 +702,7 @@ class Types
             self::RAPIPAGO                => 'OnlineBankingPayments\Rapipago',
             self::SAFETYPAY               => 'OnlineBankingPayments\SafetyPay',
             self::SANTANDER               => 'OnlineBankingPayments\Santander',
+            self::TRUSTPAY                => 'OnlineBankingPayments\TrustPay',
             self::WECHAT                  => 'OnlineBankingPayments\WeChat',
             self::PAYBYVOUCHER_YEEPAY     => 'PayByVouchers\oBeP',
             self::PAYBYVOUCHER_SALE       => 'PayByVouchers\Sale',
@@ -671,6 +718,7 @@ class Types
             self::PAYSAFECARD             => 'Vouchers\Paysafecard',
             self::EZEEWALLET              => 'Wallets\eZeeWallet',
             self::NETELLER                => 'Wallets\Neteller',
+            self::QIWI                    => 'Wallets\Qiwi',
             self::WEBMONEY                => 'Wallets\WebMoney',
             self::ZIMPLER                 => 'Wallets\Zimpler',
         ];
@@ -776,7 +824,14 @@ class Types
             self::BRADESCO,
             self::ASTROPAY_CARD,
             self::RAPIPAGO,
-            self::PSE
+            self::PSE,
+            self::TRUSTPAY,
+            self::MY_BANK,
+            self::BANCONTACT,
+            self::QIWI,
+            self::IDEAL,
+            self::EPS,
+            self::GIROPAY
         ];
     }
 
@@ -881,7 +936,13 @@ class Types
             self::PAYU,
             self::BITPAY_SALE,
             self::NEOSURF,
-            self::SAFETYPAY
+            self::SAFETYPAY,
+            self::MY_BANK,
+            self::BANCONTACT,
+            self::QIWI,
+            self::IDEAL,
+            self::EPS,
+            self::GIROPAY
         ];
 
         return in_array(strtolower($type), $transactionTypesList);
