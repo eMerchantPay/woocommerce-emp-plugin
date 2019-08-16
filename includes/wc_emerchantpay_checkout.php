@@ -181,16 +181,42 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				'options'     => array(
 					\Genesis\API\Constants\Transaction\Types::ALIPAY               =>
 						static::getTranslatedText( 'Alipay' ),
+					\Genesis\API\Constants\Transaction\Types::ARGENCARD            =>
+						static::getTranslatedText( 'Argencard' ),
+					\Genesis\API\Constants\Transaction\Types::AURA                 =>
+						static::getTranslatedText( 'Aura' ),
 					\Genesis\API\Constants\Transaction\Types::AUTHORIZE            =>
 						static::getTranslatedText( 'Authorize' ),
 					\Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D         =>
 						static::getTranslatedText( 'Authorize (3D-Secure)' ),
-					\Genesis\API\Constants\Transaction\Types::BITPAY_SALE          =>
-						static::getTranslatedText( 'BitPay' ),
+					\Genesis\API\Constants\Transaction\Types::BALOTO               =>
+						static::getTranslatedText( 'Baloto' ),
+					\Genesis\API\Constants\Transaction\Types::BANAMEX              =>
+						static::getTranslatedText( 'Banamex' ),
+					\Genesis\API\Constants\Transaction\Types::BANCO_DE_OCCIDENTE   =>
+						static::getTranslatedText( 'Banco de Occidente' ),
 					\Genesis\API\Constants\Transaction\Types::BANCO_DO_BRASIL      =>
 						static::getTranslatedText( 'Banco do Brasil' ),
+					\Genesis\API\Constants\Transaction\Types::BANCOMER             =>
+						static::getTranslatedText( 'Bancomer' ),
+					\Genesis\API\Constants\Transaction\Types::BANCONTACT           =>
+						static::getTranslatedText( 'Bancontact' ),
+					\Genesis\API\Constants\Transaction\Types::BITPAY_SALE          =>
+						static::getTranslatedText( 'BitPay' ),
+					\Genesis\API\Constants\Transaction\Types::BOLETO               =>
+						static::getTranslatedText( 'Boleto' ),
+					\Genesis\API\Constants\Transaction\Types::BRADESCO             =>
+						static::getTranslatedText( 'Bradesco' ),
+					\Genesis\API\Constants\Transaction\Types::CABAL                =>
+						static::getTranslatedText( 'Cabal' ),
 					\Genesis\API\Constants\Transaction\Types::CASHU                =>
 						static::getTranslatedText( 'CashU' ),
+					\Genesis\API\Constants\Transaction\Types::CENCOSUD             =>
+						static::getTranslatedText( 'Cencosud' ),
+					\Genesis\API\Constants\Transaction\Types::EFECTY               =>
+						static::getTranslatedText( 'Efecty' ),
+					\Genesis\API\Constants\Transaction\Types::ELO                  =>
+						static::getTranslatedText( 'Elo' ),
 					\Genesis\API\Constants\Transaction\Types::ENTERCASH            =>
 						static::getTranslatedText( 'Entercash' ),
 					\Genesis\API\Constants\Transaction\Types::EPS                  =>
@@ -211,20 +237,28 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 						static::getTranslatedText( 'InstantTransfer' ),
 					\Genesis\API\Constants\Transaction\Types::INTERSOLVE           =>
 						static::getTranslatedText( 'Intersolve' ),
-					\Genesis\API\Constants\Transaction\Types::BANCONTACT           =>
-						static::getTranslatedText( 'Bancontact' ),
+					\Genesis\API\Constants\Transaction\Types::ITAU                 =>
+						static::getTranslatedText( 'Itau' ),
 					\Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE     =>
 						static::getTranslatedText( 'Klarna' ),
 					\Genesis\API\Constants\Transaction\Types::MY_BANK              =>
 						static::getTranslatedText( 'MyBank' ),
 					\Genesis\API\Constants\Transaction\Types::MULTIBANCO           =>
 						static::getTranslatedText( 'Multibanco' ),
+					\Genesis\API\Constants\Transaction\Types::NARANJA              =>
+						static::getTranslatedText( 'Naranja' ),
+					\Genesis\API\Constants\Transaction\Types::NATIVA               =>
+						static::getTranslatedText( 'Nativa' ),
 					\Genesis\API\Constants\Transaction\Types::NETELLER             =>
 						static::getTranslatedText( 'Neteller' ),
 					\Genesis\API\Constants\Transaction\Types::ONLINE_BANKING_PAYIN =>
-						static::getTranslatedText('OnlineBanking'),
+						static::getTranslatedText( 'OnlineBanking' ),
+					\Genesis\API\Constants\Transaction\Types::OXXO                 =>
+						static::getTranslatedText( 'OXXO' ),
 					\Genesis\API\Constants\Transaction\Types::P24                  =>
 						static::getTranslatedText( 'P24' ),
+					\Genesis\API\Constants\Transaction\Types::PAGO_FACIL           =>
+						static::getTranslatedText( 'Pago Facil' ),
 					\Genesis\API\Constants\Transaction\Types::PAYPAL_EXPRESS       =>
 						static::getTranslatedText( 'PayPal Express' ),
 					\Genesis\API\Constants\Transaction\Types::PAYSAFECARD          =>
@@ -235,16 +269,26 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 						static::getTranslatedText( 'POLi' ),
 					\Genesis\API\Constants\Transaction\Types::QIWI                 =>
 						static::getTranslatedText( 'Qiwi' ),
+					\Genesis\API\Constants\Transaction\Types::RAPI_PAGO            =>
+						static::getTranslatedText( 'RapiPago' ),
+					\Genesis\API\Constants\Transaction\Types::REDPAGOS             =>
+						static::getTranslatedText( 'Redpagos' ),
 					\Genesis\API\Constants\Transaction\Types::SAFETYPAY            =>
 						static::getTranslatedText( 'SafetyPay' ),
 					\Genesis\API\Constants\Transaction\Types::SALE                 =>
 						static::getTranslatedText( 'Sale' ),
 					\Genesis\API\Constants\Transaction\Types::SALE_3D              =>
 						static::getTranslatedText( 'Sale (3D-Secure)' ),
+					\Genesis\API\Constants\Transaction\Types::SANTANDER            =>
+						static::getTranslatedText( 'Santander' ),
+					\Genesis\API\Constants\Transaction\Types::SANTANDER_CASH       =>
+						static::getTranslatedText( 'Santander Cash' ),
 					\Genesis\API\Constants\Transaction\Types::SDD_SALE             =>
 						static::getTranslatedText( 'Sepa Direct Debit' ),
 					\Genesis\API\Constants\Transaction\Types::SOFORT               =>
 						static::getTranslatedText( 'SOFORT' ),
+					\Genesis\API\Constants\Transaction\Types::TARJETA_SHOPPING     =>
+						static::getTranslatedText( 'Tarjeta Shopping' ),
 					\Genesis\API\Constants\Transaction\Types::TCS                  =>
 						static::getTranslatedText( 'TCS' ),
 					\Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE         =>

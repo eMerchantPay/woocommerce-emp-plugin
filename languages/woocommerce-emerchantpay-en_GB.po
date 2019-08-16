@@ -51,23 +51,59 @@ msgstr "Transaction Type"
 msgid "Alipay"
 msgstr "Alipay"
 
+msgid "Argencard"
+msgstr "Argencard"
+
+msgid "Aura"
+msgstr "Aura"
+
 msgid "Authorize"
 msgstr "Authorize"
 
 msgid "Authorize (3D-Secure)"
 msgstr "Authorize (3D-Secure)"
 
-msgid "BitPay"
-msgstr "BitPay"
+msgid "Baloto"
+msgstr "Baloto"
+
+msgid "Banamex"
+msgstr "Banamex"
+
+msgid "Banco de Occidente"
+msgstr "Banco de Occidente"
 
 msgid "Banco do Brasil"
 msgstr "Banco do Brasil"
 
+msgid "Bancomer"
+msgstr "Bancomer"
+
+msgid "BitPay"
+msgstr "BitPay"
+
+msgid "Boleto"
+msgstr "Boleto"
+
+msgid "Bradesco"
+msgstr "Bradesco"
+
+msgid "Cabal"
+msgstr "Cabal"
+
 msgid "CashU"
 msgstr "CashU"
 
+msgid "Cencosud"
+msgstr "Cencosud"
+
 msgid "Citadel"
 msgstr "Citadel"
+
+msgid "Efecty"
+msgstr "Efecty"
+
+msgid "Elo"
+msgstr "Elo"
 
 msgid "Entercash"
 msgstr "Entercash"
@@ -99,6 +135,9 @@ msgstr "InstantTransfer"
 msgid "Intersolve"
 msgstr "Intersolve"
 
+msgid "Itau"
+msgstr "Itau"
+
 msgid "Bancontact"
 msgstr "Bancontact"
 
@@ -107,6 +146,12 @@ msgstr "MyBank"
 
 msgid "Multibanco"
 msgstr "Multibanco"
+
+msgid "Naranja"
+msgstr "Naranja"
+
+msgid "Nativa"
+msgstr "Nativa"
 
 msgid "Neteller"
 msgstr "Neteller"
@@ -117,8 +162,14 @@ msgstr "Klarna"
 msgid "OnlineBanking"
 msgstr "OnlineBanking"
 
+msgid "OXXO"
+msgstr "OXXO"
+
 msgid "P24"
 msgstr "P24"
+
+msgid "Pago Facil"
+msgstr "Pago Facil"
 
 msgid "PayPal Express"
 msgstr "PayPal Express"
@@ -138,6 +189,12 @@ msgstr "Przelewy24"
 msgid "Qiwi"
 msgstr "Qiwi"
 
+msgid "RapiPago"
+msgstr "RapiPago"
+
+msgid "Redpagos"
+msgstr "Redpagos"
+
 msgid "SafetyPay"
 msgstr "SafetyPay"
 
@@ -147,11 +204,20 @@ msgstr "Sale"
 msgid "Sale (3D-Secure)"
 msgstr "Sale (3D-Secure)"
 
+msgid "Santander"
+msgstr "Santander"
+
+msgid "Santander Cash"
+msgstr "Santander Cash"
+
 msgid "Sepa Direct Debit"
 msgstr "Sepa Direct Debit"
 
 msgid "SOFORT"
 msgstr "SOFORT"
+
+msgid "Tarjeta Shopping"
+msgstr "Tarjeta Shopping"
 
 msgid "TCS"
 msgstr "TCS"

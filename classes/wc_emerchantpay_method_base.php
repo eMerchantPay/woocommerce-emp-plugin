@@ -180,14 +180,14 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	protected function getIsWooCommerceAdminOrder() {
-		if ( ! is_admin() ) {
-			return false;
+		if ( is_admin() && function_exists( 'get_current_screen' ) ) {
+			$screen = get_current_screen();
+
+			return 'woocommerce' === $screen->parent_base &&
+				   'shop_order' === $screen->id;
 		}
 
-		$screen = get_current_screen();
-
-		return $screen->parent_base === 'woocommerce' &&
-			   $screen->id === 'shop_order';
+		return false;
 	}
 
 	/**

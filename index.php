@@ -4,7 +4,7 @@
  * Description: Extend WooCommerce's Checkout options with emerchantpay's Genesis Gateway
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
- * Version: 1.10.0
+ * Version: 1.11.0
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
