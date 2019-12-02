@@ -1,10 +1,16 @@
 <?php
 /*
  * Plugin Name: WooCommerce emerchantpay Payment Gateway Client
+ * Plugin URI: https://wordpress.org/plugins/emerchantpay-payment-page-for-woocommerce/
  * Description: Extend WooCommerce's Checkout options with emerchantpay's Genesis Gateway
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
- * Version: 1.11.0
+ * Author URI: https://www.emerchantpay.com/
+ * Version: 1.11.1
+ * WC requires at least: 2.0.0
+ * WC tested up to: 3.8.0
+ * License: GPL-2.0
+ * License URI: http://opensource.org/licenses/gpl-2.0.php
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
