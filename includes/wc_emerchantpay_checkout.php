@@ -619,16 +619,16 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	}
 
 	/**
-	 * @param \Genesis\API\Request\WPF\Create $wpfRequest $wpfRequest
+	 * @param \Genesis\API\Request\WPF\Create $wpf_request $wpfRequest
 	 * @param WC_Order                        $order
-	 * @param array                           $requestData
+	 * @param array                           $request_data
 	 */
-	private function addCustomParametersToTrxTypes( $wpfRequest, WC_Order $order, $requestData ) {
+	private function addCustomParametersToTrxTypes( $wpf_request, WC_Order $order, $request_data ) {
 		$types = $this->get_payment_types();
 
 		foreach ( $types as $type ) {
 			if ( is_array( $type ) ) {
-				$wpfRequest->addTransactionType( $type['name'], $type['parameters'] );
+				$wpf_request->addTransactionType( $type['name'], $type['parameters'] );
 
 				continue;
 			}
@@ -636,19 +636,27 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			switch ( $type ) {
 				case \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN:
 				case \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN:
-					$userIdHash              = WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash();
-					$transactionCustomParams = array(
-						'customer_account_id' => $userIdHash,
+					$user_id_hash              = WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash();
+					$transaction_custom_params = array(
+						'customer_account_id' => $user_id_hash,
 					);
 					break;
 				case \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE:
-					$transactionCustomParams = WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order )->toArray();
+					$transaction_custom_params = WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order )->toArray();
+					break;
+				case \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE:
+					$user_id         = WC_emerchantpay_Genesis_Helper::getCurrentUserId();
+					$trustly_user_id = empty( $user_id ) ? WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash() : $user_id;
+
+					$transaction_custom_params = array(
+						'user_id' => $trustly_user_id,
+					);
 					break;
 				default:
-					$transactionCustomParams = [];
+					$transaction_custom_params = array();
 			}
 
-			$wpfRequest->addTransactionType( $type, $transactionCustomParams );
+			$wpf_request->addTransactionType( $type, $transaction_custom_params );
 		}
 	}
 
