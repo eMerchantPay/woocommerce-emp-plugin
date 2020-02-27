@@ -1462,7 +1462,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 						$order->cancel_order( $notice );
 
-						WC_emerchantpay_Message_Helper::addSuccessNotice( $notice );
+						WC_emerchantpay_Message_Helper::addErrorNotice( $notice );
 						break;
 					case 'cancel':
 						$note = static::getTranslatedText(
