@@ -20,35 +20,42 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-namespace Genesis\API\Request\NonFinancial\Retrieve;
 
-use Genesis\API\Request;
+namespace Genesis\API\Traits\Request\Financial;
+
+use Genesis\Utils\Common;
 
 /**
- * Class AbniDealBanks
+ * Trait CryptoAttributes
+ * @package Genesis\API\Traits\Request\Financial
  *
- * Retrieve the available Banks for iDEAL payment via ABN
- *
- * @package Genesis\API\Request\NonFinancial\Retrieve
+ * @method $this getCrypto() Signifies whether a purchase of crypto-currency transaction is performed
  */
-class AbniDealBanks extends \Genesis\API\Request
+trait CryptoAttributes
 {
     /**
-     * Set the per-request configuration
+     * Signifies whether a purchase of crypto-currency transaction is performed
      *
-     * @return void
+     * Must be populated when purchasing crypto-currency with a VISA card and MCC is 6051.
+     * Must be populated when purchasing crypto-currency with a MASTER or
+     * INTL MAESTRO card and MCC is one of 6051, 6211.
+     *
+     * Contact tech-support@emerchantpay.com for more details
+     *
+     * @var bool $crypto
      */
-    protected function initConfiguration()
-    {
-        $this->config = \Genesis\Utils\Common::createArrayObject(
-            [
-                'protocol' => Request::PROTOCOL_HTTPS,
-                'port'     => Request::PORT_HTTPS,
-                'type'     => Request::METHOD_GET,
-                'format'   => 'xml'
-            ]
-        );
+    protected $crypto;
 
-        $this->initApiGatewayConfiguration('retrieve_abn_ideal_banks', false);
+    /**
+     * Signifies whether a purchase of crypto-currency transaction is performed
+     *
+     * @param bool $value
+     * @return CryptoAttributes
+     */
+    public function setCrypto($value)
+    {
+        $this->crypto = Common::toBoolean($value);
+
+        return $this;
     }
 }

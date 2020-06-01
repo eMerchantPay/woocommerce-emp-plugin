@@ -20,35 +20,41 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-namespace Genesis\API\Request\NonFinancial\Retrieve;
 
-use Genesis\API\Request;
+namespace Genesis\API\Constants\NonFinancial;
 
 /**
- * Class AbniDealBanks
+ * Class Services
  *
- * Retrieve the available Banks for iDEAL payment via ABN
+ * Contains API Calls
  *
- * @package Genesis\API\Request\NonFinancial\Retrieve
+ * @package Genesis\API\Constants\NonFinancial
  */
-class AbniDealBanks extends \Genesis\API\Request
+class Services
 {
-    /**
-     * Set the per-request configuration
-     *
-     * @return void
-     */
-    protected function initConfiguration()
-    {
-        $this->config = \Genesis\Utils\Common::createArrayObject(
-            [
-                'protocol' => Request::PROTOCOL_HTTPS,
-                'port'     => Request::PORT_HTTPS,
-                'type'     => Request::METHOD_GET,
-                'format'   => 'xml'
-            ]
-        );
 
-        $this->initApiGatewayConfiguration('retrieve_abn_ideal_banks', false);
+    /**
+     * Address Verification
+     *
+     * @deprecated Payment method is deprecated and will be removed
+     */
+    const AVS             = 'avs';
+
+    /**
+     * ABNiDeal API Call Request
+     */
+    const ABNI_DEAL_BANKS = 'abni_deal_bank';
+
+    /**
+     * Get Service API Deprecated Calls
+     *
+     * @return array
+     */
+    public static function getServiceDeprecatedRequests()
+    {
+        return [
+            self::AVS             => 'NonFinancial\AVS',
+            self::ABNI_DEAL_BANKS => 'NonFinancial\Retrieve\AbniDealBanks'
+        ];
     }
 }

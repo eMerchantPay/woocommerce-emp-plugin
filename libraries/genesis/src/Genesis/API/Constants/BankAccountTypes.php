@@ -20,35 +20,36 @@
  *
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-namespace Genesis\API\Request\NonFinancial\Retrieve;
 
-use Genesis\API\Request;
+namespace Genesis\Api\Constants;
 
 /**
- * Class AbniDealBanks
- *
- * Retrieve the available Banks for iDEAL payment via ABN
- *
- * @package Genesis\API\Request\NonFinancial\Retrieve
+ * Class BankAccountTypes
+ * @package Genesis\Api\Constants
  */
-class AbniDealBanks extends \Genesis\API\Request
+class BankAccountTypes
 {
     /**
-     * Set the per-request configuration
-     *
-     * @return void
+     * C: for Checking accounts
      */
-    protected function initConfiguration()
-    {
-        $this->config = \Genesis\Utils\Common::createArrayObject(
-            [
-                'protocol' => Request::PROTOCOL_HTTPS,
-                'port'     => Request::PORT_HTTPS,
-                'type'     => Request::METHOD_GET,
-                'format'   => 'xml'
-            ]
-        );
+    const CHECKING_ACCOUNT = 'C';
 
-        $this->initApiGatewayConfiguration('retrieve_abn_ideal_banks', false);
+    /**
+     * S: for Savings accounts
+     */
+    const SAVINGS_ACCOUNT  = 'S';
+
+    /**
+     * M: for Maestra accounts(Only Peru)
+     */
+    const MAESTRA_ACCOUNTS = 'M';
+
+    public static function getAll()
+    {
+        return [
+            self::CHECKING_ACCOUNT,
+            self::SAVINGS_ACCOUNT,
+            self::MAESTRA_ACCOUNTS
+        ];
     }
 }
