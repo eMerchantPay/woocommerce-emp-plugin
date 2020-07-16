@@ -111,29 +111,21 @@ class WC_emerchantpay_Transaction {
 	 * @return string
 	 */
 	public function getStatusText() {
-		switch ( $this->type ) {
-			case \Genesis\API\Constants\Transaction\Types::KLARNA_REFUND:
-			case \Genesis\API\Constants\Transaction\Types::REFUND:
-			case \Genesis\API\Constants\Transaction\Types::BITPAY_REFUND:
-				return \Genesis\API\Constants\Transaction\States::REFUNDED;
-			case \Genesis\API\Constants\Transaction\Types::VOID:
-				return \Genesis\API\Constants\Transaction\States::VOIDED;
-			default:
-				return $this->status;
+		if ( \Genesis\API\Constants\Transaction\Types::isRefund( $this->type ) ) {
+			return \Genesis\API\Constants\Transaction\States::REFUNDED;
 		}
+
+		if ( \Genesis\API\Constants\Transaction\Types::VOID === $this->type ) {
+			return \Genesis\API\Constants\Transaction\States::VOIDED;
+		}
+
+		return $this->status;
 	}
 
 	/**
 	 * @return bool
 	 */
 	public function isAuthorize() {
-		return in_array(
-			$this->type,
-			array(
-				\Genesis\API\Constants\Transaction\Types::AUTHORIZE,
-				\Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D,
-				\Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE,
-			)
-		);
+		return \Genesis\API\Constants\Transaction\Types::isAuthorize( $this->type );
 	}
 }

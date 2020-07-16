@@ -17,6 +17,9 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
+use Genesis\API\Constants\Transaction\Names;
+use Genesis\API\Constants\Transaction\Types;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
@@ -178,151 +181,14 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				'type'        => 'multiselect',
 				'css'         => 'height:auto',
 				'title'       => static::getTranslatedText( 'Transaction Type' ),
-				'options'     => array(
-					\Genesis\API\Constants\Transaction\Types::ALIPAY               =>
-						static::getTranslatedText( 'Alipay' ),
-					\Genesis\API\Constants\Transaction\Types::ARGENCARD            =>
-						static::getTranslatedText( 'Argencard' ),
-					\Genesis\API\Constants\Transaction\Types::AURA                 =>
-						static::getTranslatedText( 'Aura' ),
-					\Genesis\API\Constants\Transaction\Types::AUTHORIZE            =>
-						static::getTranslatedText( 'Authorize' ),
-					\Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D         =>
-						static::getTranslatedText( 'Authorize (3D-Secure)' ),
-					\Genesis\API\Constants\Transaction\Types::BALOTO               =>
-						static::getTranslatedText( 'Baloto' ),
-					\Genesis\API\Constants\Transaction\Types::BANAMEX              =>
-						static::getTranslatedText( 'Banamex' ),
-					\Genesis\API\Constants\Transaction\Types::BANCO_DE_OCCIDENTE   =>
-						static::getTranslatedText( 'Banco de Occidente' ),
-					\Genesis\API\Constants\Transaction\Types::BANCO_DO_BRASIL      =>
-						static::getTranslatedText( 'Banco do Brasil' ),
-					\Genesis\API\Constants\Transaction\Types::BANCOMER             =>
-						static::getTranslatedText( 'Bancomer' ),
-					\Genesis\API\Constants\Transaction\Types::BANCONTACT           =>
-						static::getTranslatedText( 'Bancontact' ),
-					\Genesis\API\Constants\Transaction\Types::BITPAY_SALE          =>
-						static::getTranslatedText( 'BitPay' ),
-					\Genesis\API\Constants\Transaction\Types::BOLETO               =>
-						static::getTranslatedText( 'Boleto' ),
-					\Genesis\API\Constants\Transaction\Types::BRADESCO             =>
-						static::getTranslatedText( 'Bradesco' ),
-					\Genesis\API\Constants\Transaction\Types::CABAL                =>
-						static::getTranslatedText( 'Cabal' ),
-					\Genesis\API\Constants\Transaction\Types::CASHU                =>
-						static::getTranslatedText( 'CashU' ),
-					\Genesis\API\Constants\Transaction\Types::CENCOSUD             =>
-						static::getTranslatedText( 'Cencosud' ),
-					\Genesis\API\Constants\Transaction\Types::EFECTY               =>
-						static::getTranslatedText( 'Efecty' ),
-					\Genesis\API\Constants\Transaction\Types::ELO                  =>
-						static::getTranslatedText( 'Elo' ),
-					\Genesis\API\Constants\Transaction\Types::ENTERCASH            =>
-						static::getTranslatedText( 'Entercash' ),
-					\Genesis\API\Constants\Transaction\Types::EPS                  =>
-						static::getTranslatedText( 'eps' ),
-					\Genesis\API\Constants\Transaction\Types::EZEEWALLET           =>
-						static::getTranslatedText( 'eZeeWallet' ),
-					\Genesis\API\Constants\Transaction\Types::FASHIONCHEQUE        =>
-						static::getTranslatedText( 'Fashioncheque' ),
-					\Genesis\API\Constants\Transaction\Types::GIROPAY              =>
-						static::getTranslatedText( 'GiroPay' ),
-					\Genesis\API\Constants\Transaction\Types::IDEAL                =>
-						static::getTranslatedText( 'iDeal' ),
-					\Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN         =>
-						static::getTranslatedText( 'iDebit' ),
-					\Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN    =>
-						static::getTranslatedText( 'InstaDebit' ),
-					\Genesis\API\Constants\Transaction\Types::INSTANT_TRANSFER     =>
-						static::getTranslatedText( 'InstantTransfer' ),
-					\Genesis\API\Constants\Transaction\Types::INTERSOLVE           =>
-						static::getTranslatedText( 'Intersolve' ),
-					\Genesis\API\Constants\Transaction\Types::ITAU                 =>
-						static::getTranslatedText( 'Itau' ),
-					\Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE     =>
-						static::getTranslatedText( 'Klarna' ),
-					\Genesis\API\Constants\Transaction\Types::MY_BANK              =>
-						static::getTranslatedText( 'MyBank' ),
-					\Genesis\API\Constants\Transaction\Types::MULTIBANCO           =>
-						static::getTranslatedText( 'Multibanco' ),
-					\Genesis\API\Constants\Transaction\Types::NARANJA              =>
-						static::getTranslatedText( 'Naranja' ),
-					\Genesis\API\Constants\Transaction\Types::NATIVA               =>
-						static::getTranslatedText( 'Nativa' ),
-					\Genesis\API\Constants\Transaction\Types::NETELLER             =>
-						static::getTranslatedText( 'Neteller' ),
-					\Genesis\API\Constants\Transaction\Types::ONLINE_BANKING_PAYIN =>
-						static::getTranslatedText( 'OnlineBanking' ),
-					\Genesis\API\Constants\Transaction\Types::OXXO                 =>
-						static::getTranslatedText( 'OXXO' ),
-					\Genesis\API\Constants\Transaction\Types::P24                  =>
-						static::getTranslatedText( 'P24' ),
-					\Genesis\API\Constants\Transaction\Types::PAGO_FACIL           =>
-						static::getTranslatedText( 'Pago Facil' ),
-					\Genesis\API\Constants\Transaction\Types::PAYPAL_EXPRESS       =>
-						static::getTranslatedText( 'PayPal Express' ),
-					\Genesis\API\Constants\Transaction\Types::PAYSAFECARD          =>
-						static::getTranslatedText( 'PaySafeCard' ),
-					\Genesis\API\Constants\Transaction\Types::PAYU                 =>
-						static::getTranslatedText( 'PayU' ),
-					\Genesis\API\Constants\Transaction\Types::POLI                 =>
-						static::getTranslatedText( 'POLi' ),
-					\Genesis\API\Constants\Transaction\Types::QIWI                 =>
-						static::getTranslatedText( 'Qiwi' ),
-					\Genesis\API\Constants\Transaction\Types::RAPI_PAGO            =>
-						static::getTranslatedText( 'RapiPago' ),
-					\Genesis\API\Constants\Transaction\Types::REDPAGOS             =>
-						static::getTranslatedText( 'Redpagos' ),
-					\Genesis\API\Constants\Transaction\Types::SAFETYPAY            =>
-						static::getTranslatedText( 'SafetyPay' ),
-					\Genesis\API\Constants\Transaction\Types::SALE                 =>
-						static::getTranslatedText( 'Sale' ),
-					\Genesis\API\Constants\Transaction\Types::SALE_3D              =>
-						static::getTranslatedText( 'Sale (3D-Secure)' ),
-					\Genesis\API\Constants\Transaction\Types::SANTANDER            =>
-						static::getTranslatedText( 'Santander' ),
-					\Genesis\API\Constants\Transaction\Types::SANTANDER_CASH       =>
-						static::getTranslatedText( 'Santander Cash' ),
-					\Genesis\API\Constants\Transaction\Types::SDD_SALE             =>
-						static::getTranslatedText( 'Sepa Direct Debit' ),
-					\Genesis\API\Constants\Transaction\Types::SOFORT               =>
-						static::getTranslatedText( 'SOFORT' ),
-					\Genesis\API\Constants\Transaction\Types::TARJETA_SHOPPING     =>
-						static::getTranslatedText( 'Tarjeta Shopping' ),
-					\Genesis\API\Constants\Transaction\Types::TCS                  =>
-						static::getTranslatedText( 'TCS' ),
-					\Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE         =>
-						static::getTranslatedText( 'Trustly' ),
-					\Genesis\API\Constants\Transaction\Types::TRUSTPAY             =>
-						static::getTranslatedText( 'TrustPay' ),
-					\Genesis\API\Constants\Transaction\Types::WEBMONEY             =>
-						static::getTranslatedText( 'WebMoney' ),
-					\Genesis\API\Constants\Transaction\Types::WECHAT               =>
-						static::getTranslatedText( 'WeChat' ),
-					\Genesis\API\Constants\Transaction\Types::ZIMPLER              =>
-						static::getTranslatedText( 'Zimpler' ),
-				),
+				'options'     => $this->get_wpf_transaction_types(),
 				'description' => static::getTranslatedText( 'Select transaction type for the payment transaction' ),
 				'desc_tip'    => true,
 			),
 			self::SETTING_KEY_CHECKOUT_LANGUAGE => array(
 				'type'        => 'select',
 				'title'       => static::getTranslatedText( 'Checkout Language' ),
-				'options'     => array(
-					'en' => static::getTranslatedText( \Genesis\API\Constants\i18n::EN ),
-					'es' => static::getTranslatedText( \Genesis\API\Constants\i18n::ES ),
-					'fr' => static::getTranslatedText( \Genesis\API\Constants\i18n::FR ),
-					'de' => static::getTranslatedText( \Genesis\API\Constants\i18n::DE ),
-					'it' => static::getTranslatedText( \Genesis\API\Constants\i18n::IT ),
-					'ja' => static::getTranslatedText( \Genesis\API\Constants\i18n::JA ),
-					'zh' => static::getTranslatedText( \Genesis\API\Constants\i18n::ZH ),
-					'ar' => static::getTranslatedText( \Genesis\API\Constants\i18n::AR ),
-					'pt' => static::getTranslatedText( \Genesis\API\Constants\i18n::PT ),
-					'tr' => static::getTranslatedText( \Genesis\API\Constants\i18n::TR ),
-					'ru' => static::getTranslatedText( \Genesis\API\Constants\i18n::RU ),
-					'bg' => static::getTranslatedText( \Genesis\API\Constants\i18n::BG ),
-					'hi' => static::getTranslatedText( \Genesis\API\Constants\i18n::HI ),
-				),
+				'options'     => $this->get_wpf_languages(),
 				'description' => __( 'Select language for the customer UI on the remote server' ),
 				'desc_tip'    => true,
 			),
@@ -335,6 +201,94 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		);
 
 		$this->form_fields += $this->build_subscription_form_fields();
+	}
+
+	/**
+	 * Retrieve WPF Transaction types from SDK
+	 *
+	 * @return array
+	 */
+	protected function get_wpf_transaction_types() {
+		$data = array();
+
+		$transaction_types = Types::getWPFTransactionTypes();
+		$excluded_types    = array_map(
+			function ( $value ) {
+				return $value;
+			},
+			$this->get_wpf_recurring_transaction_types()
+		);
+
+		// Exclude SDD Recurring
+		array_push( $excluded_types, Types::SDD_INIT_RECURRING_SALE );
+
+		// Exlucde PPRO transaction. This is not standalone transaction type
+		array_push( $excluded_types, Types::PPRO );
+
+		// Exclude Transaction types
+		$transaction_types = array_diff( $transaction_types, $excluded_types );
+
+		// Add PPRO Types
+		$ppro_types = array_map(
+			function ( $type ) {
+				return $type . WC_emerchantpay_Method::PPRO_TRANSACTION_SUFFIX;
+			},
+			\Genesis\API\Constants\Payment\Methods::getMethods()
+		);
+		$transaction_types = array_merge( $transaction_types, $ppro_types );
+		asort( $transaction_types );
+
+		foreach ( $transaction_types as $type ) {
+			$name = \Genesis\API\Constants\Transaction\Names::getName( $type );
+			if ( ! \Genesis\API\Constants\Transaction\Types::isValidTransactionType( $type ) ) {
+				$name = strtoupper( $type );
+			}
+
+			$data[ $type ] = static::getTranslatedText( $name );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Retrieve WPF available languages
+	 *
+	 * @return array
+	 */
+	protected function get_wpf_languages() {
+		$data = array();
+
+		$names = [
+			\Genesis\API\Constants\i18n::AR => 'Arabic',
+			\Genesis\API\Constants\i18n::BG => 'Bulgarian',
+			\Genesis\API\Constants\i18n::DE => 'German',
+			\Genesis\API\Constants\i18n::EN => 'English',
+			\Genesis\API\Constants\i18n::ES => 'Spanish',
+			\Genesis\API\Constants\i18n::FR => 'French',
+			\Genesis\API\Constants\i18n::HI => 'Hindu',
+			\Genesis\API\Constants\i18n::JA => 'Japanese',
+			\Genesis\API\Constants\i18n::IS => 'Icelandic',
+			\Genesis\API\Constants\i18n::IT => 'Italian',
+			\Genesis\API\Constants\i18n::NL => 'Dutch',
+			\Genesis\API\Constants\i18n::PT => 'Portuguese',
+			\Genesis\API\Constants\i18n::PL => 'Polish',
+			\Genesis\API\Constants\i18n::RU => 'Russian',
+			\Genesis\API\Constants\i18n::TR => 'Turkish',
+			\Genesis\API\Constants\i18n::ZH => 'Mandarin Chinese',
+			\Genesis\API\Constants\i18n::ID => 'Indonesian',
+			\Genesis\API\Constants\i18n::MS => 'Malay',
+			\Genesis\API\Constants\i18n::TH => 'Thai',
+			\Genesis\API\Constants\i18n::CS => 'Czech',
+			\Genesis\API\Constants\i18n::HR => 'Croatian',
+			\Genesis\API\Constants\i18n::SL => 'Slovenian',
+			\Genesis\API\Constants\i18n::FI => 'Finnish',
+		];
+
+		foreach ( \Genesis\API\Constants\i18n::getAll() as $language ) {
+			$data[ $language ] = self::getTranslatedText( $names[ $language ] );
+		}
+
+		return $data;
 	}
 
 	/**
@@ -352,16 +306,25 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 					'type'        => 'multiselect',
 					'css'         => 'height:auto',
 					'title'       => static::getTranslatedText( 'Init Recurring Transaction Types' ),
-					'options'     => array(
-						\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE =>
-							static::getTranslatedText( 'Init Recurring Sale' ),
-						\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D =>
-							static::getTranslatedText( 'Init Recurring Sale (3D-Secure)' ),
-					),
+					'options'     => $this->get_wpf_recurring_transaction_types(),
 					'description' => static::getTranslatedText( 'Select transaction types for the initial recurring transaction' ),
 					'desc_tip'    => true,
 				),
 			)
+		);
+	}
+
+	/**
+	 * Retrieve Recurring WPF Transaction Types with translations
+	 *
+	 * @return array
+	 */
+	protected function get_wpf_recurring_transaction_types() {
+		return array(
+			Types::INIT_RECURRING_SALE =>
+				static::getTranslatedText( Names::getName( Types::INIT_RECURRING_SALE ) ),
+			Types::INIT_RECURRING_SALE_3D =>
+				static::getTranslatedText( Names::getName( Types::INIT_RECURRING_SALE_3D ) ),
 		);
 	}
 
@@ -634,17 +597,17 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			}
 
 			switch ( $type ) {
-				case \Genesis\API\Constants\Transaction\Types::IDEBIT_PAYIN:
-				case \Genesis\API\Constants\Transaction\Types::INSTA_DEBIT_PAYIN:
+				case Types::IDEBIT_PAYIN:
+				case Types::INSTA_DEBIT_PAYIN:
 					$user_id_hash              = WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash();
 					$transaction_custom_params = array(
 						'customer_account_id' => $user_id_hash,
 					);
 					break;
-				case \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE:
+				case Types::KLARNA_AUTHORIZE:
 					$transaction_custom_params = WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order )->toArray();
 					break;
-				case \Genesis\API\Constants\Transaction\Types::TRUSTLY_SALE:
+				case Types::TRUSTLY_SALE:
 					$user_id         = WC_emerchantpay_Genesis_Helper::getCurrentUserId();
 					$trustly_user_id = empty( $user_id ) ? WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash() : $user_id;
 
@@ -800,13 +763,11 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		$processed_list = array();
 
 		$selected_types = $this->getMethodSetting( self::SETTING_KEY_TRANSACTION_TYPES );
+		$methods        = \Genesis\API\Constants\Payment\Methods::getMethods();
 
-		$alias_map = array(
-			\Genesis\API\Constants\Payment\Methods::PRZELEWY24 =>
-				\Genesis\API\Constants\Transaction\Types::P24,
-			\Genesis\API\Constants\Payment\Methods::MYBANK =>
-				\Genesis\API\Constants\Transaction\Types::MY_BANK,
-		);
+		foreach ( $methods as $method ) {
+			$alias_map[ $method . self::PPRO_TRANSACTION_SUFFIX ] = Types::PPRO;
+		}
 
 		foreach ( $selected_types as $selected_type ) {
 			if ( array_key_exists( $selected_type, $alias_map ) ) {
@@ -815,7 +776,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				$processed_list[ $transaction_type ]['name'] = $transaction_type;
 
 				$processed_list[ $transaction_type ]['parameters'][] = array(
-					'payment_method' => $selected_type,
+					'payment_method' => str_replace( self::PPRO_TRANSACTION_SUFFIX, '', $selected_type ),
 				);
 			} else {
 				$processed_list[] = $selected_type;

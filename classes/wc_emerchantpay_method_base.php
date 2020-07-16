@@ -17,6 +17,8 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
+use Genesis\API\Constants\Transaction\Types;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
@@ -104,6 +106,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		'WC_emerchantpay_Transaction'         => 'wc_emerchantpay_transaction',
 		'WC_emerchantpay_Transaction_Tree'    => 'wc_emerchantpay_transactions_tree',
 	);
+
+	const PPRO_TRANSACTION_SUFFIX = '_ppro';
 
 	/**
 	 * Language domain
@@ -915,8 +919,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						$amount
 					);
 
-			if ( $type === 'Financial\Alternatives\Klarna\Capture' ) {
-				$genesis->request()->setItems( WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order ) );
+			if ( Types::getCaptureTransactionClass( Types::KLARNA_AUTHORIZE ) === $type ) {
+			    $genesis->request()->setItems( WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order ) );
 			}
 
 			$genesis->execute();
@@ -960,13 +964,9 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			throw new Exception( 'Missing Authorize transaction' );
 		}
 
-		switch ( $auth->type ) {
-			case \Genesis\API\Constants\Transaction\Types::AUTHORIZE:
-			case \Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D:
-				return 'Financial\Capture';
-			case \Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE:
-				return 'Financial\Alternatives\Klarna\Capture';
-		}
+		if ( Types::isAuthorize( $auth->type ) ) {
+			return Types::getCaptureTransactionClass( $auth->type );
+        }
 
 		throw new Exception( 'Invalid trx type: ' . $auth->type );
 	}
@@ -2033,8 +2033,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						$amount
 					);
 
-			if ( $type === 'Financial\Alternatives\Klarna\Refund' ) {
-				$genesis->request()->setItems( WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order ) );
+			if ( Types::getRefundTransactionClass( Types::KLARNA_CAPTURE ) === $type ) {
+			    $genesis->request()->setItems( WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order ) );
 			}
 
 			$genesis->execute();
@@ -2118,14 +2118,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			throw new Exception( 'Missing Settlement Transaction' );
 		}
 
-		switch ( $settlement->type ) {
-			case \Genesis\API\Constants\Transaction\Types::KLARNA_CAPTURE:
-				return 'Financial\Alternatives\Klarna\Refund';
-			case \Genesis\API\Constants\Transaction\Types::BITPAY_SALE:
-				return 'Financial\Crypto\BitPay\Refund';
-			default:
-				return 'Financial\Refund';
-		}
+		return Types::getRefundTransactionClass( $settlement->type );
 	}
 
 	/**
@@ -2161,7 +2154,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		);
 
 		$genesis = WC_emerchantpay_Genesis_Helper::getGatewayRequestByTxnType(
-			\Genesis\API\Constants\Transaction\Types::RECURRING_SALE
+			Types::RECURRING_SALE
 		);
 
 		$genesis

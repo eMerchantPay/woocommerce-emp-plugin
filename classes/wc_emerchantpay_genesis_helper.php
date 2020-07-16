@@ -29,18 +29,11 @@ class WC_emerchantpay_Genesis_Helper {
 	/**
 	 * Builds full Request Class Name by Transaction Type
 	 *
-	 * @param string $transactionType
+	 * @param string $transaction_type
 	 * @return string
 	 */
-	public static function getTransactionTypeRequestClassName( $transactionType ) {
-		$requestClassName        = \Genesis\Utils\Common::snakeCaseToCamelCase(
-			str_replace( '3d', '3D', $transactionType )
-		);
-		$recurringInnerNamespace =
-			strpos( $transactionType, 'recurring' ) !== false
-				? 'Recurring\\'
-				: '';
-		return "Financial\\Cards\\{$recurringInnerNamespace}{$requestClassName}";
+	public static function get_transaction_type_request_class_name( $transaction_type ) {
+		return \Genesis\API\Constants\Transaction\Types::getFinancialRequestClassForTrxType( $transaction_type );
 	}
 
 	/**
@@ -51,9 +44,7 @@ class WC_emerchantpay_Genesis_Helper {
 	 * @throws \Genesis\Exceptions\InvalidMethod
 	 */
 	public static function getGatewayRequestByTxnType( $transactionType ) {
-		$apiRequestClassName = static::getTransactionTypeRequestClassName(
-			$transactionType
-		);
+		$apiRequestClassName = static::get_transaction_type_request_class_name(	$transactionType );
 
 		return new \Genesis\Genesis( $apiRequestClassName );
 	}
