@@ -228,7 +228,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		if ( $this->getIsWooCommerceAdminOrder() ) {
 			$this->addWPSimpleActions(
 				[
-					self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_REFUNDED,
+					self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_TOTAL,
 					self::WP_ACTION_ADMIN_FOOTER,
 				],
 				[
