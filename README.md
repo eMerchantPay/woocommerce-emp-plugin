@@ -7,7 +7,7 @@ Requirements
 ------------
 
 * WordPress 4.x or 5.x (Tested up to 5.4)
-* WooCommerce 2.x, 3.x, 4.x (Tested up to 4.3.1)
+* WooCommerce 3.x, 4.x (Tested up to 4.3.1)
 * [GenesisPHP v1.18.4](https://github.com/GenesisGateway/genesis_php/releases/tag/1.18.4) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x (Tested up to 2.2.13) in order to use **Subscriptions**
@@ -104,6 +104,21 @@ and add the following line to execute the **WordPress Cron** once per 10 Minutes
 ```sh
 */10 * * * * cd /path/to/wordpress/root && php -q wp-cron.php
 ```
+
+Refunds
+------------
+There are two ways of doing Refunds.
+
+* Using integrated WooCommerce Refund functionality
+
+    In that way, you can create a partial or full refund with restocking the desired items. This will create a WooCommerce Refund event.
+    Partial or Full refund e-mail will be sent to the customer. 
+    You should choose the "Refund via emerchantpay Checkout/Direct" button if you want to send that refund to the Genesis Gateway.
+
+* Using the emerchantpay Transaction List Table
+    
+    In that way, you will send a Refund to the Genesis Gateway without affecting the Order, unless the refund is not a full one. 
+    If the full amount is refunded then the Order will become with status Refunded.   
 
 Supported Transactions
 ------------

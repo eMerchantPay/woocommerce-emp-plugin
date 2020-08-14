@@ -913,7 +913,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						$data['trx_id']
 					)
 					->setCurrency(
-						$order->get_order_currency()
+						$order->get_currency()
 					)
 					->setAmount(
 						$amount
@@ -1460,7 +1460,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 							'Your payment has been declined, please check your data and try again'
 						);
 
-						$order->cancel_order( $notice );
+						WC()->session->set( 'order_awaiting_payment', false );
+						$order->update_status( self::ORDER_STATUS_CANCELLED, $notice );
 
 						WC_emerchantpay_Message_Helper::addErrorNotice( $notice );
 						break;
@@ -1469,7 +1470,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 							'The customer cancelled their payment session'
 						);
 
-						$order->cancel_order( $note );
+						WC()->session->set( 'order_awaiting_payment', false );
+						$order->update_status( self::ORDER_STATUS_CANCELLED, $note );
 						break;
 				}
 
@@ -1497,12 +1499,12 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				$reconcile = $notification->getReconciliationObject();
 
 				if ( $reconcile ) {
-					$order = WC_emerchantpay_Order_Helper::getOrderByGatewayUniqueId(
-						$reconcile->unique_id,
+					$order = WC_emerchantpay_Order_Helper::load_order_from_reconcile_object(
+						$reconcile,
 						$this->getCheckoutTransactionIdMetaKey()
 					);
 
-					if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) || $order->payment_method != $this->id ) {
+					if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
 						throw new \Exception( 'Invalid WooCommerce Order!' );
 					}
 
@@ -1545,11 +1547,11 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		$data = array(
 			'transaction_id'     => static::generateTransactionId( $order->id ),
 			'amount'             => $this->getAmount( $order, $isRecurring ),
-			'currency'           => $order->get_order_currency(),
+			'currency'           => $order->get_currency(),
 			'usage'              => WC_emerchantpay_Genesis_Helper::getPaymentTransactionUsage( false ),
 			'description'        => $this->get_item_description( $order ),
-			'customer_email'     => $order->billing_email,
-			'customer_phone'     => $order->billing_phone,
+			'customer_email'     => $order->get_billing_email(),
+			'customer_phone'     => $order->get_billing_phone(),
 			// URLs
 			'notification_url'   => WC()->api_request_url( get_class( $this ) ),
 			'return_success_url' => $this->get_return_url( $order ),
@@ -1557,7 +1559,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				WC()->api_request_url( get_class( $this ) ),
 				array(
 					'act' => 'failure',
-					'oid' => $order->id,
+					'oid' => $order->get_id(),
 				)
 			),
 			'billing'            => self::getOrderBillingAddress( $order ),
@@ -1574,14 +1576,14 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 */
 	protected static function getOrderBillingAddress( WC_Order $order ) {
 		return [
-			'first_name' => $order->billing_first_name,
-			'last_name'  => $order->billing_last_name,
-			'address1'   => $order->billing_address_1,
-			'address2'   => $order->billing_address_2,
-			'zip_code'   => $order->billing_postcode,
-			'city'       => $order->billing_city,
-			'state'      => $order->billing_state,
-			'country'    => $order->billing_country,
+			'first_name' => $order->get_billing_first_name(),
+			'last_name'  => $order->get_billing_last_name(),
+			'address1'   => $order->get_billing_address_1(),
+			'address2'   => $order->get_billing_address_2(),
+			'zip_code'   => $order->get_billing_postcode(),
+			'city'       => $order->get_billing_city(),
+			'state'      => $order->get_billing_state(),
+			'country'    => $order->get_billing_country(),
 		];
 	}
 
@@ -1596,14 +1598,14 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		}
 
 		return [
-			'first_name' => $order->shipping_first_name,
-			'last_name'  => $order->shipping_last_name,
-			'address1'   => $order->shipping_address_1,
-			'address2'   => $order->shipping_address_2,
-			'zip_code'   => $order->shipping_postcode,
-			'city'       => $order->shipping_city,
-			'state'      => $order->shipping_state,
-			'country'    => $order->shipping_country,
+			'first_name' => $order->get_shipping_first_name(),
+			'last_name'  => $order->get_shipping_last_name(),
+			'address1'   => $order->get_shipping_address_1(),
+			'address2'   => $order->get_shipping_address_2(),
+			'zip_code'   => $order->get_shipping_postcode(),
+			'city'       => $order->get_shipping_city(),
+			'state'      => $order->get_shipping_state(),
+			'country'    => $order->get_shipping_country(),
 		];
 	}
 
@@ -1613,7 +1615,9 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	protected static function isShippingAddressMissing( WC_Order $order ) {
-		return empty( $order->shipping_country ) || empty( $order->shipping_city ) || empty( $order->shipping_address_1 );
+		return empty( $order->get_shipping_country() ) ||
+			empty( $order->get_shipping_city() ) ||
+			empty( $order->get_shipping_address_1() );
 	}
 
 	/**
@@ -1648,7 +1652,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		}
 
 		$data = WC_emerchantpay_Order_Helper::getOrderMetaData(
-			$order->id,
+			$order->get_id(),
 			$meta_key
 		);
 
@@ -1659,52 +1663,96 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 * Updates the Order Status and creates order note
 	 *
 	 * @param WC_Order          $order
-	 * @param stdClass|WP_Error $gatewayResponseObject
-	 * @throws Exception
+	 * @param stdClass|WP_Error $gateway_response_object
+	 *
 	 * @return void
+	 * @throws Exception
 	 */
-	protected function updateOrderStatus( $order, $gatewayResponseObject ) {
+	protected function updateOrderStatus( $order, $gateway_response_object ) {
 		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
 			throw new \Exception( 'Invalid WooCommerce Order!' );
 		}
 
-		if ( is_wp_error( $gatewayResponseObject ) ) {
+		if ( is_wp_error( $gateway_response_object ) ) {
 			$order->add_order_note(
 				static::getTranslatedText( 'Payment transaction returned an error!' )
 			);
 
 			$order->update_status(
 				self::ORDER_STATUS_FAILED,
-				$gatewayResponseObject->get_error_message()
+				$gateway_response_object->get_error_message()
 			);
 
 			return;
 		}
 
-		$payment_transaction = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction( $gatewayResponseObject );
-		$raw_trx_list        = $this->get_trx_list( $payment_transaction );
+		$payment_transaction = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction( $gateway_response_object );
 
-		switch ( $gatewayResponseObject->status ) {
+		// Tweak for handling Processing Gensis Events that are missing in the Trx List & Hierarchy
+		if ( isset( $payment_transaction->reference_transaction_unique_id ) ) {
+			$payment_transaction->parent_id = $payment_transaction->reference_transaction_unique_id;
+		}
+
+		// Tweak for handling WPF Genesis Events that are missing in the Trx List & Hierarchy
+		if ( $payment_transaction instanceof ArrayObject && $payment_transaction->count() === 2 ) {
+			$payment_transaction[1]->parent_id = $payment_transaction[0]->unique_id;
+		}
+
+		$raw_trx_list = $this->get_trx_list( $payment_transaction );
+
+		switch ( $gateway_response_object->status ) {
 			case \Genesis\API\Constants\Transaction\States::APPROVED:
 				$this->update_order_status_approved(
 					$order,
-					$gatewayResponseObject,
+					$gateway_response_object,
 					$payment_transaction,
 					$raw_trx_list
 				);
 
-				break;
-			case \Genesis\API\Constants\Transaction\States::DECLINED:
-				$this->update_order_status_declined( $order, $gatewayResponseObject );
+				if ( Types::isRefund( $gateway_response_object->transaction_type ) ) {
+					self::update_order_status_refunded( $order, $gateway_response_object );
+				}
 
 				break;
+			case \Genesis\API\Constants\Transaction\States::DECLINED:
+			    $has_payment = WC_emerchantpay_Genesis_Helper::has_payment( $gateway_response_object );
+			    if ( ! $has_payment ) {
+					$this->update_order_status_cancelled(
+						$order,
+						$gateway_response_object,
+						static::getTranslatedText( 'Payment has been cancelled by the customer.' )
+					);
+					break;
+				}
+
+				$this->update_order_status_declined( $order, $gateway_response_object );
+				break;
 			case \Genesis\API\Constants\Transaction\States::ERROR:
-				$this->update_order_status_error( $order, $gatewayResponseObject );
+				$this->update_order_status_error( $order, $gateway_response_object );
 
 				break;
 			case \Genesis\API\Constants\Transaction\States::REFUNDED:
-				$this->update_order_status_refunded( $order, $gatewayResponseObject );
+				if ( isset( $gateway_response_object->transaction_type ) &&
+					! Types::isRefund( $gateway_response_object->transaction_type )
+				) {
+					break;
+				}
 
+				$this->update_order_status_refunded( $order, $gateway_response_object );
+				break;
+			case \Genesis\API\Constants\Transaction\States::TIMEOUT:
+				$this->update_order_status_cancelled(
+					$order,
+					$gateway_response_object,
+					static::getTranslatedText( 'The payment expired.' )
+				);
+				break;
+			case \Genesis\API\Constants\Transaction\States::VOIDED:
+				$this->update_order_status_cancelled(
+					$order,
+					$gateway_response_object,
+					static::getTranslatedText( 'Payment has been voided.' )
+				);
 				break;
 		}
 
@@ -1733,18 +1781,62 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * @param WC_Order              $order
-	 * @param $gatewayResponseObject
+	 * @param WC_Order                $order
+	 * @param $gateway_response_object
 	 */
-	protected function update_order_status_refunded( WC_Order $order, $gatewayResponseObject ) {
-		$order->add_order_note(
-			static::getTranslatedText( 'Payment transaction has been refunded!' )
+	protected function update_order_status_refunded( WC_Order $order, $gateway_response_object ) {
+		$fully_refunded        = false;
+		$total_order_amount    = $order->get_total();
+		$payment_transactions  = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction(
+			$gateway_response_object
 		);
 
-		$order->update_status(
-			self::ORDER_STATUS_REFUNDED,
-			$gatewayResponseObject->technical_message
+		switch ( $this->id ) {
+			case WC_emerchantpay_Checkout::get_method_code():
+				if ( $payment_transactions instanceof ArrayObject && $payment_transactions->count() > 1 ) {
+					$refund_sum = WC_emerchantpay_Genesis_Helper::get_total_refund_from_wpf_reconcile(
+						$gateway_response_object
+					);
+
+					$fully_refunded = ( $total_order_amount <= $refund_sum ) ?: false;
+
+					break;
+				}
+
+				if ( $payment_transactions instanceof stdClass ) {
+					$fully_refunded = ( $total_order_amount <= $payment_transactions->amount ) ?: false;
+				}
+
+				break;
+			case WC_emerchantpay_Direct::get_method_code():
+				$total_refunded_amount = WC_emerchantpay_Transactions_Tree::get_total_amount_without_unique_id(
+					$payment_transactions->unique_id,
+					WC_emerchantpay_Transactions_Tree::getTransactionsListFromOrder( $order ),
+					\Genesis\API\Constants\Transaction\Types::REFUND
+				);
+
+				$total_refund_amount = $total_refunded_amount + $payment_transactions->amount;
+				$fully_refunded      = ($total_order_amount <= $total_refund_amount) ?: false;
+
+				break;
+		}
+
+		$order->add_order_note(
+			static::getTranslatedText(
+				sprintf(
+					'Payment transaction has been %s refunded!',
+					( $fully_refunded ) ? 'fully' : 'partial'
+				)
+			)
 		);
+
+		if ( $fully_refunded ) {
+			$order->update_status(
+				self::ORDER_STATUS_REFUNDED,
+				! isset( $gateway_response_object->technical_message ) ?
+					$gateway_response_object->technical_message : 'Refunded upon Notification received'
+			);
+		}
 	}
 
 	/**
@@ -1774,6 +1866,24 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		$order->update_status(
 			self::ORDER_STATUS_FAILED,
 			$gatewayResponseObject->technical_message
+		);
+	}
+
+	/**
+	 * @param WC_Order              $order
+	 * @param $gatewayResponseObject
+	 * @param string $custom_text
+	 */
+	protected function update_order_status_cancelled( WC_Order $order, $gatewayResponseObject, $custom_text = '' ) {
+		$order->add_order_note( static::getTranslatedText( 'Payment transaction has been cancelled!' ) );
+
+		$message = isset( $gatewayResponseObject->technical_message ) ?
+			$gatewayResponseObject->technical_message :
+			static::getTranslatedText($custom_text);
+
+		$order->update_status(
+			self::ORDER_STATUS_CANCELLED,
+			$message
 		);
 	}
 
@@ -2027,7 +2137,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						$reference_transaction_id
 					)
 					->setCurrency(
-						$order->get_order_currency()
+						$order->get_currency()
 					)
 					->setAmount(
 						$amount
@@ -2172,7 +2282,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 					WC_emerchantpay_Helper::getClientRemoteIpAddress()
 				)
 				->setCurrency(
-					$order->get_order_currency()
+					$order->get_currency()
 				)
 				->setAmount(
 					$amount
@@ -2379,6 +2489,16 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 */
 	protected function getRecurringToken( $order ) {
 		return $this->getMethodSetting( self::SETTING_KEY_RECURRING_TOKEN );
+	}
+
+	/**
+	* Get the code of the current used payment method
+	* Checkout / Direct
+	*
+	* @return string|null
+	*/
+	public static function get_method_code() {
+		return static::$method_code;
 	}
 }
 

@@ -17,6 +17,9 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
+use Genesis\API\Constants\Transaction\States;
+use Genesis\API\Constants\Transaction\Types;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
@@ -33,7 +36,7 @@ class WC_emerchantpay_Genesis_Helper {
 	 * @return string
 	 */
 	public static function get_transaction_type_request_class_name( $transaction_type ) {
-		return \Genesis\API\Constants\Transaction\Types::getFinancialRequestClassForTrxType( $transaction_type );
+		return Types::getFinancialRequestClassForTrxType( $transaction_type );
 	}
 
 	/**
@@ -61,10 +64,10 @@ class WC_emerchantpay_Genesis_Helper {
 
 	/**
 	 * @param \stdClass $response
-	 * @return \Genesis\API\Constants\Transaction\States
+	 * @return States
 	 */
 	public static function getGatewayStatusInstance( $response ) {
-		return new \Genesis\API\Constants\Transaction\States( $response->status );
+		return new States( $response->status );
 	}
 
 	/**
@@ -112,5 +115,36 @@ class WC_emerchantpay_Genesis_Helper {
 		$userHash = $userId > 0 ? sha1( $userId ) : WC_emerchantpay_Method::generateTransactionId();
 
 		return substr( $userHash, 0, $length );
+	}
+
+	/**
+	 * Get the total Refunded sum from the Genesis WPF Reconcile Response object
+	 *
+	 * @param $gateway_response
+	 *
+	 * @return float
+	 */
+	public static function get_total_refund_from_wpf_reconcile( $gateway_response ) {
+		$sum                  = 0.0;
+		$payment_transactions = self::getReconcilePaymentTransaction( $gateway_response );
+
+		foreach ( $payment_transactions as $payment_transaction ) {
+			if ( States::APPROVED === $payment_transaction->status &&
+			     Types::isRefund( $payment_transaction->transaction_type )
+			) {
+				$sum += $payment_transaction->amount;
+			}
+		}
+
+		return $sum;
+	}
+
+	/**
+	 * @param stdClass $reconcile
+	 *
+	 * @return bool
+	 */
+	public static function has_payment( $reconcile ) {
+		return isset( $reconcile->payment_transaction );
 	}
 }

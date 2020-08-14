@@ -566,4 +566,43 @@ class WC_emerchantpay_Transactions_Tree {
 
 		return $totalAmount;
 	}
+
+	/**
+	 * Get the sum of amount of all transaction by specific criteria
+	 *
+	 * Unique Id parameter is used for excluding an transaction from the sum.
+	 *      This is used mainly for Refund transactions when we can have refund from Genesis and from the Store.
+	 *      If there is Refund in the Store and there is already the received notification unique_id we
+	 *      have to exclude that specific transaction.
+	 *
+	 * @param $unique_id
+	 * @param array $trx_tree
+	 * @param $types
+	 * @param string $status
+	 *
+	 * @return float
+	 */
+	public static function get_total_amount_without_unique_id( $unique_id, array $trx_tree, $types, $status = \Genesis\API\Constants\Transaction\States::APPROVED ) {
+		$total_amount = 0.0;
+
+		/** @var $transaction */
+		foreach ( $trx_tree as $transaction ) {
+			if ( ! empty( $parent_id ) && $parent_id !== $transaction['parent_id'] ) {
+				continue;
+			}
+			if ( is_array( $types ) ? ! in_array( $transaction['type'], $types, true ) : $types !== $transaction['type'] ) {
+				continue;
+			}
+			if ( $transaction['status'] !== $status ) {
+				continue;
+			}
+			if ( $unique_id === $transaction['unique_id'] ) {
+				continue;
+			}
+
+			$total_amount += $transaction['amount'];
+		}
+
+		return $total_amount;
+	}
 }

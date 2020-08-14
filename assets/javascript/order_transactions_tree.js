@@ -98,7 +98,8 @@ jQuery( document ).ready(
 
 		jQuery( '#emerchantpay-modal-submit' ).on( 'click', transactionAction );
 
-		jQuery( '#woocommerce-order-items' ).find( 'button.refund-items' ).remove();
+		// Experimental use of the WooCommerce Integrated Refund functionality
+		//jQuery( '#woocommerce-order-items' ).find( 'button.refund-items' ).remove();
 
 		$senderButton = jQuery( '#emerchantpay-modal-submit' );
 		$closeButton  = jQuery( '#emerchantpay-modal-close' );

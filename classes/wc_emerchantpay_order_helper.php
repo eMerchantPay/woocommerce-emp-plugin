@@ -120,7 +120,7 @@ class WC_emerchantpay_Order_Helper {
 		return wc_price(
 			$price,
 			array(
-				'currency' => $order->get_order_currency(),
+				'currency' => $order->get_currency(),
 			)
 		);
 	}
@@ -140,7 +140,7 @@ class WC_emerchantpay_Order_Helper {
 			return $money;
 		}
 
-		return "$money {$order->get_order_currency()}";
+		return "$money {$order->get_currency()}";
 	}
 
 	/**
@@ -167,6 +167,75 @@ class WC_emerchantpay_Order_Helper {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Try to load the Order from the Reconcile Object notification
+	 *
+	 * @param \stdClass $reconcile         Genesis Reconcile Object.
+	 * @param string    $checkout_meta_key The method used for handling the notification.
+	 *
+	 * @return WC_Order
+	 * @throws \Exception Throw general exception.
+	 */
+	public static function load_order_from_reconcile_object( $reconcile, $checkout_meta_key ) {
+		$order_id = self::get_order_id(
+			$reconcile->unique_id,
+			$checkout_meta_key
+		);
+
+		if ( empty( $order_id ) ) {
+			$order_id = self::get_order_id(
+				$reconcile->unique_id,
+				WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST
+			);
+		}
+
+		if ( empty( $order_id ) && isset( $reconcile->reference_transaction_unique_id ) ) {
+			$order_id = self::get_order_id(
+				$reconcile->reference_transaction_unique_id,
+				WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST
+			);
+		}
+
+		if ( empty( $order_id ) ) {
+			throw new \Exception( 'Invalid transaction unique_id' );
+		}
+
+		return new WC_Order( $order_id );
+	}
+
+	/**
+	 * Search into posts for the Post Id (Order Id)
+	 *
+	 * @param string $transaction_unique_id Unique Id of the transaction.
+	 * @param string $meta_key              The value of the post meta key value.
+	 *
+	 * @return int|null
+	 */
+	public static function get_order_id( $transaction_unique_id, $meta_key ) {
+		$transaction_unique_id = esc_sql( trim( $transaction_unique_id ) );
+
+		$query = new WP_Query(
+			array(
+				'post_status' => 'any',
+				'post_type'   => 'shop_order',
+				'meta_key'    => $meta_key,
+				'meta_query'  => array(
+					array(
+						'key'     => $meta_key,
+						'value'   => $transaction_unique_id,
+						'compare' => 'LIKE',
+					),
+				),
+			)
+		);
+
+		if ( $query->have_posts() ) {
+			return $query->post->ID;
+		}
+
+		return null;
 	}
 
 	/**
@@ -288,7 +357,7 @@ class WC_emerchantpay_Order_Helper {
 	 * @throws \Genesis\Exceptions\ErrorParameter
 	 */
 	public static function getKlarnaCustomParamItems( WC_Order $order ) {
-		$items       = new \Genesis\API\Request\Financial\Alternatives\Klarna\Items( $order->get_order_currency() );
+		$items       = new \Genesis\API\Request\Financial\Alternatives\Klarna\Items( $order->get_currency() );
 		$order_items = $order->get_items();
 
 		foreach ( $order_items as $item ) {
@@ -298,7 +367,13 @@ class WC_emerchantpay_Order_Helper {
 				self::getItemName( $item ),
 				$product->is_virtual() ? KlarnaItem::ITEM_TYPE_DIGITAL : KlarnaItem::ITEM_TYPE_PHYSICAL,
 				self::getItemQuantity( $item ),
-				$product->get_price_excluding_tax()
+				wc_get_price_excluding_tax(
+					$product,
+					array(
+						'qty' => self::getItemQuantity( $item ),
+						'price' => '',
+					)
+				)
 			);
 
 			$items->addItem( $klarnaItem );
