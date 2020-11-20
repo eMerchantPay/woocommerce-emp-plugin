@@ -31,7 +31,7 @@ Installation
 * Navigate to ```Plugins -> Add New```
 * Install through the Marketplace/ Select the downloaded ```.zip``` File
 * Activate the newly installed ```WooCommerce emerchantpay Payment Gateway Client``` plugin
-* Navigate to ```WooCommerce -> Settings -> Checkout``` 
+* Navigate to ```WooCommerce -> Settings -> Payment``` 
 * Select your preferred payment method ```emerchantpay Checkout``` or ```emerchantpay Direct```
 * Check ```Enable```, set the correct credentials and click "Save changes"
 
@@ -40,8 +40,8 @@ Enable WooCommerce Secure Checkout
 This steps should be followed if you wish to use the ```emerchantpay Direct``` Method
 * Ensure you have installed and configured a SSL Certificate on your PCI-DSS Certified Server
 * Login into your WordPress Admin Panel with Administrator privileges
-* Navigate to ```WooCommerce``` - > ```Settings``` -> ```Checkout```
-* In Section ```Checkout Process``` check ```Force secure checkout```
+* Navigate to ```WooCommerce``` - > ```Settings``` -> ```Advanced```
+* In Section ```Page Setup``` check ```Force secure checkout```
 
 __If you are using Tokenization for Web Payment Form, please make sure Guest Checkout is disabled.__
 

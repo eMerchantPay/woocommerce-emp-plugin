@@ -97,6 +97,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 	const RESPONSE_SUCCESS = 'success';
 
+	const PLATFORM_TRANSACTION_PREFIX = 'wc_';
+
 	protected static $helpers = array(
 		'WC_emerchantpay_Helper'              => 'wc_emerchantpay_helper',
 		'WC_emerchantpay_Genesis_Helper'      => 'wc_emerchantpay_genesis_helper',
@@ -2313,7 +2315,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			$input
 		);
 
-		return strtolower( substr( sha1( $unique . md5( uniqid( mt_rand(), true ) ) ), 0, 30 ) );
+		return strtolower( self::PLATFORM_TRANSACTION_PREFIX . substr( sha1( $unique . md5( uniqid( mt_rand(), true ) ) ), 0, 30 ) );
 	}
 
 	/**

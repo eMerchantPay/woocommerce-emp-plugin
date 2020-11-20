@@ -68,7 +68,7 @@ class WC_emerchantpay_Helper {
 	 * @return bool
 	 */
 	public static function isStoreOverSecuredConnection() {
-		return ( is_ssl() && get_option( 'woocommerce_force_ssl_checkout' ) == 'yes' );
+		return ( is_ssl() || get_option( 'woocommerce_force_ssl_checkout' ) === 'yes' );
 	}
 
 	/**
