@@ -2,10 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce emerchantpay Payment Gateway Client\n"
 "POT-Creation-Date: 2015-08-03 15:05+0300\n"
-"PO-Revision-Date: 2020-03-18 12:19+0200\n"
+"PO-Revision-Date: 2020-03-18 12:08+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: en_US\n"
+"Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -361,8 +361,11 @@ msgstr "Payment transaction has been declined!"
 msgid "Payment transaction returned an error!"
 msgstr "Payment transaction returned an error!"
 
-msgid "Payment transaction has been refunded!"
-msgstr "Payment transaction has been refunded!"
+msgid "Payment transaction has been fully refunded!"
+msgstr "Payment transaction has been fully refunded!"
+
+msgid "Payment transaction has been partially refunded!"
+msgstr "Payment transaction has been partially refunded!"
 
 msgid "We were unable to process your order!<br/>Please double check your data and try again."
 msgstr "We were unable to process your order!<br/>Please double check your data and try again."
@@ -496,3 +499,234 @@ msgstr "Slovenian"
 
 msgid "Finnish"
 msgstr "Finnish"
+
+msgid ""
+"Choose and map your Product Custom attribute to a specific Business Attribute. "
+"The mapped Product attribute value will be attached to the Genesis Transaction Request. "
+"For more information %sget in touch%s with our support."
+msgstr ""
+"Choose and map your Product Custom attribute to a specific Business Attribute. "
+"The mapped Product attribute value will be attached to the Genesis Transaction Request. "
+"For more information %sget in touch%s with our support."
+
+msgid "Airlines Air Carriers"
+msgstr "Airlines Air Carriers"
+
+msgid "Flight Arrival Date"
+msgstr "Flight Arrival Date"
+
+msgid "The date when the flight departs in format %s"
+msgstr "The date when the flight departs in format %s"
+
+msgid "The date when the flight arrives in format %s"
+msgstr "The date when the flight arrives in format %s"
+
+msgid "Airline Code"
+msgstr "Airline Code"
+
+msgid "The code of Airline"
+msgstr "The code of Airline"
+
+msgid "AIRLINE Flight Number"
+msgstr "Flight number"
+
+msgid "The flight number"
+msgstr "The flight number"
+
+msgid "Airline Ticket Number"
+msgstr "Ticket Number"
+
+msgid "The number of the flight ticket"
+msgstr "The number of the flight ticket"
+
+msgid "Airline Origin City"
+msgstr "Origin City"
+
+msgid "The origin city of the flight"
+msgstr "The origin city of the flight"
+
+msgid "Airline Destination City"
+msgstr "Destination City"
+
+msgid "The destination city of the flight"
+msgstr "The destination city of the flight"
+
+msgid "Airline Tour Operator Name"
+msgstr "Airline Tour Operator Name"
+
+msgid "The name of tour operator"
+msgstr "The name of tour operator"
+
+msgid "Event Management"
+msgstr "Event Management"
+
+msgid "Event Start Date"
+msgstr "Event Start Date"
+
+msgid "The date when event starts in format %s"
+msgstr "The date when event starts in format %s"
+
+msgid "Event End Date"
+msgstr "Event End Date"
+
+msgid "The date when event ends in format %s"
+msgstr "The date when event ends in format %s"
+
+msgid "Event Organizer Id"
+msgstr "Event Organizer Id"
+
+msgid "Event Id"
+msgstr "Event Id"
+
+msgid "Furniture"
+msgstr "Furniture"
+
+msgid "Date of Order"
+msgstr "Date of Order"
+
+msgid "The date when order was placed in format %s"
+msgstr "The date when order was placed in format %s"
+
+msgid "Delivery Date"
+msgstr "Delivery Date"
+
+msgid "Date of the expected delivery in format %s"
+msgstr "Date of the expected delivery in format %s"
+
+msgid "Name Of Supplier"
+msgstr "Name Of Supplier"
+
+msgid "Hotels and Real estate rentals"
+msgstr "Hotels and Real estate rentals"
+
+msgid "Check-In Date"
+msgstr "Check-In Date"
+
+msgid "The data when the customer check-in in format %s"
+msgstr "The data when the customer check-in in format %s"
+
+msgid "Check-Out Date"
+msgstr "Check-Out Date"
+
+msgid "The data when the customer check-out in format %s"
+msgstr "The data when the customer check-out in format %s"
+
+msgid "Travel Agency Name"
+msgstr "Travel Agency Name"
+
+msgid "Car, Plane and Boat Rentals"
+msgstr "Car, Plane and Boat Rentals"
+
+msgid "Pick-Up Date"
+msgstr "Pick-Up Date"
+
+msgid "The date when customer takes the vehicle in format %s"
+msgstr "The date when customer takes the vehicle in format %s"
+
+msgid "Vehicle Return Date"
+msgstr "Return Date"
+
+msgid "The date when the customer returns the vehicle back in format %s"
+msgstr "The date when the customer returns the vehicle back in format %s"
+
+msgid "Supplier Name"
+msgstr "Supplier Name"
+
+msgid "Cruise Lines"
+msgstr "Cruise Lines"
+
+msgid "Start Date"
+msgstr "Start Date"
+
+msgid "The date when cruise begins in format %s"
+msgstr "The date when cruise begins in format %s"
+
+msgid "End Date"
+msgstr "End Date"
+
+msgid "The date when cruise ends in format %s"
+msgstr "The date when cruise ends in format %s"
+
+msgid "Travel Agencies"
+msgstr "Travel Agencies"
+
+msgid "Arrival Date"
+msgstr "Arrival Date"
+
+msgid "The date of arrival in format %s"
+msgstr "The date of arrival in format %s"
+
+msgid "Departure Date"
+msgstr "Departure Date"
+
+msgid "The date of departure in format %s"
+msgstr "The date of departure in format %s"
+
+msgid "Carrier Code"
+msgstr "Carrier Code"
+
+msgid "The code of the carrier"
+msgstr "The code of the carrier"
+
+msgid "Flight Number"
+msgstr "Flight Number"
+
+msgid "The number of the flight"
+msgstr "The number of the flight"
+
+msgid "Ticket Number"
+msgstr "Ticket Number"
+
+msgid "The number of the ticket"
+msgstr "The number of the ticket"
+
+msgid "Origin City"
+msgstr "Origin City"
+
+msgid "The origin city"
+msgstr "The origin city"
+
+msgid "Destination City"
+msgstr "Destination City"
+
+msgid "The destination city"
+msgstr "The destination city"
+
+msgid "Travel Agency"
+msgstr "Travel Agency"
+
+msgid "The name of the travel agency"
+msgstr "The name of the travel agency"
+
+msgid "Contractor Name"
+msgstr "Contractor Name"
+
+msgid "The name of the contractor"
+msgstr "The name of the contractor"
+
+msgid "ATOL Certificate"
+msgstr "ATOL certificate number"
+
+msgid "Pick-up Date"
+msgstr "Pick-up Date"
+
+msgid "Pick-up date in format %s"
+msgstr "Pick-up date in format %s"
+
+msgid "Return Date"
+msgstr "Return Date"
+
+msgid "Return date in format %"
+msgstr "Return date in format %"
+
+msgid " or "
+msgstr " or "
+
+msgid " change Order Status to Refunded."
+msgstr " change Order Status to Refunded."
+
+msgid "Automated Refund via "
+msgstr "Automated Refund via "
+
+msgid "Refund is pending Approval from the Gateway"
+msgstr "Refund is pending Approval from the Gateway"

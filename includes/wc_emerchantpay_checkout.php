@@ -201,6 +201,8 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		);
 
 		$this->form_fields += $this->build_subscription_form_fields();
+
+		$this->form_fields += $this->build_business_attributes_form_fields();
 	}
 
 	/**
@@ -661,6 +663,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			$this->set_credentials();
 
 			$genesis = $this->prepareInitialGenesisRequest( $data );
+			$genesis = $this->add_business_data_to_gateway_request( $genesis, $order );
 			$this->addTransactionTypesToGatewayRequest( $genesis, $order, $data, $isRecurring );
 
 			$genesis->execute();

@@ -150,7 +150,7 @@ class Types
     const PAYSAFECARD = 'paysafecard';
 
     /**
-     * Supports payments via EPS, SafetyPay, TrustPay, ELV, Przelewy24, QIWI, and GiroPay
+     * Supports payments via EPS, SafetyPay, TrustPay, ELV, Przelewy24, and GiroPay
      */
     const PPRO = 'ppro';
 
@@ -171,6 +171,8 @@ class Types
 
     /**
      * QIWI Wallet is a very popular Eastern European e-wallet.
+     *
+     * @deprecated Payment method is deprecated and will be removed
      */
     const QIWI = 'qiwi';
 
@@ -221,6 +223,8 @@ class Types
     /**
      * Trustly is an oBeP-style alternative payment method that allows you to
      * withdraw money directly from your online bank account using your bank credentials.
+     *
+     * @deprecated Since 1.18.9 Payment method is deprecated and will be removed
      */
     const TRUSTLY_WITHDRAWAL = 'trustly_withdrawal';
 
@@ -408,6 +412,8 @@ class Types
 
     /**
      * Zimpler is a Swedish payment method.
+     *
+     * @deprecated Payment method is deprecated and will be removed
      */
     const ZIMPLER = 'zimpler';
 
@@ -425,6 +431,8 @@ class Types
 
     /**
      * InstantTransfer is a payment method in Germany
+     *
+     * @deprecated Payment method is deprecated and will be removed
      */
     const INSTANT_TRANSFER = 'instant_transfer';
 
@@ -523,6 +531,8 @@ class Types
 
     /**
      * Santander Cash is local card payment in Mexico
+     *
+     * @deprecated Payment method is deprecated and will be removed
      */
     const SANTANDER_CASH = 'santander_cash';
 
@@ -690,6 +700,11 @@ class Types
     const UPI = 'upi';
 
     /**
+     * PostFinance is an online banking provider in Switzerland
+     */
+    const POST_FINANCE = 'post_finance';
+
+    /**
      * Retrieve all available transaction Types
      *
      * @return array
@@ -786,6 +801,7 @@ class Types
             self::ONLINE_BANKING_PAYIN    => 'OnlineBankingPayments\OnlineBanking\Payin',
             self::ONLINE_BANKING_PAYOUT   => 'OnlineBankingPayments\OnlineBanking\Payout',
             self::PAYU                    => 'OnlineBankingPayments\PayU',
+            self::POST_FINANCE            => 'OnlineBankingPayments\PostFinance',
             self::PSE                     => 'OnlineBankingPayments\Pse',
             self::RAPI_PAGO               => 'OnlineBankingPayments\RapiPago',
             self::SAFETYPAY               => 'OnlineBankingPayments\SafetyPay',
@@ -868,7 +884,6 @@ class Types
             self::IDEBIT_PAYIN,
             self::INIT_RECURRING_SALE,
             self::INIT_RECURRING_SALE_3D,
-            self::INSTANT_TRANSFER,
             self::INSTA_DEBIT_PAYIN,
             self::INTERSOLVE,
             self::ITAU,
@@ -887,29 +902,26 @@ class Types
             self::PAYSAFECARD,
             self::PAYU,
             self::POLI,
+            self::POST_FINANCE,
             self::PPRO,
             self::PSE,
-            self::QIWI,
             self::RAPI_PAGO,
             self::REDPAGOS,
             self::SAFETYPAY,
             self::SALE,
             self::SALE_3D,
             self::SANTANDER,
-            self::SANTANDER_CASH,
             self::SDD_INIT_RECURRING_SALE,
             self::SDD_SALE,
             self::SOFORT,
             self::TARJETA_SHOPPING,
             self::TCS,
             self::TRUSTLY_SALE,
-            self::TRUSTLY_WITHDRAWAL,
             self::TRUSTPAY,
             self::UPI,
             self::WEBMONEY,
             self::WEBPAY,
-            self::WECHAT,
-            self::ZIMPLER
+            self::WECHAT
         ];
     }
 
@@ -1015,7 +1027,6 @@ class Types
             self::IDEBIT_PAYIN,
             self::INIT_RECURRING_SALE,
             self::INIT_RECURRING_SALE_3D,
-            self::INSTANT_TRANSFER,
             self::ITAU,
             self::KLARNA_CAPTURE,
             self::MY_BANK,
@@ -1029,7 +1040,7 @@ class Types
             self::PAYU,
             self::PPRO,
             self::PSE,
-            self::QIWI,
+            self::POST_FINANCE,
             self::RAPI_PAGO,
             self::REDPAGOS,
             self::SAFETYPAY,
@@ -1066,7 +1077,9 @@ class Types
             self::INTERSOLVE,
             self::REFUND,
             self::CAPTURE,
-            self::APPLE_PAY
+            self::APPLE_PAY,
+            self::SALE,
+            self::SALE_3D
         ];
 
         return in_array(strtolower($type), $transactionTypesList);
@@ -1209,10 +1222,15 @@ class Types
             self::EMPRESE_DE_ENERGIA,
             self::ENTERCASH,
             self::HIPERCARD,
+            self::INSTANT_TRANSFER,
             self::INPAY,
             self::PAYBYVOUCHER_SALE,
             self::PAYBYVOUCHER_YEEPAY,
-            self::SURTIMAX
+            self::QIWI,
+            self::SANTANDER_CASH,
+            self::SURTIMAX,
+            self::TRUSTLY_WITHDRAWAL,
+            self::ZIMPLER
         ];
 
         foreach ($transactions as $transaction) {

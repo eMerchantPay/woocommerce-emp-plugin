@@ -23,8 +23,6 @@
 
 namespace Genesis\API\Traits\Request\Financial\TravelData;
 
-use Genesis\API\Traits\RestrictedSetter;
-
 /**
  * Trait TravelDataAttributes
  * @package Genesis\API\Traits\Request\Financial\TravelData
@@ -32,7 +30,7 @@ use Genesis\API\Traits\RestrictedSetter;
  */
 trait TravelDataAttributes
 {
-    use RestrictedSetter, AirlineItineraryAttributes, CarRentalAttributes,
+    use AirlineItineraryAttributes, CarRentalAttributes,
         HotelRentalAttributes, ReferenceTicketAttributes;
 
     /**

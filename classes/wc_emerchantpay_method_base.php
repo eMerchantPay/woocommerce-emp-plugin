@@ -50,16 +50,52 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	/**
 	 * Method Setting Keys
 	 */
-	const SETTING_KEY_ENABLED             = 'enabled';
-	const SETTING_KEY_TITLE               = 'title';
-	const SETTING_KEY_DESCRIPTION         = 'description';
-	const SETTING_KEY_TEST_MODE           = 'test_mode';
-	const SETTING_KEY_USERNAME            = 'username';
-	const SETTING_KEY_PASSWORD            = 'password';
-	const SETTING_KEY_ALLOW_CAPTURES      = 'allow_captures';
-	const SETTING_KEY_ALLOW_REFUNDS       = 'allow_refunds';
-	const SETTING_KEY_ALLOW_SUBSCRIPTIONS = 'allow_subscriptions';
-	const SETTING_KEY_RECURRING_TOKEN     = 'recurring_token';
+	const SETTING_KEY_ENABLED                             = 'enabled';
+	const SETTING_KEY_TITLE                               = 'title';
+	const SETTING_KEY_DESCRIPTION                         = 'description';
+	const SETTING_KEY_TEST_MODE                           = 'test_mode';
+	const SETTING_KEY_USERNAME                            = 'username';
+	const SETTING_KEY_PASSWORD                            = 'password';
+	const SETTING_KEY_ALLOW_CAPTURES                      = 'allow_captures';
+	const SETTING_KEY_ALLOW_REFUNDS                       = 'allow_refunds';
+	const SETTING_KEY_ALLOW_SUBSCRIPTIONS                 = 'allow_subscriptions';
+	const SETTING_KEY_RECURRING_TOKEN                     = 'recurring_token';
+	const SETTING_KEY_BUSINESS_ATTRIBUTES_ENABLED         = 'business_attributes_enabled';
+	const SETTING_KEY_BUSINESS_FLIGHT_ARRIVAL_DATE        = 'business_flight_arrival_date';
+	const SETTING_KEY_BUSINESS_FLIGHT_DEPARTURE_DATE      = 'business_flight_departure_date';
+	const SETTING_KEY_BUSINESS_AIRLINE_CODE               = 'business_airline_code';
+	const SETTING_KEY_BUSINESS_AIRLINE_FLIGHT_NUMBER      = 'business_airline_flight_number';
+	const SETTING_KEY_BUSINESS_FLIGHT_TICKET_NUMBER       = 'business_flight_ticket_number';
+	const SETTING_KEY_BUSINESS_FLIGHT_ORIGIN_CITY         = 'business_flight_origin_city';
+	const SETTING_KEY_BUSINESS_FLIGHT_DESTINATION_CITY    = 'business_flight_destination_city';
+	const SETTING_KEY_BUSINESS_AIRLINE_TOUR_OPERATOR_NAME = 'business_airline_tour_operator_name';
+	const SETTING_KEY_BUSINESS_EVENT_START_DATE           = 'business_event_start_date';
+	const SETTING_KEY_BUSINESS_EVENT_END_DATE             = 'business_event_end_date';
+	const SETTING_KEY_BUSINESS_EVENT_ORGANIZER_ID         = 'business_event_organizer_id';
+	const SETTING_KEY_BUSINESS_EVENT_ID                   = 'business_event_id';
+	const SETTING_KEY_BUSINESS_DATE_OF_ORDER              = 'business_date_of_order';
+	const SETTING_KEY_BUSINESS_DELIVERY_DATE              = 'business_delivery_date';
+	const SETTING_KEY_BUSINESS_NAME_OF_THE_SUPPLIER       = 'business_name_of_the_supplier';
+	const SETTING_KEY_BUSINESS_CHECK_IN_DATE              = 'business_check_in_date';
+	const SETTING_KEY_BUSINESS_CHECK_OUT_DATE             = 'business_check_out_date';
+	const SETTING_KEY_BUSINESS_TRAVEL_AGENCY_NAME         = 'business_travel_agency_name';
+	const SETTING_KEY_BUSINESS_VEHICLE_PICK_UP_DATE       = 'business_vehicle_pick_up_date';
+	const SETTING_KEY_BUSINESS_VEHICLE_RETURN_DATE        = 'business_vehicle_return_date';
+	const SETTING_KEY_BUSINESS_SUPPLIER_NAME              = 'business_supplier_name';
+	const SETTING_KEY_BUSINESS_CRUISE_START_DATE          = 'business_cruise_start_date';
+	const SETTING_KEY_BUSINESS_CRUISE_END_DATE            = 'business_cruise_end_date';
+	const SETTING_KEY_BUSINESS_ARRIVAL_DATE               = 'business_arrival_date';
+	const SETTING_KEY_BUSINESS_DEPARTURE_DATE             = 'business_departure_date';
+	const SETTING_KEY_BUSINESS_CARRIER_CODE               = 'business_carrier_code';
+	const SETTING_KEY_BUSINESS_FLIGHT_NUMBER              = 'business_flight_number';
+	const SETTING_KEY_BUSINESS_TICKET_NUMBER              = 'business_ticket_number';
+	const SETTING_KEY_BUSINESS_ORIGIN_CITY                = 'business_origin_city';
+	const SETTING_KEY_BUSINESS_DESTINATION_CITY           = 'business_destination_city';
+	const SETTING_KEY_BUSINESS_TRAVEL_AGENCY              = 'business_travel_agency';
+	const SETTING_KEY_BUSINESS_CONTRACTOR_NAME            = 'business_contractor_name';
+	const SETTING_KEY_BUSINESS_ATOL_CERTIFICATE           = 'business_atol_certificate';
+	const SETTING_KEY_BUSINESS_PICK_UP_DATE               = 'business_pick_up_date';
+	const SETTING_KEY_BUSINESS_RETURN_DATE                = 'business_return_date';
 
 	/**
 	 * A List with the Available WC Order Statuses
@@ -94,10 +130,12 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	const WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_REFUNDED = 'woocommerce_admin_order_totals_after_refunded';
 	const WP_ACTION_ADMIN_NOTICES                     = 'admin_notices';
 	const WP_ACTION_ADMIN_FOOTER                      = 'admin_footer';
+	const WC_ADMIN_ACTION_SETTINGS_START              = 'woocommerce_settings_start';
+	const WC_ADMIN_ACTION_SETTINGS_SAVED              = 'woocommerce_settings_saved';
 
 	const RESPONSE_SUCCESS = 'success';
 
-	const PLATFORM_TRANSACTION_PREFIX = 'wc_';
+	const PLATFORM_TRANSACTION_PREFIX = 'wc-';
 
 	protected static $helpers = array(
 		'WC_emerchantpay_Helper'              => 'wc_emerchantpay_helper',
@@ -197,6 +235,25 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * @return bool
+	 */
+	protected function get_is_woocommerce_admin_settings() {
+		if ( is_admin() && function_exists( 'get_current_screen' ) ) {
+			$screen = get_current_screen();
+
+			return 'woocommerce_page_wc-settings' === $screen->base &&
+			       array_key_exists('section', $_REQUEST) && $this::$method_code === $_REQUEST['section'];
+		}
+
+		if ( is_array( $_REQUEST ) ) {
+			return array_key_exists('page', $_REQUEST) && 'wc-settings' === $_REQUEST['page'] &&
+			       array_key_exists( 'section', $_REQUEST ) && $this::$method_code === $_REQUEST['section'];
+		}
+
+		return false;
+	}
+
+	/**
 	 * Registers Helper Classes for both method classes
 	 *
 	 * @return void
@@ -239,6 +296,34 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				]
 			);
 		}
+
+		if ( $this->get_is_woocommerce_admin_settings() ) {
+			$this->addWPSimpleActions(
+				[
+					self::WC_ADMIN_ACTION_SETTINGS_START,
+					self::WC_ADMIN_ACTION_SETTINGS_SAVED,
+				],
+				[
+					'enqueue_woocommerce_payment_settings_assets',
+					'enqueue_woocommerce_payment_settings_assets',
+				]
+			);
+		}
+	}
+
+	/**
+	 * Inject the WooCommerce Settings Custom JS files
+	 */
+	public function enqueue_woocommerce_payment_settings_assets() {
+		wp_enqueue_script(
+			'business-attributes',
+			plugins_url(
+				'assets/javascript/payment_settings_business_attributes.js',
+				plugin_dir_path( __FILE__ )
+			),
+			array(),
+			'0.0.1'
+		);
 	}
 
 	/**
@@ -1740,7 +1825,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 					break;
 				}
 
-				$this->update_order_status_refunded( $order, $gateway_response_object );
+				self::update_order_status_refunded( $order, $gateway_response_object );
 				break;
 			case \Genesis\API\Constants\Transaction\States::TIMEOUT:
 				$this->update_order_status_cancelled(
@@ -1786,27 +1871,37 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 * @param WC_Order                $order
 	 * @param $gateway_response_object
 	 */
-	protected function update_order_status_refunded( WC_Order $order, $gateway_response_object ) {
-		$fully_refunded        = false;
-		$total_order_amount    = $order->get_total();
-		$payment_transactions  = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction(
+	protected static function update_order_status_refunded( WC_Order $order, $gateway_response_object ) {
+		$is_initial_refund         = wc_format_decimal( 0 ) === wc_format_decimal( $order->get_total_refunded() );
+		$gateway_technical_message = isset( $gateway_response_object->technical_message ) ?
+			' (' . $gateway_response_object->technical_message . ')' : '';
+		$fully_refunded            = false;
+		$total_order_amount        = $order->get_total();
+		$payment_transactions      = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction(
 			$gateway_response_object
 		);
 
-		switch ( $this->id ) {
+		switch ( $order->get_payment_method() ) {
 			case WC_emerchantpay_Checkout::get_method_code():
 				if ( $payment_transactions instanceof ArrayObject && $payment_transactions->count() > 1 ) {
 					$refund_sum = WC_emerchantpay_Genesis_Helper::get_total_refund_from_wpf_reconcile(
 						$gateway_response_object
 					);
 
-					$fully_refunded = ( $total_order_amount <= $refund_sum ) ?: false;
+					$fully_refunded = ( (float) $total_order_amount === (float) $refund_sum ) ?: false;
 
 					break;
 				}
 
 				if ( $payment_transactions instanceof stdClass ) {
-					$fully_refunded = ( $total_order_amount <= $payment_transactions->amount ) ?: false;
+					$total_refunded_amount = WC_emerchantpay_Transactions_Tree::get_total_amount_without_unique_id(
+						$payment_transactions->unique_id,
+						WC_emerchantpay_Transactions_Tree::getTransactionsListFromOrder( $order ),
+						\Genesis\API\Constants\Transaction\Types::REFUND
+					);
+
+					$total_refund_amount = $total_refunded_amount + $payment_transactions->amount;
+					$fully_refunded = ( (float) $total_order_amount === (float) $total_refund_amount ) ?: false;
 				}
 
 				break;
@@ -1818,27 +1913,78 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				);
 
 				$total_refund_amount = $total_refunded_amount + $payment_transactions->amount;
-				$fully_refunded      = ($total_order_amount <= $total_refund_amount) ?: false;
+				$fully_refunded      = ( (float) $total_order_amount === (float) $total_refund_amount) ?: false;
 
 				break;
 		}
 
-		$order->add_order_note(
-			static::getTranslatedText(
-				sprintf(
-					'Payment transaction has been %s refunded!',
-					( $fully_refunded ) ? 'fully' : 'partial'
+		if ( ! $fully_refunded || ! $is_initial_refund ) {
+			$order->add_order_note(
+				static::getTranslatedText(
+					sprintf(
+						'Payment transaction has been %s refunded!',
+						( $fully_refunded ) ? 'fully' : 'partially'
+					)
 				)
-			)
-		);
-
-		if ( $fully_refunded ) {
-			$order->update_status(
-				self::ORDER_STATUS_REFUNDED,
-				! isset( $gateway_response_object->technical_message ) ?
-					$gateway_response_object->technical_message : 'Refunded upon Notification received'
 			);
 		}
+
+		if ( $fully_refunded && ! $is_initial_refund ) {
+			// Do not restock items
+			// Order Status Update only
+			$order->update_status(
+				self::ORDER_STATUS_REFUNDED,
+				$order->get_payment_method() .
+				static::getTranslatedText( ' change Order Status to Refund.' ) . $gateway_technical_message
+			);
+		}
+
+		// Only for Fully Initial Refunds
+		// Create Order Refund + Items Restock
+		if ( $fully_refunded && $is_initial_refund ) {
+			try {
+				// Prepare the Items for restock
+				$line_items = array();
+				$items      = $order->get_items();
+
+				/**
+				 * @var integer $item_id
+				 * @var WC_Order_Item_Product $item
+				 */
+				foreach ( $items as $item_id => $item ) {
+					$line_items[ $item_id ] = array(
+						'qty'          => $item->get_quantity(),
+						'refund_total' => $item->get_total(),
+						'refund_tax'   => $item->get_taxes()['total'],
+					);
+				}
+
+				wc_create_refund(
+					array(
+						'amount'         => $total_order_amount,
+						'reason'         =>
+							static::getTranslatedText( 'Automated Refund via ' ) . $order->get_payment_method(),
+						'order_id'       => $order->get_id(),
+						'line_items'     => $line_items,
+						'refund_payment' => false,
+						'restock_items'  => true,
+					)
+				);
+
+				$order->add_order_note(
+					static::getTranslatedText( 'Payment transaction has been fully refunded!' )
+				);
+			} catch ( Exception $e ) {
+				// Ignore the Error
+				WC_emerchantpay_Helper::logException( $e );
+
+				$order->update_status(
+					self::ORDER_STATUS_REFUNDED,
+					$order->get_payment_method() .
+					static::getTranslatedText( ' change Order Status to Refunded.' ) . $gateway_technical_message
+				);
+			} // End try().
+		} // End if().
 	}
 
 	/**
@@ -2009,7 +2155,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		$reason   = sanitize_text_field( $_POST['reason'] );
 		$trx_id   = sanitize_text_field( $_POST['trx_id'] );
 
-		$result = static::do_refund( $order_id, $amount, $reason, $trx_id );
+		$result = static::do_refund( $order_id, $amount, $reason, $trx_id, true );
 
 		if ( $result instanceof \WP_Error ) {
 			wp_send_json_error(
@@ -2042,13 +2188,22 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	/**
 	 * Process Refund transaction
 	 *
-	 * @param int    $order_id
-	 * @param null   $amount
+	 * @param int $order_id
+	 * @param null $amount
 	 * @param string $reason
+	 *
+	 * @param string $transaction_id
+	 * @param bool $order_refund
 	 *
 	 * @return bool|\WP_Error
 	 */
-	public static function do_refund( $order_id, $amount = null, $reason = '', $transaction_id = '' ) {
+	public static function do_refund(
+		$order_id,
+		$amount = null,
+		$reason = '',
+		$transaction_id = '',
+		$order_refund = false
+	) {
 		try {
 			$order = WC_emerchantpay_Order_Helper::getOrderById( $order_id );
 			if ( ! $order || ! $order->get_transaction_id() ) {
@@ -2157,19 +2312,30 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 			WC_emerchantpay_Order_Helper::saveTrxListToOrder( $order, [ $response ] );
 
-			if ( $response->status != \Genesis\API\Constants\Transaction\States::APPROVED ) {
-				return WC_emerchantpay_Helper::getWPError( $response->technical_message );
-			}
+			switch ( $response->status ) {
+				case  \Genesis\API\Constants\Transaction\States::APPROVED:
 
-			if ( $refundableAmount - $response->amount == 0 ) {
-				$order->update_status(
-					self::ORDER_STATUS_REFUNDED,
-					$response->technical_message
-				);
+					if ( $order_refund && 0 == $refundableAmount - $response->amount ) {
+						self::update_order_status_refunded( $order, $response );
+					}
+
+					$comment = static::getTranslatedText( 'Refund completed!' );
+
+					break;
+				case  \Genesis\API\Constants\Transaction\States::PENDING_ASYNC:
+
+					$comment = static::getTranslatedText( 'Refund is pending Approval from the Gateway' );
+
+					break;
+				default:
+					return WC_emerchantpay_Helper::getWPError(
+						isset( $response->technical_message ) ?
+							$response->technical_message : static::getTranslatedText( 'Unknown Error' )
+					);
 			}
 
 			$order->add_order_note(
-				static::getTranslatedText( 'Refund completed!' ) . PHP_EOL . PHP_EOL .
+				$comment . PHP_EOL . PHP_EOL .
 				static::getTranslatedText( 'Id: ' ) . $response->unique_id . PHP_EOL .
 				static::getTranslatedText( 'Refunded amount:' ) . $response->amount . PHP_EOL
 			);
@@ -2179,6 +2345,13 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			 */
 			if ( WC_emerchantpay_Subscription_Helper::hasOrderSubscriptions( $order_id ) ) {
 				$payment_gateway->cancelOrderSubscriptions( $order );
+			}
+
+			if ( \Genesis\API\Constants\Transaction\States::PENDING_ASYNC === $response->status ) {
+				// Stop execution of the Refund
+				return WC_emerchantpay_Helper::getWPError(
+					static::getTranslatedText( 'Refund is pending for Approval from the Gateway' )
+				);
 			}
 
 			return $response;
@@ -2501,6 +2674,612 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	*/
 	public static function get_method_code() {
 		return static::$method_code;
+	}
+
+	/**
+	 * Get the the Business Attributes form fields
+	 *
+	 * @return array
+	 */
+	protected function build_business_attributes_form_fields() {
+		$custom_attributes = $this->get_products_custom_attributes();
+
+		return array(
+			'business_attributes' => array(
+				'type'        => 'title',
+				'title'       => static::getTranslatedText( 'Business Attributes' ),
+				'description' =>
+					sprintf(
+						static::getTranslatedText(
+							'Choose and map your Product Custom attribute to a specific Business Attribute. ' .
+							'The mapped Product attribute value will be attached to the Genesis Transaction Request. ' .
+							'For more information %sget in touch%s with our support.'
+						),
+						'<a href="mailto:tech-support@emerchantpay.com">',
+						'</a>'
+					),
+			),
+			self::SETTING_KEY_BUSINESS_ATTRIBUTES_ENABLED => array(
+				'type'        => 'checkbox',
+				'title'       => static::getTranslatedText( 'Enabled?' ),
+				'label'       => static::getTranslatedText( 'Enable/Disable the Business Attributes mappings' ),
+				'description' => static::getTranslatedText(
+					'Selecting this will enable the usage of the Business attributes in the Genesis Request.'
+				),
+				'desc_tip'    => true,
+				'default'     => self::SETTING_VALUE_NO,
+			),
+			'business_flight_attributes' => array(
+				'type'        => 'title',
+				'title'       => static::getTranslatedText( 'Airlines Air Carriers' ),
+			),
+			self::SETTING_KEY_BUSINESS_FLIGHT_ARRIVAL_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Flight Arrival Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date when the flight departs in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_FLIGHT_DEPARTURE_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Flight Departure Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date when the flight arrives in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_AIRLINE_CODE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Airline Code' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The code of Airline' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_AIRLINE_FLIGHT_NUMBER => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'AIRLINE Flight Number' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The flight number' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_FLIGHT_TICKET_NUMBER => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Airline Ticket Number' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The number of the flight ticket' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_FLIGHT_ORIGIN_CITY => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Airline Origin City' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The origin city of the flight' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_FLIGHT_DESTINATION_CITY => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Airline Destination City' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The destination city of the flight' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_AIRLINE_TOUR_OPERATOR_NAME => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Airline Tour Operator Name' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The name of tour operator' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			'business_event_attributes' => array(
+				'type'        => 'title',
+				'title'       => static::getTranslatedText( 'Event Management' ),
+			),
+			self::SETTING_KEY_BUSINESS_EVENT_START_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Event Start Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date when event starts in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_EVENT_END_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Event End Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date when event ends in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_EVENT_ORGANIZER_ID => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Event Organizer Id' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'Event Organizer Id' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_EVENT_ID => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Event Id' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'Event Id' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			'business_furniture_attributes' => array(
+				'type'        => 'title',
+				'title'       => static::getTranslatedText( 'Furniture' ),
+			),
+			self::SETTING_KEY_BUSINESS_DATE_OF_ORDER => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Date of Order' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date when order was placed in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_DELIVERY_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Delivery Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'Date of the expected delivery in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_NAME_OF_THE_SUPPLIER => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Name Of Supplier' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'Name of supplier' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			'business_hotel_and_estates_rentals_attributes' => array(
+				'type'        => 'title',
+				'title'       => static::getTranslatedText( 'Hotels and Real estate rentals' ),
+			),
+			self::SETTING_KEY_BUSINESS_CHECK_IN_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Check-In Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The data when the customer check-in in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_CHECK_OUT_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Check-Out Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The data when the customer check-out in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_TRAVEL_AGENCY_NAME => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Travel Agency Name' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'Travel Agency Name' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			'business_car_boat_plane_rentals_attributes' => array(
+				'type'        => 'title',
+				'title'       => static::getTranslatedText( 'Car, Plane and Boat Rentals' ),
+			),
+			self::SETTING_KEY_BUSINESS_VEHICLE_PICK_UP_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Pick-Up Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date when customer takes the vehicle in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_VEHICLE_RETURN_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Vehicle Return Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText(
+						'The date when the customer returns the vehicle back in format %s'
+					),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_SUPPLIER_NAME => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Supplier Name' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'Supplier Name' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			'business_cruise_attributes' => array(
+				'type'        => 'title',
+				'title'       => static::getTranslatedText( 'Cruise Lines' ),
+			),
+			self::SETTING_KEY_BUSINESS_CRUISE_START_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Start Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date when cruise begins in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_CRUISE_END_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'End Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date when cruise ends in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			'business_travel_attributes' => array(
+				'type'        => 'title',
+				'title'       => static::getTranslatedText( 'Travel Agencies' ),
+			),
+			self::SETTING_KEY_BUSINESS_ARRIVAL_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Arrival Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date of arrival in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_DEPARTURE_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Departure Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'The date of departure in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_CARRIER_CODE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Carrier Code' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The code of the carrier' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_FLIGHT_NUMBER => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Flight Number' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The number of the flight' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_TICKET_NUMBER => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Ticket Number' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The number of the ticket' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_ORIGIN_CITY => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Origin City' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The origin city' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_DESTINATION_CITY => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Destination City' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The destination city' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_TRAVEL_AGENCY => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Travel Agency' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The name of the travel agency' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_CONTRACTOR_NAME => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Contractor Name' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'The name of the contractor' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_ATOL_CERTIFICATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'ATOL Certificate' ),
+				'options'     => $custom_attributes,
+				'description' => static::getTranslatedText( 'ATOL certificate number' ),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_PICK_UP_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Pick-up Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'Pick-up date in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+			self::SETTING_KEY_BUSINESS_RETURN_DATE => array(
+				'type'        => 'select',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Return Date' ),
+				'options'     => $custom_attributes,
+				'description' => sprintf(
+					static::getTranslatedText( 'Return date in format %s' ),
+					implode(
+						static::getTranslatedText( ' or ' ),
+						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+					)
+				),
+				'desc_tip'    => true,
+				'default'     => 'no_mapping_attribute',
+			),
+		);
+	}
+
+	/**
+	 * Get list with all Product Custom Attributes
+	 *
+	 * @return array
+	 */
+	protected function get_products_custom_attributes() {
+		$data     = array(
+			'no_mapping_attribute' => '--',
+		);
+		$products = wc_get_products( array() );
+
+		if ( ! $products ) {
+			return $data;
+		}
+
+		/** @var WC_Product $product */
+		foreach ( $products as $product ) {
+			$attributes = $product->get_attributes();
+
+			/** @var WC_Product_Attribute $attribute */
+			foreach ( $attributes as $key => $attribute ) {
+				$data[ $key ] = $attribute->get_name();
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Get Business Attributes Settings Keys
+	 *
+	 * @return array
+	 */
+	protected function get_business_attributes_setting_keys() {
+		return [
+			self::SETTING_KEY_BUSINESS_FLIGHT_ARRIVAL_DATE,
+			self::SETTING_KEY_BUSINESS_FLIGHT_DEPARTURE_DATE,
+			self::SETTING_KEY_BUSINESS_AIRLINE_CODE,
+			self::SETTING_KEY_BUSINESS_AIRLINE_FLIGHT_NUMBER,
+			self::SETTING_KEY_BUSINESS_FLIGHT_TICKET_NUMBER,
+			self::SETTING_KEY_BUSINESS_FLIGHT_ORIGIN_CITY,
+			self::SETTING_KEY_BUSINESS_FLIGHT_DESTINATION_CITY,
+			self::SETTING_KEY_BUSINESS_AIRLINE_TOUR_OPERATOR_NAME,
+			self::SETTING_KEY_BUSINESS_EVENT_START_DATE,
+			self::SETTING_KEY_BUSINESS_EVENT_END_DATE,
+			self::SETTING_KEY_BUSINESS_EVENT_ORGANIZER_ID,
+			self::SETTING_KEY_BUSINESS_EVENT_ID,
+			self::SETTING_KEY_BUSINESS_DATE_OF_ORDER,
+			self::SETTING_KEY_BUSINESS_DELIVERY_DATE,
+			self::SETTING_KEY_BUSINESS_NAME_OF_THE_SUPPLIER,
+			self::SETTING_KEY_BUSINESS_CHECK_IN_DATE,
+			self::SETTING_KEY_BUSINESS_CHECK_OUT_DATE,
+			self::SETTING_KEY_BUSINESS_TRAVEL_AGENCY_NAME,
+			self::SETTING_KEY_BUSINESS_VEHICLE_PICK_UP_DATE,
+			self::SETTING_KEY_BUSINESS_VEHICLE_RETURN_DATE,
+			self::SETTING_KEY_BUSINESS_SUPPLIER_NAME,
+			self::SETTING_KEY_BUSINESS_CRUISE_START_DATE,
+			self::SETTING_KEY_BUSINESS_CRUISE_END_DATE,
+			self::SETTING_KEY_BUSINESS_ARRIVAL_DATE,
+			self::SETTING_KEY_BUSINESS_DEPARTURE_DATE,
+			self::SETTING_KEY_BUSINESS_CARRIER_CODE,
+			self::SETTING_KEY_BUSINESS_FLIGHT_NUMBER,
+			self::SETTING_KEY_BUSINESS_TICKET_NUMBER,
+			self::SETTING_KEY_BUSINESS_ORIGIN_CITY,
+			self::SETTING_KEY_BUSINESS_DESTINATION_CITY,
+			self::SETTING_KEY_BUSINESS_TRAVEL_AGENCY,
+			self::SETTING_KEY_BUSINESS_CONTRACTOR_NAME,
+			self::SETTING_KEY_BUSINESS_ATOL_CERTIFICATE,
+			self::SETTING_KEY_BUSINESS_PICK_UP_DATE,
+			self::SETTING_KEY_BUSINESS_RETURN_DATE,
+		];
+	}
+
+	/**
+	 * Get the configured Business Attributes mappings
+	 *
+	 * @return array
+	 */
+	protected function get_business_attributes_mapping() {
+		$data = array();
+
+		foreach ( $this->get_business_attributes_setting_keys() as $key ) {
+			$custom_attribute = $this->getMethodSetting( $key );
+
+			if ( 'no_mapping_attribute' !== $custom_attribute ) {
+				$data[ $key ] = $this->getMethodSetting( $key );
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * @param Genesis\Genesis $genesis
+	 * @param WC_Order $order
+	 *
+	 * @return mixed
+	 */
+	protected function add_business_data_to_gateway_request( $genesis, $order ) {
+		$business_attributes_enabled = filter_var(
+			$this->getMethodSetting( self::SETTING_KEY_BUSINESS_ATTRIBUTES_ENABLED ),
+			FILTER_VALIDATE_BOOLEAN
+		);
+
+		if ( ! $business_attributes_enabled ) {
+			return $genesis;
+		}
+
+		$mappings = $this->get_business_attributes_mapping();
+
+		/** @var WC_Order_Item_Product $item */
+		foreach ( $order->get_items() as $item ) {
+			/** @var WC_Product $product */
+			$product = $item->get_product();
+
+			foreach ( $mappings as $genesis_attribute => $product_custom_attribute ) {
+				/** @var WC_Product_Attribute $attribute */
+				$attribute = $product->get_attribute( $product_custom_attribute );
+
+				if ( $attribute ) {
+					$genesis->request()
+					        ->{'set' . \Genesis\Utils\Common::snakeCaseToCamelCase( $genesis_attribute )}( $attribute );
+				}
+			}
+		}
+
+		return $genesis;
 	}
 }
 

@@ -6,9 +6,9 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.11.8
+ * Version: 1.11.9
  * WC requires at least: 3.0.0
- * WC tested up to: 4.3.1
+ * WC tested up to: 5.1.0
  * License: GPL-2.0
  * License URI: http://opensource.org/licenses/gpl-2.0.php
 */

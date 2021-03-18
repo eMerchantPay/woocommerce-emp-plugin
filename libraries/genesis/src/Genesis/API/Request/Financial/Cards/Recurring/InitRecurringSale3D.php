@@ -26,18 +26,20 @@ namespace Genesis\API\Request\Financial\Cards\Recurring;
 use Genesis\API\Constants\Transaction\Parameters\MpiProtocolVersions;
 use Genesis\API\Constants\Transaction\Parameters\ScaExemptions;
 use Genesis\API\Traits\Request\DocumentAttributes;
+use Genesis\API\Traits\Request\Financial\Business\BusinessAttributes;
 use Genesis\API\Traits\Request\Financial\FxRateAttributes;
 use Genesis\API\Traits\Request\Financial\ScaAttributes;
+use Genesis\API\Traits\Request\Financial\Threeds\V2\AllAttributes as AllThreedsV2Attributes;
 use Genesis\API\Traits\Request\MotoAttributes;
 use Genesis\API\Traits\Request\Financial\NotificationAttributes;
 use Genesis\API\Traits\Request\Financial\AsyncAttributes;
-use Genesis\API\Traits\Request\Financial\PaymentAttributes;
-use Genesis\API\Traits\Request\CreditCardAttributes;
 use Genesis\API\Traits\Request\AddressInfoAttributes;
 use Genesis\API\Traits\Request\Financial\MpiAttributes;
 use Genesis\API\Traits\Request\RiskAttributes;
 use Genesis\API\Traits\Request\Financial\DescriptorAttributes;
 use Genesis\API\Traits\Request\Financial\TravelData\TravelDataAttributes;
+use Genesis\API\Traits\RestrictedSetter;
+use Genesis\Utils\Common;
 
 /**
  * Class InitRecurringSale3D
@@ -45,13 +47,15 @@ use Genesis\API\Traits\Request\Financial\TravelData\TravelDataAttributes;
  * InitRecurringSale 3D Request
  *
  * @package Genesis\API\Request\Financial\Cards\Recurring
+ *
+ * @SuppressWarnings(PHPMD.LongVariable)
  */
-class InitRecurringSale3D extends \Genesis\API\Request\Base\Financial
+class InitRecurringSale3D extends \Genesis\API\Request\Base\Financial\Cards\CreditCard
 {
     use MotoAttributes, NotificationAttributes, AsyncAttributes,
-        PaymentAttributes, CreditCardAttributes, AddressInfoAttributes,
-        MpiAttributes, RiskAttributes, DescriptorAttributes, DocumentAttributes,
-        TravelDataAttributes, ScaAttributes, FxRateAttributes;
+        AddressInfoAttributes, MpiAttributes, RiskAttributes,
+        DescriptorAttributes, DocumentAttributes, TravelDataAttributes,
+        ScaAttributes, FxRateAttributes, BusinessAttributes, RestrictedSetter, AllThreedsV2Attributes;
 
     /**
      * Returns the Request transaction type
@@ -69,35 +73,17 @@ class InitRecurringSale3D extends \Genesis\API\Request\Base\Financial
      */
     protected function setRequiredFields()
     {
-        $requiredFields = [
-            'transaction_id',
-            'amount',
-            'currency',
-            'card_holder',
-            'card_number',
-            'expiration_month',
-            'expiration_year'
-        ];
-
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
-
-        $requiredFieldValues = array_merge(
-            [
-                'currency' => \Genesis\Utils\Currency::getList()
-            ],
-            $this->getCCFieldValueFormatValidators()
-        );
-
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        parent::setRequiredFields();
 
         $requiredFieldsConditional = array_merge(
             [
                 'notification_url'   => ['return_success_url', 'return_failure_url'],
                 'return_success_url' => ['notification_url', 'return_failure_url'],
-                'return_failure_url' => ['notification_url', 'return_success_url'],
+                'return_failure_url' => ['notification_url', 'return_success_url']
             ],
             $this->requiredMpiFieldsConditional(),
-            $this->requiredScaFieldConditional()
+            $this->requiredTokenizationFieldsConditional(),
+            $this->requiredThreedsV2DeviceTypeConditional()
         );
 
         $this->requiredFieldsConditional = \Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
@@ -111,35 +97,47 @@ class InitRecurringSale3D extends \Genesis\API\Request\Base\Financial
     }
 
     /**
+     * Inject the requiredFieldsValuesConditional Validations
+     *
+     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidClassMethod
+     */
+    protected function checkRequirements()
+    {
+        $requiredFieldsValuesConditional = $this->getThreedsV2FieldValuesValidations();
+
+        $this->requiredFieldValuesConditional = Common::createArrayObject($requiredFieldsValuesConditional);
+
+        parent::checkRequirements();
+    }
+
+    /**
      * Return additional request attributes
      * @return array
      */
-    protected function getPaymentTransactionStructure()
+    protected function getTransactionAttributes()
     {
-        return [
-            'moto'                      => $this->moto,
-            'notification_url'          => $this->notification_url,
-            'return_success_url'        => $this->return_success_url,
-            'return_failure_url'        => $this->return_failure_url,
-            'amount'                    => $this->transformAmount($this->amount, $this->currency),
-            'currency'                  => $this->currency,
-            'card_holder'               => $this->card_holder,
-            'card_number'               => $this->card_number,
-            'cvv'                       => $this->cvv,
-            'expiration_month'          => $this->expiration_month,
-            'expiration_year'           => $this->expiration_year,
-            'customer_email'            => $this->customer_email,
-            'customer_phone'            => $this->customer_phone,
-            'document_id'               => $this->document_id,
-            'birth_date'                => $this->birth_date,
-            'billing_address'           => $this->getBillingAddressParamsStructure(),
-            'shipping_address'          => $this->getShippingAddressParamsStructure(),
-            'mpi_params'                => $this->getMpiParamsStructure(),
-            'risk_params'               => $this->getRiskParamsStructure(),
-            'dynamic_descriptor_params' => $this->getDynamicDescriptorParamsStructure(),
-            'travel'                    => $this->getTravelData(),
-            'sca_params'                => $this->getScaParamsStructure(),
-            'fx_rate_id'                => $this->fx_rate_id
-        ];
+        return array_merge(
+            [
+                'moto'                      => $this->moto,
+                'notification_url'          => $this->notification_url,
+                'return_success_url'        => $this->return_success_url,
+                'return_failure_url'        => $this->return_failure_url,
+                'customer_email'            => $this->customer_email,
+                'customer_phone'            => $this->customer_phone,
+                'document_id'               => $this->document_id,
+                'billing_address'           => $this->getBillingAddressParamsStructure(),
+                'shipping_address'          => $this->getShippingAddressParamsStructure(),
+                'mpi_params'                => $this->getMpiParamsStructure(),
+                'risk_params'               => $this->getRiskParamsStructure(),
+                'dynamic_descriptor_params' => $this->getDynamicDescriptorParamsStructure(),
+                'travel'                    => $this->getTravelData(),
+                'fx_rate_id'                => $this->fx_rate_id,
+                'business_attributes'       => $this->getBusinessAttributesStructure(),
+                'threeds_v2_params'         => $this->getThreedsV2ParamsStructure()
+            ],
+            $this->getScaAttributesStructure()
+        );
     }
 }
