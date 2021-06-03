@@ -284,11 +284,18 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			\Genesis\API\Constants\i18n::HR => 'Croatian',
 			\Genesis\API\Constants\i18n::SL => 'Slovenian',
 			\Genesis\API\Constants\i18n::FI => 'Finnish',
+			\Genesis\API\Constants\i18n::NO => 'Norwegian',
+			\Genesis\API\Constants\i18n::DA => 'Danish',
+			\Genesis\API\Constants\i18n::SV => 'Swedish',
 		];
 
 		foreach ( \Genesis\API\Constants\i18n::getAll() as $language ) {
-			$data[ $language ] = self::getTranslatedText( $names[ $language ] );
+			$name = array_key_exists( $language, $names ) ? $names[ $language ] : strtoupper( $language );
+
+			$data[ $language ] = self::getTranslatedText( $name );
 		}
+
+		asort( $data );
 
 		return $data;
 	}

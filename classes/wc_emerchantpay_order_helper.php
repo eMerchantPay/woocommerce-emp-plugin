@@ -346,9 +346,9 @@ class WC_emerchantpay_Order_Helper {
 	 */
 	public static function getOrderProp( $order, $prop ) {
 		return is_array( $order ) ?
-			$order[ $prop ] : method_exists( $order, "get_$prop" ) ?
+			$order[ $prop ] : ( method_exists( $order, "get_$prop" ) ?
 				$order->{"get_$prop"}() :
-				$order->{$prop};
+				$order->{$prop} );
 	}
 
 	/**
