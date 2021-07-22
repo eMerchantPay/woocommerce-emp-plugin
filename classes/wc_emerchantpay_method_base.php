@@ -227,7 +227,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		if ( is_admin() && function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
 
-			return 'woocommerce' === $screen->parent_base &&
+			return null !== $screen && 'woocommerce' === $screen->parent_base &&
 				   'shop_order' === $screen->id;
 		}
 
@@ -241,7 +241,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		if ( is_admin() && function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
 
-			return 'woocommerce_page_wc-settings' === $screen->base &&
+			return null !== $screen && 'woocommerce_page_wc-settings' === $screen->base &&
 			       array_key_exists('section', $_REQUEST) && $this::$method_code === $_REQUEST['section'];
 		}
 
@@ -609,7 +609,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				WC_emerchantpay_Helper::printWpNotice(
 					static::getTranslatedText(
 						'Subscriptions notices:<br />
-                        - Only subscription products with setup sign-up fee can be processed by this method<br />
                         - Subscription orders can have only a single subscription product and no other products'
 					),
 					WC_emerchantpay_Helper::WP_NOTICE_TYPE_NOTICE
@@ -848,77 +847,29 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 	/**
 	 * @param WC_Order  $order
-	 * @param \stdClass $gatewayResponse
-	 * @param bool      $displayNotice
+	 * @param \stdClass $gateway_response
+	 *
 	 * @return bool
 	 */
-	protected function process_after_init_recurring_payment( $order, $gatewayResponse, $displayNotice = true ) {
-		if ( WC_emerchantpay_Subscription_Helper::isInitRecurringOrderFinished( $order->id ) ) {
+	protected function process_after_init_recurring_payment( $order, $gateway_response ) {
+		if ( WC_emerchantpay_Subscription_Helper::isInitRecurringOrderFinished( $order->get_id() ) ) {
 			return false;
 		}
 
-		if ( ! $gatewayResponse instanceof \stdClass ) {
+		if ( ! $gateway_response instanceof \stdClass ) {
 			return false;
 		}
 
-		$paymentTransactionResponse = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction( $gatewayResponse );
+		$payment_transaction_response = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction( $gateway_response );
 
-		$paymentTxnStatus = WC_emerchantpay_Genesis_Helper::getGatewayStatusInstance( $paymentTransactionResponse );
+		$paymentTxnStatus = WC_emerchantpay_Genesis_Helper::getGatewayStatusInstance( $payment_transaction_response );
 
 		if ( ! $paymentTxnStatus->isApproved() ) {
 			return false;
 		}
 
-		WC_emerchantpay_Subscription_Helper::saveInitRecurringResponseToOrderSubscriptions( $order->id, $paymentTransactionResponse );
-
-		$recurringSaleAmount   = WC_emerchantpay_Subscription_Helper::getOrderSubscriptionInitialPayment( $order );
-		$recurringSaleResponse = null;
-
-		if ( $recurringSaleAmount === null ) {
-			/**
-			 * We are still in the trial period -> no need for Recurring Sale
-			 */
-			return true;
-		}
-
-		$recurringSaleResponse = $this->process_subscription_payment( $order, $recurringSaleAmount );
-
-		if ( is_wp_error( $recurringSaleResponse ) ) {
-			$errorMessage = $recurringSaleResponse->get_error_message();
-
-			$order->add_order_note( "Recurring Order has failed: $errorMessage" );
-			$order->update_status( self::ORDER_STATUS_FAILED, $errorMessage );
-
-			if ( $displayNotice ) {
-				WC_emerchantpay_Message_Helper::addErrorNotice( $errorMessage );
-			}
-
-			return false;
-		}
-
-		$recurringSaleSuccessful = WC_emerchantpay_Subscription_Helper::isInitGatewayResponseSuccessful( $recurringSaleResponse );
-
-		$order->add_order_note(
-			static::getTranslatedText(
-				"Recurring Sale Transaction has been {$recurringSaleResponse->status}!"
-			)
-			. PHP_EOL . PHP_EOL .
-			static::getTranslatedText( 'Id:' ) . ' ' . $recurringSaleResponse->unique_id
-			. PHP_EOL . PHP_EOL .
-			static::getTranslatedText( 'Total:' ) . ' ' . $recurringSaleResponse->amount . ' ' . $recurringSaleResponse->currency
-		);
-
-		if ( ! $recurringSaleSuccessful ) {
-			if ( $displayNotice ) {
-				WC_emerchantpay_Message_Helper::addErrorNotice( $recurringSaleResponse->message );
-			}
-
-			$order->update_status( self::ORDER_STATUS_FAILED, $recurringSaleResponse->technical_message );
-
-			return false;
-		}
-
-		WC_emerchantpay_Subscription_Helper::setInitRecurringOrderFinished( $order->id );
+		WC_emerchantpay_Subscription_Helper::saveInitRecurringResponseToOrderSubscriptions( $order->get_id(), $payment_transaction_response );
+		WC_emerchantpay_Subscription_Helper::setInitRecurringOrderFinished( $order->get_id() );
 
 		return true;
 	}
@@ -994,7 +945,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						$reason
 					)
 					->setRemoteIp(
-						WC_emerchantpay_Helper::getClientRemoteIpAddress()
+						WC_emerchantpay_Helper::get_client_remote_ip_address()
 					)
 					->setReferenceId(
 						$data['trx_id']
@@ -1201,7 +1152,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						$void_reason
 					)
 					->setRemoteIp(
-						WC_emerchantpay_Helper::getClientRemoteIpAddress()
+						WC_emerchantpay_Helper::get_client_remote_ip_address()
 					)
 					->setReferenceId(
 						$void_trx_id
@@ -1268,7 +1219,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	public function displayAdminOrderAfterTotals( $order_id ) {
 		$order = WC_emerchantpay_Order_Helper::getOrderById( $order_id );
 
-		if ( $order->payment_method != $this->id ) {
+		if ( $order->get_payment_method() != $this->id ) {
 			return;
 		}
 
@@ -1615,7 +1566,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	protected function process_init_recurring_reconciliation( $order, $reconcile ) {
-		return $this->process_after_init_recurring_payment( $order, $reconcile, false );
+		return $this->process_after_init_recurring_payment( $order, $reconcile );
 	}
 
 	/**
@@ -1632,7 +1583,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		}
 
 		$data = array(
-			'transaction_id'     => static::generateTransactionId( $order->id ),
+			'transaction_id'     => static::generateTransactionId( $order->get_id() ),
 			'amount'             => $this->getAmount( $order, $isRecurring ),
 			'currency'           => $order->get_currency(),
 			'usage'              => WC_emerchantpay_Genesis_Helper::getPaymentTransactionUsage( false ),
@@ -1718,10 +1669,17 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	protected function getAmount( $order, $isRecurring ) {
 		if ( $isRecurring ) {
 			$amount = WC_emerchantpay_Subscription_Helper::getOrderSubscriptionSignUpFee( $order );
-			if ( ! is_null( $amount ) ) {
+
+			if ( ! is_numeric( $amount ) ) {
+				throw new \Exception(
+					'Cannot process subscription orders with invalid non numeric sign-up fee'
+				);
+			}
+
+			// Return the Sign-Up Fee for the Initial Payment only if we have Free Trial
+			if ( WC_emerchantpay_Subscription_Helper::has_subscription_product_with_free_trial( $order ) ) {
 				return $amount;
 			}
-			throw new \Exception( 'Cannot process subscription orders without sign-up fee.' );
 		}
 		return $this->get_order_total();
 	}
@@ -1796,7 +1754,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 					$raw_trx_list
 				);
 
-				if ( Types::isRefund( $gateway_response_object->transaction_type ) ) {
+				if ( isset( $gateway_response_object->transaction_type ) && Types::isRefund( $gateway_response_object->transaction_type ) ) {
 					self::update_order_status_refunded( $order, $gateway_response_object );
 				}
 
@@ -1841,6 +1799,12 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 					static::getTranslatedText( 'Payment has been voided.' )
 				);
 				break;
+		}
+
+		// Do not modify whole transaction tree for the reference transactions of the Init Recurring type
+		// The Reconcile Object can bring Recurring Sale transactions and their reference transactions
+		if ( count( $raw_trx_list ) > 1 && WC_emerchantpay_Subscription_Helper::isInitRecurring( $raw_trx_list[0]->transaction_type ) ) {
+			$raw_trx_list = [ $raw_trx_list[0] ];
 		}
 
 		WC_emerchantpay_Order_Helper::saveTrxListToOrder(
@@ -2288,7 +2252,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						$reason
 					)
 					->setRemoteIp(
-						WC_emerchantpay_Helper::getClientRemoteIpAddress()
+						WC_emerchantpay_Helper::get_client_remote_ip_address()
 					)
 					->setReferenceId(
 						$reference_transaction_id
@@ -2370,7 +2334,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 */
 	protected function cancelOrderSubscriptions( $order ) {
 		$orderTransactionType = WC_emerchantpay_Order_Helper::getOrderMetaData(
-			$order->id,
+			$order->get_id(),
 			self::META_TRANSACTION_TYPE
 		);
 
@@ -2385,7 +2349,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				static::getTranslatedText(
 					'Subscription cancelled due to Refunded Order #%s'
 				),
-				$order->id
+				$order->get_id()
 			)
 		);
 	}
@@ -2432,7 +2396,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 * @throws \Genesis\Exceptions\InvalidMethod
 	 */
 	protected function process_subscription_payment( $order, $amount ) {
-		$referenceId = WC_emerchantpay_Subscription_Helper::getOrderInitRecurringIdMeta( $order->id );
+		$referenceId = WC_emerchantpay_Subscription_Helper::getOrderInitRecurringIdMeta( $order->get_id() );
 
 		\Genesis\Config::setToken(
 			$this->getRecurringToken( $order )
@@ -2454,7 +2418,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 					WC_emerchantpay_Genesis_Helper::getPaymentTransactionUsage( true )
 				)
 				->setRemoteIp(
-					WC_emerchantpay_Helper::getClientRemoteIpAddress()
+					WC_emerchantpay_Helper::get_client_remote_ip_address()
 				)
 				->setCurrency(
 					$order->get_currency()
@@ -2482,7 +2446,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		// Try to gather more entropy
 		$unique = sprintf(
 			'|%s|%s|%s|%s|',
-			WC_emerchantpay_Helper::getClientRemoteIpAddress(),
+			WC_emerchantpay_Helper::get_client_remote_ip_address(),
 			microtime( true ),
 			@$_SERVER['HTTP_USER_AGENT'],
 			$input
@@ -2494,7 +2458,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	/**
 	 * Get the Order items in the following format:
 	 *
-	 * "%name% x%quantity%"
+	 * "%name% x %quantity%"
+	 * "Subscription Price" if isSubscriptionProduct
 	 *
 	 * @param WC_Order $order
 	 *
@@ -2503,12 +2468,24 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	protected function get_item_description( WC_Order $order ) {
 		$items = array();
 
+		/** @var WC_Order_Item_Product $item */
 		foreach ( $order->get_items() as $item ) {
-			$items[] = sprintf(
+			$product_description = sprintf(
 				'%s x %d',
 				WC_emerchantpay_Order_Helper::getItemName( $item ),
 				WC_emerchantpay_Order_Helper::getItemQuantity( $item )
 			);
+
+			$subscription_description = '';
+			if ( WC_emerchantpay_Subscription_Helper::isSubscriptionProduct( $item->get_product() ) ) {
+				$subscription_description = WC_emerchantpay_Subscription_Helper::filter_wc_subscription_price(
+					static::get_cart(),
+					$item->get_product(),
+					WC_emerchantpay_Order_Helper::getItemQuantity( $item )
+				);
+			}
+
+			$items[] = $product_description . PHP_EOL . $subscription_description;
 		}
 
 		return implode( PHP_EOL, $items );
@@ -3280,6 +3257,21 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		}
 
 		return $genesis;
+	}
+
+	/**
+	 * Get the WooCommerce Cart Instance
+	 *
+	 * @return WC_Cart|null
+	 */
+	protected static function get_cart() {
+		$cart = WC()->cart;
+
+		if ( empty( $cart ) ) {
+			return null;
+		}
+
+		return $cart;
 	}
 }
 

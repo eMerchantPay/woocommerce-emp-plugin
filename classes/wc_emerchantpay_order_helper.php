@@ -245,17 +245,18 @@ class WC_emerchantpay_Order_Helper {
 	public static function saveTrxListToOrder( WC_Order $order, array $trx_list_new ) {
 		$order_id          = static::getOrderProp( $order, 'id' );
 		$trx_list_existing = static::getOrderMetaData( $order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST );
+		$trx_hierarchy     = static::getOrderMetaData( $order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_HIERARCHY );
 
-		if ( is_array( $trx_list_existing ) ) {
-			$trx_hierarchy = static::getOrderMetaData( $order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_HIERARCHY );
-			if ( empty( $trx_hierarchy ) ) {
-				$trx_hierarchy = [];
-			}
-
-			$trx_tree = new WC_emerchantpay_Transactions_Tree( $trx_list_existing, $trx_list_new, $trx_hierarchy );
-
-			static::saveTrxTree( $order_id, $trx_tree );
+		if ( empty( $trx_hierarchy ) ) {
+			$trx_hierarchy = array();
 		}
+
+		$trx_tree = new WC_emerchantpay_Transactions_Tree( array(), $trx_list_new, $trx_hierarchy );
+		if ( is_array( $trx_list_existing ) ) {
+			$trx_tree = new WC_emerchantpay_Transactions_Tree( $trx_list_existing, $trx_list_new, $trx_hierarchy );
+		}
+
+		static::saveTrxTree( $order_id, $trx_tree );
 	}
 
 	/**

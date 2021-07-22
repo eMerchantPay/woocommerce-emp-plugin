@@ -30,9 +30,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WC_emerchantpay_Subscription_Helper {
 
-	const META_INIT_RECURRING_ID        = '_init_recurring_id';
-	const META_RECURRING_TERMINAL_TOKEN = '_recurring_terminal_token';
-	const META_INIT_RECURRING_FINISHED  = '_init_recurring_finished';
+	const META_INIT_RECURRING_ID             = '_init_recurring_id';
+	const META_RECURRING_TERMINAL_TOKEN      = '_recurring_terminal_token';
+	const META_INIT_RECURRING_FINISHED       = '_init_recurring_finished';
+	const META_WCS_SUBSCRIPTION_TRIAL_LENGTH = '_subscription_trial_length';
 
 	const WC_SUBSCRIPTIONS_PLUGIN_FILTER = 'woocommerce-subscriptions/woocommerce-subscriptions.php';
 
@@ -111,7 +112,7 @@ class WC_emerchantpay_Subscription_Helper {
 		$subscriptions = static::getOrderSubscriptions( $orderId );
 
 		foreach ( $subscriptions as $subscription ) {
-			update_post_meta( $subscription->id, self::META_INIT_RECURRING_ID, $response->unique_id );
+			update_post_meta( $subscription->get_id(), self::META_INIT_RECURRING_ID, $response->unique_id );
 		}
 
 		WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_INIT_RECURRING_ID, $response->unique_id );
@@ -126,18 +127,40 @@ class WC_emerchantpay_Subscription_Helper {
 	}
 
 	/**
+	 * Get the current WC Cart
+	 *
+	 * @return WC_Cart|null
+	 */
+	public static function get_cart() {
+		$cart = WC()->cart;
+
+		if ( empty( $cart ) ) {
+			return null;
+		}
+
+		return $cart;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public static function isCartValid() {
-		$cart = WC()->cart->cart_contents;
+		$cart = self::get_cart();
+
 		if ( ! $cart ) {
+			return false;
+		}
+
+		$cart_contents = $cart->cart_contents;
+
+		if ( ! $cart_contents ) {
 			return false;
 		}
 
 		$hasProducts      = false;
 		$hasSubscriptions = false;
 
-		foreach ( $cart as $product ) {
+		foreach ( $cart_contents as $product ) {
 			if ( ! self::isSubscriptionProduct( $product['data'] ) ) {
 				if ( $hasSubscriptions ) {
 					return false;
@@ -152,11 +175,6 @@ class WC_emerchantpay_Subscription_Helper {
 			}
 
 			$hasSubscriptions = true;
-			/** @var \WC_Product_Subscription|\WC_Product_Subscription_Variation $product['data'] */
-			$fee = floatval( $product['data']->get_sign_up_fee() );
-			if ( $fee === 0.0 ) {
-				return false;
-			}
 		}
 
 		if ( $hasSubscriptions ) {
@@ -190,7 +208,7 @@ class WC_emerchantpay_Subscription_Helper {
 			return null;
 		}
 
-		$signUpFee = WC_Subscriptions_Order::get_sign_up_fee( $order->id );
+		$sign_up_fee = WC_Subscriptions_Order::get_sign_up_fee( $order->get_id() );
 
 		/**
 		 * It is supposed to be only one item
@@ -209,10 +227,10 @@ class WC_emerchantpay_Subscription_Helper {
 		foreach ( $recurringItems as $recurringItem ) {
 			$quantity = (int) $recurringItem->get_quantity();
 
-			$signUpFee = (float) ( $quantity * $signUpFee );
+			$sign_up_fee = (float) ( $quantity * $sign_up_fee );
 		}
 
-		return $signUpFee > 0 ? $signUpFee : null;
+		return $sign_up_fee;
 	}
 
 	/**
@@ -294,13 +312,19 @@ class WC_emerchantpay_Subscription_Helper {
 	}
 
 	/**
-	 * @param stdClass $reconcile
+	 * @param stdClass|ArrayObject $reconcile
 	 * @return bool
 	 */
 	public static function isInitRecurringReconciliation( $reconcile ) {
-		$transactionType = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction( $reconcile )->transaction_type;
+		$payment_object = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction( $reconcile );
 
-		return static::isInitRecurring( $transactionType );
+		$payment_transaction = $payment_object;
+		if ( $payment_object instanceof \ArrayObject ) {
+			unset( $payment_transaction );
+			$payment_transaction = $payment_object[0];
+		}
+
+		return static::isInitRecurring( $payment_transaction->transaction_type );
 	}
 
 	/**
@@ -316,7 +340,7 @@ class WC_emerchantpay_Subscription_Helper {
 		$subscriptions = static::getOrderSubscriptions( $orderId );
 
 		foreach ( $subscriptions as $subscription ) {
-			update_post_meta( $subscription->id, self::META_RECURRING_TERMINAL_TOKEN, $terminalToken );
+			update_post_meta( $subscription->get_id(), self::META_RECURRING_TERMINAL_TOKEN, $terminalToken );
 		}
 
 		WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_RECURRING_TERMINAL_TOKEN, $terminalToken );
@@ -333,16 +357,18 @@ class WC_emerchantpay_Subscription_Helper {
 	}
 
 	/**
-	 * @param WC_Order $order
-	 * @param string   $status
-	 * @param string   $note
+	 * Update WC Subscription based on the Genesis Transaction Response
+	 *
+	 * @param WC_Order $order  WC Order Object.
+	 * @param string   $status WC Subscription Status.
+	 * @param string   $note   Description.
 	 */
 	public static function updateOrderSubscriptionsStatus( $order, $status, $note = '' ) {
 		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
 			return;
 		}
 
-		$subscriptions = static::getOrderSubscriptions( $order->id );
+		$subscriptions = static::getOrderSubscriptions( $order->get_id() );
 
 		foreach ( $subscriptions as $subscription ) {
 			static::updateSubscriptionStatus( $subscription, $status, $note );
@@ -356,5 +382,49 @@ class WC_emerchantpay_Subscription_Helper {
 	 */
 	public static function updateSubscriptionStatus( $subscription, $status, $note = '' ) {
 		$subscription->update_status( $status, $note );
+	}
+
+	/**
+	 * Filter the generated form WooCommerce Subscriptions hook HTML code fragment for item price
+	 *
+	 * @param WC_Cart    $cart     WooCommerce Cart instance.
+	 * @param WC_Product $product  WooCommerce Product instance.
+	 * @param integer    $quantity Product quantity.
+	 *
+	 * @return string
+	 */
+	public static function filter_wc_subscription_price( $cart, $product, $quantity ) {
+		if ( null === $cart ) {
+			return '';
+		}
+
+		return html_entity_decode(
+			wp_strip_all_tags( $cart->get_product_subtotal( $product, $quantity ) )
+		);
+	}
+
+	/**
+	 * Checks if any of the Order->Item->Product has Free Trial Length
+	 *
+	 * @param WC_Order $order WooCommerce Order
+	 *
+	 * @return bool
+	 */
+	public static function has_subscription_product_with_free_trial( $order ) {
+		$has_trial = false;
+
+		/** @var WC_Order_Item $item */
+		foreach ( $order->get_items() as $item ) {
+			/** @var WC_Product_Subscription $product */
+			$product = $item->get_product();
+
+			if ( $product && ! empty( $product->get_meta( static::META_WCS_SUBSCRIPTION_TRIAL_LENGTH ) ) ) {
+				$has_trial = true;
+
+				break;
+			}
+		}
+
+		return $has_trial;
 	}
 }

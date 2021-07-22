@@ -751,9 +751,17 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 */
 	protected function set_terminal_token( $order ) {
 		$token = WC_emerchantpay_Order_Helper::getOrderMetaData(
-			$order->id,
+			$order->get_id(),
 			self::META_TRANSACTION_TERMINAL_TOKEN
 		);
+
+		// Check for Recurring Token
+		if ( empty( $token ) ) {
+			$token = WC_emerchantpay_Order_Helper::getOrderMetaData(
+				$order->get_id(),
+				WC_emerchantpay_Subscription_Helper::META_RECURRING_TERMINAL_TOKEN
+			);
+		}
 
 		if ( empty( $token ) ) {
 			return false;
@@ -816,7 +824,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	/**
 	 * Determines the Recurring Token, which needs to used for the RecurringSale Transactions
 	 *
-	 * @param WC_Order $order
+	 * @param WC_Order $order WC Order Object.
 	 * @return string
 	 */
 	protected function getRecurringToken( $order ) {
@@ -826,7 +834,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			return $recurringToken;
 		}
 
-		return WC_emerchantpay_Subscription_Helper::getTerminalTokenMetaFromSubscriptionOrder( $order->id );
+		return WC_emerchantpay_Subscription_Helper::getTerminalTokenMetaFromSubscriptionOrder( $order->get_id() );
 	}
 }
 

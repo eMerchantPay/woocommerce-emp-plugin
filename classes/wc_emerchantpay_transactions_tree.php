@@ -113,7 +113,7 @@ class WC_emerchantpay_Transactions_Tree {
 
 		// Add reference_id to checkout trx so hierarchy will work out and
 		// change checkout status the same way like refunds and voids
-		if ( count( $trx_list_existing ) === 1 &&
+		if ( count( $trx_list_existing ) === 1 && array_key_exists( 0, $trx_list_existing ) &&
 			$trx_list_existing[0]->type === WC_emerchantpay_Transaction::TYPE_CHECKOUT ) {
 			foreach ( $trx_list_new as $trx_new ) {
 				if ( $trx_new->unique_id !== $trx_list_existing[0]->unique_id ) {

@@ -1,7 +1,7 @@
 .emp-logo {
 	width: 16px;
 }
-.wc-order-totals, .wc-order-totals td {
+.wc-order-totals, .wc-order-totals .tree td {
 	font-size: 12px;
 	width: 100%!important;
 }

@@ -76,14 +76,14 @@ class WC_emerchantpay_Helper {
 	 *
 	 * @return null|string
 	 */
-	protected function getWPSiteUrl() {
+	protected static function get_wp_site_url() {
 		if ( ! function_exists( 'get_site_url' ) ) {
 			return null;
 		}
 
-		$siteUrl = get_site_url();
+		$site_url = get_site_url();
 
-		return $siteUrl ?: null;
+		return $site_url ?: null;
 	}
 
 	/**
@@ -91,21 +91,21 @@ class WC_emerchantpay_Helper {
 	 *
 	 * @return null|string
 	 */
-	protected function getWPSiteHostName() {
+	protected static function get_wp_site_host_name() {
 		if ( ! function_exists( 'parse_url' ) ) {
 			return null;
 		}
 
-		$siteUrl = static::getWPSiteUrl();
+		$site_url = static::get_wp_site_url();
 
-		if ( $siteUrl === null ) {
+		if ( null === $site_url ) {
 			return null;
 		}
 
-		$urlParams = parse_url( $siteUrl );
+		$url_params = parse_url( $site_url );
 
-		if ( is_array( $urlParams ) && array_key_exists( 'host', $urlParams ) ) {
-			return $urlParams['host'];
+		if ( is_array( $url_params ) && array_key_exists( 'host', $url_params ) ) {
+			return $url_params['host'];
 		}
 
 		return null;
@@ -116,18 +116,18 @@ class WC_emerchantpay_Helper {
 	 *
 	 * @return null|string
 	 */
-	protected function getWPSiteHostIPAddress() {
+	protected static function get_wp_site_host_ip_address() {
 		if ( ! function_exists( 'gethostbyname' ) ) {
 			return null;
 		}
 
-		$siteHostName = static::getWPSiteHostName();
+		$site_host_name = static::get_wp_site_host_name();
 
-		if ( $siteHostName === null ) {
+		if ( null === $site_host_name ) {
 			return null;
 		}
 
-		return gethostbyname( $siteHostName );
+		return gethostbyname( $site_host_name );
 	}
 
 	/**
@@ -138,14 +138,15 @@ class WC_emerchantpay_Helper {
 	 *
 	 * @SuppressWarnings(PHPMD)
 	 */
-	public static function getClientRemoteIpAddress() {
-		$remoteAddress = $_SERVER['REMOTE_ADDR'];
+	public static function get_client_remote_ip_address() {
+		$remote_address = ( ( isset( $_SERVER ) && array_key_exists( 'REMOTE_ADDR', $_SERVER ) ) ) ?
+			sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 
-		if ( empty( $remoteAddress ) ) {
-			$remoteAddress = static::getWPSiteHostIPAddress();
+		if ( empty( $remote_address ) ) {
+			$remote_address = static::get_wp_site_host_ip_address();
 		}
 
-		return $remoteAddress ?: '127.0.0.1';
+		return $remote_address ?: '127.0.0.1';
 	}
 
 	/**

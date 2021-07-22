@@ -367,7 +367,7 @@ class WC_emerchantpay_Direct extends WC_emerchantpay_Method {
 			$data,
 			array(
 				'remote_ip'        =>
-					WC_emerchantpay_Helper::getClientRemoteIpAddress(),
+					WC_emerchantpay_Helper::get_client_remote_ip_address(),
 				'transaction_type' =>
 					$isRecurring
 						? $this->getMethodSetting( self::SETTING_KEY_INIT_RECURRING_TXN_TYPE )
