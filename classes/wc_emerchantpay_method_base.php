@@ -605,14 +605,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 					),
 					WC_emerchantpay_Helper::WP_NOTICE_TYPE_ERROR
 				);
-			} else {
-				WC_emerchantpay_Helper::printWpNotice(
-					static::getTranslatedText(
-						'Subscriptions notices:<br />
-                        - Subscription orders can have only a single subscription product and no other products'
-					),
-					WC_emerchantpay_Helper::WP_NOTICE_TYPE_NOTICE
-				);
 			}
 		}
 	}
@@ -1267,24 +1259,34 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			}
 		}
 
-		if ( ! $this->checkSubscriptionRequirements() ) {
+		if ( ! $this->meet_subscription_requirements() ) {
 			return false;
 		}
 
-		return $this->is_applicable();
+		if ( ! $this->is_applicable() ) {
+			return false;
+		}
+
+		return parent::is_available();
 	}
 
 	/**
-	 * If subscriptions are enabled, default sign-up fee must be set.
+	 * If we have subscription product the Plugin is available only if Subscriptions are configured
 	 *
 	 * @return bool
 	 */
-	public function checkSubscriptionRequirements() {
-		if ( ! $this->isSubscriptionEnabled() ) {
+	protected function meet_subscription_requirements() {
+		// The Method Availability is only limited to the WooCommerce Checkout process.
+		if ( null === WC_emerchantpay_Subscription_Helper::get_cart() ) {
 			return true;
 		}
 
-		return WC_emerchantpay_Subscription_Helper::isCartValid();
+		// If the plugin Method does not have Subscriptions enabled, do not show it on the Checkout.
+		if ( ! $this->isSubscriptionEnabled() && WC_emerchantpay_Subscription_Helper::is_cart_has_subscriptions() ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -1584,7 +1586,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 		$data = array(
 			'transaction_id'     => static::generateTransactionId( $order->get_id() ),
-			'amount'             => $this->getAmount( $order, $isRecurring ),
+			'amount'             => (float) $order->get_total(),
 			'currency'           => $order->get_currency(),
 			'usage'              => WC_emerchantpay_Genesis_Helper::getPaymentTransactionUsage( false ),
 			'description'        => $this->get_item_description( $order ),
@@ -1656,32 +1658,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		return empty( $order->get_shipping_country() ) ||
 			empty( $order->get_shipping_city() ) ||
 			empty( $order->get_shipping_address_1() );
-	}
-
-	/**
-	 * Returns proper amount depending, if order is for subscription or not.
-	 *
-	 * @param \WC_Order $order
-	 * @param bool      $isRecurring
-	 * @return float
-	 * @throws \Exception If the order is for subscription and there's no sign-up fee
-	 */
-	protected function getAmount( $order, $isRecurring ) {
-		if ( $isRecurring ) {
-			$amount = WC_emerchantpay_Subscription_Helper::getOrderSubscriptionSignUpFee( $order );
-
-			if ( ! is_numeric( $amount ) ) {
-				throw new \Exception(
-					'Cannot process subscription orders with invalid non numeric sign-up fee'
-				);
-			}
-
-			// Return the Sign-Up Fee for the Initial Payment only if we have Free Trial
-			if ( WC_emerchantpay_Subscription_Helper::has_subscription_product_with_free_trial( $order ) ) {
-				return $amount;
-			}
-		}
-		return $this->get_order_total();
 	}
 
 	/**

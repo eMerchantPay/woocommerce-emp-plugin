@@ -6,8 +6,8 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x or 5.x (Tested up to 5.8 rc 3)
-* WooCommerce 3.x, 4.x, 5.x (Tested up to 5.5.1)
+* WordPress 4.x or 5.x (Tested up to 5.8)
+* WooCommerce 3.x, 4.x, 5.x (Tested up to 5.6.0)
 * [GenesisPHP v1.19.1](https://github.com/GenesisGateway/genesis_php/releases/tag/1.19.1) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x (Tested up to 3.1.3) in order to use **Subscriptions**
@@ -157,7 +157,6 @@ Supported Transactions
     * __iDeal__
     * __iDebit__
     * __InstaDebit__
-    * __InstantTransfer__
     * __InitRecurringSale__
     * __InitRecurringSale (3D-Secure)__
     * __Intersolve__
@@ -177,16 +176,15 @@ Supported Transactions
     * __PaySafeCard__
     * __PayU__
     * __POLi__
+    * __Post Finance__
     * __PPRO__
     * __PSE__
-    * __Qiwi__
     * __RapiPago__
     * __Redpagos__
     * __SafetyPay__
     * __Sale__
     * __Sale (3D-Secure)__
     * __Santander__
-    * __Santander Cash__
     * __Sepa Direct Debit__
     * __SOFORT__
     * __Tarjeta Shopping__
@@ -197,7 +195,6 @@ Supported Transactions
     * __WebMoney__
     * __WebPay__
     * __WeChat__
-    * __Zimpler__
         
 _Note_: If you have trouble with your credentials or terminal configuration, get in touch with our [support] team
 

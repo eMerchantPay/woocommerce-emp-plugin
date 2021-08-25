@@ -142,10 +142,13 @@ class WC_emerchantpay_Subscription_Helper {
 	}
 
 	/**
+	 * Check if the current WC()->cart has subscription items
+	 *
 	 * @return bool
 	 */
-	public static function isCartValid() {
-		$cart = self::get_cart();
+	public static function is_cart_has_subscriptions() {
+		$has_subscriptions = false;
+		$cart              = self::get_cart();
 
 		if ( ! $cart ) {
 			return false;
@@ -157,31 +160,14 @@ class WC_emerchantpay_Subscription_Helper {
 			return false;
 		}
 
-		$hasProducts      = false;
-		$hasSubscriptions = false;
-
 		foreach ( $cart_contents as $product ) {
-			if ( ! self::isSubscriptionProduct( $product['data'] ) ) {
-				if ( $hasSubscriptions ) {
-					return false;
-				}
-
-				$hasProducts = true;
-				continue;
+			if ( self::isSubscriptionProduct( $product['data'] ) ) {
+				$has_subscriptions = true;
+				break;
 			}
-
-			if ( $hasProducts ) {
-				return false;
-			}
-
-			$hasSubscriptions = true;
 		}
 
-		if ( $hasSubscriptions ) {
-			return ! $hasProducts;
-		}
-
-		return $hasProducts;
+		return $has_subscriptions;
 	}
 
 	/**
@@ -191,69 +177,6 @@ class WC_emerchantpay_Subscription_Helper {
 	public static function isSubscriptionProduct( \WC_Product $product ) {
 		return $product instanceof \WC_Product_Subscription ||
 			   $product instanceof \WC_Product_Subscription_Variation;
-	}
-
-	/**
-	 * Retrieves the Sign Up Fee for the Init Recurring Transactions
-	 *
-	 * @param WC_Order $order
-	 * @return float|null
-	 */
-	public static function getOrderSubscriptionSignUpFee( $order ) {
-		if ( ! static::isWCSubscriptionsInstalled() ) {
-			return null;
-		}
-
-		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
-			return null;
-		}
-
-		$sign_up_fee = WC_Subscriptions_Order::get_sign_up_fee( $order->get_id() );
-
-		/**
-		 * It is supposed to be only one item
-		 * P.S WC-Subscription-Plugin does not allow to add different subscriptions for the same cart
-		 */
-		$recurringItems = $order->get_items();
-
-		/**
-		 * This is needed, because
-		 *    WC_Subscriptions_Order::get_sign_up_fee
-		 * returns the Sign-Up fee for the Subscription (Qty = 1)
-		 * We need to calculate the real sign-up fee
-		 *
-		 * @var \WC_Product_Subscription $recurringItem
-		 */
-		foreach ( $recurringItems as $recurringItem ) {
-			$quantity = (int) $recurringItem->get_quantity();
-
-			$sign_up_fee = (float) ( $quantity * $sign_up_fee );
-		}
-
-		return $sign_up_fee;
-	}
-
-	/**
-	 * Retrieve the amount got the First Subscription.
-	 * Used after performing the Init Recurring Transaction
-	 *
-	 * @param WC_Order $order
-	 * @return null|float
-	 */
-	public static function getOrderSubscriptionInitialPayment( $order ) {
-		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
-			return null;
-		}
-
-		$signUpFee = static::getOrderSubscriptionSignUpFee( $order );
-
-		if ( $signUpFee === null ) {
-			return null;
-		}
-
-		$amountToPay = $order->get_total() - $signUpFee;
-
-		return $amountToPay > 0 ? $amountToPay : null;
 	}
 
 	/**
@@ -401,30 +324,5 @@ class WC_emerchantpay_Subscription_Helper {
 		return html_entity_decode(
 			wp_strip_all_tags( $cart->get_product_subtotal( $product, $quantity ) )
 		);
-	}
-
-	/**
-	 * Checks if any of the Order->Item->Product has Free Trial Length
-	 *
-	 * @param WC_Order $order WooCommerce Order
-	 *
-	 * @return bool
-	 */
-	public static function has_subscription_product_with_free_trial( $order ) {
-		$has_trial = false;
-
-		/** @var WC_Order_Item $item */
-		foreach ( $order->get_items() as $item ) {
-			/** @var WC_Product_Subscription $product */
-			$product = $item->get_product();
-
-			if ( $product && ! empty( $product->get_meta( static::META_WCS_SUBSCRIPTION_TRIAL_LENGTH ) ) ) {
-				$has_trial = true;
-
-				break;
-			}
-		}
-
-		return $has_trial;
 	}
 }
