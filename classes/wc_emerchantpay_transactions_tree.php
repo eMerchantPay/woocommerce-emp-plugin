@@ -75,7 +75,7 @@ class WC_emerchantpay_Transactions_Tree {
 	 * @return array
 	 */
 	public static function getTransactionsListFromOrder( WC_Order $order ) {
-		return static::getTransactionTree(
+		return static::get_transaction_tree(
 			WC_emerchantpay_Order_Helper::getOrderMetaData(
 				WC_emerchantpay_Order_Helper::getOrderProp( $order, 'id' ),
 				static::META_DATA_KEY_LIST
@@ -193,10 +193,11 @@ class WC_emerchantpay_Transactions_Tree {
 	 * the order
 	 *
 	 * @param $transactions array WC_emerchantpay_Transaction
+	 * @param $selected_transaction_types array
 	 *
 	 * @return array
 	 */
-	public static function getTransactionTree( $transactions ) {
+	public static function get_transaction_tree( $transactions, $selected_transaction_types = array() ) {
 		if ( empty( $transactions ) || ! is_array( $transactions ) ) {
 			return [];
 		}
@@ -229,7 +230,7 @@ class WC_emerchantpay_Transactions_Tree {
 				$transaction['date_add'] = date( "H:i:s \n m/d/Y", $transaction['date_add'] );
 			}
 
-			$transaction['can_capture'] = static::canCapture( $transaction );
+			$transaction['can_capture'] = static::canCapture( $transaction, $selected_transaction_types );
 
 			if ( $transaction['can_capture'] ) {
 				$totalAuthorizedAmount           = self::getChildrenAuthorizedAmount( $trx_arr, $transaction );
@@ -241,7 +242,7 @@ class WC_emerchantpay_Transactions_Tree {
 				}
 			}
 
-			$transaction['can_refund'] = static::canRefund( $transaction );
+			$transaction['can_refund'] = static::canRefund( $transaction, $selected_transaction_types );
 
 			if ( $transaction['can_refund'] ) {
 				$totalCapturedAmount             = $transaction['amount'];
@@ -302,6 +303,7 @@ class WC_emerchantpay_Transactions_Tree {
 				\Genesis\API\Constants\Transaction\Types::AUTHORIZE,
 				\Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D,
 				\Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE,
+				\Genesis\API\Constants\Transaction\Types::GOOGLE_PAY,
 			),
 			\Genesis\API\Constants\Transaction\States::APPROVED
 		);
@@ -366,24 +368,104 @@ class WC_emerchantpay_Transactions_Tree {
 	}
 
 	/**
-	 * @param array $transaction
+	 * Check if the specific transaction types by custom attribute exists
 	 *
-	 * @return bool
+	 * @param string $transaction_type
 	 */
-	public static function canCapture( $transaction ) {
-		return $transaction['status'] === \Genesis\API\Constants\Transaction\States::APPROVED &&
-			   \Genesis\API\Constants\Transaction\Types::canCapture( $transaction['type'] );
+	private static function is_transaction_has_custom_attr( $transaction_type ) {
+		$transaction_types = array(
+			\Genesis\API\Constants\Transaction\Types::GOOGLE_PAY
+		);
+
+		return in_array( $transaction_type, $transaction_types, true );
+	}
+
+	/**
+	 * Check specific transaction based on the selected custom attribute
+	 *
+	 * @param string $action
+	 * @param string $transaction_type
+	 * @param array  $selected_types
+	 *
+	 * @return boolean
+	 */
+	private static function check_transaction_by_selected_attribute( $action, $transaction_type, $selected_types ) {
+		switch ( $transaction_type ) {
+			case \Genesis\API\Constants\Transaction\Types::GOOGLE_PAY:
+				if ( WC_emerchantpay_Method::METHOD_ACTION_CAPTURE === $action ) {
+					return in_array(
+						WC_emerchantpay_Method::GOOGLE_PAY_TRANSACTION_PREFIX . WC_emerchantpay_Method::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE,
+						$selected_types,
+						true
+					);
+				}
+
+				if ( WC_emerchantpay_Method::METHOD_ACTION_REFUND === $action ) {
+					return in_array(
+						WC_emerchantpay_Method::GOOGLE_PAY_TRANSACTION_PREFIX . WC_emerchantpay_Method::GOOGLE_PAY_PAYMENT_TYPE_SALE,
+						$selected_types,
+						true
+					);
+				}
+			default:
+				return false;
+		}
 	}
 
 	/**
 	 * @param array $transaction
+	 * @param array $selected_transaction_types
 	 *
 	 * @return bool
 	 */
-	public static function canRefund( $transaction ) {
-		return ( $transaction['status'] === \Genesis\API\Constants\Transaction\States::APPROVED ||
-				$transaction['status'] === \Genesis\API\Constants\Transaction\States::REFUNDED ) &&
-			   \Genesis\API\Constants\Transaction\Types::canRefund( $transaction['type'] );
+	public static function canCapture( $transaction, $selected_transaction_types = array() ) {
+		if ( empty( $transaction['status'] ) ) {
+			return false;
+		}
+
+		$state = new \Genesis\API\Constants\Transaction\States( $transaction['status'] );
+
+		if ( ! $state->isApproved() ) {
+			return false;
+		}
+
+		if ( self::is_transaction_has_custom_attr( $transaction['type'] ) && count( $selected_transaction_types ) > 0 ) {
+			return self::check_transaction_by_selected_attribute(
+				WC_emerchantpay_Method::METHOD_ACTION_CAPTURE,
+				$transaction['type'],
+				$selected_transaction_types
+			);
+		}
+
+		return \Genesis\API\Constants\Transaction\Types::canCapture( $transaction['type'] );
+	}
+
+	/**
+	 * @param array $transaction
+	 * @param array $selected_transaction_types
+	 *
+	 * @return bool
+	 */
+	public static function canRefund( $transaction, $selected_transaction_types = array() ) {
+		if ( empty( $transaction['status'] ) ) {
+			return false;
+		}
+
+		$state = new \Genesis\API\Constants\Transaction\States( $transaction['status'] );
+
+		if ( ! ( $state->isApproved() || $state->isRefunded() ) ) {
+			return false;
+		}
+
+		if ( self::is_transaction_has_custom_attr( $transaction['type'] ) && count( $selected_transaction_types ) > 0 ) {
+			return self::check_transaction_by_selected_attribute(
+				WC_emerchantpay_Method::METHOD_ACTION_REFUND,
+				$transaction['type'],
+				$selected_transaction_types
+			);
+		}
+
+		return \Genesis\API\Constants\Transaction\Types::canRefund( $transaction['type'] );
 	}
 
 	/**

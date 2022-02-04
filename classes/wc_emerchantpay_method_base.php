@@ -17,6 +17,7 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
+use Genesis\API\Constants\Transaction\Parameters\Mobile\GooglePay\PaymentTypes as GooglePaymentTypes;
 use Genesis\API\Constants\Transaction\Types;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -148,6 +149,16 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	);
 
 	const PPRO_TRANSACTION_SUFFIX = '_ppro';
+
+	/**
+	 * Google Pay transaction prefix and payment methods constants
+	 */
+	const GOOGLE_PAY_TRANSACTION_PREFIX     = Types::GOOGLE_PAY . '_';
+	const GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE = GooglePaymentTypes::AUTHORIZE;
+	const GOOGLE_PAY_PAYMENT_TYPE_SALE      = GooglePaymentTypes::SALE;
+
+	const METHOD_ACTION_CAPTURE = 'capture';
+	const METHOD_ACTION_REFUND  = 'refund';
 
 	/**
 	 * Language domain
@@ -442,6 +453,9 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		$transactions = WC_emerchantpay_Transactions_Tree::createFromOrder( $order );
 
 		if ( ! empty( $transactions ) ) {
+			$method_transaction_types   = $this->get_method_selected_transaction_types();
+			$selected_transaction_types = is_array( $method_transaction_types ) ? $method_transaction_types : array();
+
 			$this->fetchTemplate(
 				'admin/order/transactions.php',
 				array(
@@ -452,7 +466,10 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						function ( $v ) {
 							return (array) $v;
 						},
-						WC_emerchantpay_Transactions_Tree::getTransactionTree( $transactions->trx_list )
+						WC_emerchantpay_Transactions_Tree::get_transaction_tree(
+							$transactions->trx_list,
+							$selected_transaction_types
+						)
 					),
 					'allow_partial_capture' => $this->allow_partial_capture(
 						$transactions->getAuthorizeTrx()
@@ -463,6 +480,33 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Get the current method selected transaction types
+	 *
+	 * @return mixed
+	 */
+	protected function get_method_selected_transaction_types() {
+		return $this->getMethodSetting( $this->get_method_transaction_setting_key() );
+	}
+
+	/**
+	 * Get the Current Transaction Type config
+	 * @return string
+	 */
+	protected function get_method_transaction_setting_key() {
+		$key = '';
+
+		if ( WC_emerchantpay_Checkout::get_method_code() === self::get_method_code() ) {
+			$key = WC_emerchantpay_Checkout::SETTING_KEY_TRANSACTION_TYPES;
+		}
+
+		if ( WC_emerchantpay_Direct::get_method_code() === self::get_method_code() ) {
+			$key = WC_emerchantpay_Direct::META_TRANSACTION_TYPE;
+		}
+
+		return $key;
 	}
 
 	/**
@@ -994,7 +1038,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			throw new Exception( 'Missing Authorize transaction' );
 		}
 
-		if ( Types::isAuthorize( $auth->type ) ) {
+		if ( Types::isAuthorize( $auth->type ) || Types::GOOGLE_PAY === $auth->type ) {
 			return Types::getCaptureTransactionClass( $auth->type );
         }
 

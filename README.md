@@ -6,11 +6,11 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x or 5.x (Tested up to 5.8)
-* WooCommerce 3.x, 4.x, 5.x (Tested up to 5.6.0)
-* [GenesisPHP v1.19.1](https://github.com/GenesisGateway/genesis_php/releases/tag/1.19.1) - (Integrated in Module)
+* WordPress 4.x or 5.x (Tested up to 5.9)
+* WooCommerce 3.x, 4.x, 5.x, 6.x (Tested up to 6.1.1)
+* [GenesisPHP v1.19.2](https://github.com/GenesisGateway/genesis_php/releases/tag/1.19.2) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
-* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x (Tested up to 3.1.3) in order to use **Subscriptions**
+* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x (Tested up to 4.0.1) in order to use **Subscriptions**
 
 GenesisPHP Requirements
 ------------
@@ -154,6 +154,7 @@ Supported Transactions
     * __eZeeWallet__
     * __Fashioncheque__
     * __GiroPay__
+    * __GooglePay__
     * __iDeal__
     * __iDebit__
     * __InstaDebit__

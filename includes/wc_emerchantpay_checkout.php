@@ -227,6 +227,9 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		// Exlucde PPRO transaction. This is not standalone transaction type
 		array_push( $excluded_types, Types::PPRO );
 
+		// Exclude GooglePay transaction in order to provide choosable payment types
+		array_push( $excluded_types, Types::GOOGLE_PAY );
+
 		// Exclude Transaction types
 		$transaction_types = array_diff( $transaction_types, $excluded_types );
 
@@ -237,7 +240,19 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			},
 			\Genesis\API\Constants\Payment\Methods::getMethods()
 		);
-		$transaction_types = array_merge( $transaction_types, $ppro_types );
+
+		// Add Google Pay Methods
+		$google_pay_types = array_map(
+			function ( $type ) {
+				return WC_emerchantpay_Method::GOOGLE_PAY_TRANSACTION_PREFIX . $type;
+			},
+			[
+				WC_emerchantpay_Method::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE,
+				WC_emerchantpay_Method::GOOGLE_PAY_PAYMENT_TYPE_SALE,
+			]
+		);
+
+		$transaction_types = array_merge( $transaction_types, $ppro_types, $google_pay_types );
 		asort( $transaction_types );
 
 		foreach ( $transaction_types as $type ) {
@@ -779,6 +794,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 */
 	private function get_payment_types() {
 		$processed_list = array();
+		$alias_map      = array();
 
 		$selected_types = $this->getMethodSetting( self::SETTING_KEY_TRANSACTION_TYPES );
 		$methods        = \Genesis\API\Constants\Payment\Methods::getMethods();
@@ -787,14 +803,25 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			$alias_map[ $method . self::PPRO_TRANSACTION_SUFFIX ] = Types::PPRO;
 		}
 
+		$alias_map = array_merge($alias_map, [
+			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE => Types::GOOGLE_PAY,
+			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_SALE      => Types::GOOGLE_PAY,
+		]);
+
 		foreach ( $selected_types as $selected_type ) {
 			if ( array_key_exists( $selected_type, $alias_map ) ) {
 				$transaction_type = $alias_map[ $selected_type ];
 
 				$processed_list[ $transaction_type ]['name'] = $transaction_type;
 
+				$key = Types::GOOGLE_PAY === $transaction_type ? 'payment_type' : 'payment_method';
+
 				$processed_list[ $transaction_type ]['parameters'][] = array(
-					'payment_method' => str_replace( self::PPRO_TRANSACTION_SUFFIX, '', $selected_type ),
+					$key => str_replace(
+						[ self::PPRO_TRANSACTION_SUFFIX, self::GOOGLE_PAY_TRANSACTION_PREFIX ],
+						'',
+						$selected_type
+					),
 				);
 			} else {
 				$processed_list[] = $selected_type;
