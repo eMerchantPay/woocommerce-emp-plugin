@@ -230,6 +230,9 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		// Exclude GooglePay transaction in order to provide choosable payment types
 		array_push( $excluded_types, Types::GOOGLE_PAY );
 
+		// Exclude PayPal transaction in order to provide choosable payment types
+		array_push( $excluded_types, Types::PAY_PAL );
+
 		// Exclude Transaction types
 		$transaction_types = array_diff( $transaction_types, $excluded_types );
 
@@ -252,7 +255,24 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			]
 		);
 
-		$transaction_types = array_merge( $transaction_types, $ppro_types, $google_pay_types );
+		// Add PayPal Methods
+		$paypal_types = array_map(
+			function ( $type ) {
+				return WC_emerchantpay_Method::PAYPAL_TRANSACTION_PREFIX . $type;
+			},
+			[
+				WC_emerchantpay_Method::PAYPAL_PAYMENT_TYPE_AUTHORIZE,
+				WC_emerchantpay_Method::PAYPAL_PAYMENT_TYPE_SALE,
+				WC_emerchantpay_Method::PAYPAL_PAYMENT_TYPE_EXPRESS,
+			]
+		);
+
+		$transaction_types = array_merge(
+			$transaction_types,
+			$ppro_types,
+			$google_pay_types,
+			$paypal_types
+		);
 		asort( $transaction_types );
 
 		foreach ( $transaction_types as $type ) {
@@ -411,6 +431,9 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				$data['notification_url']
 			)
 			->setReturnSuccessUrl(
+				$data['return_success_url']
+			)
+			->setReturnPendingUrl(
 				$data['return_success_url']
 			)
 			->setReturnFailureUrl(
@@ -806,6 +829,9 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		$alias_map = array_merge($alias_map, [
 			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE => Types::GOOGLE_PAY,
 			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_SALE      => Types::GOOGLE_PAY,
+			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_AUTHORIZE         => Types::PAY_PAL,
+			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_SALE              => Types::PAY_PAL,
+			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_EXPRESS           => Types::PAY_PAL,
 		]);
 
 		foreach ( $selected_types as $selected_type ) {
@@ -814,11 +840,15 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 
 				$processed_list[ $transaction_type ]['name'] = $transaction_type;
 
-				$key = Types::GOOGLE_PAY === $transaction_type ? 'payment_type' : 'payment_method';
+				$key = $this->get_custom_parameter_key( $transaction_type );
 
 				$processed_list[ $transaction_type ]['parameters'][] = array(
 					$key => str_replace(
-						[ self::PPRO_TRANSACTION_SUFFIX, self::GOOGLE_PAY_TRANSACTION_PREFIX ],
+						[
+							self::PPRO_TRANSACTION_SUFFIX,
+							self::GOOGLE_PAY_TRANSACTION_PREFIX,
+							self::PAYPAL_TRANSACTION_PREFIX,
+						],
 						'',
 						$selected_type
 					),
@@ -862,6 +892,28 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		}
 
 		return WC_emerchantpay_Subscription_Helper::getTerminalTokenMetaFromSubscriptionOrder( $order->get_id() );
+	}
+
+	/**
+	 * @param $transaction_type
+	 * @return string
+	 */
+	private function get_custom_parameter_key( $transaction_type ) {
+		switch ( $transaction_type ) {
+			case Types::PPRO:
+				$result = 'payment_method';
+				break;
+			case Types::PAY_PAL:
+				$result = 'payment_type';
+				break;
+			case Types::GOOGLE_PAY:
+				$result = 'payment_subtype';
+				break;
+			default:
+				$result = 'unknown';
+		}
+
+		return $result;
 	}
 }
 

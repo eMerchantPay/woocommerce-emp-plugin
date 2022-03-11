@@ -21,44 +21,42 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Traits\Request\Financial;
+namespace Genesis\API\Constants\Transaction\Parameters\Wallets\PayPal;
 
-use Genesis\Exceptions\InvalidArgument;
 use Genesis\Utils\Common as CommonUtils;
 
 /**
- * Trait PendingPaymentAttributes
- * @package Genesis\API\Traits\Request\Financial
+ * PayPal allowed payment types
  *
- * @method string getReturnPendingUrl() URL where customer is sent to when asynchronous payment is pending
+ * Class PaymentTYpes
+ * @package Genesis\API\Constants\Transaction\Parameters\Wallets\PayPal
  */
-trait PendingPaymentAttributes
+class PaymentTypes
 {
     /**
-     * URL where customer is sent to when asynchronous payment is pending confirmation
-     *
-     * @var string $return_pending_url
+     * Creates an order that should be captured later.
      */
-    protected $return_pending_url;
+    const AUTHORIZE = 'authorize';
 
     /**
-     * @param string $value
-     * @return $this
-     * @throws InvalidArgument
+     * Captures the created order immediately after the buyer confirms the payment.
      */
-    public function setReturnPendingUrl($value)
+    const SALE      = 'sale';
+
+    /**
+     * Creates an Express Checkout PayPal payment. Express Checkout eliminates one of the
+     * major causes of checkout abandonment by giving buyers all the transaction details at
+     * once, including order details, shipping options, insurance choices, and tax totals.
+     */
+    const EXPRESS   = 'express';
+
+    /**
+     * Get PayPal allowed Payment Types
+     *
+     * @return array
+     */
+    public static function getAllowedPaymentTypes()
     {
-        if (empty($value)) {
-            $this->return_pending_url = null;
-
-            return $this;
-        }
-        if (!CommonUtils::isValidUrl($value)) {
-            throw new InvalidArgument('Invalid url is given.');
-        }
-
-        $this->return_pending_url = $value;
-
-        return $this;
+        return CommonUtils::getClassConstants(__CLASS__);
     }
 }

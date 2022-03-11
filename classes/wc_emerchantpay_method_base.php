@@ -153,9 +153,17 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	/**
 	 * Google Pay transaction prefix and payment methods constants
 	 */
-	const GOOGLE_PAY_TRANSACTION_PREFIX     = Types::GOOGLE_PAY . '_';
-	const GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE = GooglePaymentTypes::AUTHORIZE;
-	const GOOGLE_PAY_PAYMENT_TYPE_SALE      = GooglePaymentTypes::SALE;
+	const GOOGLE_PAY_TRANSACTION_PREFIX     = 'google_pay_';
+	const GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE = 'authorize';
+	const GOOGLE_PAY_PAYMENT_TYPE_SALE      = 'sale';
+
+	/**
+	 * PayPal transaction prefix and payment methods constants
+	 */
+	const PAYPAL_TRANSACTION_PREFIX     = 'pay_pal_';
+	const PAYPAL_PAYMENT_TYPE_AUTHORIZE = 'authorize';
+	const PAYPAL_PAYMENT_TYPE_SALE      = 'sale';
+	const PAYPAL_PAYMENT_TYPE_EXPRESS   = 'express';
 
 	const METHOD_ACTION_CAPTURE = 'capture';
 	const METHOD_ACTION_REFUND  = 'refund';
@@ -1038,7 +1046,11 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			throw new Exception( 'Missing Authorize transaction' );
 		}
 
-		if ( Types::isAuthorize( $auth->type ) || Types::GOOGLE_PAY === $auth->type ) {
+		if (
+			Types::isAuthorize( $auth->type ) ||
+			Types::GOOGLE_PAY === $auth->type ||
+			Types::PAY_PAL === $auth->type
+		) {
 			return Types::getCaptureTransactionClass( $auth->type );
         }
 

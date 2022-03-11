@@ -127,6 +127,7 @@ class WC_emerchantpay_Transaction {
 	 */
 	public function isAuthorize() {
 		return \Genesis\API\Constants\Transaction\Types::isAuthorize( $this->type ) ||
-		       \Genesis\API\Constants\Transaction\Types::GOOGLE_PAY === $this->type;
+		       \Genesis\API\Constants\Transaction\Types::GOOGLE_PAY === $this->type ||
+		       \Genesis\API\Constants\Transaction\Types::PAY_PAL === $this->type;
 	}
 }
