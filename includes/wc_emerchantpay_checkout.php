@@ -233,6 +233,9 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		// Exclude PayPal transaction in order to provide choosable payment types
 		array_push( $excluded_types, Types::PAY_PAL );
 
+		// Exclude Apple Pay transaction in order to provide choosable payment types
+		array_push( $excluded_types, Types::APPLE_PAY );
+
 		// Exclude Transaction types
 		$transaction_types = array_diff( $transaction_types, $excluded_types );
 
@@ -267,11 +270,23 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			]
 		);
 
+		// Add Apple Pay Methods
+		$apple_pay_types = array_map(
+			function ( $type ) {
+				return WC_emerchantpay_Method::APPLE_PAY_TRANSACTION_PREFIX . $type;
+			},
+			[
+				WC_emerchantpay_Method::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE,
+				WC_emerchantpay_Method::APPLE_PAY_PAYMENT_TYPE_SALE,
+			]
+		);
+
 		$transaction_types = array_merge(
 			$transaction_types,
 			$ppro_types,
 			$google_pay_types,
-			$paypal_types
+			$paypal_types,
+			$apple_pay_types
 		);
 		asort( $transaction_types );
 
@@ -832,6 +847,8 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_AUTHORIZE         => Types::PAY_PAL,
 			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_SALE              => Types::PAY_PAL,
 			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_EXPRESS           => Types::PAY_PAL,
+			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE   => Types::APPLE_PAY,
+			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_SALE        => Types::APPLE_PAY,
 		]);
 
 		foreach ( $selected_types as $selected_type ) {
@@ -848,6 +865,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 							self::PPRO_TRANSACTION_SUFFIX,
 							self::GOOGLE_PAY_TRANSACTION_PREFIX,
 							self::PAYPAL_TRANSACTION_PREFIX,
+							self::APPLE_PAY_TRANSACTION_PREFIX,
 						],
 						'',
 						$selected_type
@@ -907,6 +925,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				$result = 'payment_type';
 				break;
 			case Types::GOOGLE_PAY:
+			case Types::APPLE_PAY:
 				$result = 'payment_subtype';
 				break;
 			default:

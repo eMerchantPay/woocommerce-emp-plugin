@@ -165,6 +165,13 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	const PAYPAL_PAYMENT_TYPE_SALE      = 'sale';
 	const PAYPAL_PAYMENT_TYPE_EXPRESS   = 'express';
 
+	/**
+	 * Apple Pay transaction prefix and payment methods constants
+	 */
+	const APPLE_PAY_TRANSACTION_PREFIX     = 'apple_pay_';
+	const APPLE_PAY_PAYMENT_TYPE_AUTHORIZE = 'authorize';
+	const APPLE_PAY_PAYMENT_TYPE_SALE      = 'sale';
+
 	const METHOD_ACTION_CAPTURE = 'capture';
 	const METHOD_ACTION_REFUND  = 'refund';
 
@@ -1049,7 +1056,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		if (
 			Types::isAuthorize( $auth->type ) ||
 			Types::GOOGLE_PAY === $auth->type ||
-			Types::PAY_PAL === $auth->type
+			Types::PAY_PAL === $auth->type ||
+			Types::APPLE_PAY === $auth->type
 		) {
 			return Types::getCaptureTransactionClass( $auth->type );
         }

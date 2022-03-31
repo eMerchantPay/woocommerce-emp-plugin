@@ -305,6 +305,7 @@ class WC_emerchantpay_Transactions_Tree {
 				\Genesis\API\Constants\Transaction\Types::KLARNA_AUTHORIZE,
 				\Genesis\API\Constants\Transaction\Types::GOOGLE_PAY,
 				\Genesis\API\Constants\Transaction\Types::PAY_PAL,
+				\Genesis\API\Constants\Transaction\Types::APPLE_PAY,
 			),
 			\Genesis\API\Constants\Transaction\States::APPROVED
 		);
@@ -377,6 +378,7 @@ class WC_emerchantpay_Transactions_Tree {
 		$transaction_types = array(
 			\Genesis\API\Constants\Transaction\Types::GOOGLE_PAY,
 			\Genesis\API\Constants\Transaction\Types::PAY_PAL,
+			\Genesis\API\Constants\Transaction\Types::APPLE_PAY,
 		);
 
 		return in_array( $transaction_type, $transaction_types, true );
@@ -429,6 +431,25 @@ class WC_emerchantpay_Transactions_Tree {
 					];
 
 					return ( count( array_intersect( $refundable_types, $selected_types ) ) > 0 );
+				}
+				break;
+			case \Genesis\API\Constants\Transaction\Types::APPLE_PAY:
+				if ( WC_emerchantpay_Method::METHOD_ACTION_CAPTURE === $action ) {
+					return in_array(
+						WC_emerchantpay_Method::APPLE_PAY_TRANSACTION_PREFIX .
+						WC_emerchantpay_Method::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE,
+						$selected_types,
+						true
+					);
+				}
+
+				if ( WC_emerchantpay_Method::METHOD_ACTION_REFUND === $action ) {
+					return in_array(
+						WC_emerchantpay_Method::APPLE_PAY_TRANSACTION_PREFIX .
+						WC_emerchantpay_Method::APPLE_PAY_PAYMENT_TYPE_SALE,
+						$selected_types,
+						true
+					);
 				}
 				break;
 			default:
