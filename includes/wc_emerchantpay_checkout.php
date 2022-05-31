@@ -19,6 +19,8 @@
 
 use Genesis\API\Constants\Transaction\Names;
 use Genesis\API\Constants\Transaction\Types;
+use Genesis\API\Constants\Banks;
+use Genesis\Utils\Common as CommonUtils;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
@@ -52,6 +54,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	const SETTING_KEY_CHECKOUT_LANGUAGE        = 'checkout_language';
 	const SETTING_KEY_INIT_RECURRING_TXN_TYPES = 'init_recurring_txn_types';
 	const SETTING_KEY_TOKENIZATION             = 'tokenization';
+	const SETTING_KEY_BANK_CODES               = 'bank_codes';
 
 	/**
 	 * Additional Order/User Meta Constants
@@ -185,6 +188,14 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				'description' => static::getTranslatedText( 'Select transaction type for the payment transaction' ),
 				'desc_tip'    => true,
 			),
+			self::SETTING_KEY_BANK_CODES        => array(
+				'type'        => 'multiselect',
+				'css'         => 'height:auto',
+				'title'       => static::getTranslatedText( 'Bank code(s) for Online banking' ),
+				'options'     => $this->get_available_bank_codes(),
+				'description' => static::getTranslatedText( 'Select Bank code(s) for Online banking transaction type' ),
+				'desc_tip'    => true,
+			),
 			self::SETTING_KEY_CHECKOUT_LANGUAGE => array(
 				'type'        => 'select',
 				'title'       => static::getTranslatedText( 'Checkout Language' ),
@@ -300,6 +311,17 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Return available Bank codes for Online banking transaction type
+	 *
+	 * @return array
+	 */
+	protected function get_available_bank_codes() {
+		return array(
+			Banks::CPI => 'Interac Combined Pay-in',
+		);
 	}
 
 	/**
@@ -676,6 +698,17 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 					$transaction_custom_params = array(
 						'user_id' => $trustly_user_id,
 					);
+					break;
+				case Types::ONLINE_BANKING_PAYIN:
+					$available_bank_codes = $this->getMethodSetting( self::SETTING_KEY_BANK_CODES );
+					if ( CommonUtils::isValidArray( $available_bank_codes ) ) {
+						$transaction_custom_params['bank_codes'] = array_map(
+							function ($value) {
+								return ['bank_code' => $value];
+							},
+							$available_bank_codes
+						);
+					}
 					break;
 				default:
 					$transaction_custom_params = array();
