@@ -21,34 +21,74 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Request\Financial\OnlineBankingPayments;
+namespace Genesis\API\Request\Financial\Mobile;
 
+use Genesis\API\Constants\Transaction\Parameters\RussianMobileOperators;
+use Genesis\API\Constants\Transaction\Types;
 use Genesis\API\Request\Base\Financial;
 use Genesis\API\Traits\Request\AddressInfoAttributes;
 use Genesis\API\Traits\Request\Financial\AsyncAttributes;
-use Genesis\API\Traits\Request\Financial\BankAttributes;
 use Genesis\API\Traits\Request\Financial\PaymentAttributes;
 use Genesis\API\Traits\Request\Financial\PendingPaymentAttributes;
-use Genesis\API\Validators\Request\RegexValidator;
+use Genesis\API\Traits\RestrictedSetter;
 use Genesis\Exceptions\InvalidArgument;
 use Genesis\Utils\Common as CommonUtils;
 
 /**
- * Class GiroPay
- * @package Genesis\API\Request\Financial\OnlineBankingPayments
+ * Class RussianMobileSale
+ *
+ * Russian Mobile Sale Request
+ *
+ * @package Genesis\API\Request\Financial\Mobile\RussianMobileSale
+ *
+ * @method string getTarget()
+ * @method string getOperator()
  */
-class GiroPay extends Financial
+class RussianMobileSale extends Financial
 {
-    use AsyncAttributes, PaymentAttributes, AddressInfoAttributes, BankAttributes,
-        PendingPaymentAttributes;
+    use AsyncAttributes, PaymentAttributes, AddressInfoAttributes, PendingPaymentAttributes, RestrictedSetter;
+
+    const USAGE_MIN_LENGTH = 1;
+    const USAGE_MAX_LENGTH = 5;
 
     /**
-     * Returns the Request transaction type
+     * @var string
+     */
+    protected $operator;
+
+    /**
+     * @var string
+     */
+    protected $target;
+
+    /**
+     * @param $value
+     *
+     * @return $this
+     * @throws InvalidArgument
+     */
+    public function setUsage($value)
+    {
+        if ($value === null) {
+            $this->usage = null;
+
+            return $this;
+        }
+
+        return $this->setLimitedString(
+            'usage',
+            $value,
+            self::USAGE_MIN_LENGTH,
+            self::USAGE_MAX_LENGTH
+        );
+    }
+
+    /**
      * @return string
      */
     protected function getTransactionType()
     {
-        return \Genesis\API\Constants\Transaction\Types::GIROPAY;
+        return Types::RUSSIAN_MOBILE_SALE;
     }
 
     /**
@@ -60,61 +100,45 @@ class GiroPay extends Financial
     {
         $requiredFields = [
             'transaction_id',
-            'amount',
-            'currency',
+            'usage',
             'return_success_url',
             'return_failure_url',
+            'amount',
+            'currency',
+            'operator',
+            'target',
+            'customer_phone',
             'billing_country'
         ];
 
         $this->requiredFields = CommonUtils::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'billing_country' => ['DE'],
-            'currency'        => ['EUR']
+            'operator'        => RussianMobileOperators::getAll(),
+            'currency'        => ['RUB'],
+            'billing_country' => ['RU'],
         ];
 
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);
     }
 
     /**
-     * Add iban conditional validation if it is present
-     *
-     * @return void
-     *
-     * @throws InvalidArgument
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidClassMethod
-     */
-    protected function checkRequirements()
-    {
-        $this->requiredFieldValuesConditional = CommonUtils::createArrayObject(
-            array_merge(
-                (array)$this->requiredFieldValuesConditional,
-                $this->getIbanConditions()
-            )
-        );
-
-        parent::checkRequirements();
-    }
-
-    /**
      * Return additional request attributes
+     *
      * @return array
      */
     protected function getPaymentTransactionStructure()
     {
         return [
-            'usage'              => $this->usage,
-            'remote_ip'          => $this->remote_ip,
             'return_success_url' => $this->return_success_url,
             'return_failure_url' => $this->return_failure_url,
             'return_pending_url' => $this->getReturnPendingUrl(),
             'amount'             => $this->transformAmount($this->amount, $this->currency),
             'currency'           => $this->currency,
+            'operator'           => $this->operator,
+            'target'             => $this->target,
             'customer_email'     => $this->customer_email,
-            'bic'                => $this->bic,
-            'iban'               => $this->iban,
+            'customer_phone'     => $this->customer_phone,
             'billing_address'    => $this->getBillingAddressParamsStructure(),
             'shipping_address'   => $this->getShippingAddressParamsStructure()
         ];

@@ -17,7 +17,6 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
-use Genesis\API\Constants\Transaction\Parameters\Mobile\GooglePay\PaymentTypes as GooglePaymentTypes;
 use Genesis\API\Constants\Transaction\Types;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -97,6 +96,14 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	const SETTING_KEY_BUSINESS_ATOL_CERTIFICATE           = 'business_atol_certificate';
 	const SETTING_KEY_BUSINESS_PICK_UP_DATE               = 'business_pick_up_date';
 	const SETTING_KEY_BUSINESS_RETURN_DATE                = 'business_return_date';
+	const SETTING_KEY_REDIRECT_FAILURE                    = 'redirect_failure';
+	const SETTING_KEY_REDIRECT_CANCEL                     = 'redirect_cancel';
+
+	/**
+	 * Order cancel/failure settings
+	 */
+	const SETTING_VALUE_ORDER     = 'order';
+	const SETTING_VALUE_CHECKOUT  = 'checkout';
 
 	/**
 	 * A List with the Available WC Order Statuses
@@ -1467,6 +1474,43 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Admin panel Return redirect urls fields definition
+	 *
+	 * @return array
+	 */
+	protected function build_redirect_form_fields() {
+		$form_fields = array(
+			'return_redirect' => array(
+				'type'        => 'title',
+				'title'       => 'Return redirects',
+			),
+			self::SETTING_KEY_REDIRECT_FAILURE => array(
+				'type'        => 'select',
+				'title'       => static::getTranslatedText( 'Redirect upon failure' ),
+				'options'     => $this->get_available_redirect_pages(),
+				'description' => static::getTranslatedText( 'Select page where to redirect customer upon failed payment' ),
+				'desc_tip'    => true,
+				'default'     => self::SETTING_VALUE_ORDER,
+			),
+		);
+
+		if ( WC_emerchantpay_Checkout::get_method_code() === self::get_method_code() ) {
+			$form_fields += array(
+				self::SETTING_KEY_REDIRECT_CANCEL => array(
+					'type'        => 'select',
+					'title'       => static::getTranslatedText( 'Redirect upon cancel' ),
+					'options'     => $this->get_available_redirect_pages(),
+					'description' => static::getTranslatedText( 'Select page where to redirect customer upon cancelled payment' ),
+					'desc_tip'    => true,
+					'default'     => self::SETTING_VALUE_ORDER,
+				),
+			);
+		}
+
+		return $form_fields;
+	}
+
+	/**
 	 * Admin Panel Subscription Field Definition
 	 *
 	 * @return array
@@ -1550,6 +1594,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				wp_redirect( wc_get_page_permalink( 'cart' ) );
 			} else {
 				$this->set_one_time_token( $order_id, '|CLEAR|' );
+				$return_url = $order->get_view_order_url();
 
 				switch ( esc_sql( $_GET['act'] ) ) {
 					case 'success':
@@ -1568,7 +1613,12 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						$order->update_status( self::ORDER_STATUS_CANCELLED, $notice );
 
 						WC_emerchantpay_Message_Helper::addErrorNotice( $notice );
+
+						if ( $this->getMethodSetting( self::SETTING_KEY_REDIRECT_FAILURE ) === self::SETTING_VALUE_CHECKOUT ) {
+							$return_url = wc_get_checkout_url();
+						}
 						break;
+					// TODO Remove unused 'cancel' case
 					case 'cancel':
 						$note = static::getTranslatedText(
 							'The customer cancelled their payment session'
@@ -1579,7 +1629,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 						break;
 				}
 
-				header( 'Location: ' . $order->get_view_order_url() );
+				header( 'Location: ' . $return_url );
 			}
 		}
 	}
@@ -2568,6 +2618,10 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			$result .= '//' . $info['host'];
 		}
 
+		if ( $info['port'] ) {
+			$result .= ':' . $info['port'];
+		}
+
 		if ( $info['path'] ) {
 			$result .= $info['path'];
 		}
@@ -2694,7 +2748,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Get the the Business Attributes form fields
+	 * Get the Business Attributes form fields
 	 *
 	 * @return array
 	 */
@@ -3312,6 +3366,18 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 		}
 
 		return $cart;
+	}
+
+	/**
+	 * Return list of available return pages
+	 *
+	 * @return array
+	 */
+	protected function get_available_redirect_pages() {
+		return array(
+			self::SETTING_VALUE_ORDER    => 'Order page (default)',
+			self::SETTING_VALUE_CHECKOUT => 'Checkout page',
+		);
 	}
 }
 

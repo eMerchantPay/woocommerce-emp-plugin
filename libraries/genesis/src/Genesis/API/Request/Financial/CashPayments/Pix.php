@@ -21,26 +21,38 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Request\Financial\OnlineBankingPayments;
+namespace Genesis\API\Request\Financial\CashPayments;
 
+use Genesis\API\Constants\Transaction\Types;
 use Genesis\API\Request\Base\Financial;
 use Genesis\API\Traits\Request\AddressInfoAttributes;
+use Genesis\API\Traits\Request\DocumentAttributes;
 use Genesis\API\Traits\Request\Financial\AsyncAttributes;
-use Genesis\API\Traits\Request\Financial\BankAttributes;
 use Genesis\API\Traits\Request\Financial\PaymentAttributes;
-use Genesis\API\Traits\Request\Financial\PendingPaymentAttributes;
-use Genesis\API\Validators\Request\RegexValidator;
-use Genesis\Exceptions\InvalidArgument;
 use Genesis\Utils\Common as CommonUtils;
 
 /**
- * Class GiroPay
- * @package Genesis\API\Request\Financial\OnlineBankingPayments
+ * Class Pix
+ * @package Genesis\API\Request\Financial\CashPayments
+ *
+ * Pix is a payment service created by the Central Bank of Brazil (BACEN),
+ * which represents a new way of receiving/sending money. Pix allows payments
+ * to be made instantly. The customer can pay bills, invoices, public utilities,
+ * transfer and receive credits in a facilitated manner, using only Pix keys (CPF/CNPJ).
+ *
+ * @method string  getTransactionId()
+ * @method mixed   getAmount()
+ * @method string  getCurrency()
+ * @method string  getDocumentId()
+ * @method $this   setTransactionId($value)
+ * @method $this   setAmount($value)
+ * @method $this   setCurrency($value)
+ * @method $this   setDocumentId($documentId)
+ *
  */
-class GiroPay extends Financial
+class Pix extends Financial
 {
-    use AsyncAttributes, PaymentAttributes, AddressInfoAttributes, BankAttributes,
-        PendingPaymentAttributes;
+    use AsyncAttributes, PaymentAttributes, AddressInfoAttributes, DocumentAttributes;
 
     /**
      * Returns the Request transaction type
@@ -48,7 +60,17 @@ class GiroPay extends Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\API\Constants\Transaction\Types::GIROPAY;
+        return Types::PIX;
+    }
+
+    /**
+     * Allowed Billing Countries
+     *
+     * @return array
+     */
+    protected function getAllowedBillingCountries()
+    {
+        return ['BR'];
     }
 
     /**
@@ -62,61 +84,40 @@ class GiroPay extends Financial
             'transaction_id',
             'amount',
             'currency',
-            'return_success_url',
-            'return_failure_url',
-            'billing_country'
+            'document_id',
+            'billing_first_name',
+            'billing_last_name'
         ];
 
         $this->requiredFields = CommonUtils::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'billing_country' => ['DE'],
-            'currency'        => ['EUR']
+            'billing_country' => $this->getAllowedBillingCountries()
         ];
 
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);
-    }
 
-    /**
-     * Add iban conditional validation if it is present
-     *
-     * @return void
-     *
-     * @throws InvalidArgument
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidClassMethod
-     */
-    protected function checkRequirements()
-    {
         $this->requiredFieldValuesConditional = CommonUtils::createArrayObject(
-            array_merge(
-                (array)$this->requiredFieldValuesConditional,
-                $this->getIbanConditions()
-            )
+            $this->getDocumentIdConditions()
         );
-
-        parent::checkRequirements();
     }
 
     /**
      * Return additional request attributes
+     *
      * @return array
      */
     protected function getPaymentTransactionStructure()
     {
         return [
-            'usage'              => $this->usage,
-            'remote_ip'          => $this->remote_ip,
             'return_success_url' => $this->return_success_url,
             'return_failure_url' => $this->return_failure_url,
-            'return_pending_url' => $this->getReturnPendingUrl(),
             'amount'             => $this->transformAmount($this->amount, $this->currency),
             'currency'           => $this->currency,
             'customer_email'     => $this->customer_email,
-            'bic'                => $this->bic,
-            'iban'               => $this->iban,
+            'document_id'        => $this->document_id,
             'billing_address'    => $this->getBillingAddressParamsStructure(),
-            'shipping_address'   => $this->getShippingAddressParamsStructure()
+            'shipping_address'   => $this->getShippingAddressParamsStructure(),
         ];
     }
 }

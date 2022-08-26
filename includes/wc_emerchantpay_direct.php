@@ -275,6 +275,8 @@ class WC_emerchantpay_Direct extends WC_emerchantpay_Method {
 
 		$this->form_fields += $this->build_subscription_form_fields();
 
+		$this->form_fields += $this->build_redirect_form_fields();
+
 		$this->form_fields += $this->build_business_attributes_form_fields();
 	}
 

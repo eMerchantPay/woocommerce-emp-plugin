@@ -6,9 +6,9 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x or 5.x (Tested up to 5.9.1)
-* WooCommerce 3.x, 4.x, 5.x, 6.x (Tested up to 6.2.1)
-* [GenesisPHP v1.20.1](https://github.com/GenesisGateway/genesis_php/releases/tag/1.20.1) - (Integrated in Module)
+* WordPress 4.x, 5.x or 6.x (Tested up to 6.0.1)
+* WooCommerce 3.x, 4.x, 5.x, 6.x (Tested up to 6.8.2)
+* [GenesisPHP v1.21.2](https://github.com/GenesisGateway/genesis_php/releases/tag/1.21.2) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x (Tested up to 4.0.1) in order to use **Subscriptions**
 
@@ -178,6 +178,7 @@ Supported Transactions
     * __PayPal__
     * __PaySafeCard__
     * __PayU__
+    * __Pix__
     * __POLi__
     * __Post Finance__
     * __PPRO__

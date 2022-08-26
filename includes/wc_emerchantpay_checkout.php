@@ -204,14 +204,16 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				'desc_tip'    => true,
 			),
 			self::SETTING_KEY_TOKENIZATION      => array(
-				'type'    => 'checkbox',
-				'title'   => static::getTranslatedText( 'Enable/Disable' ),
-				'label'   => static::getTranslatedText( 'Enable Tokenization' ),
-				'default' => self::SETTING_VALUE_NO,
+				'type'        => 'checkbox',
+				'title'       => static::getTranslatedText( 'Enable/Disable' ),
+				'label'       => static::getTranslatedText( 'Enable Tokenization' ),
+				'default'     => self::SETTING_VALUE_NO,
 			),
 		);
 
 		$this->form_fields += $this->build_subscription_form_fields();
+
+		$this->form_fields += $this->build_redirect_form_fields();
 
 		$this->form_fields += $this->build_business_attributes_form_fields();
 	}
@@ -418,11 +420,16 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 */
 	protected function populateGateRequestData( $order, $isRecurring = false ) {
 		$data = parent::populateGateRequestData( $order, $isRecurring );
+		$return_url = $order->get_view_order_url();
+
+		if ( $this->getMethodSetting( self::SETTING_KEY_REDIRECT_CANCEL ) === self::SETTING_VALUE_CHECKOUT ) {
+			$return_url = wc_get_checkout_url();
+		}
 
 		return array_merge(
 			$data,
 			array(
-				'return_cancel_url' => $order->get_cancel_order_url_raw(),
+				'return_cancel_url' => $order->get_cancel_order_url_raw( wp_slash( $return_url ) ),
 			)
 		);
 	}
