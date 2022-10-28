@@ -33,6 +33,14 @@ class WC_emerchantpay_Helper {
 	const WP_NOTICE_TYPE_NOTICE = 'notice';
 
 	/**
+	 * 3DSv2 indicators mapped values
+	 */
+	const CURRENT_TRANSACTION_INDICATOR  = 'current_transaction';
+	const LESS_THAN_30_DAYS_INDICATOR    = 'less_than_30_days';
+	const MORE_30_LESS_60_DAYS_INDICATOR = 'more_30_less_60_days';
+	const MORE_THAN_60_DAYS_INDICATOR    = 'more_than_60_days';
+
+	/**
 	 * @return bool
 	 * @SuppressWarnings(PHPMD)
 	 */
@@ -248,5 +256,32 @@ class WC_emerchantpay_Helper {
 	 */
 	public static function isUserLogged() {
 		return get_current_user_id() !== 0;
+	}
+
+	/**
+	 * Compare today and the given date for last update
+	 *
+	 * @param $date
+	 *
+	 * @return string
+	 */
+	public static function get_indicator( $date ) {
+		$today         = new WC_DateTime();
+		$last_update   = new WC_DateTime( $date );
+		$date_interval = $last_update->diff( $today );
+
+		if ( 0 < $date_interval->days && $date_interval->days < 30 ) {
+			return self::LESS_THAN_30_DAYS_INDICATOR;
+		}
+
+		if ( 30 <= $date_interval->days && $date_interval->days <= 60 ) {
+			return self::MORE_30_LESS_60_DAYS_INDICATOR;
+		}
+
+		if ( $date_interval->days > 60 ) {
+			return self::MORE_THAN_60_DAYS_INDICATOR;
+		}
+
+		return self::CURRENT_TRANSACTION_INDICATOR;
 	}
 }

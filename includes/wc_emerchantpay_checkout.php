@@ -18,6 +18,7 @@
  */
 
 use Genesis\API\Constants\Transaction\Names;
+use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
 use Genesis\API\Constants\Transaction\Types;
 use Genesis\API\Constants\Banks;
 use Genesis\Utils\Common as CommonUtils;
@@ -204,12 +205,16 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				'desc_tip'    => true,
 			),
 			self::SETTING_KEY_TOKENIZATION      => array(
-				'type'        => 'checkbox',
-				'title'       => static::getTranslatedText( 'Enable/Disable' ),
-				'label'       => static::getTranslatedText( 'Enable Tokenization' ),
-				'default'     => self::SETTING_VALUE_NO,
+				'type'    => 'checkbox',
+				'title'   => static::getTranslatedText( 'Enable/Disable' ),
+				'label'   => static::getTranslatedText( 'Enable Tokenization' ),
+				'default' => self::SETTING_VALUE_NO,
 			),
 		);
+
+		$this->form_fields += $this->build_3dsv2_attributes_form_fields();
+
+		$this->form_fields += $this->build_sca_exemption_options_form_fields();
 
 		$this->form_fields += $this->build_subscription_form_fields();
 
@@ -265,10 +270,10 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			function ( $type ) {
 				return WC_emerchantpay_Method::GOOGLE_PAY_TRANSACTION_PREFIX . $type;
 			},
-			[
+			array(
 				WC_emerchantpay_Method::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE,
 				WC_emerchantpay_Method::GOOGLE_PAY_PAYMENT_TYPE_SALE,
-			]
+			)
 		);
 
 		// Add PayPal Methods
@@ -276,11 +281,11 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			function ( $type ) {
 				return WC_emerchantpay_Method::PAYPAL_TRANSACTION_PREFIX . $type;
 			},
-			[
+			array(
 				WC_emerchantpay_Method::PAYPAL_PAYMENT_TYPE_AUTHORIZE,
 				WC_emerchantpay_Method::PAYPAL_PAYMENT_TYPE_SALE,
 				WC_emerchantpay_Method::PAYPAL_PAYMENT_TYPE_EXPRESS,
-			]
+			)
 		);
 
 		// Add Apple Pay Methods
@@ -288,10 +293,10 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			function ( $type ) {
 				return WC_emerchantpay_Method::APPLE_PAY_TRANSACTION_PREFIX . $type;
 			},
-			[
+			array(
 				WC_emerchantpay_Method::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE,
 				WC_emerchantpay_Method::APPLE_PAY_PAYMENT_TYPE_SALE,
-			]
+			)
 		);
 
 		$transaction_types = array_merge(
@@ -334,7 +339,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	protected function get_wpf_languages() {
 		$data = array();
 
-		$names = [
+		$names = array(
 			\Genesis\API\Constants\i18n::AR => 'Arabic',
 			\Genesis\API\Constants\i18n::BG => 'Bulgarian',
 			\Genesis\API\Constants\i18n::DE => 'German',
@@ -361,7 +366,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			\Genesis\API\Constants\i18n::NO => 'Norwegian',
 			\Genesis\API\Constants\i18n::DA => 'Danish',
 			\Genesis\API\Constants\i18n::SV => 'Swedish',
-		];
+		);
 
 		foreach ( \Genesis\API\Constants\i18n::getAll() as $language ) {
 			$name = array_key_exists( $language, $names ) ? $names[ $language ] : strtoupper( $language );
@@ -404,7 +409,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 */
 	protected function get_wpf_recurring_transaction_types() {
 		return array(
-			Types::INIT_RECURRING_SALE =>
+			Types::INIT_RECURRING_SALE    =>
 				static::getTranslatedText( Names::getName( Types::INIT_RECURRING_SALE ) ),
 			Types::INIT_RECURRING_SALE_3D =>
 				static::getTranslatedText( Names::getName( Types::INIT_RECURRING_SALE_3D ) ),
@@ -419,7 +424,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 * @return array
 	 */
 	protected function populateGateRequestData( $order, $isRecurring = false ) {
-		$data = parent::populateGateRequestData( $order, $isRecurring );
+		$data       = parent::populateGateRequestData( $order, $isRecurring );
 		$return_url = $order->get_view_order_url();
 
 		if ( $this->getMethodSetting( self::SETTING_KEY_REDIRECT_CANCEL ) === self::SETTING_VALUE_CHECKOUT ) {
@@ -622,7 +627,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 */
 	protected function getMetaConsumerIdForLoggedUser() {
 		if ( ! WC_emerchantpay_Helper::isUserLogged() ) {
-			return [];
+			return array();
 		}
 
 		$meta = json_decode(
@@ -630,7 +635,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			true
 		);
 
-		return is_array( $meta ) ? $meta : [];
+		return is_array( $meta ) ? $meta : array();
 	}
 
 	/**
@@ -710,8 +715,10 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 					$available_bank_codes = $this->getMethodSetting( self::SETTING_KEY_BANK_CODES );
 					if ( CommonUtils::isValidArray( $available_bank_codes ) ) {
 						$transaction_custom_params['bank_codes'] = array_map(
-							function ($value) {
-								return ['bank_code' => $value];
+							function ( $value ) {
+								return array(
+									'bank_code' => $value,
+								);
 							},
 							$available_bank_codes
 						);
@@ -756,8 +763,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 */
 	protected function process_common_payment( $order_id, $isRecurring ) {
 		$order = new WC_Order( absint( $order_id ) );
-
-		$data = $this->populateGateRequestData( $order, $isRecurring );
+		$data  = $this->populateGateRequestData( $order, $isRecurring );
 
 		try {
 			$this->set_credentials();
@@ -765,6 +771,11 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			$genesis = $this->prepareInitialGenesisRequest( $data );
 			$genesis = $this->add_business_data_to_gateway_request( $genesis, $order );
 			$this->addTransactionTypesToGatewayRequest( $genesis, $order, $data, $isRecurring );
+
+			if ( $this->is_3dsv2_available() ) {
+				$this->add_3dsv2_parameters_to_gateway_request( $genesis, $order );
+			}
+			$this->add_sca_exemption_parameters( $genesis );
 
 			$genesis->execute();
 
@@ -881,15 +892,18 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			$alias_map[ $method . self::PPRO_TRANSACTION_SUFFIX ] = Types::PPRO;
 		}
 
-		$alias_map = array_merge($alias_map, [
-			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE => Types::GOOGLE_PAY,
-			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_SALE      => Types::GOOGLE_PAY,
-			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_AUTHORIZE         => Types::PAY_PAL,
-			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_SALE              => Types::PAY_PAL,
-			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_EXPRESS           => Types::PAY_PAL,
-			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE   => Types::APPLE_PAY,
-			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_SALE        => Types::APPLE_PAY,
-		]);
+		$alias_map = array_merge(
+			$alias_map,
+			array(
+				self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE => Types::GOOGLE_PAY,
+				self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_SALE      => Types::GOOGLE_PAY,
+				self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_AUTHORIZE         => Types::PAY_PAL,
+				self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_SALE              => Types::PAY_PAL,
+				self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_EXPRESS           => Types::PAY_PAL,
+				self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE   => Types::APPLE_PAY,
+				self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_SALE        => Types::APPLE_PAY,
+			)
+		);
 
 		foreach ( $selected_types as $selected_type ) {
 			if ( array_key_exists( $selected_type, $alias_map ) ) {
@@ -901,12 +915,12 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 
 				$processed_list[ $transaction_type ]['parameters'][] = array(
 					$key => str_replace(
-						[
+						array(
 							self::PPRO_TRANSACTION_SUFFIX,
 							self::GOOGLE_PAY_TRANSACTION_PREFIX,
 							self::PAYPAL_TRANSACTION_PREFIX,
 							self::APPLE_PAY_TRANSACTION_PREFIX,
-						],
+						),
 						'',
 						$selected_type
 					),
@@ -973,6 +987,80 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @param Genesis\Genesis $genesis
+	 * @param WC_Order $order
+	 *
+	 * @throws Exception
+	 */
+	protected function add_3dsv2_parameters_to_gateway_request( $genesis, $order ) {
+		/** @var \Genesis\API\Request\WPF\Create $wpf_request */
+		$wpf_request = $genesis->request();
+
+		/** @var WC_Customer $customer */
+		$customer = new WC_Customer( $order->get_customer_id() );
+
+		$threeds = new WC_emerchantpay_Threeds_Helper( $order, $customer );
+
+		$wpf_request
+			// Challenge Indicator
+			->setThreedsV2ControlChallengeIndicator(
+				empty( $this->get_option( self::SETTING_KEY_THREEDS_CHALLENGE_INDICATOR ) ) ? 'no_preference' :
+					$this->get_option( self::SETTING_KEY_THREEDS_CHALLENGE_INDICATOR )
+			)
+
+			// Purchase
+			->setThreedsV2PurchaseCategory(
+				$threeds->has_physical_product() ?
+				\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories::GOODS :
+				\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories::SERVICE
+			)
+
+			// Merchant_risk
+			->setThreedsV2MerchantRiskShippingIndicator( $threeds->fetch_shipping_indicator() )
+			->setThreedsV2MerchantRiskDeliveryTimeframe(
+				$threeds->has_physical_product() ?
+					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes::ANOTHER_DAY :
+					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes::ELECTRONICS
+			)
+			->setThreedsV2MerchantRiskReorderItemsIndicator( $threeds->fetch_reorder_items_indicator() );
+
+		if ( ! $threeds->is_guest_customer() ) {
+			$shipping_address_first_date_used = $threeds->get_shipping_address_date_first_used();
+
+			// CardHolder Account
+			$wpf_request
+				->setThreedsV2CardHolderAccountCreationDate( $threeds->get_customer_created_date() )
+				// WC_Customer contain all the user data (Shipping, Billing and Password)
+				// Update Indicator and Password Change Indicator will be the same
+				->setThreedsV2CardHolderAccountUpdateIndicator( $threeds->fetch_account_update_indicator() )
+				->setThreedsV2CardHolderAccountLastChangeDate( $threeds->get_customer_modified_date() )
+				->setThreedsV2CardHolderAccountPasswordChangeIndicator( $threeds->fetch_password_change_indicator() )
+				->setThreedsV2CardHolderAccountPasswordChangeDate( $threeds->get_customer_modified_date() )
+				->setThreedsV2CardHolderAccountShippingAddressUsageIndicator(
+					$threeds->fetch_shipping_address_usage_indicator( $shipping_address_first_date_used )
+				)
+				->setThreedsV2CardHolderAccountShippingAddressDateFirstUsed( $shipping_address_first_date_used )
+
+				->setThreedsV2CardHolderAccountTransactionsActivityLast24Hours(
+					$threeds->get_transactions_last_24_hours()
+				)
+				->setThreedsV2CardHolderAccountTransactionsActivityPreviousYear(
+					$threeds->get_transactions_previous_year()
+				)
+				->setThreedsV2CardHolderAccountPurchasesCountLast6Months(
+					$threeds->get_paid_transactions_for_6_months()
+				)
+				->setThreedsV2CardHolderAccountRegistrationDate( $threeds->get_first_order_date() );
+		}
+
+		$wpf_request->setThreedsV2CardHolderAccountRegistrationIndicator(
+			$threeds->is_guest_customer() ?
+				RegistrationIndicators::GUEST_CHECKOUT :
+				$threeds->fetch_registration_indicator( $threeds->get_first_order_date() )
+		);
 	}
 }
 

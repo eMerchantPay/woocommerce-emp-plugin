@@ -418,4 +418,14 @@ class WC_emerchantpay_Order_Helper {
 
 		return $items;
 	}
+
+	/**
+	 * Return WC_Order_Item Id
+	 *
+	 * @var WC_Order_Item $item
+	 * @return integer
+	 */
+	public static function get_item_id( $item ) {
+		return is_object( $item ) ? $item->get_product_id() : 0;
+	}
 }

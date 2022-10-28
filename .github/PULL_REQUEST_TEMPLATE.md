@@ -2,7 +2,7 @@
 * Description of changes 2
 * Description of changes 3, etc
 
-Fixes eMerchantPay/shopping_carts#number
+Fixes eMerchantPay/genesis_client_integrations#number
 
 -----------------
 
