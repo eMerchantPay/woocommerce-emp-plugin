@@ -2625,7 +2625,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			$result .= '//' . $info['host'];
 		}
 
-		if ( $info['port'] ) {
+		if ( array_key_exists( 'port', $info ) && ! empty( $info['host'] ) ) {
 			$result .= ':' . $info['port'];
 		}
 

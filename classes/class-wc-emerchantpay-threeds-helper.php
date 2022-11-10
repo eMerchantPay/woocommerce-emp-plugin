@@ -178,6 +178,10 @@ class WC_Emerchantpay_Threeds_Helper {
 	 * @return string
 	 */
 	public function fetch_reorder_items_indicator() {
+		if ( $this->is_guest_customer() ) {
+			return ReorderItemIndicators::FIRST_TIME;
+		}
+
 		$ordered_items = array_values(
 			array_map(
 				array( WC_emerchantpay_Order_Helper::class, 'get_item_id' ),
