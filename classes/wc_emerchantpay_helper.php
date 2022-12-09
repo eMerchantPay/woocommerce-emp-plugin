@@ -140,8 +140,7 @@ class WC_emerchantpay_Helper {
 
 	/**
 	 * Retrieves the Client IP Address of the Customer
-	 * Used in the Direct (Hosted) Payment Method
-	 *
+     *
 	 * @return string
 	 *
 	 * @SuppressWarnings(PHPMD)

@@ -6,11 +6,10 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x, 5.x or 6.x (Tested up to 6.1)
-* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.0 (Tested up to 7.0.0)
+* WordPress 4.x, 5.x or 6.x (Tested up to 6.1.1)
+* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.0 (Tested up to 7.1.1)
 * [GenesisPHP v1.21.3](https://github.com/GenesisGateway/genesis_php/releases/tag/1.21.3) - (Integrated in Module)
-* PCI-certified server in order to use ```emerchantpay Direct```
-* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x (Tested up to 4.3.0) in order to use **Subscriptions**
+* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x (Tested up to 4.6.0) in order to use **Subscriptions**
 
 GenesisPHP Requirements
 ------------
@@ -34,18 +33,8 @@ Installation
 * Install through the Marketplace/ Select the downloaded ```.zip``` File
 * Activate the newly installed ```WooCommerce emerchantpay Payment Gateway Client``` plugin
 * Navigate to ```WooCommerce -> Settings -> Payment``` 
-* Select your preferred payment method ```emerchantpay Checkout``` or ```emerchantpay Direct```
+* Select ```emerchantpay Checkout``` payment method
 * Check ```Enable```, set the correct credentials and click "Save changes"
-
-Enable WooCommerce Secure Checkout
-------------
-This steps should be followed if you wish to use the ```emerchantpay Direct``` Method
-* Ensure you have installed and configured a SSL Certificate on your PCI-DSS Certified Server
-* Login into your WordPress Admin Panel with Administrator privileges
-* Navigate to ```WooCommerce``` - > ```Settings``` -> ```Advanced```
-* In Section ```Page Setup``` check ```Force secure checkout```
-
-__If you are using Tokenization for Web Payment Form, please make sure Guest Checkout is disabled.__
 
 Subscriptions
 ------------
@@ -124,14 +113,6 @@ There are two ways of doing Refunds.
 
 Supported Transactions
 ------------
-* ```emerchantpay Direct``` Payment Method
-	* __Authorize__
-	* __Authorize (3D-Secure)__
-	* __InitRecurringSale__
-	* __InitRecurringSale (3D-Secure)__
-	* __RecurringSale__
-	* __Sale__
-	* __Sale (3D-Secure)__
 
 * ```emerchantpay Checkout``` Payment Method
     * __Apple Pay__

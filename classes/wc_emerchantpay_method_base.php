@@ -216,7 +216,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	/**
 	 * Holds the Meta Key used to extract the checkout Transaction
 	 *   - Checkout Method -> WPF Unique Id
-	 *   - Direct Method   -> Transaction Unique Id
 	 *
 	 * @return string
 	 */
@@ -529,10 +528,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 		if ( WC_emerchantpay_Checkout::get_method_code() === self::get_method_code() ) {
 			$key = WC_emerchantpay_Checkout::SETTING_KEY_TRANSACTION_TYPES;
-		}
-
-		if ( WC_emerchantpay_Direct::get_method_code() === self::get_method_code() ) {
-			$key = WC_emerchantpay_Direct::META_TRANSACTION_TYPE;
 		}
 
 		return $key;
@@ -1373,8 +1368,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 *  - SSL
 	 *  - etc
 	 *
-	 * Will be extended in the Direct Method
-	 *
 	 * @return bool
 	 */
 	protected function is_applicable() {
@@ -1964,17 +1957,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 					$total_refund_amount = $total_refunded_amount + $payment_transactions->amount;
 					$fully_refunded = ( (float) $total_order_amount === (float) $total_refund_amount ) ?: false;
 				}
-
-				break;
-			case WC_emerchantpay_Direct::get_method_code():
-				$total_refunded_amount = WC_emerchantpay_Transactions_Tree::get_total_amount_without_unique_id(
-					$payment_transactions->unique_id,
-					WC_emerchantpay_Transactions_Tree::getTransactionsListFromOrder( $order ),
-					\Genesis\API\Constants\Transaction\Types::REFUND
-				);
-
-				$total_refund_amount = $total_refunded_amount + $payment_transactions->amount;
-				$fully_refunded      = ( (float) $total_order_amount === (float) $total_refund_amount) ?: false;
 
 				break;
 		}
@@ -2746,7 +2728,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 	/**
 	* Get the code of the current used payment method
-	* Checkout / Direct
+	* Checkout
 	*
 	* @return string|null
 	*/
