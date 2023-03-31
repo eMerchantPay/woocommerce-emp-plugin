@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,11 +18,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\API\Request\NonFinancial\KYC\ConsumerRegistration;
 
+use Genesis\API\Constants\NonFinancial\KYC\ProfileCurrentStatuses;
 use Genesis\API\Request\Base\NonFinancial\KYC\BaseRequest;
 use Genesis\API\Traits\RestrictedSetter;
 
@@ -77,12 +80,7 @@ class Update extends BaseRequest
     {
         return $this->allowedOptionsSetter(
             'profile_current_status',
-            [
-                self::PROFILE_CURRENT_STATUS_UNDEFINED,
-                self::PROFILE_CURRENT_STATUS_REVIEW,
-                self::PROFILE_CURRENT_STATUS_DENIED,
-                self::PROFILE_CURRENT_STATUS_APPROVED
-            ],
+            ProfileCurrentStatuses::getAll(),
             $status,
             'Invalid profile current status.'
         );
@@ -104,7 +102,7 @@ class Update extends BaseRequest
 
         $requiredFieldsConditional = [
             'profile_current_status' => [
-                self::PROFILE_CURRENT_STATUS_DENIED => [
+                ProfileCurrentStatuses::DENIED => [
                     'status_reason'
                 ]
             ]

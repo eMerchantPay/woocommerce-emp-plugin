@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 namespace Genesis\API\Constants\Transaction;
@@ -86,16 +88,19 @@ class Types
 
     /**
      * A standard initial recurring
+     * @deprecated Since 1.21.5 Payment method is deprecated and will be removed
      */
     const INIT_RECURRING_SALE = 'init_recurring_sale';
 
     /**
      * 3D-based initial recurring
+     * @deprecated Since 1.21.5 Payment method is deprecated and will be removed
      */
     const INIT_RECURRING_SALE_3D = 'init_recurring_sale3d';
 
     /**
      * A RecurringSale transaction is a "repeated" transaction which follows and references an initial transaction
+     * @deprecated Since 1.21.5 Payment method is deprecated and will be removed
      */
     const RECURRING_SALE = 'recurring_sale';
 
@@ -156,6 +161,7 @@ class Types
 
     /**
      * TrustPay is a real-time bank transfer payment service, which is widely used in the Czech Republic and Slovakia.
+     * @deprecated since 1.21.5 - the TrustPay API was deprecated by Genesis
      */
     const TRUSTPAY = 'trustpay';
 
@@ -977,7 +983,6 @@ class Types
             self::TARJETA_SHOPPING,
             self::TCS,
             self::TRUSTLY_SALE,
-            self::TRUSTPAY,
             self::UPI,
             self::WEBMONEY,
             self::WEBPAY,
@@ -1097,6 +1102,7 @@ class Types
             self::MY_BANK,
             self::NEOSURF,
             self::OXXO,
+            self::ONLINE_BANKING_PAYIN,
             self::P24,
             self::PAGO_FACIL,
             self::PARTIAL_REVERSAL,
@@ -1302,6 +1308,7 @@ class Types
             self::SANTANDER_CASH,
             self::SURTIMAX,
             self::TRUSTLY_WITHDRAWAL,
+            self::TRUSTPAY,
             self::ZIMPLER
         ];
 

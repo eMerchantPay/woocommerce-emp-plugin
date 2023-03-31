@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,11 +18,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\API\Request\NonFinancial\KYC\Transaction;
 
+use Genesis\API\Constants\NonFinancial\KYC\IndustryTypes;
+use Genesis\API\Constants\NonFinancial\KYC\TransactionStatuses;
 use Genesis\API\Request\Base\NonFinancial\KYC\BaseRequest;
 use Genesis\API\Traits\RestrictedSetter;
 
@@ -114,22 +118,7 @@ class Update extends BaseRequest
     {
         return $this->allowedOptionsSetter(
             'transaction_status',
-            [
-                self::TRANSACTION_STATUS_APPROVED,
-                self::TRANSACTION_STATUS_PRE_AUTH,
-                self::TRANSACTION_STATUS_SETTLED,
-                self::TRANSACTION_STATUS_VOID,
-                self::TRANSACTION_STATUS_REJECTED,
-                self::TRANSACTION_STATUS_DECLINED,
-                self::TRANSACTION_STATUS_CHARGEBACK,
-                self::INDUSTRY_TYPE_REMITTANCE_TRANSFER,
-                self::TRANSACTION_STATUS_PENDING,
-                self::TRANSACTION_STATUS_PASS,
-                self::TRANSACTION_STATUS_FAILED,
-                self::TRANSACTION_STATUS_REFUND,
-                self::TRANSACTION_STATUS_APPROVED_REVIEW,
-                self::TRANSACTION_STATUS_ABANDON
-            ],
+            TransactionStatuses::getAll(),
             $status,
             'Invalid transaction status.'
         );
@@ -150,12 +139,12 @@ class Update extends BaseRequest
 
         $requiredFieldsConditional = [
             'status' => [
-                self::TRANSACTION_STATUS_REJECTED   => ['reason'],
-                self::TRANSACTION_STATUS_DECLINED   => ['reason'],
-                self::TRANSACTION_STATUS_CHARGEBACK => ['reason'],
-                self::TRANSACTION_STATUS_REFUND     => ['reason'],
-                self::TRANSACTION_STATUS_RETURN     => ['reason'],
-                self::TRANSACTION_STATUS_VOID       => ['reason']
+                TransactionStatuses::REJECTED   => ['reason'],
+                TransactionStatuses::DECLINED   => ['reason'],
+                TransactionStatuses::CHARGEBACK => ['reason'],
+                TransactionStatuses::REFUND     => ['reason'],
+                TransactionStatuses::RETURN     => ['reason'],
+                TransactionStatuses::VOID       => ['reason']
             ]
         ];
 

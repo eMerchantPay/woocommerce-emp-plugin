@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,11 +18,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 namespace Genesis\API\Request\Base;
 
 use Genesis\Builder;
+use Genesis\Exceptions\EnvironmentNotSet;
 use Genesis\Exceptions\InvalidArgument;
 
 /**
@@ -131,8 +134,9 @@ abstract class BaseVersionedRequest extends \Genesis\API\Request
      * Set the per-request configuration
      *
      * @return void
+     * @throws EnvironmentNotSet
      */
-    protected function initConfiguration()
+    protected function initConfiguration($subdomain = 'gateway')
     {
         switch ($this->requestType) {
             case Builder::XML:
@@ -143,7 +147,7 @@ abstract class BaseVersionedRequest extends \Genesis\API\Request
                 break;
         }
 
-        $this->initApiGatewayConfiguration($this->version . '/' . $this->requestPath, false);
+        $this->initApiGatewayConfiguration($this->version . '/' . $this->requestPath, false, $subdomain);
     }
 
     /**

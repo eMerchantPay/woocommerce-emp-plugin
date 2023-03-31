@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,11 +18,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\API\Request\NonFinancial\KYC\Call;
 
+use Genesis\API\Constants\NonFinancial\KYC\CallVerificationStatuses;
 use Genesis\API\Request\Base\NonFinancial\KYC\BaseRequest;
 use Genesis\API\Validators\Request\RegexValidator;
 
@@ -83,11 +86,7 @@ class Update extends BaseRequest
         $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'verification_status' => [
-                self::CALL_VERIFICATION_STATUS_VERIFICATION_FAILED,
-                self::CALL_VERIFICATION_STATUS_VERIFICATION_SUCCESS,
-                self::CALL_VERIFICATION_STATUS_ABANDON
-            ],
+            'verification_status' => CallVerificationStatuses::getAll(),
             'security_code_input' => new RegexValidator(RegexValidator::PATTERN_KYC_CALL_SECURITY_CODE)
         ];
 

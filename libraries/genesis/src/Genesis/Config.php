@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 namespace Genesis;
@@ -42,7 +44,7 @@ final class Config
     /**
      * Library Version
      */
-    const VERSION = '1.21.3';
+    const VERSION = '1.21.6';
 
     /**
      * Core configuration settings
@@ -82,6 +84,10 @@ final class Config
         'wpf'     => [
             'production' => 'wpf.',
             'sandbox'    => 'staging.wpf.'
+        ],
+        'kyc'     => [
+            'production' => 'kyc.',
+            'sandbox'    => 'staging.kyc.'
         ]
     ];
 

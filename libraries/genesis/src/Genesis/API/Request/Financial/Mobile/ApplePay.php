@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -29,6 +31,7 @@ use Genesis\API\Traits\Request\DocumentAttributes;
 use Genesis\API\Traits\Request\Financial\BirthDateAttributes;
 use Genesis\API\Traits\Request\Financial\Business\BusinessAttributes;
 use Genesis\API\Traits\Request\Financial\CryptoAttributes;
+use Genesis\API\Traits\Request\Financial\DescriptorAttributes;
 use Genesis\API\Traits\Request\Financial\PaymentAttributes;
 use Genesis\API\Traits\Request\Mobile\ApplePayAttributes;
 use Genesis\API\Traits\RestrictedSetter;
@@ -45,7 +48,8 @@ use Genesis\Utils\Common as CommonUtils;
 class ApplePay extends \Genesis\API\Request\Base\Financial
 {
     use AddressInfoAttributes, DocumentAttributes, PaymentAttributes, ApplePayAttributes,
-        RestrictedSetter, CryptoAttributes, BirthDateAttributes, BusinessAttributes;
+        RestrictedSetter, CryptoAttributes, BirthDateAttributes, BusinessAttributes,
+        DescriptorAttributes;
 
     /**
      * Sets ApplePay token
@@ -136,20 +140,21 @@ class ApplePay extends \Genesis\API\Request\Base\Financial
     protected function getPaymentTransactionStructure()
     {
         return [
-            'usage'               => $this->usage,
-            'amount'              => $this->transformAmount($this->amount, $this->currency),
-            'currency'            => $this->currency,
-            'remote_ip'           => $this->remote_ip,
-            'payment_subtype'     => $this->payment_subtype,
-            'payment_token'       => $this->getPaymentTokenStructure(),
-            'customer_email'      => $this->customer_email,
-            'customer_phone'      => $this->customer_phone,
-            'birth_date'          => $this->getBirthDate(),
-            'billing_address'     => $this->getBillingAddressParamsStructure(),
-            'shipping_address'    => $this->getShippingAddressParamsStructure(),
-            'document_id'         => $this->document_id,
-            'crypto'              => $this->crypto,
-            'business_attributes' => $this->getBusinessAttributesStructure(),
+            'usage'                     => $this->usage,
+            'amount'                    => $this->transformAmount($this->amount, $this->currency),
+            'currency'                  => $this->currency,
+            'remote_ip'                 => $this->remote_ip,
+            'payment_subtype'           => $this->payment_subtype,
+            'payment_token'             => $this->getPaymentTokenStructure(),
+            'customer_email'            => $this->customer_email,
+            'customer_phone'            => $this->customer_phone,
+            'birth_date'                => $this->getBirthDate(),
+            'billing_address'           => $this->getBillingAddressParamsStructure(),
+            'shipping_address'          => $this->getShippingAddressParamsStructure(),
+            'document_id'               => $this->document_id,
+            'crypto'                    => $this->crypto,
+            'business_attributes'       => $this->getBusinessAttributesStructure(),
+            'dynamic_descriptor_params' => $this->getDynamicDescriptorParamsStructure(),
         ];
     }
 }

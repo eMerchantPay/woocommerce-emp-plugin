@@ -8,7 +8,7 @@ Requirements
 
 * WordPress 4.x, 5.x or 6.x (Tested up to 6.1.1)
 * WooCommerce 3.x, 4.x, 5.x, 6.x, 7.0 (Tested up to 7.1.1)
-* [GenesisPHP v1.21.3](https://github.com/GenesisGateway/genesis_php/releases/tag/1.21.3) - (Integrated in Module)
+* [GenesisPHP v1.21.6](https://github.com/GenesisGateway/genesis_php/releases/tag/1.21.6) - (Integrated in Module)
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x (Tested up to 4.6.0) in order to use **Subscriptions**
 
 GenesisPHP Requirements
@@ -155,6 +155,7 @@ Supported Transactions
     * __Neteller__
     * __Online Banking__
       * __Interac Combined Pay-in (CPI)__ 
+      * __Bancontact (BCT)__ 
     * __OXXO__
     * __P24__
     * __Pago Facil__

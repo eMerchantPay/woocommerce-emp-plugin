@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -26,8 +28,8 @@ namespace Genesis\API;
 use Genesis\API\Request\Base\Financial\Cards\CreditCard;
 use Genesis\API\Traits\MagicAccessors;
 use Genesis\API\Traits\Validations\Request\Validations;
-use Genesis\API\Validators\Request\Base\Validator as RequestValidator;
 use Genesis\Builder;
+use Genesis\Exceptions\EnvironmentNotSet;
 use Genesis\Utils\Common as CommonUtils;
 
 /**
@@ -159,7 +161,7 @@ abstract class Request
             $this->treeStructure->exchangeArray(
                 CommonUtils::emptyValueRecursiveRemoval(
                     $this->treeStructure->getArrayCopy(),
-                    $this->getAllowedEmptyRequiredAttributes()
+                    $this->allowedEmptyNotNullFields()
                 )
             );
         }
@@ -240,7 +242,7 @@ abstract class Request
      * @param $token    String   - should we append the token to the end of the url
      *
      * @return string            - complete URL
-     * @throws \Genesis\Exceptions\EnvironmentNotSet
+     * @throws EnvironmentNotSet
      */
     protected function buildRequestURL($sub = 'gateway', $path = '', $token = '')
     {
@@ -340,14 +342,18 @@ abstract class Request
      * @param string $requestPath
      * @param bool $includeToken
      * @return void
-     * @throws \Genesis\Exceptions\EnvironmentNotSet
+     * @throws EnvironmentNotSet
      */
-    protected function initApiGatewayConfiguration($requestPath = 'process', $includeToken = true)
+    protected function initApiGatewayConfiguration(
+        $requestPath = 'process',
+        $includeToken = true,
+        $subdomain = 'gateway'
+    )
     {
         $this->setApiConfig(
             'url',
             $this->buildRequestURL(
-                'gateway',
+                $subdomain,
                 $requestPath,
                 ($includeToken ? \Genesis\Config::getToken() : false)
             )
@@ -371,16 +377,15 @@ abstract class Request
 
     /**
      * Return the required parameters keys which values could evaluate as empty
+     * Example value:
+     * array(
+     *     'class_property' => 'request_structure_key'
+     * )
      *
      * @return array
      */
-    protected function getAllowedEmptyRequiredAttributes()
+    protected function allowedEmptyNotNullFields()
     {
-        $allowedEmptyKeys = array();
-        if ($this->isZeroAmountAllowed()) {
-            array_push($allowedEmptyKeys, CreditCard::REQUEST_KEY_AMOUNT);
-        }
-
-        return $allowedEmptyKeys;
+        return array();
     }
 }

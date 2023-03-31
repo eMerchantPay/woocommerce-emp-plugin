@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,11 +18,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\API\Request\NonFinancial\KYC\Call;
 
+use Genesis\API\Constants\NonFinancial\KYC\CallServiceTypes;
 use Genesis\API\Request\Base\NonFinancial\KYC\BaseRequest;
 use Genesis\API\Validators\Request\RegexValidator;
 
@@ -119,10 +122,7 @@ class Create extends BaseRequest
                 'fi', 'fr', 'fr-CA', 'de', 'el', 'he', 'hi', 'hu', 'is', 'id', 'it', 'ja', 'ko', 'lv', 'ln', 'lt',
                 'zh-CN', 'no', 'pl', 'pt-BR', 'pt', 'ro', 'ru', 'sk', 'es', 'es-419', 'sv', 'th', 'tr', 'uk', 'vi'
             ],
-            'service_type'          => [
-                self::CALL_SERVICE_TYPE_SMS,
-                self::CALL_SERVICE_TYPE_VOICE
-            ],
+            'service_type'          => CallServiceTypes::getAll(),
             'security_code'         => new RegexValidator(RegexValidator::PATTERN_KYC_CALL_SECURITY_CODE),
             'customer_phone_number' => new RegexValidator('/^\d+$/')
         ];

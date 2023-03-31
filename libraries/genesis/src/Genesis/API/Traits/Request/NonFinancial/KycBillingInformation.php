@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,13 +18,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\API\Traits\Request\NonFinancial;
 
 use Genesis\API\Constants\DateTimeFormat;
-use Genesis\API\Request\Base\NonFinancial\KYC\BaseRequest;
+use Genesis\API\Constants\NonFinancial\KYC\Genders;
 use Genesis\Exceptions\InvalidArgument;
 
 /**
@@ -109,10 +111,7 @@ trait KycBillingInformation
     {
         return $this->allowedOptionsSetter(
             'kyc_billing_gender',
-            [
-                BaseRequest::GENDER_MALE,
-                BaseRequest::GENDER_FEMALE
-            ],
+            Genders::getAll(),
             $gender,
             'Invalid gender provided.'
         );

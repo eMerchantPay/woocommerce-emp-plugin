@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -18,17 +18,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ * @author      emerchantpay
+ * @copyright   Copyright (C) 2015-2023 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\API\Request\Financial\Cards;
 
 use Genesis\API\Traits\Request\Financial\Business\BusinessAttributes;
+use Genesis\API\Traits\Request\Financial\Cards\Recurring\ManagedRecurringAttributes;
+use Genesis\API\Traits\Request\Financial\Cards\Recurring\RecurringCategoryAttributes;
+use Genesis\API\Traits\Request\Financial\Cards\Recurring\RecurringTypeAttributes;
 use Genesis\API\Traits\Request\Financial\CryptoAttributes;
 use Genesis\API\Traits\Request\Financial\FxRateAttributes;
 use Genesis\API\Traits\Request\Financial\GamingAttributes;
 use Genesis\API\Traits\Request\Financial\PreauthorizationAttributes;
 use Genesis\API\Traits\Request\Financial\ScaAttributes;
+use Genesis\API\Traits\Request\Financial\Threeds\V2\AllAttributes as AllThreedsV2Attributes;
 use Genesis\API\Traits\Request\MotoAttributes;
 use Genesis\API\Traits\Request\Financial\NotificationAttributes;
 use Genesis\API\Traits\Request\Financial\AsyncAttributes;
@@ -37,7 +43,6 @@ use Genesis\API\Traits\Request\Financial\MpiAttributes;
 use Genesis\API\Traits\Request\RiskAttributes;
 use Genesis\API\Traits\Request\Financial\DescriptorAttributes;
 use Genesis\API\Traits\Request\Financial\TravelData\TravelDataAttributes;
-use Genesis\API\Traits\Request\Financial\Threeds\V2\CommonAttributes as ThreedsV2CommonAttributes;
 use Genesis\API\Traits\RestrictedSetter;
 use Genesis\Utils\Common as CommonUtils;
 
@@ -53,9 +58,9 @@ use Genesis\Utils\Common as CommonUtils;
 class Authorize3D extends \Genesis\API\Request\Base\Financial\Cards\CreditCard
 {
     use GamingAttributes, MotoAttributes, NotificationAttributes, AsyncAttributes, AddressInfoAttributes,
-        MpiAttributes, RiskAttributes, DescriptorAttributes, PreauthorizationAttributes,
-        TravelDataAttributes, ScaAttributes, FxRateAttributes, CryptoAttributes,
-        BusinessAttributes, RestrictedSetter, ThreedsV2CommonAttributes;
+        MpiAttributes, RiskAttributes, DescriptorAttributes, PreauthorizationAttributes, TravelDataAttributes,
+        ScaAttributes, FxRateAttributes, CryptoAttributes, BusinessAttributes, RestrictedSetter,
+        AllThreedsV2Attributes, RecurringTypeAttributes, ManagedRecurringAttributes, RecurringCategoryAttributes;
 
     /**
      * Returns the Request transaction type
@@ -67,13 +72,22 @@ class Authorize3D extends \Genesis\API\Request\Base\Financial\Cards\CreditCard
     }
 
     /**
-     * Transaction Request with zero amount is allowed
+     * Return the required parameters keys which values could evaluate as empty
+     * Example value:
+     * array(
+     *     'class_property' => 'request_structure_key'
+     * )
      *
-     * @return bool
+     * @return array
      */
-    protected function allowedZeroAmount()
+    protected function allowedEmptyNotNullFields()
     {
-        return true;
+        return array_merge(
+            array(
+                'amount' => static::REQUEST_KEY_AMOUNT
+            ),
+            $this->getAllowedFieldsZeroValues()
+        );
     }
 
     /**
@@ -94,7 +108,9 @@ class Authorize3D extends \Genesis\API\Request\Base\Financial\Cards\CreditCard
             $this->requiredMpiFieldsConditional(),
             $this->requiredTokenizationFieldsConditional(),
             $this->requiredCCFieldsConditional(),
-            $this->requiredThreedsV2DeviceTypeConditional()
+            $this->requiredThreedsV2DeviceTypeConditional(),
+            $this->requiredManagedRecurringFieldsConditional(),
+            $this->requiredRecurringManagedTypeFieldConditional()
         );
 
         $this->requiredFieldsConditional = CommonUtils::createArrayObject($requiredFieldsConditional);
@@ -116,7 +132,8 @@ class Authorize3D extends \Genesis\API\Request\Base\Financial\Cards\CreditCard
      */
     protected function checkRequirements()
     {
-        $requiredFieldsValuesConditional = $this->getThreedsV2FieldValuesValidations();
+        $requiredFieldsValuesConditional = $this->getThreedsV2FieldValuesValidations() +
+            $this->requiredRecurringInitialTypesFieldValuesConditional();
 
         $this->requiredFieldValuesConditional = CommonUtils::createArrayObject($requiredFieldsValuesConditional);
 
@@ -149,7 +166,10 @@ class Authorize3D extends \Genesis\API\Request\Base\Financial\Cards\CreditCard
                 'fx_rate_id'                => $this->fx_rate_id,
                 'crypto'                    => $this->crypto,
                 'business_attributes'       => $this->getBusinessAttributesStructure(),
-                'threeds_v2_params'         => $this->getThreedsV2ParamsStructure()
+                'threeds_v2_params'         => $this->getThreedsV2ParamsStructure(),
+                'recurring_type'            => $this->getRecurringType(),
+                'managed_recurring'         => $this->getManagedRecurringAttributesStructure(),
+                'recurring_category'        => $this->recurring_category
             ],
             $this->getScaAttributesStructure()
         );

@@ -328,6 +328,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	protected function get_available_bank_codes() {
 		return array(
 			Banks::CPI => 'Interac Combined Pay-in',
+			Banks::BCT => 'Bancontact',
 		);
 	}
 
