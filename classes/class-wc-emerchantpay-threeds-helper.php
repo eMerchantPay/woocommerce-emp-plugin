@@ -19,7 +19,6 @@
 
 use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\ShippingIndicators;
 use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\ReorderItemIndicators;
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\PasswordChangeIndicators;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
@@ -34,15 +33,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WC_Emerchantpay_Threeds_Helper {
 	/**
-	 * Date format
+	 * @var string Date format
 	 */
-	const DATE_FORMAT = 'Y-m-d';
-
-	const NAMESPACE_INDICATORS                   =
-		'Genesis\\API\\Constants\\Transaction\\Parameters\\Threeds\\V2\\CardHolderAccount\\';
-	const SHIPPING_ADDRESS_USAGE_INDICATOR_CLASS = self::NAMESPACE_INDICATORS . 'ShippingAddressUsageIndicators';
-	const REGISTRATION_INDICATOR_CLASS           = self::NAMESPACE_INDICATORS . 'RegistrationIndicators';
-	const UPDATE_INDICATOR_CLASS                 = self::NAMESPACE_INDICATORS . 'UpdateIndicators';
+	private $date_format;
 
 	private $paid_statuses = array(
 		WC_emerchantpay_Method::ORDER_STATUS_PROCESSING,
@@ -79,11 +72,12 @@ class WC_Emerchantpay_Threeds_Helper {
 	 * @param WC_Order $order
 	 * @param WC_Customer $customer
 	 */
-	public function __construct( $order, $customer ) {
-		$this->order    = $order;
-		$this->customer = $customer;
+	public function __construct( $order, $customer, $date_format ) {
+		$this->order       = $order;
+		$this->customer    = $customer;
+		$this->date_format = $date_format;
 
-		$this->has_physical_product = ! $this->is_all_items_digital();
+		$this->has_physical_product = ! $this->are_all_items_digital();
 
 		$this->init_customer_orders_history();
 	}
@@ -120,54 +114,6 @@ class WC_Emerchantpay_Threeds_Helper {
 		}
 
 		return ShippingIndicators::OTHER;
-	}
-
-	/**
-	 * Fetch the CardHolder Account Update Indicator
-	 *
-	 * @return string
-	 * @throws Exception
-	 */
-	public function fetch_account_update_indicator() {
-		// WooCommerce doesn't have Address history
-		return $this->get_indicator_value_by_class(
-			self::UPDATE_INDICATOR_CLASS,
-			$this->get_customer_modified_date()
-		);
-	}
-
-	/**
-	 * Fetch the Password change indicator based on the Customer modified date
-	 *
-	 * @return string
-	 * @throws Exception
-	 */
-	public function fetch_password_change_indicator() {
-		$last_update_date = $this->get_customer_modified_date();
-
-		if ( $last_update_date === $this->get_customer_created_date() ) {
-			return PasswordChangeIndicators::NO_CHANGE;
-		}
-
-		return $this->get_indicator_value_by_class(
-			PasswordChangeIndicators::class,
-			$last_update_date
-		);
-	}
-
-	/**
-	 * Fetch the Shipping Address Usage Indicator based on the date of Shipping Address's first usage
-	 *
-	 * @param $address_first_used
-	 *
-	 * @return string
-	 * @throws Exception
-	 */
-	public function fetch_shipping_address_usage_indicator( $address_first_used ) {
-		return $this->get_indicator_value_by_class(
-			self::SHIPPING_ADDRESS_USAGE_INDICATOR_CLASS,
-			$address_first_used
-		);
 	}
 
 	/**
@@ -212,7 +158,7 @@ class WC_Emerchantpay_Threeds_Helper {
 			array_filter(
 				$this->customer_orders,
 				function ( $order_data ) use ( $comparison_date ) {
-					return WC_DateTime::CreateFromFormat( self::DATE_FORMAT, $order_data['date_created'] ) >=
+					return WC_DateTime::CreateFromFormat( $this->date_format, $order_data['date_created'] ) >=
 						   $comparison_date;
 				}
 			)
@@ -226,14 +172,14 @@ class WC_Emerchantpay_Threeds_Helper {
 	 */
 	public function get_transactions_previous_year() {
 		$previous_year = gmdate( 'Y', strtotime( '-1 Year' ) );
-		$start_object  = WC_DateTime::createFromFormat( self::DATE_FORMAT . 'H:i:s', "$previous_year-01-01 00:00:00" );
-		$end_object    = WC_DateTime::createFromFormat( self::DATE_FORMAT . 'H:i:s', "$previous_year-12-31 23:59:59" );
+		$start_object  = WC_DateTime::createFromFormat( $this->date_format . 'H:i:s', "$previous_year-01-01 00:00:00" );
+		$end_object    = WC_DateTime::createFromFormat( $this->date_format . 'H:i:s', "$previous_year-12-31 23:59:59" );
 
 		return count(
 			array_filter(
 				$this->customer_orders,
 				function ( $order_data ) use ( $start_object, $end_object ) {
-					$order_date = WC_DateTime::CreateFromFormat( self::DATE_FORMAT, $order_data['date_created'] );
+					$order_date = WC_DateTime::CreateFromFormat( $this->date_format, $order_data['date_created'] );
 
 					return $start_object <= $order_date && $order_date <= $end_object;
 				}
@@ -252,7 +198,7 @@ class WC_Emerchantpay_Threeds_Helper {
 				$this->customer_orders,
 				function ( $order_data ) use ( $comparison_date ) {
 					return in_array( $order_data['order_status'], $this->paid_statuses, true ) &&
-						WC_DateTime::CreateFromFormat( self::DATE_FORMAT, $order_data['date_created'] ) >=
+						WC_DateTime::CreateFromFormat( $this->date_format, $order_data['date_created'] ) >=
 						$comparison_date;
 				}
 			)
@@ -266,39 +212,6 @@ class WC_Emerchantpay_Threeds_Helper {
 	 */
 	public function is_guest_customer() {
 		return empty( $this->order->get_customer_id() );
-	}
-
-	/**
-	 * Fetch the registration indicator
-	 *
-	 * @return string
-	 * @throws Exception
-	 */
-	public function fetch_registration_indicator( $order_date ) {
-		return $this->get_indicator_value_by_class(
-			self::REGISTRATION_INDICATOR_CLASS,
-			$order_date
-		);
-	}
-
-	/**
-	 * Get the modified date of the customer
-	 *
-	 * @return null|string
-	 */
-	public function get_customer_modified_date() {
-		return $this->customer->get_date_modified() ?
-			$this->customer->get_date_modified()->date( self::DATE_FORMAT ) : null;
-	}
-
-	/**
-	 * Get the created date of the customer
-	 *
-	 * @return null|string
-	 */
-	public function get_customer_created_date() {
-		return $this->customer->get_date_created() ?
-			$this->customer->get_date_created()->date( self::DATE_FORMAT ) : null;
 	}
 
 	/**
@@ -339,7 +252,7 @@ class WC_Emerchantpay_Threeds_Helper {
 	 *
 	 * @return bool
 	 */
-	private function is_all_items_digital() {
+	private function are_all_items_digital() {
 		return count(
 			array_filter(
 				$this->order->get_items(),
@@ -378,8 +291,8 @@ class WC_Emerchantpay_Threeds_Helper {
 					'billing'      => $customer_order->get_formatted_billing_address(),
 					'shipping'     => $customer_order->get_formatted_shipping_address(),
 					'order_status' => $customer_order->get_status(),
-					'date_created' => $customer_order->get_date_created()->date( self::DATE_FORMAT ),
-					'date_updated' => $customer_order->get_date_modified()->date( self::DATE_FORMAT ),
+					'date_created' => $customer_order->get_date_created()->date( $this->date_format ),
+					'date_updated' => $customer_order->get_date_modified()->date( $this->date_format ),
 					'product_ids'  => array_values(
 						array_map(
 							array( WC_emerchantpay_Order_Helper::class, 'get_item_id' ),
@@ -390,29 +303,5 @@ class WC_Emerchantpay_Threeds_Helper {
 			},
 			count( $customer_orders ) > 0 ? $customer_orders : array()
 		);
-	}
-
-	/**
-	 * Build dynamically the indicator class
-	 *
-	 * @param string $class_indicator
-	 * @param string $date
-	 *
-	 * @return string
-	 */
-	private function get_indicator_value_by_class( $class_indicator, $date ) {
-		switch ( WC_emerchantpay_Helper::get_indicator( $date ) ) {
-			case WC_emerchantpay_Helper::LESS_THAN_30_DAYS_INDICATOR:
-				return $class_indicator::LESS_THAN_30DAYS;
-			case WC_emerchantpay_Helper::MORE_30_LESS_60_DAYS_INDICATOR:
-				return $class_indicator::FROM_30_TO_60_DAYS;
-			case WC_emerchantpay_Helper::MORE_THAN_60_DAYS_INDICATOR:
-				return $class_indicator::MORE_THAN_60DAYS;
-			default:
-				if ( PasswordChangeIndicators::class === $class_indicator ) {
-					return $class_indicator::DURING_TRANSACTION;
-				}
-				return $class_indicator::CURRENT_TRANSACTION;
-		}
 	}
 }

@@ -18,7 +18,6 @@
  */
 
 use Genesis\API\Constants\Transaction\Names;
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
 use Genesis\API\Constants\Transaction\Types;
 use Genesis\API\Constants\Banks;
 use Genesis\Utils\Common as CommonUtils;
@@ -773,8 +772,8 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			$genesis = $this->add_business_data_to_gateway_request( $genesis, $order );
 			$this->addTransactionTypesToGatewayRequest( $genesis, $order, $data, $isRecurring );
 
-			if ( $this->is_3dsv2_available() ) {
-				$this->add_3dsv2_parameters_to_gateway_request( $genesis, $order );
+			if ( $this->is_3dsv2_enabled() ) {
+				$this->add_3dsv2_parameters_to_gateway_request( $genesis, $order, $isRecurring );
 			}
 			$this->add_sca_exemption_parameters( $genesis );
 
@@ -834,7 +833,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		);
 
 		// Save whole trx
-		WC_emerchantpay_Order_Helper::saveInitialTrxToOrder( $order_id, $response_obj );
+		WC_emerchantpay_Order_Helper::save_initial_trx_to_order( $order_id, $response_obj );
 	}
 
 	/**
@@ -988,80 +987,6 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * @param Genesis\Genesis $genesis
-	 * @param WC_Order $order
-	 *
-	 * @throws Exception
-	 */
-	protected function add_3dsv2_parameters_to_gateway_request( $genesis, $order ) {
-		/** @var \Genesis\API\Request\WPF\Create $wpf_request */
-		$wpf_request = $genesis->request();
-
-		/** @var WC_Customer $customer */
-		$customer = new WC_Customer( $order->get_customer_id() );
-
-		$threeds = new WC_emerchantpay_Threeds_Helper( $order, $customer );
-
-		$wpf_request
-			// Challenge Indicator
-			->setThreedsV2ControlChallengeIndicator(
-				empty( $this->get_option( self::SETTING_KEY_THREEDS_CHALLENGE_INDICATOR ) ) ? 'no_preference' :
-					$this->get_option( self::SETTING_KEY_THREEDS_CHALLENGE_INDICATOR )
-			)
-
-			// Purchase
-			->setThreedsV2PurchaseCategory(
-				$threeds->has_physical_product() ?
-				\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories::GOODS :
-				\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories::SERVICE
-			)
-
-			// Merchant_risk
-			->setThreedsV2MerchantRiskShippingIndicator( $threeds->fetch_shipping_indicator() )
-			->setThreedsV2MerchantRiskDeliveryTimeframe(
-				$threeds->has_physical_product() ?
-					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes::ANOTHER_DAY :
-					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes::ELECTRONICS
-			)
-			->setThreedsV2MerchantRiskReorderItemsIndicator( $threeds->fetch_reorder_items_indicator() );
-
-		if ( ! $threeds->is_guest_customer() ) {
-			$shipping_address_first_date_used = $threeds->get_shipping_address_date_first_used();
-
-			// CardHolder Account
-			$wpf_request
-				->setThreedsV2CardHolderAccountCreationDate( $threeds->get_customer_created_date() )
-				// WC_Customer contain all the user data (Shipping, Billing and Password)
-				// Update Indicator and Password Change Indicator will be the same
-				->setThreedsV2CardHolderAccountUpdateIndicator( $threeds->fetch_account_update_indicator() )
-				->setThreedsV2CardHolderAccountLastChangeDate( $threeds->get_customer_modified_date() )
-				->setThreedsV2CardHolderAccountPasswordChangeIndicator( $threeds->fetch_password_change_indicator() )
-				->setThreedsV2CardHolderAccountPasswordChangeDate( $threeds->get_customer_modified_date() )
-				->setThreedsV2CardHolderAccountShippingAddressUsageIndicator(
-					$threeds->fetch_shipping_address_usage_indicator( $shipping_address_first_date_used )
-				)
-				->setThreedsV2CardHolderAccountShippingAddressDateFirstUsed( $shipping_address_first_date_used )
-
-				->setThreedsV2CardHolderAccountTransactionsActivityLast24Hours(
-					$threeds->get_transactions_last_24_hours()
-				)
-				->setThreedsV2CardHolderAccountTransactionsActivityPreviousYear(
-					$threeds->get_transactions_previous_year()
-				)
-				->setThreedsV2CardHolderAccountPurchasesCountLast6Months(
-					$threeds->get_paid_transactions_for_6_months()
-				)
-				->setThreedsV2CardHolderAccountRegistrationDate( $threeds->get_first_order_date() );
-		}
-
-		$wpf_request->setThreedsV2CardHolderAccountRegistrationIndicator(
-			$threeds->is_guest_customer() ?
-				RegistrationIndicators::GUEST_CHECKOUT :
-				$threeds->fetch_registration_indicator( $threeds->get_first_order_date() )
-		);
 	}
 }
 

@@ -278,11 +278,20 @@ class WC_emerchantpay_Order_Helper {
 	}
 
 	/**
+	 * Save Response object, along with 3DSv2 URLs
+	 *
 	 * @param int      $order_id
 	 * @param stdClass $response_obj
+	 *
+	 * @return void
 	 */
-	public static function saveInitialTrxToOrder( $order_id, $response_obj ) {
+	public static function save_initial_trx_to_order( $order_id, $response_obj, $data = array() ) {
 		$trx = new WC_emerchantpay_Transaction( $response_obj );
+
+		if ( isset( $data['return_success_url'] ) && isset( $data['return_failure_url'] ) ) {
+			$trx->set_return_success_url( $data['return_success_url'] );
+			$trx->set_return_failure_url( $data['return_failure_url'] );
+		}
 
 		static::setOrderMetaData(
 			$order_id,

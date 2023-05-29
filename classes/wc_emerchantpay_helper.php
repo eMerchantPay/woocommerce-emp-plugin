@@ -140,7 +140,8 @@ class WC_emerchantpay_Helper {
 
 	/**
 	 * Retrieves the Client IP Address of the Customer
-     *
+	 * Used in the Direct (Hosted) Payment Method
+	 *
 	 * @return string
 	 *
 	 * @SuppressWarnings(PHPMD)
@@ -264,7 +265,7 @@ class WC_emerchantpay_Helper {
 	 *
 	 * @return string
 	 */
-	public static function get_indicator( $date ) {
+	public static function get_transaction_indicator( $date ) {
 		$today         = new WC_DateTime();
 		$last_update   = new WC_DateTime( $date );
 		$date_interval = $last_update->diff( $today );

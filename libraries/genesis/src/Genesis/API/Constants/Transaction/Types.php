@@ -38,6 +38,8 @@ class Types
 {
     /**
      * Account Verification
+     *
+     * @deprecated Since 1.21.9 Payment method is deprecated and will be removed
      */
     const ACCOUNT_VERIFICATION = 'account_verification';
 
@@ -918,7 +920,6 @@ class Types
     public static function getWPFTransactionTypes()
     {
         return [
-            self::ACCOUNT_VERIFICATION,
             self::ARGENCARD,
             self::APPLE_PAY,
             self::AURA,
@@ -1330,5 +1331,22 @@ class Types
             self::getFinancialDeprecatedRequests(),
             Services::getServiceDeprecatedRequests()
         );
+    }
+
+    /**
+     * Get Card payment types
+     *
+     * @return array
+     */
+    public static function getCardTransactionTypes()
+    {
+        return [
+            Types::AUTHORIZE,
+            Types::AUTHORIZE_3D,
+            Types::SALE,
+            Types::SALE_3D,
+            Types::INIT_RECURRING_SALE,
+            Types::INIT_RECURRING_SALE_3D
+        ];
     }
 }

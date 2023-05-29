@@ -1,0 +1,40 @@
+body {
+    background-color: #f6f5f6;
+    padding-top: 50px;
+}
+.center {
+    max-width: 819px;
+    height: 423px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    color: #000000;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.center h3 {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    text-align: center;
+    font-weight: 500;
+    font-size: 40px;
+}
+.center h3 span {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: block;
+    text-align: center;
+    font-weight: 400;
+    font-size: 16px;
+}
+.hidden {
+    display: none;
+}
+.screen-logo
+{
+    width: 152px;
+    height: 152px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

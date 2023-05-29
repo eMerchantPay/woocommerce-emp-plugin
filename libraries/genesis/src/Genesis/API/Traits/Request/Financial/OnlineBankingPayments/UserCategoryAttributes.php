@@ -23,45 +23,20 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Request\Financial\Cards;
-
-use Genesis\API\Traits\Request\Financial\CustomerIdentificationData;
-use Genesis\API\Traits\Request\Financial\SourceOfFundsAttributes;
-use Genesis\API\Traits\RestrictedSetter;
+namespace Genesis\API\Traits\Request\Financial\OnlineBankingPayments;
 
 /**
- * Class Credit
+ * Trait UserCategoryAttributes
+ * @package Genesis\API\Traits\Request\Financial\OnlineBankingPayments
  *
- * Credit Request
- *
- * @package Genesis\API\Request\Financial\Cards
+ * @method $this getUserCategory() Get value
  */
-class Credit extends \Genesis\API\Request\Base\Financial\Reference
+trait UserCategoryAttributes
 {
-    use RestrictedSetter, SourceOfFundsAttributes, CustomerIdentificationData;
-
     /**
-     * Returns the Request transaction type
-     * @return string
-     */
-    protected function getTransactionType()
-    {
-        return \Genesis\API\Constants\Transaction\Types::CREDIT;
-    }
-
-    /**
-     * Return additional request attributes
+     * User category. If missing, 'default' will be used
      *
-     * @return array
+     * @var $user_category
      */
-    protected function getPaymentTransactionStructure()
-    {
-        return array_merge(
-            parent::getPaymentTransactionStructure(),
-            $this->getSourceOfFundsStructure(),
-            [
-                'customer_identification' => $this->getCustomerIdentificationDataStructure()
-            ]
-        );
-    }
+    protected $user_category;
 }

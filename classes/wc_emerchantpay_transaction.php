@@ -41,6 +41,10 @@ class WC_emerchantpay_Transaction {
 	public $currency;
 	public $amount;
 	public $terminal;
+	public $threeds_method_url;
+	public $threeds_method_continue_url;
+	public $return_success_url;
+	public $return_failure_url;
 
 	public function __construct( $response = null, $parent_id = false, $type = '' ) {
 		if ( $response ) {
@@ -91,6 +95,12 @@ class WC_emerchantpay_Transaction {
 		if ( isset( $trx->payment_transaction->terminal_token ) ) {
 			$this->terminal = $trx->payment_transaction->terminal_token;
 		}
+		if ( isset( $trx->threeds_method_url ) ) {
+			$this->threeds_method_url = $trx->threeds_method_url;
+		}
+		if ( isset( $trx->threeds_method_continue_url ) ) {
+			$this->threeds_method_continue_url = $trx->threeds_method_continue_url;
+		}
 	}
 
 	/**
@@ -130,5 +140,26 @@ class WC_emerchantpay_Transaction {
 			\Genesis\API\Constants\Transaction\Types::GOOGLE_PAY === $this->type ||
 			\Genesis\API\Constants\Transaction\Types::PAY_PAL === $this->type ||
 			\Genesis\API\Constants\Transaction\Types::APPLE_PAY === $this->type;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function get_return_success_url() {
+		return $this->return_success_url;
+	}
+
+	/**
+	 * @param string $return_success_url
+	 */
+	public function set_return_success_url( $return_success_url ) {
+		$this->return_success_url = $return_success_url;
+	}
+
+	/**
+	 * @param string $return_failure_url
+	 */
+	public function set_return_failure_url( $return_failure_url ) {
+		$this->return_failure_url = $return_failure_url;
 	}
 }

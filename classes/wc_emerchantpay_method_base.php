@@ -18,8 +18,10 @@
  */
 
 use Genesis\API\Constants\Transaction\Parameters\ScaExemptions;
+use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
 use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
 use Genesis\API\Constants\Transaction\Types;
+use Genesis\Genesis;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
@@ -152,14 +154,18 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	const PLATFORM_TRANSACTION_PREFIX = 'wc-';
 
 	protected static $helpers = array(
-		'WC_emerchantpay_Helper'              => 'wc_emerchantpay_helper',
-		'WC_emerchantpay_Genesis_Helper'      => 'wc_emerchantpay_genesis_helper',
-		'WC_emerchantpay_Order_Helper'        => 'wc_emerchantpay_order_helper',
-		'WC_emerchantpay_Subscription_Helper' => 'wc_emerchantpay_subscription_helper',
-		'WC_emerchantpay_Message_Helper'      => 'wc_emerchantpay_message_helper',
-		'WC_Emerchantpay_Threeds_Helper'      => 'class-wc-emerchantpay-threeds-helper',
-		'WC_emerchantpay_Transaction'         => 'wc_emerchantpay_transaction',
-		'WC_emerchantpay_Transaction_Tree'    => 'wc_emerchantpay_transactions_tree',
+		'WC_emerchantpay_Helper'                 => 'wc_emerchantpay_helper',
+		'WC_emerchantpay_Genesis_Helper'         => 'wc_emerchantpay_genesis_helper',
+		'WC_emerchantpay_Order_Helper'           => 'wc_emerchantpay_order_helper',
+		'WC_emerchantpay_Subscription_Helper'    => 'wc_emerchantpay_subscription_helper',
+		'WC_emerchantpay_Message_Helper'         => 'wc_emerchantpay_message_helper',
+		'WC_Emerchantpay_Threeds_Helper'         => 'class-wc-emerchantpay-threeds-helper',
+		'WC_Emerchantpay_Threeds_Form_Helper'    => 'class-wc-emerchantpay-threeds-form-helper',
+		'WC_Emerchantpay_Threeds_Backend_Helper' => 'class-wc-emerchantpay-threeds-backend-helper',
+		'WC_Emerchantpay_Threeds_Base'           => 'class-wc-emerchantpay-threeds-base',
+		'WC_emerchantpay_Transaction'            => 'wc_emerchantpay_transaction',
+		'WC_emerchantpay_Transaction_Tree'       => 'wc_emerchantpay_transactions_tree',
+		'WC_Emerchantpay_Indicators_Helper'      => 'class-wc-emerchantpay-indicators-helper',
 	);
 
 	const PPRO_TRANSACTION_SUFFIX = '_ppro';
@@ -190,6 +196,11 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	const METHOD_ACTION_REFUND  = 'refund';
 
 	/**
+	 * Date format
+	 */
+	const DATE_FORMAT = 'Y-m-d';
+
+	/**
 	 * Language domain
 	 */
 	public static $LANG_DOMAIN = 'woocommerce-emerchantpay';
@@ -216,6 +227,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	/**
 	 * Holds the Meta Key used to extract the checkout Transaction
 	 *   - Checkout Method -> WPF Unique Id
+	 *   - Direct Method -> Transaction Unique Id
 	 *
 	 * @return string
 	 */
@@ -528,6 +540,10 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 		if ( WC_emerchantpay_Checkout::get_method_code() === self::get_method_code() ) {
 			$key = WC_emerchantpay_Checkout::SETTING_KEY_TRANSACTION_TYPES;
+		}
+
+		if ( WC_emerchantpay_Direct::get_method_code() === self::get_method_code() ) {
+			$key = WC_emerchantpay_Direct::META_TRANSACTION_TYPE;
 		}
 
 		return $key;
@@ -1368,6 +1384,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 *  - SSL
 	 *  - etc
 	 *
+	 * Will be extended in the Direct Method
+	 *
 	 * @return bool
 	 */
 	protected function is_applicable() {
@@ -1959,6 +1977,17 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				}
 
 				break;
+			case WC_emerchantpay_Direct::get_method_code():
+				$total_refunded_amount = WC_emerchantpay_Transactions_Tree::get_total_amount_without_unique_id(
+					$payment_transactions->unique_id,
+					WC_emerchantpay_Transactions_Tree::getTransactionsListFromOrder( $order ),
+					\Genesis\API\Constants\Transaction\Types::REFUND
+				);
+
+				$total_refund_amount = $total_refunded_amount + $payment_transactions->amount;
+				$fully_refunded      = ( (float) $total_order_amount === (float) $total_refund_amount) ?: false;
+
+                break;
 		}
 
 		if ( ! $fully_refunded || ! $is_initial_refund ) {
@@ -2654,7 +2683,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 *
 	 * @return void
 	 */
-	protected function set_credentials() {
+	public function set_credentials() {
 		\Genesis\Config::setEndpoint(
 			\Genesis\API\Constants\Endpoints::EMERCHANTPAY
 		);
@@ -2728,7 +2757,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 	/**
 	* Get the code of the current used payment method
-	* Checkout
+	* Checkout / Direct
 	*
 	* @return string|null
 	*/
@@ -3306,7 +3335,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * @param Genesis\Genesis $genesis
+	 * @param Genesis  $genesis
 	 * @param WC_Order $order
 	 *
 	 * @return mixed
@@ -3374,7 +3403,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	 *
 	 * @return bool
 	 */
-	protected function is_3dsv2_available() {
+	protected function is_3dsv2_enabled() {
 		return $this->get_option( self::SETTING_KEY_THREEDS_ALLOWED ) === self::SETTING_VALUE_YES;
 	}
 
@@ -3413,7 +3442,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Helper array used for Challenge Indicator available opotions
+	 * Helper array used for Challenge Indicator available options
 	 *
 	 * @return array
 	 */
@@ -3477,6 +3506,92 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 
 		if ( $wpf_amount <= $sca_exemption_value ) {
 			$genesis->request()->setScaExemption( $sca_exemption );
+		}
+	}
+
+	/**
+	 * @param Genesis  $genesis
+	 * @param WC_Order $order
+	 * @param bool     $is_recurring
+	 *
+	 * @throws Exception
+	 */
+	protected function add_3dsv2_parameters_to_gateway_request( $genesis, $order, $is_recurring ) {
+		/** @var \Genesis\API\Request\WPF\Create $wpf_request */
+		$wpf_request = $genesis->request();
+
+		/** @var WC_Customer $customer */
+		$customer = new WC_Customer( $order->get_customer_id() );
+
+		$threeds    = new WC_emerchantpay_Threeds_Helper( $order, $customer, self::DATE_FORMAT );
+		$indicators = new WC_Emerchantpay_Indicators_Helper( $customer, self::DATE_FORMAT );
+
+		$wpf_request
+			// Challenge Indicator
+			->setThreedsV2ControlChallengeIndicator(
+				empty( $this->get_option( self::SETTING_KEY_THREEDS_CHALLENGE_INDICATOR ) )
+					? ChallengeIndicators::NO_PREFERENCE
+					: $this->get_option( self::SETTING_KEY_THREEDS_CHALLENGE_INDICATOR )
+			)
+
+			// Purchase
+			->setThreedsV2PurchaseCategory(
+				$threeds->has_physical_product() ?
+					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories::GOODS :
+					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories::SERVICE
+			)
+
+			// Merchant_risk
+			->setThreedsV2MerchantRiskShippingIndicator( $threeds->fetch_shipping_indicator() )
+			->setThreedsV2MerchantRiskDeliveryTimeframe(
+				$threeds->has_physical_product() ?
+					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes::ANOTHER_DAY :
+					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes::ELECTRONICS
+			)
+			->setThreedsV2MerchantRiskReorderItemsIndicator( $threeds->fetch_reorder_items_indicator() );
+
+		if ( ! $threeds->is_guest_customer() ) {
+			$shipping_address_first_date_used = $threeds->get_shipping_address_date_first_used();
+
+			// CardHolder Account
+			$wpf_request
+				->setThreedsV2CardHolderAccountCreationDate( $indicators->get_customer_created_date() )
+				// WC_Customer contain all the user data (Shipping, Billing and Password)
+				// Update Indicator and Password Change Indicator will be the same
+				->setThreedsV2CardHolderAccountUpdateIndicator( $indicators->fetch_account_update_indicator() )
+				->setThreedsV2CardHolderAccountLastChangeDate( $indicators->get_customer_modified_date() )
+				->setThreedsV2CardHolderAccountPasswordChangeIndicator( $indicators->fetch_password_change_indicator() )
+				->setThreedsV2CardHolderAccountPasswordChangeDate( $indicators->get_customer_modified_date() )
+				->setThreedsV2CardHolderAccountShippingAddressUsageIndicator(
+					$indicators->fetch_shipping_address_usage_indicator( $shipping_address_first_date_used )
+				)
+				->setThreedsV2CardHolderAccountShippingAddressDateFirstUsed( $shipping_address_first_date_used )
+
+				->setThreedsV2CardHolderAccountTransactionsActivityLast24Hours(
+					$threeds->get_transactions_last_24_hours()
+				)
+				->setThreedsV2CardHolderAccountTransactionsActivityPreviousYear(
+					$threeds->get_transactions_previous_year()
+				)
+				->setThreedsV2CardHolderAccountPurchasesCountLast6Months(
+					$threeds->get_paid_transactions_for_6_months()
+				)
+				->setThreedsV2CardHolderAccountRegistrationDate( $threeds->get_first_order_date() );
+		}
+
+		$wpf_request->setThreedsV2CardHolderAccountRegistrationIndicator(
+			$threeds->is_guest_customer() ?
+				RegistrationIndicators::GUEST_CHECKOUT :
+				$indicators->fetch_registration_indicator( $threeds->get_first_order_date() )
+		);
+
+		if ( $is_recurring ) {
+			$recurring_parameters = WC_emerchantpay_Subscription_Helper::get_3dsv2_recurring_parameters( $order->get_id() );
+
+			$wpf_request->setThreedsV2RecurringExpirationDate( $recurring_parameters['expiration_date'] );
+			if ( $recurring_parameters['frequency'] ) {
+				$wpf_request->setThreedsV2RecurringFrequency( $recurring_parameters['frequency'] );
+			}
 		}
 	}
 }

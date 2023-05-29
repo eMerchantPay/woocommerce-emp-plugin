@@ -6,12 +6,12 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.13.3
+ * Version: 1.13.4
  * Requires at least: 4.0
  * Tested up to: 6.2
  * WC requires at least: 3.0.0
- * WC tested up to: 7.1.1
- * WCS tested up to: 4.6.0
+ * WC tested up to: 7.7.0
+ * WCS tested up to: 5.0.1
  * License: GPL-2.0
  * License URI: http://opensource.org/licenses/gpl-2.0.php
 */
@@ -43,6 +43,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 			include dirname( __FILE__ ) . '/includes/wc_emerchantpay_checkout.php';
 
+			include dirname( __FILE__ ) . '/includes/class-wc-emerchantpay-direct.php';
+
 			/**
 			 * Add the emerchantpay Gateway to WooCommerce's
 			 * list of installed gateways
@@ -53,7 +55,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			 */
 			if ( ! function_exists( 'woocommerce_add_emerchantpay_gateway' ) ) {
 				function woocommerce_add_emerchantpay_gateway( $methods ) {
-					array_push( $methods, 'WC_emerchantpay_Checkout' );
+					$methods[] = 'WC_emerchantpay_Checkout';
+					$methods[] = 'WC_emerchantpay_Direct';
 
 					return $methods;
 				}
@@ -63,6 +66,60 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		}
 	}
 
-	add_action( 'plugins_loaded', 'woocommerce_emerchantpay_init', 0 );
+	/**
+	 * Injects direct method browser parameters form helper into checkout page
+	 *
+	 * @return void
+	 */
+	function add_checkout_js() {
+		global $wp;
 
+		if ( is_checkout() && empty( $wp->query_vars['order-pay'] ) && ! isset( $wp->query_vars['order-received'] ) ) {
+			wp_enqueue_script(
+				'direct-method-form-helper',
+				plugins_url( '/assets/javascript/direct-method-form-helper.js', __FILE__ ),
+				array(),
+				'1.0',
+				true
+			);
+		}
+	}
+
+	/**
+	 * Add hidden inputs to the Credit Card form
+	 *
+	 * @param $fields
+	 *
+	 * @return array
+	 */
+	function add_hidden_fields_to_checkout( $fields ) {
+		$field_names = WC_Emerchantpay_Direct::THREEDS_V2_BROWSER;
+
+		array_walk(
+			$field_names,
+			function ( $field_name ) use ( &$fields ) {
+				$fields['order'][ WC_Emerchantpay_Direct::get_method_code() . '_' . $field_name ] = array(
+					'type'    => 'hidden',
+					'default' => null,
+				);
+			}
+		);
+
+		return $fields;
+	}
+
+	add_action( 'plugins_loaded', 'woocommerce_emerchantpay_init', 0 );
+	add_action( 'wp_enqueue_scripts', 'add_checkout_js' );
+	add_filter( 'woocommerce_checkout_fields', 'add_hidden_fields_to_checkout' );
+
+	include dirname( __FILE__ ) . '/classes/class-wc-emerchantpay-threeds-form-helper.php';
+	include dirname( __FILE__ ) . '/classes/class-wc-emerchantpay-threeds-backend-helper.php';
+
+	$threeds_form_helper_class = strtolower( WC_Emerchantpay_Threeds_Form_Helper::class );
+	add_action( 'woocommerce_api_' . $threeds_form_helper_class, array( new WC_Emerchantpay_Threeds_Form_Helper(), 'display_form_and_iframe' ) );
+
+	$threeds_backend_helper_class = strtolower( WC_Emerchantpay_Threeds_Backend_Helper::class );
+	add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-method_continue_handler', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'method_continue_handler' ) );
+	add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-callback_handler', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'callback_handler' ) );
+	add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-status_checker', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'status_checker' ) );
 }

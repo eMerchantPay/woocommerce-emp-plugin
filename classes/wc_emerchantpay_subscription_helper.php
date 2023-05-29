@@ -45,6 +45,16 @@ class WC_emerchantpay_Subscription_Helper {
 	const WC_SUBSCRIPTION_STATUS_CANCELED = 'cancelled';
 
 	/**
+	 * Recurring periods days
+	 */
+	const RECURRING_PERIOD = array(
+		'day'   => 1,
+		'week'  => 7,
+		'month' => 27,
+		'year'  => 365,
+	);
+
+	/**
 	 * Is $order_id a subscription?
 	 *
 	 * @param  int $order_id
@@ -323,6 +333,38 @@ class WC_emerchantpay_Subscription_Helper {
 
 		return html_entity_decode(
 			wp_strip_all_tags( $cart->get_product_subtotal( $product, $quantity ) )
+		);
+	}
+
+	/**
+	 * Get expiration_date and frequency or null for recurring transactions
+	 *
+	 * @param int $order_id
+	 *
+	 * @return array|null[]
+	 */
+	public static function get_3dsv2_recurring_parameters( $order_id ) {
+		$subscription = WC_emerchantpay_subscription_helper::getOrderSubscriptions( $order_id );
+
+		if ( empty( $subscription ) ) {
+			return array(
+				'expiration_date' => null,
+				'frequency'       => null,
+			);
+		}
+
+		$subscription_obj = array_values( $subscription )[0];
+		$expiration_date  = $subscription_obj->get_date( 'end' );
+		if ( 0 === $expiration_date ) {
+			$expiration_date = null;
+		};
+		$period    = $subscription_obj->get_billing_period(); // days, weeks, months, years
+		$interval  = $subscription_obj->get_billing_interval();
+		$frequency = self::RECURRING_PERIOD[ $period ] * $interval;
+
+		return array(
+			'expiration_date' => $expiration_date,
+			'frequency'       => $frequency,
 		);
 	}
 }
