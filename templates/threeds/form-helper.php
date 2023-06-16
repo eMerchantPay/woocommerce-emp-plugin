@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<title></title>
 	<link rel="stylesheet" href="<?php echo esc_url_raw( plugins_url( '../assets/css/threeds.css', plugin_dir_path( __FILE__ ) ) ); ?>">
 </head>
-<body onload="submitThreedsMethod()">
+<body onload="submitThreedsMethod()" style="display: none">
 <iframe width="1200" height="800" id="threeDSMethodIframe" name="threeDSMethodIframe" class="hidden">
 	<html>
 	<body>
@@ -62,6 +62,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		const threeDSMethodForm = document.getElementById('threeDSMethodForm');
 		threeDSMethodForm.submit();
 		callbackStatusInterval = setInterval(checkCallbackStatus, 0.5e3); // 500 ms interval
+		document.querySelector('body').style.display = 'block';
 	}
 
 	function checkCallbackStatus() {
@@ -96,7 +97,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				redirect = data.url;
 			}
 
-			location.href = redirect;
+			parent.location.href = redirect;
 		})
 	}
 

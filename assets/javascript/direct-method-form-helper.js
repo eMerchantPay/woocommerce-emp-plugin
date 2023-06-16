@@ -16,7 +16,7 @@
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  */
 
-const populateBrowserParameters = {
+const empPopulateBrowserParams = {
 	methodName: 'emerchantpay_direct',
 	fieldNames: [
 		'java_enabled',
@@ -61,6 +61,47 @@ const populateBrowserParameters = {
 	}
 };
 
-window.onload = function () {
-	populateBrowserParameters.execute(document);
-}
+document.addEventListener('DOMContentLoaded', function () {
+	empPopulateBrowserParams.execute(document);
+
+	jQuery(function ($) {
+		const paymentMethod                = 'emerchantpay_direct'
+		const checkoutForm                 = $('form.checkout');
+		const threedsHelperControllerRegEx = /wc_emerchantpay_threeds_form_helper/gi;
+
+		checkoutForm.on('checkout_place_order_success', function(event, data) {
+			if (
+				! data.redirect.match(threedsHelperControllerRegEx) ||
+				checkoutForm.find('input[name="payment_method"]:checked').val() !== paymentMethod
+			) {
+				return;
+			}
+
+			const parentDiv = document.querySelector('.emp-threeds-modal');
+			const iframe    = document.querySelector('.emp-threeds-iframe');
+
+			this.style.opacity = 0.6;
+
+			try {
+				fetch(data.redirect, {
+					method: 'GET',
+				})
+					.then(function (response) {
+						return response.text()
+					})
+					.then(function (html) {
+						const doc = iframe.contentWindow.document;
+						doc.open();
+						doc.write(html);
+						doc.close();
+						parentDiv.style.display = 'block';
+					})
+				data.messages = '<div class="emp-payment-notice">The payment is being processed</div>';
+			} catch (e) {
+				return true;
+			}
+
+			return false;
+		})
+	})
+});

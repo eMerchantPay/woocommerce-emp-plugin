@@ -6,11 +6,11 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.13.4
+ * Version: 1.14.0
  * Requires at least: 4.0
  * Tested up to: 6.2
  * WC requires at least: 3.0.0
- * WC tested up to: 7.7.0
+ * WC tested up to: 7.8.0
  * WCS tested up to: 5.0.1
  * License: GPL-2.0
  * License URI: http://opensource.org/licenses/gpl-2.0.php
@@ -67,20 +67,26 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	}
 
 	/**
-	 * Injects direct method browser parameters form helper into checkout page
+	 * Injects direct method browser parameters form helper and styles into the checkout page
 	 *
 	 * @return void
 	 */
-	function add_checkout_js() {
+	function emp_add_css_and_js_to_checkout() {
 		global $wp;
 
 		if ( is_checkout() && empty( $wp->query_vars['order-pay'] ) && ! isset( $wp->query_vars['order-received'] ) ) {
 			wp_enqueue_script(
-				'direct-method-form-helper',
+				'emp-direct-method-form-helper',
 				plugins_url( '/assets/javascript/direct-method-form-helper.js', __FILE__ ),
 				array(),
-				'1.0',
+				'1.13.4',
 				true
+			);
+			wp_enqueue_style(
+				'emp-iframe-checkout',
+				plugins_url( '/assets/css/iframe-checkout.css', __FILE__ ),
+				array(),
+				'1.13.4'
 			);
 		}
 	}
@@ -92,7 +98,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	 *
 	 * @return array
 	 */
-	function add_hidden_fields_to_checkout( $fields ) {
+	function emp_add_hidden_fields_to_checkout( $fields ) {
 		$field_names = WC_Emerchantpay_Direct::THREEDS_V2_BROWSER;
 
 		array_walk(
@@ -108,9 +114,19 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		return $fields;
 	}
 
+	/**
+	 * Add hidden iframe to the checkout page
+	 *
+	 * @return void
+	 */
+	function emp_direct_threeds_iframe() {
+		echo '<div class="emp-threeds-modal"><iframe class="emp-threeds-iframe" frameBorder="0" style="border: none;"></iframe></div>';
+	}
+	add_action( 'woocommerce_review_order_before_submit', 'emp_direct_threeds_iframe' );
+
 	add_action( 'plugins_loaded', 'woocommerce_emerchantpay_init', 0 );
-	add_action( 'wp_enqueue_scripts', 'add_checkout_js' );
-	add_filter( 'woocommerce_checkout_fields', 'add_hidden_fields_to_checkout' );
+	add_action( 'wp_enqueue_scripts', 'emp_add_css_and_js_to_checkout' );
+	add_filter( 'woocommerce_checkout_fields', 'emp_add_hidden_fields_to_checkout' );
 
 	include dirname( __FILE__ ) . '/classes/class-wc-emerchantpay-threeds-form-helper.php';
 	include dirname( __FILE__ ) . '/classes/class-wc-emerchantpay-threeds-backend-helper.php';
