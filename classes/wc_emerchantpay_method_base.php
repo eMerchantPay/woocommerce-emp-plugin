@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @SuppressWarnings(PHPMD)
  */
-abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
+abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 
 	/**
 	 * Order Meta Constants
@@ -106,6 +106,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	const SETTING_KEY_THREEDS_CHALLENGE_INDICATOR         = 'threeds_challenge_indicator';
 	const SETTING_KEY_SCA_EXEMPTION                       = 'sca_exemption';
 	const SETTING_KEY_SCA_EXEMPTION_AMOUNT                = 'sca_exemption_amount';
+	const SETTING_KEY_IFRAME_PROCESSING                   = 'iframe_processing';
 
 	/**
 	 * Order cancel/failure settings
@@ -1488,6 +1489,17 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				'description' => static::getTranslatedText( 'This is your Genesis password.' ),
 				'desc_tip'    => true,
 			),
+			self::SETTING_KEY_IFRAME_PROCESSING => array(
+				'type'        => 'checkbox',
+				'title'       => static::getTranslatedText( 'Enable/Disable' ),
+				'label'       => static::getTranslatedText( 'Enable payment processing into an iframe' ),
+				'default'     => self::SETTING_VALUE_NO,
+				'description' => static::getTranslatedText(
+					'Enable payment processing into an iframe by removing the redirects to the Gateway Web Payment ' .
+					'Form Page. The iFrame processing requires a specific setting inside Merchant Console. For more' .
+					' info ask: <a href="mailto:tech-support@emerchantpay.com">tech-support@emerchantpay.com</a>'
+				),
+			),
 		);
 	}
 
@@ -1716,6 +1728,17 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			throw new \Exception( 'Invalid WooCommerce Order!' );
 		}
 
+		$return_success_url = $this->build_iframe_url( $this->get_return_url( $order ) );
+		$return_failure_url = $this->build_iframe_url(
+			$this->append_to_url(
+				WC()->api_request_url( get_class( $this ) ),
+				array(
+					'act' => 'failure',
+					'oid' => $order->get_id(),
+				)
+			)
+		);
+
 		$data = array(
 			'transaction_id'     => static::generateTransactionId( $order->get_id() ),
 			'amount'             => (float) $order->get_total(),
@@ -1726,14 +1749,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 			'customer_phone'     => $order->get_billing_phone(),
 			// URLs
 			'notification_url'   => WC()->api_request_url( get_class( $this ) ),
-			'return_success_url' => $this->get_return_url( $order ),
-			'return_failure_url' => $this->append_to_url(
-				WC()->api_request_url( get_class( $this ) ),
-				array(
-					'act' => 'failure',
-					'oid' => $order->get_id(),
-				)
-			),
+			'return_success_url' => $return_success_url,
+			'return_failure_url' => $return_failure_url,
 			'billing'            => self::getOrderBillingAddress( $order ),
 			'shipping'           => self::getOrderShippingAddress( $order ),
 		);
@@ -2699,6 +2716,15 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Return if iframe processing is enabled
+	 *
+	 * @return bool
+	 */
+	protected function is_iframe_enabled() {
+		return false;
+	}
+
+	/**
 	 * Determines a method bool setting value
 	 *
 	 * @param string $setting_name
@@ -3432,9 +3458,9 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				'options'     => $this->get_allowed_challenge_indicators(),
 				'label'       => static::getTranslatedText( 'Enable challenge indicator' ),
 				'description' => static::getTranslatedText(
-					'The value has weight and might impact the decision whether' .
-					'a challenge will be required for the transaction or not.' .
-					' If not provided, it will be interpreted as no_preference.'
+					'The value has weight and might impact the decision whether ' .
+					'a challenge will be required for the transaction or not. ' .
+					'If not provided, it will be interpreted as no_preference.'
 				),
 				'desc_tip'    => true,
 			),
@@ -3593,6 +3619,31 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway {
 				$wpf_request->setThreedsV2RecurringFrequency( $recurring_parameters['frequency'] );
 			}
 		}
+	}
+
+	/**
+	 * Return frame handler class url
+	 *
+	 * @return string
+	 */
+	protected function get_frame_handler() {
+		return WC()->api_request_url( WC_Emerchantpay_Frame_Handler::class );
+	}
+
+	/**
+	 * Build iframe processing url according to the settings
+	 *
+	 * @param string $url
+	 * @param bool   $iframe_processing_enabled
+	 *
+	 * @return string
+	 */
+	protected function build_iframe_url( $url ) {
+		$iframe_processing_enabled = $this->is_iframe_enabled();
+		$frame_handler             = $this->get_frame_handler();
+		$iframe_url                = $frame_handler . '?' . rawurlencode( $url );
+
+		return $iframe_processing_enabled ? $iframe_url : $url;
 	}
 }
 

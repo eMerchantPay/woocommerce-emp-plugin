@@ -1,58 +1,68 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce emerchantpay Payment Gateway Client\n"
-"POT-Creation-Date: 2015-08-03 15:05+0300\n"
-"PO-Revision-Date: 2020-03-18 12:08+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-28 06:35+0000\n"
+"PO-Revision-Date: 2023-06-28 07:28+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
-"Language: en_GB\n"
+"Language-Team: English (UK)\n"
+"Language: en-GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;"
-"esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.js\n"
 
-msgid "emerchantpay"
-msgstr "emerchantpay"
+msgid " change Order Status to Refunded."
+msgstr " change Order Status to Refunded."
 
-msgid "emerchantpay's Gateway works by sending your client, to our secure (PCI-DSS certified) server."
-msgstr "emerchantpay's Gateway works by sending your client, to our secure (PCI-DSS certified) server."
+msgid " or "
+msgstr " or "
 
-msgid "Enable/Disable"
-msgstr "Enable/Disable"
+msgid "AIRLINE Flight Number"
+msgstr "Flight number"
 
-msgid "Enable eMerchangPay Checkout"
-msgstr "Enable eMerchangPay Checkout"
+msgid "API Credentials"
+msgstr "API Credentials"
 
-msgid "Title:"
-msgstr "Title:"
+msgid "ATOL Certificate"
+msgstr "ATOL certificate number"
 
-msgid "Title for this payment method, during customer checkout."
-msgstr "Title for this payment method, during customer checkout."
+msgid "Airline Code"
+msgstr "Airline Code"
 
-msgid "Description:"
-msgstr "Description:"
+msgid "Airline Destination City"
+msgstr "Destination City"
 
-msgid "Text describing this payment method to the customer, during checkout."
-msgstr "Text describing this payment method to the customer, during checkout."
+msgid "Airline Origin City"
+msgstr "Origin City"
 
-msgid "Pay safely through emerchantpay's Secure Gateway."
-msgstr "Pay safely through emerchantpay's Secure Gateway."
+msgid "Airline Ticket Number"
+msgstr "Ticket Number"
 
-msgid "Transaction Type"
-msgstr "Transaction Type"
+msgid "Airline Tour Operator Name"
+msgstr "Airline Tour Operator Name"
+
+msgid "Airlines Air Carriers"
+msgstr "Airlines Air Carriers"
 
 msgid "Alipay"
 msgstr "Alipay"
 
+msgid ""
+"An error has been encountered while initiating Web Payment Form! Please try "
+"again later."
+msgstr ""
+"An error has been encountered while initiating Web Payment Form! Please try "
+"again later."
+
+msgid "Arabic"
+msgstr "Arabic"
+
 msgid "Argencard"
 msgstr "Argencard"
+
+msgid "Arrival Date"
+msgstr "Arrival Date"
 
 msgid "Aura"
 msgstr "Aura"
@@ -62,6 +72,9 @@ msgstr "Authorize"
 
 msgid "Authorize (3D-Secure)"
 msgstr "Authorize (3D-Secure)"
+
+msgid "Automated Refund via "
+msgstr "Automated Refund via "
 
 msgid "Baloto"
 msgstr "Baloto"
@@ -78,6 +91,9 @@ msgstr "Banco do Brasil"
 msgid "Bancomer"
 msgstr "Bancomer"
 
+msgid "Bancontact"
+msgstr "Bancontact"
+
 msgid "BitPay"
 msgstr "BitPay"
 
@@ -87,8 +103,17 @@ msgstr "Boleto"
 msgid "Bradesco"
 msgstr "Bradesco"
 
+msgid "Bulgarian"
+msgstr "Bulgarian"
+
 msgid "Cabal"
 msgstr "Cabal"
+
+msgid "Car, Plane and Boat Rentals"
+msgstr "Car, Plane and Boat Rentals"
+
+msgid "Carrier Code"
+msgstr "Carrier Code"
 
 msgid "CashU"
 msgstr "CashU"
@@ -96,8 +121,80 @@ msgstr "CashU"
 msgid "Cencosud"
 msgstr "Cencosud"
 
+msgid "Check-In Date"
+msgstr "Check-In Date"
+
+msgid "Check-Out Date"
+msgstr "Check-Out Date"
+
+msgid "Checkout Language"
+msgstr "Checkout Language"
+
+msgid "Checkout Settings"
+msgstr "Checkout Settings"
+
+msgid ""
+"Choose and map your Product Custom attribute to a specific Business "
+"Attribute. The mapped Product attribute value will be attached to the "
+"Genesis Transaction Request. For more information %sget in touch%s with our "
+"support."
+msgstr ""
+"Choose and map your Product Custom attribute to a specific Business "
+"Attribute. The mapped Product attribute value will be attached to the "
+"Genesis Transaction Request. For more information %sget in touch%s with our "
+"support."
+
 msgid "Citadel"
 msgstr "Citadel"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Contractor Name"
+msgstr "Contractor Name"
+
+msgid "Croatian"
+msgstr "Croatian"
+
+msgid "Cruise Lines"
+msgstr "Cruise Lines"
+
+msgid "Czech"
+msgstr "Czech"
+
+msgid "Date of Order"
+msgstr "Date of Order"
+
+msgid "Date of the expected delivery in format %s"
+msgstr "Date of the expected delivery in format %s"
+
+msgid ""
+"Decide whether to Enable / Disable online Captures on the Order Preview Page."
+msgstr ""
+"Decide whether to Enable / Disable online Captures on the Order Preview Page."
+
+msgid ""
+"Decide whether to Enable / Disable online Refunds on the Order Preview Page."
+msgstr ""
+"Decide whether to Enable / Disable online Refunds on the Order Preview Page."
+
+msgid "Decide whether to show or hide Credit Card Owner Field"
+msgstr "Decide whether to show or hide Credit Card Owner Field"
+
+msgid "Delivery Date"
+msgstr "Delivery Date"
+
+msgid "Departure Date"
+msgstr "Departure Date"
+
+msgid "Description:"
+msgstr "Description:"
+
+msgid "Destination City"
+msgstr "Destination City"
+
+msgid "Dutch"
+msgstr "Dutch"
 
 msgid "Efecty"
 msgstr "Efecty"
@@ -105,26 +202,122 @@ msgstr "Efecty"
 msgid "Elo"
 msgstr "Elo"
 
+msgid "Enable / Disable Captures on the Order Preview Page"
+msgstr "Enable / Disable Captures on the Order Preview Page"
+
+msgid "Enable / Disable Refunds on the Order Preview Page"
+msgstr "Enable / Disable Refunds on the Order Preview Page"
+
+msgid "Enable Captures"
+msgstr "Enable Captures"
+
+msgid "Enable Refunds"
+msgstr "Enable Refunds"
+
+msgid "Enable eMerchantPay Checkout"
+msgstr "Enable eMerchantPay Checkout"
+
+msgid "Enable/Disable"
+msgstr "Enable/Disable"
+
+msgid "Enable/Disable Subscription Payments"
+msgstr "Enable/Disable Subscription Payments"
+
+msgid "End Date"
+msgstr "End Date"
+
+msgid "English"
+msgstr "English"
+
+msgid ""
+"Enter Genesis API Credentials below, in order to access the Gateway.If you "
+"don't have credentials, %sget in touch%s with our technical support."
+msgstr ""
+"Enter Genesis API Credentials below, in order to access the Gateway.If you "
+"don't have credentials, %sget in touch%s with our technical support."
+
 msgid "Entercash"
 msgstr "Entercash"
 
-msgid "eps"
-msgstr "eps"
+msgid "Event End Date"
+msgstr "Event End Date"
 
-msgid "eZeeWallet"
-msgstr "eZeeWallet"
+msgid "Event Id"
+msgstr "Event Id"
+
+msgid "Event Management"
+msgstr "Event Management"
+
+msgid "Event Organizer Id"
+msgstr "Event Organizer Id"
+
+msgid "Event Start Date"
+msgstr "Event Start Date"
 
 msgid "Fashioncheque"
 msgstr "Fashioncheque"
 
+msgid "Finnish"
+msgstr "Finnish"
+
+msgid "Flight Arrival Date"
+msgstr "Flight Arrival Date"
+
+msgid "Flight Number"
+msgstr "Flight Number"
+
+msgid "French"
+msgstr "French"
+
+msgid "Furniture"
+msgstr "Furniture"
+
+msgid "German"
+msgstr "German"
+
 msgid "GiroPay"
 msgstr "GiroPay"
 
-msgid "iDeal"
-msgstr "iDeal"
+msgid ""
+"Here you can manage additional settings for the checkout page of the front "
+"site"
+msgstr ""
+"Here you can manage additional settings for the checkout page of the front "
+"site"
 
-msgid "iDebit"
-msgstr "iDebit"
+msgid ""
+"Here you can manage additional settings for the recurring payments "
+"(Subscriptions)"
+msgstr ""
+"Here you can manage additional settings for the recurring payments "
+"(Subscriptions)"
+
+msgid "Hindu"
+msgstr "Hindu"
+
+msgid "Hotels and Real estate rentals"
+msgstr "Hotels and Real estate rentals"
+
+msgid "Icelandic"
+msgstr "Icelandic"
+
+msgid "Id:"
+msgstr "Id:"
+
+msgid "Id: "
+msgstr "Id: "
+
+msgid "Indonesian"
+msgstr "Indonesian"
+
+msgid "Init Recurring Sale"
+msgstr "Init Recurring Sale"
+
+msgid "Init Recurring Sale (3D-Secure)"
+msgstr "Init Recurring Sale (3D-Secure)"
+
+msgid "Init Recurring Transaction Types"
+msgstr "Init Recurring Transaction Types"
 
 msgid "InstaDebit"
 msgstr "InstaDebit"
@@ -135,17 +328,38 @@ msgstr "InstantTransfer"
 msgid "Intersolve"
 msgstr "Intersolve"
 
+msgid "Invalid capture amount"
+msgstr "Invalid capture amount"
+
+msgid "It depends on how the genesis gateway is configured"
+msgstr "It depends on how the genesis gateway is configured"
+
+msgid "Italian"
+msgstr "Italian"
+
 msgid "Itau"
 msgstr "Itau"
 
-msgid "Bancontact"
-msgstr "Bancontact"
+msgid "Japanese"
+msgstr "Japanese"
+
+msgid "Klarna"
+msgstr "Klarna"
+
+msgid "Malay"
+msgstr "Malay"
+
+msgid "Mandarin Chinese"
+msgstr "Mandarin Chinese"
+
+msgid "Multibanco"
+msgstr "Multibanco"
 
 msgid "MyBank"
 msgstr "MyBank"
 
-msgid "Multibanco"
-msgstr "Multibanco"
+msgid "Name Of Supplier"
+msgstr "Name Of Supplier"
 
 msgid "Naranja"
 msgstr "Naranja"
@@ -156,20 +370,29 @@ msgstr "Nativa"
 msgid "Neteller"
 msgstr "Neteller"
 
-msgid "Klarna"
-msgstr "Klarna"
+msgid "OXXO"
+msgstr "OXXO"
 
 msgid "OnlineBanking"
 msgstr "OnlineBanking"
 
-msgid "OXXO"
-msgstr "OXXO"
+msgid "Origin City"
+msgstr "Origin City"
 
 msgid "P24"
 msgstr "P24"
 
+msgid "POLi"
+msgstr "POLi"
+
 msgid "Pago Facil"
 msgstr "Pago Facil"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Pay safely through emerchantpay's Secure Gateway."
+msgstr "Pay safely through emerchantpay's Secure Gateway."
 
 msgid "PayPal Express"
 msgstr "PayPal Express"
@@ -180,8 +403,38 @@ msgstr "PaySafeCard"
 msgid "PayU"
 msgstr "PayU"
 
-msgid "POLi"
-msgstr "POLi"
+msgid "Payment has been declined!"
+msgstr "Payment has been declined!"
+
+msgid "Payment transaction has been approved!"
+msgstr "Payment transaction has been approved!"
+
+msgid "Payment transaction has been declined!"
+msgstr "Payment transaction has been declined!"
+
+msgid "Payment transaction has been fully refunded!"
+msgstr "Payment transaction has been fully refunded!"
+
+msgid "Payment transaction has been partially refunded!"
+msgstr "Payment transaction has been partially refunded!"
+
+msgid "Payment transaction returned an error!"
+msgstr "Payment transaction returned an error!"
+
+msgid "Pick-Up Date"
+msgstr "Pick-Up Date"
+
+msgid "Pick-up Date"
+msgstr "Pick-up Date"
+
+msgid "Pick-up date in format %s"
+msgstr "Pick-up date in format %s"
+
+msgid "Polish"
+msgstr "Polish"
+
+msgid "Portuguese"
+msgstr "Portuguese"
 
 msgid "Przelewy24"
 msgstr "Przelewy24"
@@ -192,8 +445,32 @@ msgstr "Qiwi"
 msgid "RapiPago"
 msgstr "RapiPago"
 
+msgid "Recurring Token"
+msgstr "Recurring Token"
+
 msgid "Redpagos"
 msgstr "Redpagos"
+
+msgid "Refund completed!"
+msgstr "Refund completed!"
+
+msgid "Refund is pending Approval from the Gateway"
+msgstr "Refund is pending Approval from the Gateway"
+
+msgid "Refunded amount: "
+msgstr "Refunded amount: "
+
+msgid "Return Date"
+msgstr "Return Date"
+
+msgid "Return date in format %"
+msgstr "Return date in format %"
+
+msgid "Russian"
+msgstr "Russian"
+
+msgid "SOFORT"
+msgstr "SOFORT"
 
 msgid "SafetyPay"
 msgstr "SafetyPay"
@@ -210,523 +487,370 @@ msgstr "Santander"
 msgid "Santander Cash"
 msgstr "Santander Cash"
 
-msgid "Sepa Direct Debit"
-msgstr "Sepa Direct Debit"
-
-msgid "SOFORT"
-msgstr "SOFORT"
-
-msgid "Tarjeta Shopping"
-msgstr "Tarjeta Shopping"
-
-msgid "TCS"
-msgstr "TCS"
-
-msgid "Trustly"
-msgstr "Trustly"
-
-msgid "TrustPay"
-msgstr "TrustPay"
-
-msgid "WebMoney"
-msgstr "WebMoney"
-
-msgid "WeChat"
-msgstr "WeChat"
-
-msgid "Zimpler"
-msgstr "Zimpler"
-
-msgid "Init Recurring Sale"
-msgstr "Init Recurring Sale"
-
-msgid "Init Recurring Sale (3D-Secure)"
-msgstr "Init Recurring Sale (3D-Secure)"
+msgid "Select language for the customer UI on the remote server"
+msgstr "Select language for the customer UI on the remote server"
 
 msgid "Select transaction type for the payment transaction"
 msgstr "Select transaction type for the payment transaction"
 
-msgid "Checkout Language"
-msgstr "Checkout Language"
-
-msgid "Select language for the customer UI on the remote server"
-msgstr "Select language for the customer UI on the remote server"
-
-msgid "API Credentials"
-msgstr "API Credentials"
-
-msgid ""
-"Enter Genesis API Credentials below, in order to access the Gateway.If you don't have credentials, %sget "
-"in touch%s with our technical support."
-msgstr ""
-"Enter Genesis API Credentials below, in order to access the Gateway.If you don't have credentials, %sget "
-"in touch%s with our technical support."
-
-msgid "Test Mode"
-msgstr "Test Mode"
-
-msgid "Enable Captures"
-msgstr "Enable Captures"
-
-msgid "Enable / Disable Captures on the Order Preview Page"
-msgstr "Enable / Disable Captures on the Order Preview Page"
-
-msgid "Decide whether to Enable / Disable online Captures on the Order Preview Page."
-msgstr "Decide whether to Enable / Disable online Captures on the Order Preview Page."
-
-msgid "It depends on how the genesis gateway is configured"
-msgstr "It depends on how the genesis gateway is configured"
-
-msgid "Enable Refunds"
-msgstr "Enable Refunds"
-
-msgid "Enable / Disable Refunds on the Order Preview Page"
-msgstr "Enable / Disable Refunds on the Order Preview Page"
-
-msgid "Decide whether to Enable / Disable online Refunds on the Order Preview Page."
-msgstr "Decide whether to Enable / Disable online Refunds on the Order Preview Page."
-
-msgid "Use test (staging) environment"
-msgstr "Use test (staging) environment"
-
-msgid ""
-"Selecting this would route all requests through our test environment.<br/>NO Funds WILL BE transferred!"
-msgstr ""
-"Selecting this would route all requests through our test environment.<br/>NO Funds WILL BE transferred!"
-
-msgid "Username"
-msgstr "Username"
-
-msgid "This is your Genesis username."
-msgstr "This is your Genesis username."
-
-msgid "Password"
-msgstr "Password"
-
-msgid "This is your Genesis password."
-msgstr "This is your Genesis password."
-
-msgid "Subscription Settings"
-msgstr "Subscription Settings"
-
-msgid "Here you can manage additional settings for the recurring payments (Subscriptions)"
-msgstr "Here you can manage additional settings for the recurring payments (Subscriptions)"
-
-msgid "Enable/Disable Subscription Payments"
-msgstr "Enable/Disable Subscription Payments"
-
-msgid "Recurring Token"
-msgstr "Recurring Token"
-
-msgid ""
-"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF).Leave it empty in order to use "
-"the token, which has been used for the processing transaction."
-msgstr ""
-"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF).Leave it empty in order to use "
-"the token, which has been used for the processing transaction."
-
-msgid "Init Recurring Transaction Types"
-msgstr "Init Recurring Transaction Types"
-
 msgid "Select transaction types for the initial recurring transaction"
 msgstr "Select transaction types for the initial recurring transaction"
 
-msgid "Your payment has been completed successfully."
-msgstr "Your payment has been completed successfully."
-
-msgid "Payment has been declined!"
-msgstr "Payment has been declined!"
-
-msgid "Your payment has been declined, please check your data and try again"
-msgstr "Your payment has been declined, please check your data and try again"
-
-msgid "The customer cancelled their payment session"
-msgstr "The customer cancelled their payment session"
-
-msgid "Payment transaction has been approved!"
-msgstr "Payment transaction has been approved!"
-
-msgid "Close"
-msgstr "Close"
-
-msgid "Id:"
-msgstr "Id:"
-
-msgid "Total:"
-msgstr "Total:"
-
-msgid "Payment transaction has been declined!"
-msgstr "Payment transaction has been declined!"
-
-msgid "Payment transaction returned an error!"
-msgstr "Payment transaction returned an error!"
-
-msgid "Payment transaction has been fully refunded!"
-msgstr "Payment transaction has been fully refunded!"
-
-msgid "Payment transaction has been partially refunded!"
-msgstr "Payment transaction has been partially refunded!"
-
-msgid "We were unable to process your order!<br/>Please double check your data and try again."
-msgstr "We were unable to process your order!<br/>Please double check your data and try again."
-
-msgid "Refund completed!"
-msgstr "Refund completed!"
-
-msgid "Id: "
-msgstr "Id: "
-
-msgid "Refunded amount: "
-msgstr "Refunded amount: "
-
 msgid ""
-"You cannot refund this payment, because the payment is not captured yet or the gateway does not support "
-"refunds for this transaction type!"
+"Selecting this would route all requests through our test environment.<br/>NO "
+"Funds WILL BE transferred!"
 msgstr ""
-"You cannot refund this payment, because the payment is not captured yet or the gateway does not support "
-"refunds for this transaction type!"
+"Selecting this would route all requests through our test environment.<br/>NO "
+"Funds WILL BE transferred!"
 
-msgid "You cannot refund a payment, which has not been captured yet!"
-msgstr "You cannot refund a payment, which has not been captured yet!"
-
-msgid "You cannot refund a payment, because the order status is not yet updated from the payment gateway!"
-msgstr "You cannot refund a payment, because the order status is not yet updated from the payment gateway!"
-
-msgid "You cannot refund '%s', because the whole amount has already been refunded in the payment gateway!"
-msgstr "You cannot refund '%s', because the whole amount has already been refunded in the payment gateway!"
-
-msgid "You cannot refund '%s', because the available amount for refund in the payment gateway is '%s'!"
-msgstr "You cannot refund '%s', because the available amount for refund in the payment gateway is '%s'!"
-
-msgid "Subscription cancelled due to Refunded Order #%s"
-msgstr "Subscription cancelled due to Refunded Order #%s"
-
-msgid "You can do this only on a not-fully captured Authorize Transaction!"
-msgstr "You can do this only on a not-fully captured Authorize Transaction!"
-
-msgid "Invalid capture amount"
-msgstr "Invalid capture amount"
-
-msgid "You cannot void non-authorize payment or already captured payment!"
-msgstr "You cannot void non-authorize payment or already captured payment!"
-
-msgid "An error has been encountered while initiating Web Payment Form! Please try again later."
-msgstr "An error has been encountered while initiating Web Payment Form! Please try again later."
-
-msgid "Checkout Settings"
-msgstr "Checkout Settings"
-
-msgid "Here you can manage additional settings for the checkout page of the front site"
-msgstr "Here you can manage additional settings for the checkout page of the front site"
-
-msgid "Show CC Owner Field"
-msgstr "Show CC Owner Field"
-
-msgid "Show / Hide Credit Card Owner Field on the Checkout Page"
-msgstr "Show / Hide Credit Card Owner Field on the Checkout Page"
-
-msgid "Decide whether to show or hide Credit Card Owner Field"
-msgstr "Decide whether to show or hide Credit Card Owner Field"
+msgid "Sepa Direct Debit"
+msgstr "Sepa Direct Debit"
 
 msgid "Shipping Costs"
 msgstr "Shipping Costs"
 
-msgid "Arabic"
-msgstr "Arabic"
+msgid "Show / Hide Credit Card Owner Field on the Checkout Page"
+msgstr "Show / Hide Credit Card Owner Field on the Checkout Page"
 
-msgid "Bulgarian"
-msgstr "Bulgarian"
-
-msgid "German"
-msgstr "German"
-
-msgid "English"
-msgstr "English"
-
-msgid "Spanish"
-msgstr "Spanish"
-
-msgid "French"
-msgstr "French"
-
-msgid "Hindu"
-msgstr "Hindu"
-
-msgid "Japanese"
-msgstr "Japanese"
-
-msgid "Icelandic"
-msgstr "Icelandic"
-
-msgid "Italian"
-msgstr "Italian"
-
-msgid "Dutch"
-msgstr "Dutch"
-
-msgid "Portuguese"
-msgstr "Portuguese"
-
-msgid "Polish"
-msgstr "Polish"
-
-msgid "Russian"
-msgstr "Russian"
-
-msgid "Turkish"
-msgstr "Turkish"
-
-msgid "Mandarin Chinese"
-msgstr "Mandarin Chinese"
-
-msgid "Indonesian"
-msgstr "Indonesian"
-
-msgid "Malay"
-msgstr "Malay"
-
-msgid "Thai"
-msgstr "Thai"
-
-msgid "Czech"
-msgstr "Czech"
-
-msgid "Croatian"
-msgstr "Croatian"
+msgid "Show CC Owner Field"
+msgstr "Show CC Owner Field"
 
 msgid "Slovenian"
 msgstr "Slovenian"
 
-msgid "Finnish"
-msgstr "Finnish"
-
-msgid ""
-"Choose and map your Product Custom attribute to a specific Business Attribute. "
-"The mapped Product attribute value will be attached to the Genesis Transaction Request. "
-"For more information %sget in touch%s with our support."
-msgstr ""
-"Choose and map your Product Custom attribute to a specific Business Attribute. "
-"The mapped Product attribute value will be attached to the Genesis Transaction Request. "
-"For more information %sget in touch%s with our support."
-
-msgid "Airlines Air Carriers"
-msgstr "Airlines Air Carriers"
-
-msgid "Flight Arrival Date"
-msgstr "Flight Arrival Date"
-
-msgid "The date when the flight departs in format %s"
-msgstr "The date when the flight departs in format %s"
-
-msgid "The date when the flight arrives in format %s"
-msgstr "The date when the flight arrives in format %s"
-
-msgid "Airline Code"
-msgstr "Airline Code"
-
-msgid "The code of Airline"
-msgstr "The code of Airline"
-
-msgid "AIRLINE Flight Number"
-msgstr "Flight number"
-
-msgid "The flight number"
-msgstr "The flight number"
-
-msgid "Airline Ticket Number"
-msgstr "Ticket Number"
-
-msgid "The number of the flight ticket"
-msgstr "The number of the flight ticket"
-
-msgid "Airline Origin City"
-msgstr "Origin City"
-
-msgid "The origin city of the flight"
-msgstr "The origin city of the flight"
-
-msgid "Airline Destination City"
-msgstr "Destination City"
-
-msgid "The destination city of the flight"
-msgstr "The destination city of the flight"
-
-msgid "Airline Tour Operator Name"
-msgstr "Airline Tour Operator Name"
-
-msgid "The name of tour operator"
-msgstr "The name of tour operator"
-
-msgid "Event Management"
-msgstr "Event Management"
-
-msgid "Event Start Date"
-msgstr "Event Start Date"
-
-msgid "The date when event starts in format %s"
-msgstr "The date when event starts in format %s"
-
-msgid "Event End Date"
-msgstr "Event End Date"
-
-msgid "The date when event ends in format %s"
-msgstr "The date when event ends in format %s"
-
-msgid "Event Organizer Id"
-msgstr "Event Organizer Id"
-
-msgid "Event Id"
-msgstr "Event Id"
-
-msgid "Furniture"
-msgstr "Furniture"
-
-msgid "Date of Order"
-msgstr "Date of Order"
-
-msgid "The date when order was placed in format %s"
-msgstr "The date when order was placed in format %s"
-
-msgid "Delivery Date"
-msgstr "Delivery Date"
-
-msgid "Date of the expected delivery in format %s"
-msgstr "Date of the expected delivery in format %s"
-
-msgid "Name Of Supplier"
-msgstr "Name Of Supplier"
-
-msgid "Hotels and Real estate rentals"
-msgstr "Hotels and Real estate rentals"
-
-msgid "Check-In Date"
-msgstr "Check-In Date"
-
-msgid "The data when the customer check-in in format %s"
-msgstr "The data when the customer check-in in format %s"
-
-msgid "Check-Out Date"
-msgstr "Check-Out Date"
-
-msgid "The data when the customer check-out in format %s"
-msgstr "The data when the customer check-out in format %s"
-
-msgid "Travel Agency Name"
-msgstr "Travel Agency Name"
-
-msgid "Car, Plane and Boat Rentals"
-msgstr "Car, Plane and Boat Rentals"
-
-msgid "Pick-Up Date"
-msgstr "Pick-Up Date"
-
-msgid "The date when customer takes the vehicle in format %s"
-msgstr "The date when customer takes the vehicle in format %s"
-
-msgid "Vehicle Return Date"
-msgstr "Return Date"
-
-msgid "The date when the customer returns the vehicle back in format %s"
-msgstr "The date when the customer returns the vehicle back in format %s"
-
-msgid "Supplier Name"
-msgstr "Supplier Name"
-
-msgid "Cruise Lines"
-msgstr "Cruise Lines"
+msgid "Spanish"
+msgstr "Spanish"
 
 msgid "Start Date"
 msgstr "Start Date"
 
-msgid "The date when cruise begins in format %s"
-msgstr "The date when cruise begins in format %s"
+msgid "Subscription Settings"
+msgstr "Subscription Settings"
 
-msgid "End Date"
-msgstr "End Date"
+msgid "Subscription cancelled due to Refunded Order #%s"
+msgstr "Subscription cancelled due to Refunded Order #%s"
 
-msgid "The date when cruise ends in format %s"
-msgstr "The date when cruise ends in format %s"
+msgid "Supplier Name"
+msgstr "Supplier Name"
 
-msgid "Travel Agencies"
-msgstr "Travel Agencies"
+msgid "TCS"
+msgstr "TCS"
 
-msgid "Arrival Date"
-msgstr "Arrival Date"
+msgid "Tarjeta Shopping"
+msgstr "Tarjeta Shopping"
 
-msgid "The date of arrival in format %s"
-msgstr "The date of arrival in format %s"
+msgid "Test Mode"
+msgstr "Test Mode"
 
-msgid "Departure Date"
-msgstr "Departure Date"
+msgid "Text describing this payment method to the customer, during checkout."
+msgstr "Text describing this payment method to the customer, during checkout."
 
-msgid "The date of departure in format %s"
-msgstr "The date of departure in format %s"
+msgid "Thai"
+msgstr "Thai"
 
-msgid "Carrier Code"
-msgstr "Carrier Code"
+msgid "The code of Airline"
+msgstr "The code of Airline"
 
 msgid "The code of the carrier"
 msgstr "The code of the carrier"
 
-msgid "Flight Number"
-msgstr "Flight Number"
+msgid "The customer cancelled their payment session"
+msgstr "The customer cancelled their payment session"
 
-msgid "The number of the flight"
-msgstr "The number of the flight"
+msgid "The data when the customer check-in in format %s"
+msgstr "The data when the customer check-in in format %s"
 
-msgid "Ticket Number"
-msgstr "Ticket Number"
+msgid "The data when the customer check-out in format %s"
+msgstr "The data when the customer check-out in format %s"
 
-msgid "The number of the ticket"
-msgstr "The number of the ticket"
+msgid "The date of arrival in format %s"
+msgstr "The date of arrival in format %s"
 
-msgid "Origin City"
-msgstr "Origin City"
+msgid "The date of departure in format %s"
+msgstr "The date of departure in format %s"
 
-msgid "The origin city"
-msgstr "The origin city"
+msgid "The date when cruise begins in format %s"
+msgstr "The date when cruise begins in format %s"
 
-msgid "Destination City"
-msgstr "Destination City"
+msgid "The date when cruise ends in format %s"
+msgstr "The date when cruise ends in format %s"
+
+msgid "The date when customer takes the vehicle in format %s"
+msgstr "The date when customer takes the vehicle in format %s"
+
+msgid "The date when event ends in format %s"
+msgstr "The date when event ends in format %s"
+
+msgid "The date when event starts in format %s"
+msgstr "The date when event starts in format %s"
+
+msgid "The date when order was placed in format %s"
+msgstr "The date when order was placed in format %s"
+
+msgid "The date when the customer returns the vehicle back in format %s"
+msgstr "The date when the customer returns the vehicle back in format %s"
+
+msgid "The date when the flight arrives in format %s"
+msgstr "The date when the flight arrives in format %s"
+
+msgid "The date when the flight departs in format %s"
+msgstr "The date when the flight departs in format %s"
 
 msgid "The destination city"
 msgstr "The destination city"
 
-msgid "Travel Agency"
-msgstr "Travel Agency"
+msgid "The destination city of the flight"
+msgstr "The destination city of the flight"
 
-msgid "The name of the travel agency"
-msgstr "The name of the travel agency"
-
-msgid "Contractor Name"
-msgstr "Contractor Name"
+msgid "The flight number"
+msgstr "The flight number"
 
 msgid "The name of the contractor"
 msgstr "The name of the contractor"
 
-msgid "ATOL Certificate"
-msgstr "ATOL certificate number"
+msgid "The name of the travel agency"
+msgstr "The name of the travel agency"
 
-msgid "Pick-up Date"
-msgstr "Pick-up Date"
+msgid "The name of tour operator"
+msgstr "The name of tour operator"
 
-msgid "Pick-up date in format %s"
-msgstr "Pick-up date in format %s"
+msgid "The number of the flight"
+msgstr "The number of the flight"
 
-msgid "Return Date"
+msgid "The number of the flight ticket"
+msgstr "The number of the flight ticket"
+
+msgid "The number of the ticket"
+msgstr "The number of the ticket"
+
+msgid "The origin city"
+msgstr "The origin city"
+
+msgid "The origin city of the flight"
+msgstr "The origin city of the flight"
+
+msgid ""
+"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF).Leave "
+"it empty in order to use the token, which has been used for the processing "
+"transaction."
+msgstr ""
+"This is your Genesis Token for Recurring Transaction (Must be CVV-OFF).Leave "
+"it empty in order to use the token, which has been used for the processing "
+"transaction."
+
+msgid "This is your Genesis password."
+msgstr "This is your Genesis password."
+
+msgid "This is your Genesis username."
+msgstr "This is your Genesis username."
+
+msgid "Ticket Number"
+msgstr "Ticket Number"
+
+msgid "Title for this payment method, during customer checkout."
+msgstr "Title for this payment method, during customer checkout."
+
+msgid "Title:"
+msgstr "Title:"
+
+msgid "Total:"
+msgstr "Total:"
+
+msgid "Transaction Type"
+msgstr "Transaction Type"
+
+msgid "Travel Agencies"
+msgstr "Travel Agencies"
+
+msgid "Travel Agency"
+msgstr "Travel Agency"
+
+msgid "Travel Agency Name"
+msgstr "Travel Agency Name"
+
+msgid "TrustPay"
+msgstr "TrustPay"
+
+msgid "Trustly"
+msgstr "Trustly"
+
+msgid "Turkish"
+msgstr "Turkish"
+
+msgid "Use test (staging) environment"
+msgstr "Use test (staging) environment"
+
+msgid "Username"
+msgstr "Username"
+
+msgid "Vehicle Return Date"
 msgstr "Return Date"
 
-msgid "Return date in format %"
-msgstr "Return date in format %"
+msgid ""
+"We were unable to process your order!<br/>Please double check your data and "
+"try again."
+msgstr ""
+"We were unable to process your order!<br/>Please double check your data and "
+"try again."
 
-msgid " or "
-msgstr " or "
+msgid "WeChat"
+msgstr "WeChat"
 
-msgid " change Order Status to Refunded."
-msgstr " change Order Status to Refunded."
+msgid "WebMoney"
+msgstr "WebMoney"
 
-msgid "Automated Refund via "
-msgstr "Automated Refund via "
+msgid "You can do this only on a not-fully captured Authorize Transaction!"
+msgstr "You can do this only on a not-fully captured Authorize Transaction!"
 
-msgid "Refund is pending Approval from the Gateway"
-msgstr "Refund is pending Approval from the Gateway"
+msgid ""
+"You cannot refund '%s', because the available amount for refund in the "
+"payment gateway is '%s'!"
+msgstr ""
+"You cannot refund '%s', because the available amount for refund in the "
+"payment gateway is '%s'!"
+
+msgid ""
+"You cannot refund '%s', because the whole amount has already been refunded "
+"in the payment gateway!"
+msgstr ""
+"You cannot refund '%s', because the whole amount has already been refunded "
+"in the payment gateway!"
+
+msgid ""
+"You cannot refund a payment, because the order status is not yet updated "
+"from the payment gateway!"
+msgstr ""
+"You cannot refund a payment, because the order status is not yet updated "
+"from the payment gateway!"
+
+msgid "You cannot refund a payment, which has not been captured yet!"
+msgstr "You cannot refund a payment, which has not been captured yet!"
+
+msgid ""
+"You cannot refund this payment, because the payment is not captured yet or "
+"the gateway does not support refunds for this transaction type!"
+msgstr ""
+"You cannot refund this payment, because the payment is not captured yet or "
+"the gateway does not support refunds for this transaction type!"
+
+msgid "You cannot void non-authorize payment or already captured payment!"
+msgstr "You cannot void non-authorize payment or already captured payment!"
+
+msgid "Your payment has been completed successfully."
+msgstr "Your payment has been completed successfully."
+
+msgid "Your payment has been declined, please check your data and try again"
+msgstr "Your payment has been declined, please check your data and try again"
+
+msgid "Zimpler"
+msgstr "Zimpler"
+
+msgid "eZeeWallet"
+msgstr "eZeeWallet"
+
+msgid "emerchantpay"
+msgstr "emerchantpay"
+
+msgid ""
+"emerchantpay's Gateway works by sending your client, to our secure (PCI-DSS "
+"certified) server."
+msgstr ""
+"emerchantpay's Gateway works by sending your client, to our secure (PCI-DSS "
+"certified) server."
+
+msgid "eps"
+msgstr "eps"
+
+msgid "iDeal"
+msgstr "iDeal"
+
+msgid "iDebit"
+msgstr "iDebit"
+
+msgid "Bank code(s) for Online banking"
+msgstr "Bank code(s) for Online banking"
+
+msgid "Select Bank code(s) for Online banking transaction type"
+msgstr "Select Bank code(s) for Online banking transaction type"
+
+msgid "Low risk"
+msgstr "Low risk"
+
+msgid "Low value"
+msgstr "Low value"
+
+msgid "SCA Exemption amount option"
+msgstr "SCA Exemption amount option"
+
+msgid "SCA Exemption Amount"
+msgstr "SCA Exemption Amount"
+
+msgid ""
+"Exemption Amount determinate if the SCA Exemption should be included in the "
+"request to the Gateway."
+msgstr ""
+"Exemption Amount determinate if the SCA Exemption should be included in the "
+"request to the Gateway."
+
+msgid "Exemption for the Strong Customer Authentication."
+msgstr "Exemption for the Strong Customer Authentication."
+
+msgid "SCA Exemption"
+msgstr "SCA Exemption"
+
+msgid "SCA Exemption option"
+msgstr "SCA Exemption option"
+
+msgid "SCA Exemption options"
+msgstr "SCA Exemption options"
+
+msgid "3DSv2 options"
+msgstr "3DSv2 options"
+
+msgid "Enable 3DSv2"
+msgstr "Enable 3DSv2"
+
+msgid "Enable handling of 3DSv2 optional parameters"
+msgstr "Enable handling of 3DSv2 optional parameters"
+
+msgid "3DSv2 Challenge option"
+msgstr "3DSv2 Challenge option"
+
+msgid "Enable challenge indicator"
+msgstr "Enable challenge indicator"
+
+msgid "Enable Tokenization"
+msgstr "Enable Tokenization"
+
+msgid ""
+"The value has weight and might impact the decision whether a challenge will "
+"be required for the transaction or not. If not provided, it will be "
+"interpreted as no_preference."
+msgstr ""
+"The value has weight and might impact the decision whether a challenge will "
+"be required for the transaction or not. If not provided, it will be "
+"interpreted as no_preference."
+
+msgid "Web payment form unique ID:"
+msgstr "Web payment form unique ID:"
+
+msgid ""
+"The unique ID of the the web payment form configuration to be displayed for "
+"the current payment."
+msgstr ""
+"The unique ID of the the web payment form configuration to be displayed for "
+"the current payment."
+
+msgid "Enable payment processing into an iframe"
+msgstr "Enable payment processing into an iframe"
+
+msgid ""
+"Enable payment processing into an iframe by removing the redirects to the "
+"Gateway Web Payment Form Page. The iFrame processing requires a specific "
+"setting inside Merchant Console. For more info ask: <a href=\"mailto:tech-"
+"support@emerchantpay.com\">tech-support@emerchantpay.com</a>"
+msgstr ""
+"Enable payment processing into an iframe by removing the redirects to the "
+"Gateway Web Payment Form Page. The iFrame processing requires a specific "
+"setting inside Merchant Console. For more info ask: <a href=\"mailto:tech-"
+"support@emerchantpay.com\">tech-support@emerchantpay.com</a>"

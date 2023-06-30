@@ -55,6 +55,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	const SETTING_KEY_INIT_RECURRING_TXN_TYPES = 'init_recurring_txn_types';
 	const SETTING_KEY_TOKENIZATION             = 'tokenization';
 	const SETTING_KEY_BANK_CODES               = 'bank_codes';
+	const SETTING_KEY_WEB_PAYMENT_FORM_ID      = 'web_payment_form_id';
 
 	/**
 	 * Additional Order/User Meta Constants
@@ -95,6 +96,8 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 */
 	public function __construct() {
 		parent::__construct();
+
+		$this->has_fields = false;
 	}
 
 	/**
@@ -109,6 +112,25 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 			$this->getMethodHasSetting(
 				self::SETTING_KEY_TRANSACTION_TYPES
 			);
+	}
+
+	/**
+	 * Return if iframe processing is enabled
+	 *
+	 * @return bool
+	 */
+	public function is_iframe_enabled() {
+		return $this->get_option( self::SETTING_KEY_IFRAME_PROCESSING ) === self::SETTING_VALUE_YES;
+	}
+
+	/**
+	 * Override method to show the description instead of any fields
+	 *
+	 * @return void
+	 */
+	public function payment_fields() {
+		$description = $this->get_description();
+		echo esc_html( $description );
 	}
 
 	/**
@@ -180,7 +202,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		parent::init_form_fields();
 
 		$this->form_fields += array(
-			self::SETTING_KEY_TRANSACTION_TYPES => array(
+			self::SETTING_KEY_TRANSACTION_TYPES   => array(
 				'type'        => 'multiselect',
 				'css'         => 'height:auto',
 				'title'       => static::getTranslatedText( 'Transaction Type' ),
@@ -188,7 +210,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				'description' => static::getTranslatedText( 'Select transaction type for the payment transaction' ),
 				'desc_tip'    => true,
 			),
-			self::SETTING_KEY_BANK_CODES        => array(
+			self::SETTING_KEY_BANK_CODES          => array(
 				'type'        => 'multiselect',
 				'css'         => 'height:auto',
 				'title'       => static::getTranslatedText( 'Bank code(s) for Online banking' ),
@@ -196,18 +218,25 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				'description' => static::getTranslatedText( 'Select Bank code(s) for Online banking transaction type' ),
 				'desc_tip'    => true,
 			),
-			self::SETTING_KEY_CHECKOUT_LANGUAGE => array(
+			self::SETTING_KEY_CHECKOUT_LANGUAGE   => array(
 				'type'        => 'select',
 				'title'       => static::getTranslatedText( 'Checkout Language' ),
 				'options'     => $this->get_wpf_languages(),
 				'description' => __( 'Select language for the customer UI on the remote server' ),
 				'desc_tip'    => true,
 			),
-			self::SETTING_KEY_TOKENIZATION      => array(
+			self::SETTING_KEY_TOKENIZATION        => array(
 				'type'    => 'checkbox',
 				'title'   => static::getTranslatedText( 'Enable/Disable' ),
 				'label'   => static::getTranslatedText( 'Enable Tokenization' ),
 				'default' => self::SETTING_VALUE_NO,
+			),
+			self::SETTING_KEY_WEB_PAYMENT_FORM_ID => array(
+				'type'        => 'text',
+				'title'       => static::getTranslatedText( 'Web payment form unique ID:' ),
+				'description' => static::getTranslatedText( 'The unique ID of the the web payment form configuration to be displayed for the current payment.' ),
+				'default'     => '',
+				'desc_tip'    => true,
 			),
 		);
 
@@ -420,21 +449,24 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 * Returns a list with data used for preparing a request to the gateway
 	 *
 	 * @param WC_Order $order
-	 * @param bool     $isRecurring
+	 * @param bool     $is_recurring
+	 *
 	 * @return array
 	 */
-	protected function populateGateRequestData( $order, $isRecurring = false ) {
-		$data       = parent::populateGateRequestData( $order, $isRecurring );
+	protected function populateGateRequestData( $order, $is_recurring = false ) {
+		$data       = parent::populateGateRequestData( $order, $is_recurring );
 		$return_url = $order->get_view_order_url();
 
 		if ( $this->getMethodSetting( self::SETTING_KEY_REDIRECT_CANCEL ) === self::SETTING_VALUE_CHECKOUT ) {
 			$return_url = wc_get_checkout_url();
 		}
 
+		$return_cancel_url = $this->build_iframe_url( $order->get_cancel_order_url_raw( wp_slash( $return_url ) ) );
+
 		return array_merge(
 			$data,
 			array(
-				'return_cancel_url' => $order->get_cancel_order_url_raw( wp_slash( $return_url ) ),
+				'return_cancel_url' => $return_cancel_url,
 			)
 		);
 	}
@@ -572,6 +604,11 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 
 			$wpf_request->setRememberCard( true );
 		}
+
+		/**
+		 * WPF Web form unique id
+		 */
+		$wpf_request->setWebPaymentFormId( $this->getMethodSetting( self::SETTING_KEY_WEB_PAYMENT_FORM_ID ) );
 
 		return $genesis;
 	}
@@ -885,7 +922,10 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		$processed_list = array();
 		$alias_map      = array();
 
-		$selected_types = $this->getMethodSetting( self::SETTING_KEY_TRANSACTION_TYPES );
+		$selected_types = $this->order_card_transaction_types(
+			$this->getMethodSetting( self::SETTING_KEY_TRANSACTION_TYPES )
+		);
+
 		$methods        = \Genesis\API\Constants\Payment\Methods::getMethods();
 
 		foreach ( $methods as $method ) {
@@ -987,6 +1027,26 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Order transaction types with Card Transaction types in front
+	 *
+	 * @param array $selected_types Selected transaction types
+	 *
+	 * @return array
+	 */
+	private function order_card_transaction_types( $selected_types ) {
+		$credit_card_types = \Genesis\API\Constants\Transaction\Types::getCardTransactionTypes();
+
+		asort( $selected_types );
+
+		$sorted_array = array_intersect( $credit_card_types, $selected_types );
+
+		return array_merge(
+			$sorted_array,
+			array_diff( $selected_types, $sorted_array )
+		);
 	}
 }
 

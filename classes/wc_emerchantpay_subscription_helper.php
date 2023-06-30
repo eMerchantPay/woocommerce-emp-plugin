@@ -257,7 +257,7 @@ class WC_emerchantpay_Subscription_Helper {
 			$payment_transaction = $payment_object[0];
 		}
 
-		return static::isInitRecurring( $payment_transaction->transaction_type );
+		return property_exists( $payment_transaction, 'transaction_type' ) && static::isInitRecurring( $payment_transaction->transaction_type );
 	}
 
 	/**

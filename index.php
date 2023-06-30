@@ -6,7 +6,7 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.14.0
+ * Version: 1.14.1
  * Requires at least: 4.0
  * Tested up to: 6.2
  * WC requires at least: 3.0.0
@@ -74,6 +74,9 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	function emp_add_css_and_js_to_checkout() {
 		global $wp;
 
+		$options                    = get_option( 'woocommerce_' . WC_emerchantpay_Checkout::get_method_code() . '_settings' );
+		$checkout_iframe_processing = $options[ WC_emerchantpay_Method::SETTING_KEY_IFRAME_PROCESSING ];
+
 		if ( is_checkout() && empty( $wp->query_vars['order-pay'] ) && ! isset( $wp->query_vars['order-received'] ) ) {
 			wp_enqueue_script(
 				'emp-direct-method-form-helper',
@@ -82,6 +85,15 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				'1.13.4',
 				true
 			);
+			if ( WC_emerchantpay_Method::SETTING_VALUE_YES === $checkout_iframe_processing ) {
+				wp_enqueue_script(
+					'emp-checkout-method-form-helper',
+					plugins_url( '/assets/javascript/checkout-method-form-helper.js', __FILE__ ),
+					array(),
+					'1.13.4',
+					true
+				);
+			}
 			wp_enqueue_style(
 				'emp-iframe-checkout',
 				plugins_url( '/assets/css/iframe-checkout.css', __FILE__ ),
@@ -122,7 +134,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	function emp_direct_threeds_iframe() {
 		echo '<div class="emp-threeds-modal"><iframe class="emp-threeds-iframe" frameBorder="0" style="border: none;"></iframe></div>';
 	}
-	add_action( 'woocommerce_review_order_before_submit', 'emp_direct_threeds_iframe' );
+	add_action( 'woocommerce_after_checkout_form', 'emp_direct_threeds_iframe' );
 
 	add_action( 'plugins_loaded', 'woocommerce_emerchantpay_init', 0 );
 	add_action( 'wp_enqueue_scripts', 'emp_add_css_and_js_to_checkout' );
@@ -130,6 +142,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 	include dirname( __FILE__ ) . '/classes/class-wc-emerchantpay-threeds-form-helper.php';
 	include dirname( __FILE__ ) . '/classes/class-wc-emerchantpay-threeds-backend-helper.php';
+	include dirname( __FILE__ ) . '/classes/class-wc-emerchantpay-frame-handler.php';
 
 	$threeds_form_helper_class = strtolower( WC_Emerchantpay_Threeds_Form_Helper::class );
 	add_action( 'woocommerce_api_' . $threeds_form_helper_class, array( new WC_Emerchantpay_Threeds_Form_Helper(), 'display_form_and_iframe' ) );
@@ -138,4 +151,5 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-method_continue_handler', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'method_continue_handler' ) );
 	add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-callback_handler', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'callback_handler' ) );
 	add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-status_checker', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'status_checker' ) );
+	add_action( 'woocommerce_api_' . strtolower( WC_Emerchantpay_Frame_Handler::class ), array( new WC_Emerchantpay_Frame_Handler(), 'frame_handler' ) );
 }
