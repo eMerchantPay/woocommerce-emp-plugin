@@ -6,11 +6,11 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.14.1
+ * Version: 1.14.2
  * Requires at least: 4.0
  * Tested up to: 6.2
  * WC requires at least: 3.0.0
- * WC tested up to: 7.8.0
+ * WC tested up to: 7.8.1
  * WCS tested up to: 5.0.1
  * License: GPL-2.0
  * License URI: http://opensource.org/licenses/gpl-2.0.php
@@ -75,7 +75,9 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		global $wp;
 
 		$options                    = get_option( 'woocommerce_' . WC_emerchantpay_Checkout::get_method_code() . '_settings' );
-		$checkout_iframe_processing = $options[ WC_emerchantpay_Method::SETTING_KEY_IFRAME_PROCESSING ];
+		$checkout_iframe_processing = array_key_exists( WC_emerchantpay_Method::SETTING_KEY_IFRAME_PROCESSING, $options ) ?
+			$options[ WC_emerchantpay_Method::SETTING_KEY_IFRAME_PROCESSING ] :
+			false;
 
 		if ( is_checkout() && empty( $wp->query_vars['order-pay'] ) && ! isset( $wp->query_vars['order-received'] ) ) {
 			wp_enqueue_script(

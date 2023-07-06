@@ -202,6 +202,17 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		parent::init_form_fields();
 
 		$this->form_fields += array(
+			self::SETTING_KEY_IFRAME_PROCESSING => array(
+				'type'        => 'checkbox',
+				'title'       => static::getTranslatedText( 'Enable/Disable' ),
+				'label'       => static::getTranslatedText( 'Enable payment processing into an iframe' ),
+				'default'     => self::SETTING_VALUE_NO,
+				'description' => static::getTranslatedText(
+					'Enable payment processing into an iframe by removing the redirects to the Gateway Web Payment ' .
+					'Form Page. The iFrame processing requires a specific setting inside Merchant Console. For more' .
+					' info ask: <a href="mailto:tech-support@emerchantpay.com">tech-support@emerchantpay.com</a>'
+				),
+			),
 			self::SETTING_KEY_TRANSACTION_TYPES   => array(
 				'type'        => 'multiselect',
 				'css'         => 'height:auto',

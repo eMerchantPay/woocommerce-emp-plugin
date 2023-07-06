@@ -1489,17 +1489,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 				'description' => static::getTranslatedText( 'This is your Genesis password.' ),
 				'desc_tip'    => true,
 			),
-			self::SETTING_KEY_IFRAME_PROCESSING => array(
-				'type'        => 'checkbox',
-				'title'       => static::getTranslatedText( 'Enable/Disable' ),
-				'label'       => static::getTranslatedText( 'Enable payment processing into an iframe' ),
-				'default'     => self::SETTING_VALUE_NO,
-				'description' => static::getTranslatedText(
-					'Enable payment processing into an iframe by removing the redirects to the Gateway Web Payment ' .
-					'Form Page. The iFrame processing requires a specific setting inside Merchant Console. For more' .
-					' info ask: <a href="mailto:tech-support@emerchantpay.com">tech-support@emerchantpay.com</a>'
-				),
-			),
 		);
 	}
 
