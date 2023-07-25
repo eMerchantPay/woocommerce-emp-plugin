@@ -9,6 +9,7 @@ div.emp-threeds-modal {
 	height: 100%;
 	overflow: auto;
 	text-align: center;
+	background-color: rgba(0, 0, 0, 0.5);
 }
 
 iframe.emp-threeds-iframe {

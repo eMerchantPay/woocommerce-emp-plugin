@@ -284,4 +284,20 @@ class WC_emerchantpay_Helper {
 
 		return self::CURRENT_TRANSACTION_INDICATOR;
 	}
+	/**
+	 * Get version data from plugin description
+	 *
+	 * @return  bool|string
+	 */
+	public static function get_plugin_version() {
+		$version = false;
+		$path    = dirname( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'index.php';
+
+		$plugin_data = get_plugin_data( $path );
+		if ( is_array( $plugin_data ) && ! empty( $plugin_data['Version'] ) ) {
+			$version = $plugin_data['Version'];
+		}
+
+		return $version;
+	}
 }

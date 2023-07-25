@@ -6,12 +6,12 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.14.2
+ * Version: 1.14.3
  * Requires at least: 4.0
- * Tested up to: 6.2
+ * Tested up to: 6.3
  * WC requires at least: 3.0.0
- * WC tested up to: 7.8.1
- * WCS tested up to: 5.0.1
+ * WC tested up to: 7.9.0
+ * WCS tested up to: 5.3.0
  * License: GPL-2.0
  * License URI: http://opensource.org/licenses/gpl-2.0.php
 */
@@ -75,24 +75,47 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		global $wp;
 
 		$options                    = get_option( 'woocommerce_' . WC_emerchantpay_Checkout::get_method_code() . '_settings' );
-		$checkout_iframe_processing = array_key_exists( WC_emerchantpay_Method::SETTING_KEY_IFRAME_PROCESSING, $options ) ?
-			$options[ WC_emerchantpay_Method::SETTING_KEY_IFRAME_PROCESSING ] :
-			false;
+		$checkout_iframe_processing = WC_emerchantpay_Helper::getArrayItemsByKey(
+			$options,
+			WC_emerchantpay_Method::SETTING_KEY_IFRAME_PROCESSING,
+			false
+		);
+
+		$options_direct           = get_option( 'woocommerce_' . WC_Emerchantpay_Direct::get_method_code() . '_settings' );
+		$direct_iframe_processing = WC_emerchantpay_Helper::getArrayItemsByKey(
+			$options_direct,
+			WC_emerchantpay_Method::SETTING_KEY_IFRAME_PROCESSING,
+			true
+		);
 
 		if ( is_checkout() && empty( $wp->query_vars['order-pay'] ) && ! isset( $wp->query_vars['order-received'] ) ) {
+
+			$version = WC_emerchantpay_Helper::get_plugin_version();
+
 			wp_enqueue_script(
-				'emp-direct-method-form-helper',
-				plugins_url( '/assets/javascript/direct-method-form-helper.js', __FILE__ ),
+				'emp-direct-method-browser-params-helper',
+				plugins_url( '/assets/javascript/direct-method-browser-params-helper.js', __FILE__ ),
 				array(),
-				'1.13.4',
+				$version,
 				true
 			);
+
+			if ( WC_emerchantpay_Method::SETTING_VALUE_YES === $direct_iframe_processing ) {
+				wp_enqueue_script(
+					'emp-direct-method-form-helper',
+					plugins_url( '/assets/javascript/direct-method-form-helper.js', __FILE__ ),
+					array(),
+					$version,
+					true
+				);
+			}
+
 			if ( WC_emerchantpay_Method::SETTING_VALUE_YES === $checkout_iframe_processing ) {
 				wp_enqueue_script(
 					'emp-checkout-method-form-helper',
 					plugins_url( '/assets/javascript/checkout-method-form-helper.js', __FILE__ ),
 					array(),
-					'1.13.4',
+					$version,
 					true
 				);
 			}
@@ -100,7 +123,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				'emp-iframe-checkout',
 				plugins_url( '/assets/css/iframe-checkout.css', __FILE__ ),
 				array(),
-				'1.13.4'
+				$version
 			);
 		}
 	}

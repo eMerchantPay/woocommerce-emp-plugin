@@ -367,6 +367,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	 * Inject the WooCommerce Settings Custom JS files
 	 */
 	public function enqueue_woocommerce_payment_settings_assets() {
+		$version = WC_emerchantpay_Helper::get_plugin_version();
+
 		wp_enqueue_script(
 			'business-attributes',
 			plugins_url(
@@ -374,7 +376,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 				plugin_dir_path( __FILE__ )
 			),
 			array(),
-			'0.0.1'
+			$version
 		);
 	}
 
@@ -410,70 +412,72 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 			return;
 		}
 
+		$version = WC_emerchantpay_Helper::get_plugin_version();
+
 		wp_enqueue_style(
 			'treegrid-css',
 			plugins_url( 'assets/css/treegrid.css', plugin_dir_path( __FILE__ ) ),
 			array(),
-			'0.2.0'
+			$version
 		);
 		wp_enqueue_style(
 			'order-transactions-tree',
 			plugins_url( 'assets/css/order_transactions_tree.css', plugin_dir_path( __FILE__ ) ),
 			array(),
-			'0.0.1'
+			$version
 		);
 		wp_enqueue_style(
 			'bootstrap',
 			plugins_url( 'assets/css/bootstrap/bootstrap.min.css', plugin_dir_path( __FILE__ ) ),
 			array(),
-			'0.0.1'
+			$version
 		);
 		wp_enqueue_style(
 			'bootstrap-validator',
 			plugins_url( 'assets/css/bootstrap/bootstrapValidator.min.css', plugin_dir_path( __FILE__ ) ),
 			array( 'bootstrap' ),
-			'0.0.1'
+			$version
 		);
 		wp_enqueue_script(
 			'treegrid-cookie',
 			plugins_url( 'assets/javascript/treegrid/cookie.js', plugin_dir_path( __FILE__ ) ),
 			array(),
-			'0.2.0',
+			$version,
 			true
 		);
 		wp_enqueue_script(
 			'treegrid-main',
 			plugins_url( 'assets/javascript/treegrid/treegrid.js', plugin_dir_path( __FILE__ ) ),
 			array( 'treegrid-cookie' ),
-			'0.2.0',
+			$version,
 			true
 		);
 		wp_enqueue_script(
 			'jquery-number',
 			plugins_url( 'assets/javascript/jQueryExtensions/jquery.number.min.js', plugin_dir_path( __FILE__ ) ),
 			array( 'jquery' ),
-			'0.0.1',
+			$version,
 			true
 		);
 		wp_enqueue_script(
 			'bootstrap-validator',
 			plugins_url( 'assets/javascript/bootstrap/bootstrapValidator.min.js', plugin_dir_path( __FILE__ ) ),
 			array( 'jquery' ),
-			'0.0.1',
+			$version,
 			true
 		);
 		wp_enqueue_script(
 			'bootstrap-modal',
 			plugins_url( 'assets/javascript/bootstrap/bootstrap.modal.min.js', plugin_dir_path( __FILE__ ) ),
 			array( 'jquery' ),
-			'0.0.1',
+			$version,
 			true
 		);
 		wp_enqueue_script(
 			'order-transactions-tree',
 			plugins_url( 'assets/javascript/order_transactions_tree.js', plugin_dir_path( __FILE__ ) ),
 			array( 'treegrid-main', 'jquery-number', 'bootstrap-validator' ),
-			'0.0.1',
+			$version,
 			true
 		);
 		wp_enqueue_script( 'jquery-ui-tooltip' );

@@ -236,6 +236,16 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 				'description' => static::getTranslatedText( 'This is your Genesis token.' ),
 				'desc_tip'    => true,
 			),
+			self::SETTING_KEY_IFRAME_PROCESSING => array(
+				'type'        => 'checkbox',
+				'title'       => static::getTranslatedText( 'Enable/Disable' ),
+				'label'       => static::getTranslatedText( 'Enable payment processing into an iframe' ),
+				'default'     => self::SETTING_VALUE_YES,
+				'description' => static::getTranslatedText(
+					'Enable 3D Secure Method processing into an iFrame. By disabling the iFrame, the ' .
+					'3DSv2 processing will be executed by redirecting from the checkout page.'
+				),
+			),
 			'api_transaction'                  => array(
 				'type'        => 'title',
 				'title'       => static::getTranslatedText( 'API Transaction Type' ),
