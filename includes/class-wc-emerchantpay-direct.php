@@ -417,7 +417,7 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 
 			$genesis = $this->prepare_initial_genesis_request( $data );
 			$genesis = $this->add_business_data_to_gateway_request( $genesis, $order );
-			if ( $this->is_3dsv2_enabled() ) {
+			if ( $this->is_3dsv2_enabled() && $this->is_3d_transaction( false ) ) {
 				$this->add_3dsv2_parameters( $genesis, $order, $data, false );
 			}
 			$this->add_sca_exemption_parameters( $genesis );
@@ -585,10 +585,12 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 			$this->set_credentials();
 
 			$genesis = $this->prepare_initial_genesis_request( $data );
-			if ( $this->is_3dsv2_enabled() ) {
+			if ( $this->is_3dsv2_enabled() && $this->is_3d_transaction( true ) ) {
 				$this->add_3dsv2_parameters( $genesis, $order, $data, true );
 			}
-			$this->add_sca_exemption_parameters( $genesis );
+			if ( $this->is_3d_transaction( true ) ) {
+				$this->add_sca_exemption_parameters( $genesis );
+			}
 
 			$genesis->execute();
 
