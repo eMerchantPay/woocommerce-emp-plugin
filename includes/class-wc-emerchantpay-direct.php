@@ -109,24 +109,11 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 	/**
 	 * Setup and initialize this module
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct( $options = array() ) {
+		parent::__construct( $options );
 
 		$this->supports[] = self::FEATURE_DEFAULT_CREDIT_CARD_FORM;
-	}
-
-	/**
-	 * Registers all custom actions used in the payment methods
-	 *
-	 * @return void
-	 */
-	protected function registerCustomActions() {
-		parent::registerCustomActions();
-
-		$this->addWPSimpleActions(
-			self::WC_ACTION_CREDIT_CARD_FORM_START,
-			'before_cc_form'
-		);
+		$this->register_custom_actions();
 	}
 
 	/**
@@ -803,6 +790,18 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 		);
 
 		return $data;
+	}
+
+	/**
+	 * Registers all custom actions used in the payment methods
+	 *
+	 * @return void
+	 */
+	private function register_custom_actions() {
+		$this->addWPSimpleActions(
+			self::WC_ACTION_CREDIT_CARD_FORM_START,
+			'before_cc_form'
+		);
 	}
 }
 

@@ -34,12 +34,29 @@ class WC_Emerchantpay_Frame_Handler {
 	 */
 	public static function frame_handler() {
 		if ( ! empty( $_SERVER['QUERY_STRING'] ) ) {
-			$query_params = urldecode( wp_unslash( $_SERVER['QUERY_STRING'] ) );
-			echo "<script>parent.location.href = '" . esc_url_raw( $query_params ) . "';</script>";
+			$sanitized_url = self::sanitize_url( wp_unslash( $_SERVER['QUERY_STRING'] ) );
+
+			echo "<script>parent.location.href = '" . esc_url_raw( $sanitized_url ) . "';</script>";
 
 			exit;
 		}
 
 		wp_die( 'Missing data!' );
+	}
+
+	/**
+	 * Check if the domain of the redirected url points shop's domain url
+	 *
+	 * @param string $redirect_url
+	 *
+	 * @return string
+	 */
+	private static function sanitize_url( $redirect_url ) {
+		$shop_url             = wc_get_page_permalink( 'shop' );
+		$decoded_redirect_url = urldecode( $redirect_url );
+		$redirect_domain      = wp_parse_url( $decoded_redirect_url, PHP_URL_HOST );
+		$shop_domain          = wp_parse_url( $shop_url, PHP_URL_HOST );
+
+		return ( $redirect_domain === $shop_domain ) ? $decoded_redirect_url : $shop_url;
 	}
 }

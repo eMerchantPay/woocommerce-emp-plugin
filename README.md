@@ -6,11 +6,11 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x, 5.x or 6.x (Tested up to 6.3.1)
-* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.0 (Tested up to 8.0.3)
-* [GenesisPHP v1.21.12](https://github.com/GenesisGateway/genesis_php/releases/tag/1.21.12) - (Integrated in Module)
+* WordPress 4.x, 5.x or 6.x (Tested up to 6.4.1)
+* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.0 (Tested up to 8.3.1)
+* [GenesisPHP v1.24.0](https://github.com/GenesisGateway/genesis_php/releases/tag/1.24.0) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
-* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x (Tested up to 5.3.0) in order to use **Subscriptions**
+* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x (Tested up to 5.7.0) in order to use **Subscriptions**
 
 GenesisPHP Requirements
 ------------
@@ -122,6 +122,18 @@ There are two ways of doing Refunds.
     In that way, you will send a Refund to the Genesis Gateway without affecting the Order, unless the refund is not a full one. 
     If the full amount is refunded then the Order will become with status Refunded.   
 
+Blocks
+------------
+To replace the existing checkout and switch to the new Checkout Block:
+
+* Ensure that you have installed **WooCommerce** version **6.9** or newer, or download and install the [WooCommerce Blocks](https://woo.com/products/woocommerce-gutenberg-products-block/) plugin.
+* Ensure that the current theme supports **Blocks**.
+* Go to the **Pages** and then locate and edit the **Checkout page**.
+* Remove the existing `[woocommerce_checkout]` Shortcode block.
+* Search and add the **Checkout Block** to the page.
+* If you have deleted the old Checkout page and added a new one, you can set it in ```WooCommerce``` -> ```Settings``` -> ```Advanced``` -> ```Checkout page```
+* Alternatively you can use ```WooCommerce``` -> ```Status``` -> ```Tools``` -> ```Create Default WooCommerce Pages```
+
 Supported Transactions
 ------------
 * ```emerchantpay Direct``` Payment Method
@@ -175,6 +187,7 @@ Supported Transactions
     * __Online Banking__
       * __Interac Combined Pay-in (CPI)__ 
       * __Bancontact (BCT)__ 
+      * __Blik One Click (BLK)__
     * __OXXO__
     * __P24__
     * __Pago Facil__

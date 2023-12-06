@@ -94,8 +94,8 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	/**
 	 * Setup and initialize this module
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct( $options = array() ) {
+		parent::__construct( $options );
 
 		$this->has_fields = false;
 	}
@@ -368,6 +368,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		return array(
 			Banks::CPI => 'Interac Combined Pay-in',
 			Banks::BCT => 'Bancontact',
+			Banks::BLK => 'Blik One Click',
 		);
 	}
 
@@ -771,6 +772,14 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 							$available_bank_codes
 						);
 					}
+					break;
+				case Types::PAYSAFECARD:
+					$user_id         = WC_emerchantpay_Genesis_Helper::getCurrentUserId();
+					$customer_id = empty( $user_id ) ? WC_emerchantpay_Genesis_Helper::getCurrentUserIdHash() : $user_id;
+
+					$transaction_custom_params = array(
+						'customer_id' => $customer_id,
+					);
 					break;
 				default:
 					$transaction_custom_params = array();

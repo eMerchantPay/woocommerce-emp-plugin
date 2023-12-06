@@ -6,12 +6,13 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.14.4
+ * Version: 1.14.6
  * Requires at least: 4.0
- * Tested up to: 6.3.1
+ * Tested up to: 6.4
  * WC requires at least: 3.0.0
- * WC tested up to: 8.0.3
- * WCS tested up to: 5.3.0
+ * WC tested up to: 8.3.1
+ * WCS tested up to: 5.7.0
+ * WCB tested up to: 11.6.1
  * License: GPL-2.0
  * License URI: http://opensource.org/licenses/gpl-2.0.php
 */
@@ -39,11 +40,10 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				error_log( 'Unable to load language file for locale: ' . get_locale() );
 			}
 
-			include dirname( __FILE__ ) . '/libraries/genesis/vendor/autoload.php';
-
-			include dirname( __FILE__ ) . '/includes/wc_emerchantpay_checkout.php';
-
-			include dirname( __FILE__ ) . '/includes/class-wc-emerchantpay-direct.php';
+			include __DIR__ . '/libraries/genesis/vendor/autoload.php';
+			include __DIR__ . '/includes/wc_emerchantpay_checkout.php';
+			include __DIR__ . '/includes/class-wc-emerchantpay-direct.php';
+			include __DIR__ . '/classes/class-wc-emerchantpay-constants.php';
 
 			/**
 			 * Add the emerchantpay Gateway to WooCommerce's
@@ -177,4 +177,24 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-callback_handler', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'callback_handler' ) );
 	add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-status_checker', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'status_checker' ) );
 	add_action( 'woocommerce_api_' . strtolower( WC_Emerchantpay_Frame_Handler::class ), array( new WC_Emerchantpay_Frame_Handler(), 'frame_handler' ) );
+
+	/**
+	 * Registers WooCommerce Blocks integration
+	 */
+	function emerchantpay_blocks_support() {
+		if ( class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
+			require_once 'includes/blocks/class-wc-emerchantpay-blocks.php';
+			add_action(
+				'woocommerce_blocks_payment_method_type_registration',
+				function ( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
+					$payment_method_registry->register( new WC_Emerchantpay_Blocks() );
+				}
+			);
+		}
+	}
+
+	/**
+	 * Registers WooCommerce Blocks integration
+	 */
+	add_action( 'woocommerce_blocks_loaded', 'emerchantpay_blocks_support' );
 }

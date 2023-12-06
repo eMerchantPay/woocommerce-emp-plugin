@@ -221,6 +221,15 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	protected $should_execute_admin_footer_hook = false;
 
 	/**
+	* Define default options
+	*
+	* @var array
+	*/
+	private $options = array(
+		'draw_transaction_tree' => true, // Conditionally draw the table with the transaction tree
+	);
+
+	/**
 	 * @return string
 	 */
 	abstract protected function getModuleTitle();
@@ -251,6 +260,51 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	abstract protected function process_init_subscription_payment( $order_id );
 
 	/**
+	 * Registers all admin actions used in the payment methods
+	 *
+	 * @return void
+	 */
+	public function register_admin_actions() {
+		$this->addWPSimpleActions(
+			array(
+				self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_TOTAL,
+				self::WP_ACTION_ADMIN_NOTICES,
+			),
+			array(
+				'displayAdminOrderAfterTotals',
+				'admin_notices',
+			)
+		);
+
+		// Hooks for transactions list in admin order view
+		if ( $this->getIsWooCommerceAdminOrder() && $this->options['draw_transaction_tree'] ) {
+			$this->addWPSimpleActions(
+				[
+					self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_TOTAL,
+					self::WP_ACTION_ADMIN_FOOTER,
+				],
+				[
+					'displayTransactionsListForOrder',
+					'enqueueTransactionsListAssets',
+				]
+			);
+		}
+
+		if ( $this->get_is_woocommerce_admin_settings() ) {
+			$this->addWPSimpleActions(
+				[
+					self::WC_ADMIN_ACTION_SETTINGS_START,
+					self::WC_ADMIN_ACTION_SETTINGS_SAVED,
+				],
+				[
+					'enqueue_woocommerce_payment_settings_assets',
+					'enqueue_woocommerce_payment_settings_assets',
+				]
+			);
+		}
+	}
+
+	/**
 	 * Retrieves a list with the Required Api Settings
 	 *
 	 * @return array
@@ -279,8 +333,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 		if ( is_admin() && function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
 
-			return null !== $screen && 'woocommerce' === $screen->parent_base &&
-				   'shop_order' === $screen->id;
+			return null !== $screen && 'shop_order' === $screen->id;
 		}
 
 		return false;
@@ -294,12 +347,12 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 			$screen = get_current_screen();
 
 			return null !== $screen && 'woocommerce_page_wc-settings' === $screen->base &&
-			       array_key_exists('section', $_REQUEST) && $this::$method_code === $_REQUEST['section'];
+					array_key_exists( 'section', $_REQUEST ) && $this::$method_code === $_REQUEST['section'];
 		}
 
 		if ( is_array( $_REQUEST ) ) {
-			return array_key_exists('page', $_REQUEST) && 'wc-settings' === $_REQUEST['page'] &&
-			       array_key_exists( 'section', $_REQUEST ) && $this::$method_code === $_REQUEST['section'];
+			return array_key_exists( 'page', $_REQUEST ) && 'wc-settings' === $_REQUEST['page'] &&
+					array_key_exists( 'section', $_REQUEST ) && $this::$method_code === $_REQUEST['section'];
 		}
 
 		return false;
@@ -315,51 +368,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 			if ( ! class_exists( $helperClass ) ) {
 				require_once "{$helperFile}.php";
 			}
-		}
-	}
-
-	/**
-	 * Registers all custom actions used in the payment methods
-	 *
-	 * @return void
-	 */
-	protected function registerCustomActions() {
-		$this->addWPSimpleActions(
-			array(
-				self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_TOTAL,
-				self::WP_ACTION_ADMIN_NOTICES,
-			),
-			array(
-				'displayAdminOrderAfterTotals',
-				'admin_notices',
-			)
-		);
-
-		// Hooks for transactions list in admin order view
-		if ( $this->getIsWooCommerceAdminOrder() ) {
-			$this->addWPSimpleActions(
-				[
-					self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_TOTAL,
-					self::WP_ACTION_ADMIN_FOOTER,
-				],
-				[
-					'displayTransactionsListForOrder',
-					'enqueueTransactionsListAssets',
-				]
-			);
-		}
-
-		if ( $this->get_is_woocommerce_admin_settings() ) {
-			$this->addWPSimpleActions(
-				[
-					self::WC_ADMIN_ACTION_SETTINGS_START,
-					self::WC_ADMIN_ACTION_SETTINGS_SAVED,
-				],
-				[
-					'enqueue_woocommerce_payment_settings_assets',
-					'enqueue_woocommerce_payment_settings_assets',
-				]
-			);
 		}
 	}
 
@@ -715,7 +723,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	/**
 	 * Setup and initialize this module
 	 */
-	public function __construct() {
+	public function __construct( $options = array() ) {
 		$this->id = static::$method_code;
 
 		$this->supports = array(
@@ -736,6 +744,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 		$this->title       = $this->get_option( self::SETTING_KEY_TITLE );
 		$this->description = $this->get_option( self::SETTING_KEY_DESCRIPTION );
 
+		$this->options = array_merge( $this->options, $options );
+
 		// Register the method callback
 		$this->addWPSimpleActions(
 			'woocommerce_api_' . strtolower( get_class( $this ) ),
@@ -755,7 +765,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 			);
 		}
 
-		$this->registerCustomActions();
+		add_action( 'current_screen', array( $this, 'register_admin_actions' ) );
 
 		// Initialize admin options
 		$this->init_form_fields();
@@ -1039,7 +1049,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 					);
 
 			if ( Types::getCaptureTransactionClass( Types::KLARNA_AUTHORIZE ) === $type ) {
-			    $genesis->request()->setItems( WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order ) );
+				$genesis->request()->setItems( WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order ) );
 			}
 
 			$genesis->execute();
@@ -1090,7 +1100,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 			Types::APPLE_PAY === $auth->type
 		) {
 			return Types::getCaptureTransactionClass( $auth->type );
-        }
+		}
 
 		throw new Exception( 'Invalid trx type: ' . $auth->type );
 	}
@@ -1878,8 +1888,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 
 				break;
 			case \Genesis\API\Constants\Transaction\States::DECLINED:
-			    $has_payment = WC_emerchantpay_Genesis_Helper::has_payment( $gateway_response_object );
-			    if ( ! $has_payment ) {
+				$has_payment = WC_emerchantpay_Genesis_Helper::has_payment( $gateway_response_object );
+				if ( ! $has_payment ) {
 					$this->update_order_status_cancelled(
 						$order,
 						$gateway_response_object,
@@ -1997,7 +2007,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 				$total_refund_amount = $total_refunded_amount + $payment_transactions->amount;
 				$fully_refunded      = ( (float) $total_order_amount === (float) $total_refund_amount) ?: false;
 
-                break;
+				break;
 		}
 
 		if ( ! $fully_refunded || ! $is_initial_refund ) {
@@ -2383,7 +2393,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 					);
 
 			if ( Types::getRefundTransactionClass( Types::KLARNA_CAPTURE ) === $type ) {
-			    $genesis->request()->setItems( WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order ) );
+				$genesis->request()->setItems( WC_emerchantpay_Order_Helper::getKlarnaCustomParamItems( $order ) );
 			}
 
 			$genesis->execute();
@@ -3382,7 +3392,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 
 				if ( $attribute ) {
 					$genesis->request()
-					        ->{'set' . \Genesis\Utils\Common::snakeCaseToCamelCase( $genesis_attribute )}( $attribute );
+							->{'set' . \Genesis\Utils\Common::snakeCaseToCamelCase( $genesis_attribute )}( $attribute );
 				}
 			}
 		}
