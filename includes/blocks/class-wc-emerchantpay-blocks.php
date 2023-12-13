@@ -29,6 +29,13 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
 final class WC_Emerchantpay_Blocks extends AbstractPaymentMethodType {
 
 	/**
+	 * Payment method name/id/slug.
+	 *
+	 * @var string
+	 */
+	protected $name = WC_Emerchantpay_Constants::EMERCHANTPAY_CHECKOUT_BLOCKS;
+
+	/**
 	 * The gateway instance.
 	 *
 	 * @var WC_emerchantpay_Checkout
@@ -36,11 +43,14 @@ final class WC_Emerchantpay_Blocks extends AbstractPaymentMethodType {
 	private $gateway;
 
 	/**
-	 * Payment method name/id/slug.
+	 * Only settings, needed for the frontend part
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $name = WC_Emerchantpay_Constants::EMERCHANTPAY_CHECKOUT_BLOCKS;
+	private $necessary_settings = array(
+		'title',
+		'description',
+	);
 
 	/**
 	 * Initializes the payment method type.
@@ -49,7 +59,7 @@ final class WC_Emerchantpay_Blocks extends AbstractPaymentMethodType {
 		$options        = array(
 			'draw_transaction_tree' => false,
 		);
-		$this->settings = get_option( 'woocommerce_emerchantpay_checkout_settings', array() );
+		$this->settings = $this->get_only_necessary_settings();
 		$this->gateway  = new WC_emerchantpay_Checkout( $options );
 		$this->supports = $this->gateway->supports;
 	}
@@ -94,7 +104,7 @@ final class WC_Emerchantpay_Blocks extends AbstractPaymentMethodType {
 			'wc-emerchantpay-payments-blocks',
 			'wc_emerchantpay_settings',
 			array(
-				'settings' => get_option( 'woocommerce_emerchantpay_checkout_settings' ),
+				'settings' => $this->settings,
 				'supports' => $this->supports,
 			)
 		);
@@ -117,9 +127,21 @@ final class WC_Emerchantpay_Blocks extends AbstractPaymentMethodType {
 	 */
 	public function get_payment_method_data() {
 		return array(
-			'title'       => $this->get_setting( 'title' ),
-			'description' => $this->get_setting( 'description' ),
+			'title'       => $this->settings['title'],
+			'description' => $this->settings['description'],
 			'supports'    => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
 		);
+	}
+
+	/**
+	 * Get array with the necessary settings only
+	 *
+	 * @return array
+	 */
+	private function get_only_necessary_settings() {
+		$all_settings       = get_option( 'woocommerce_emerchantpay_checkout_settings', array() );
+		$necessary_settings = array_flip( $this->necessary_settings );
+
+		return array_intersect_key( $all_settings, $necessary_settings );
 	}
 }
