@@ -3,3 +3,4 @@
 libraries/.DS_Store
 libraries/genesis/.DS_Store
 node_modules/
+vendor/

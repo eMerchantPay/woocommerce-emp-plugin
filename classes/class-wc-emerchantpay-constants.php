@@ -24,6 +24,8 @@ class WC_Emerchantpay_Constants {
 
 	const EMERCHANTPAY_CHECKOUT_BLOCKS = 'emerchantpay-checkout-blocks';
 
+	const EMERCHANTPAY_DIRECT_BLOCKS = 'emerchantpay-direct-blocks';
+
 	/**
 	 * Plugin url
 	 *

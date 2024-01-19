@@ -21,35 +21,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
-
 /**
- * Emerchantpay Blocks module
+ * Emerchantpay Blocks Direct module
  */
-final class WC_Emerchantpay_Blocks extends AbstractPaymentMethodType {
+final class WC_Emerchantpay_Blocks_Direct extends WC_Emerchantpay_Blocks_Base {
 
 	/**
 	 * Payment method name/id/slug.
 	 *
 	 * @var string
 	 */
-	protected $name = WC_Emerchantpay_Constants::EMERCHANTPAY_CHECKOUT_BLOCKS;
+	protected $name = WC_Emerchantpay_Constants::EMERCHANTPAY_DIRECT_BLOCKS;
 
 	/**
-	 * The gateway instance.
-	 *
-	 * @var WC_emerchantpay_Checkout
-	 */
-	private $gateway;
-
-	/**
-	 * Only settings, needed for the frontend part
+	 * Only settings required for the frontend
 	 *
 	 * @var array
 	 */
-	private $necessary_settings = array(
-		'title',
-		'description',
+	private $required_settings = array(
+		WC_Emerchantpay_Direct::SETTING_KEY_SHOW_CC_HOLDER,
 	);
 
 	/**
@@ -58,19 +48,14 @@ final class WC_Emerchantpay_Blocks extends AbstractPaymentMethodType {
 	public function initialize() {
 		$options        = array(
 			'draw_transaction_tree' => false,
+			'blocks_instantiate'    => true,
 		);
-		$this->settings = $this->get_only_necessary_settings();
-		$this->gateway  = new WC_emerchantpay_Checkout( $options );
+		$this->gateway  = new WC_Emerchantpay_Direct( $options );
 		$this->supports = $this->gateway->supports;
-	}
-
-	/**
-	 * Returns if this payment method should be active. If false, the scripts will not be enqueued.
-	 *
-	 * @return boolean
-	 */
-	public function is_active() {
-		return $this->gateway->is_available();
+		$this->settings = $this->get_filtered_plugin_settings(
+			'woocommerce_emerchantpay_direct_settings',
+			$this->required_settings
+		);
 	}
 
 	/**
@@ -92,32 +77,22 @@ final class WC_Emerchantpay_Blocks extends AbstractPaymentMethodType {
 		$script_url        = WC_Emerchantpay_Constants::plugin_url() . $script_path;
 
 		wp_register_script(
-			'wc-emerchantpay-payments-blocks',
+			'wc-emerchantpay-payments-blocks-direct',
 			$script_url,
 			$script_asset['dependencies'],
 			$script_asset['version'],
 			true
 		);
 
-		// Export plugin settings to the frontend script
-		wp_localize_script(
-			'wc-emerchantpay-payments-blocks',
-			'wc_emerchantpay_settings',
-			array(
-				'settings' => $this->settings,
-				'supports' => $this->supports,
-			)
-		);
-
 		if ( function_exists( 'wp_set_script_translations' ) ) {
 			wp_set_script_translations(
-				'wc-emerchantpay-payments-blocks',
+				'wc-emerchantpay-payments-blocks-direct',
 				'woocommerce-emerchantpay',
 				WC_Emerchantpay_Constants::plugin_abspath() . 'languages/'
 			);
 		}
 
-		return array( 'wc-emerchantpay-payments-blocks' );
+		return array( 'wc-emerchantpay-payments-blocks-direct' );
 	}
 
 	/**
@@ -127,21 +102,10 @@ final class WC_Emerchantpay_Blocks extends AbstractPaymentMethodType {
 	 */
 	public function get_payment_method_data() {
 		return array(
-			'title'       => $this->settings['title'],
-			'description' => $this->settings['description'],
-			'supports'    => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
+			'title'          => $this->settings['title'],
+			'description'    => $this->settings['description'],
+			'supports'       => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
+			'show_cc_holder' => $this->settings['show_cc_holder'],
 		);
-	}
-
-	/**
-	 * Get array with the necessary settings only
-	 *
-	 * @return array
-	 */
-	private function get_only_necessary_settings() {
-		$all_settings       = get_option( 'woocommerce_emerchantpay_checkout_settings', array() );
-		$necessary_settings = array_flip( $this->necessary_settings );
-
-		return array_intersect_key( $all_settings, $necessary_settings );
 	}
 }

@@ -362,9 +362,9 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 		$card_info            = $this->populate_cc_data( $order );
 		$data['browser_data'] = $this->populate_browser_parameters();
 
-		list($month, $year)        = explode( ' / ', $card_info['expiration'] );
-		$card_info['expire_month'] = $month;
-		$card_info['expire_year']  = substr( gmdate( 'Y' ), 0, 2 ) . substr( $year, -2 );
+		list( $month, $year )      = explode( '/', $card_info['expiration'] );
+		$card_info['expire_month'] = trim( $month );
+		$card_info['expire_year']  = substr( gmdate( 'Y' ), 0, 2 ) . substr( trim( $year ), -2 );
 
 		$data['card'] = $card_info;
 
@@ -431,7 +431,7 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 
 				WC_emerchantpay_Message_Helper::addErrorNotice( $error_message );
 
-				return false;
+				throw new Exception( $error_message );
 			}
 
 			// Save the Checkout Id
@@ -482,7 +482,7 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 
 			WC_emerchantpay_Helper::logException( $exception );
 
-			return false;
+			throw new Exception( $error_message );
 		} // End try().
 	}
 
@@ -798,10 +798,12 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 	 * @return void
 	 */
 	private function register_custom_actions() {
-		$this->addWPSimpleActions(
-			self::WC_ACTION_CREDIT_CARD_FORM_START,
-			'before_cc_form'
-		);
+		if ( ! ( isset( $this->options['blocks_instantiate'] ) && true === $this->options['blocks_instantiate'] ) ) {
+			$this->addWPSimpleActions(
+				self::WC_ACTION_CREDIT_CARD_FORM_START,
+				'before_cc_form'
+			);
+		}
 	}
 }
 

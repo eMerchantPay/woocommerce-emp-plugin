@@ -6,11 +6,11 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.14.7
+ * Version: 1.14.8
  * Requires at least: 4.0
  * Tested up to: 6.4
  * WC requires at least: 3.0.0
- * WC tested up to: 8.3.1
+ * WC tested up to: 8.5.0
  * WCS tested up to: 5.7.0
  * WCB tested up to: 11.7.0
  * License: GPL-2.0
@@ -178,16 +178,39 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-status_checker', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'status_checker' ) );
 	add_action( 'woocommerce_api_' . strtolower( WC_Emerchantpay_Frame_Handler::class ), array( new WC_Emerchantpay_Frame_Handler(), 'frame_handler' ) );
 
+
+	/**
+	 * Add credit card input styles to the blocks checkout page
+	 *
+	 * @return void
+	 */
+	function add_credit_card_input_styles() {
+		$block_name = 'genesisgateway/emerchantpay_direct';
+		$args       = array(
+			'handle' => 'credit-card-input-styles',
+			'src'    => plugins_url( '/assets/css/blocks/credit-card-inputs.css', __FILE__ ),
+			'path'   => plugins_url( '/assets/css/blocks/credit-card-inputs.css', __FILE__ ),
+			'ver'    => WC_emerchantpay_Helper::get_plugin_version(),
+		);
+
+		wp_enqueue_block_style( $block_name, $args );
+	}
+	add_action( 'after_setup_theme', 'add_credit_card_input_styles' );
+
 	/**
 	 * Registers WooCommerce Blocks integration
 	 */
 	function emerchantpay_blocks_support() {
 		if ( class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
-			require_once 'includes/blocks/class-wc-emerchantpay-blocks.php';
+			require_once 'includes/blocks/class-wc-emerchantpay-blocks-base.php';
+			require_once 'includes/blocks/class-wc-emerchantpay-blocks-checkout.php';
+			require_once 'includes/blocks/class-wc-emerchantpay-blocks-direct.php';
+
 			add_action(
 				'woocommerce_blocks_payment_method_type_registration',
 				function ( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
-					$payment_method_registry->register( new WC_Emerchantpay_Blocks() );
+					$payment_method_registry->register( new WC_Emerchantpay_Blocks_Checkout() );
+					$payment_method_registry->register( new WC_Emerchantpay_Blocks_Direct() );
 				}
 			);
 		}

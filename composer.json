@@ -1,0 +1,24 @@
+{
+  "name": "emerchantpay/woocommerce-emerchantpay-plugin",
+  "description": "emerchantpay Payment Gateway for WooCommerce",
+  "minimum-stability": "stable",
+  "license": "GPL-2.0",
+  "version": "1.14.8",
+  "authors": [
+    {
+      "name": "emerchantpay",
+      "email": "shopping_carts@emerchantpay.com",
+      "homepage":"https://emerchantpay.com"
+    }
+  ],
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "require-dev": {
+    "wp-coding-standards/wpcs": "^3.0",
+    "squizlabs/php_codesniffer": "^3.8",
+    "phpmd/phpmd" : "^2.15"
+  }
+}

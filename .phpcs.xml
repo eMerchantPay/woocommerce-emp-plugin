@@ -17,7 +17,9 @@
     </rule>
 
     <exclude-pattern>*/genesis/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>*.min.js</exclude-pattern>
     <exclude-pattern>*.min.css</exclude-pattern>
     <exclude-pattern>*.asset.php</exclude-pattern>
+    <exclude-pattern>blocks.js</exclude-pattern>
 </ruleset>

@@ -1,0 +1,26 @@
+.emp-direct-card-form {
+    text-align: center;
+}
+
+.emp-direct-card-form #emp-direct-card-wrapper {
+    margin-bottom: 30px;
+}
+
+.emp-direct-card-form .emp-direct-half-wrapper {
+    display: flex;
+}
+
+.emp-direct-card-form input.emp-input-wide {
+    display: block;
+    width: 100%;
+}
+
+.emp-direct-card-form .emp-input-half-wrapper input {
+    display: inline-block;
+    width: 50%;
+}
+
+#emp-direct-card-wrapper .jp-card-container {
+    width: auto;
+    max-width: 350px;
+}

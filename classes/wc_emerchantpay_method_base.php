@@ -225,7 +225,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	*
 	* @var array
 	*/
-	private $options = array(
+	protected $options = array(
 		'draw_transaction_tree' => true, // Conditionally draw the table with the transaction tree
 	);
 
