@@ -21,6 +21,8 @@ use Genesis\API\Constants\Transaction\Parameters\ScaExemptions;
 use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
 use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
 use Genesis\API\Constants\Transaction\Types;
+use Genesis\API\Notification;
+use Genesis\Config;
 use Genesis\Genesis;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -333,7 +335,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 		if ( is_admin() && function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
 
-			return null !== $screen && 'shop_order' === $screen->id;
+			return null !== $screen && in_array( $screen->id, array( 'shop_order', 'shop_subscription' ), true );
 		}
 
 		return false;
@@ -504,6 +506,11 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 		$this->should_execute_admin_footer_hook = true;
 
 		$transactions = WC_emerchantpay_Transactions_Tree::createFromOrder( $order );
+		$parent_id    = $order->get_data()['parent_id'] ?? null;
+		if ( count( $transactions->trx_list ) === 0 && $parent_id ) {
+			$order        = WC_emerchantpay_Order_Helper::getOrderById( $parent_id );
+			$transactions = WC_emerchantpay_Transactions_Tree::createFromOrder( $order );
+		}
 
 		if ( ! empty( $transactions ) ) {
 			$method_transaction_types   = $this->get_method_selected_transaction_types();
@@ -1222,6 +1229,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 						'error' => static::getTranslatedText( 'You cannot void non-authorize payment or already captured payment!' ),
 					)
 				);
+
 				return false;
 			}
 
@@ -1234,7 +1242,6 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 			}
 
 			$payment_gateway->set_credentials();
-
 			$payment_gateway->set_terminal_token( $order );
 
 			$void = new \Genesis\Genesis( 'Financial\Cancel' );
@@ -1678,11 +1685,13 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 		}
 
 		try {
-			$notification = new \Genesis\API\Notification( $_POST );
+			$notification = new Notification( $_POST );
 
 			if ( $notification->isAuthentic() ) {
-				$notification->initReconciliation();
+				$notification_object = $notification->getNotificationObject();
+				$this->set_notification_terminal_token( $notification_object );
 
+				$notification->initReconciliation();
 				$reconcile = $notification->getReconciliationObject();
 
 				if ( $reconcile ) {
@@ -1861,7 +1870,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 
 		$payment_transaction = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction( $gateway_response_object );
 
-		// Tweak for handling Processing Gensis Events that are missing in the Trx List & Hierarchy
+		// Tweak for handling Processing Genesis Events that are missing in the Trx List & Hierarchy
 		if ( isset( $payment_transaction->reference_transaction_unique_id ) ) {
 			$payment_transaction->parent_id = $payment_transaction->reference_transaction_unique_id;
 		}
@@ -2526,9 +2535,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	protected function process_subscription_payment( $order, $amount ) {
 		$referenceId = WC_emerchantpay_Subscription_Helper::getOrderInitRecurringIdMeta( $order->get_id() );
 
-		\Genesis\Config::setToken(
-			$this->getRecurringToken( $order )
-		);
+		$this->init_recurring_token( $order );
 
 		$genesis = WC_emerchantpay_Genesis_Helper::getGatewayRequestByTxnType(
 			Types::RECURRING_SALE
@@ -2704,14 +2711,14 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	 * @return void
 	 */
 	public function set_credentials() {
-		\Genesis\Config::setEndpoint(
+		Config::setEndpoint(
 			\Genesis\API\Constants\Endpoints::EMERCHANTPAY
 		);
 
-		\Genesis\Config::setUsername( $this->getMethodSetting( self::SETTING_KEY_USERNAME ) );
-		\Genesis\Config::setPassword( $this->getMethodSetting( self::SETTING_KEY_PASSWORD ) );
+		Config::setUsername( $this->getMethodSetting( self::SETTING_KEY_USERNAME ) );
+		Config::setPassword( $this->getMethodSetting( self::SETTING_KEY_PASSWORD ) );
 
-		\Genesis\Config::setEnvironment(
+		Config::setEnvironment(
 			$this->getMethodBoolSetting( self::SETTING_KEY_TEST_MODE )
 				? \Genesis\API\Constants\Environments::STAGING
 				: \Genesis\API\Constants\Environments::PRODUCTION
@@ -3647,6 +3654,30 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 		$iframe_url                = $frame_handler . '?' . rawurlencode( $url );
 
 		return $iframe_processing_enabled ? $iframe_url : $url;
+	}
+
+	/**
+	 * Set terminal token or use Smart Router
+	 *
+	 * @param ArrayObject $notification_object
+	 *
+	 * @return bool
+	*/
+	protected function set_notification_terminal_token( $notification_object ) {
+		return true;
+	}
+
+	/**
+	 * Sets terminal token for init_recurring
+	 *
+	 * @param $order
+	 *
+	 * @return void
+	 */
+	protected function init_recurring_token( $order ) {
+		Config::setToken(
+			$this->getRecurringToken( $order )
+		);
 	}
 }
 

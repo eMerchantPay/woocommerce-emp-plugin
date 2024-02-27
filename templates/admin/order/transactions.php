@@ -149,7 +149,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 				thousandSeparator : <?php echo json_encode( wc_get_price_thousand_separator() ); ?>
 			},
 			allowPartialCapture = <?php echo json_encode( $allow_partial_capture ); ?>,
-			allowPartialRefund = <?php echo json_encode( $allow_partial_refund ); ?>;
+			allowPartialRefund  = <?php echo json_encode( $allow_partial_refund ); ?>,
+			original_order_id   = <?php echo (int) $order->get_id(); ?>;
 		</script>
 	</td>
 </tr>

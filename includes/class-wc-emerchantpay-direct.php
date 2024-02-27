@@ -18,7 +18,8 @@
  */
 
 use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes as DeviceTypes;
+use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
+use Genesis\Config;
 use Genesis\Genesis;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -96,7 +97,7 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 	}
 
 	/**
-	 * Determines if the a post notification is a valida Gateway Notification
+	 * Determines if the post notification is a valid Gateway Notification
 	 *
 	 * @param array $post_values
 	 * @return bool
@@ -114,19 +115,6 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 
 		$this->supports[] = self::FEATURE_DEFAULT_CREDIT_CARD_FORM;
 		$this->register_custom_actions();
-	}
-
-	/**
-	 * Retrieves a list with the Required Api Settings
-	 *
-	 * @return array
-	 */
-	protected function getRequiredApiSettingKeys() {
-		$required_api_setting_keys = parent::getRequiredApiSettingKeys();
-
-		$required_api_setting_keys[] = self::SETTING_KEY_TOKEN;
-
-		return $required_api_setting_keys;
 	}
 
 	/**
@@ -217,10 +205,14 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 		parent::init_form_fields();
 
 		$this->form_fields += array(
-			self::SETTING_KEY_TOKEN            => array(
+			self::SETTING_KEY_TOKEN             => array(
 				'type'        => 'text',
 				'title'       => static::getTranslatedText( 'Token' ),
-				'description' => static::getTranslatedText( 'This is your Genesis token.' ),
+				'description' => static::getTranslatedText(
+					'This is your Gateway token. ' .
+					'If you do not have a token, contact tech-support@emerchantpay.com ' .
+					'to enable Smart Router for your account.'
+				),
 				'desc_tip'    => true,
 			),
 			self::SETTING_KEY_IFRAME_PROCESSING => array(
@@ -233,7 +225,7 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 					'3DSv2 processing will be executed by redirecting from the checkout page.'
 				),
 			),
-			'api_transaction'                  => array(
+			'api_transaction'                   => array(
 				'type'        => 'title',
 				'title'       => static::getTranslatedText( 'API Transaction Type' ),
 				'description' =>
@@ -246,30 +238,30 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 						'</a>'
 					),
 			),
-			self::SETTING_KEY_TRANSACTION_TYPE => array(
+			self::SETTING_KEY_TRANSACTION_TYPE  => array(
 				'type'        => 'select',
 				'title'       => static::getTranslatedText( 'Transaction Type' ),
 				'options'     => array(
-					\Genesis\API\Constants\Transaction\Types::AUTHORIZE =>
+					\Genesis\API\Constants\Transaction\Types::AUTHORIZE    =>
 						static::getTranslatedText( 'Authorize' ),
 					\Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D =>
 						static::getTranslatedText( 'Authorize (3D-Secure)' ),
-					\Genesis\API\Constants\Transaction\Types::SALE =>
+					\Genesis\API\Constants\Transaction\Types::SALE         =>
 						static::getTranslatedText( 'Sale' ),
-					\Genesis\API\Constants\Transaction\Types::SALE_3D =>
+					\Genesis\API\Constants\Transaction\Types::SALE_3D      =>
 						static::getTranslatedText( 'Sale (3D-Secure)' ),
 				),
 				'description' => static::getTranslatedText( 'Select transaction type for the payment transaction' ),
 				'desc_tip'    => true,
 			),
-			'checkout_settings'                => array(
+			'checkout_settings'                 => array(
 				'type'        => 'title',
 				'title'       => static::getTranslatedText( 'Checkout Settings' ),
 				'description' => static::getTranslatedText(
 					'Here you can manage additional settings for the checkout page of the front site'
 				),
 			),
-			self::SETTING_KEY_SHOW_CC_HOLDER   => array(
+			self::SETTING_KEY_SHOW_CC_HOLDER    => array(
 				'type'        => 'checkbox',
 				'title'       => static::getTranslatedText( 'Show CC Owner Field' ),
 				'label'       => static::getTranslatedText( 'Show / Hide Credit Card Owner Field on the Checkout Page' ),
@@ -403,6 +395,7 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 			$this->set_credentials();
 
 			$genesis = $this->prepare_initial_genesis_request( $data );
+
 			$genesis = $this->add_business_data_to_gateway_request( $genesis, $order );
 			if ( $this->is_3dsv2_enabled() && $this->is_3d_transaction( false ) ) {
 				$this->add_3dsv2_parameters( $genesis, $order, $data, false );
@@ -572,6 +565,7 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 			$this->set_credentials();
 
 			$genesis = $this->prepare_initial_genesis_request( $data );
+
 			if ( $this->is_3dsv2_enabled() && $this->is_3d_transaction( true ) ) {
 				$this->add_3dsv2_parameters( $genesis, $order, $data, true );
 			}
@@ -663,9 +657,44 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 	public function set_credentials() {
 		parent::set_credentials();
 
-		\Genesis\Config::setToken(
-			$this->getMethodSetting( self::SETTING_KEY_TOKEN )
+		$terminal_token = $this->getMethodSetting( self::SETTING_KEY_TOKEN ) ?? null;
+		Config::setToken( $terminal_token );
+
+		if ( ! Config::getToken() ) {
+			Config::setForceSmartRouting( true );
+		}
+	}
+
+	/**
+	 * Set the Terminal token associated with an order
+	 *
+	 * @param $order
+	 *
+	 * @return bool
+	 */
+	protected function set_terminal_token( $order ) {
+		$token = WC_emerchantpay_Order_Helper::getOrderMetaData(
+			$order->get_id(),
+			self::META_TRANSACTION_TERMINAL_TOKEN
 		);
+
+		// Check for Recurring Token
+		if ( empty( $token ) ) {
+			$token = WC_emerchantpay_Order_Helper::getOrderMetaData(
+				$order->get_id(),
+				WC_emerchantpay_Subscription_Helper::META_RECURRING_TERMINAL_TOKEN
+			);
+		}
+
+		if ( empty( $token ) ) {
+			Config::setForceSmartRouting( true );
+
+			return true;
+		}
+
+		Config::setToken( $token );
+
+		return true;
 	}
 
 	/**
@@ -683,6 +712,38 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 		}
 
 		return $this->getMethodSetting( self::SETTING_KEY_TOKEN );
+	}
+
+	/**
+	 * Set terminal token or use Smart Router
+	 *
+	 * @param ArrayObject $notification_object
+	 *
+	 * @return void
+	 */
+	protected function set_notification_terminal_token( $notification_object ) {
+		$terminal_token = $notification_object->terminal_token ?? null;
+
+		if ( $terminal_token && ( ! Config::getToken() ) ) {
+			Config::setToken( $terminal_token );
+		}
+	}
+
+	/**
+	 * Sets terminal token for init_recurring and disables smart router
+	 *
+	 * @param $order
+	 *
+	 * @return void
+	 */
+	protected function init_recurring_token( $order )
+	{
+		if ( empty( $this->getRecurringToken( $order ) ) ) {
+			return;
+		}
+
+		Config::setForceSmartRouting( false );
+		parent::init_recurring_token( $order );
 	}
 
 	/**

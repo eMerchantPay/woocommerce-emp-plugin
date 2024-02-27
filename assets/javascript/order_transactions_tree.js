@@ -146,7 +146,7 @@ function doVoidEMerchantPayOrderPayment(paymentType, paymentTitle, transactionId
 
 	var data = {
 		action: paymentType + '_void',
-		order_id: woocommerce_admin_meta_boxes.post_id,
+		order_id: original_order_id,
 		void_reason: void_text,
 		trx_id: transactionId,
 		security: woocommerce_admin_meta_boxes.order_item_nonce
@@ -200,7 +200,7 @@ function doCaptureEMerchantPayOrderPaymentAmount(paymentType, paymentTitle, tran
 
 	var data = {
 		action: paymentType + '_capture',
-		order_id: woocommerce_admin_meta_boxes.post_id,
+		order_id: original_order_id,
 		trx_id: transactionId,
 		capture_amount: capture_amount,
 		capture_reason: capture_text,
@@ -255,7 +255,7 @@ function doRefundEMerchantPayOrderPaymentAmount(paymentType, paymentTitle, trans
 
 	var data = {
 		action: paymentType + '_refund',
-		order_id: woocommerce_admin_meta_boxes.post_id,
+		order_id: original_order_id,
 		trx_id: transactionId,
 		amount: amount,
 		reason: reason,
