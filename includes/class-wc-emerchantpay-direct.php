@@ -440,26 +440,21 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 							'checksum' => $unique_id_hash,
 						)
 					);
-
-					return array(
-						'result'   => static::RESPONSE_SUCCESS,
-						'redirect' => WC()->api_request_url( WC_Emerchantpay_Threeds_Form_Helper::class ) . "?{$url_params}",
+					$response_array = $this->create_response(
+						WC()->api_request_url( WC_Emerchantpay_Threeds_Form_Helper::class ) . "?{$url_params}",
+						$this->is_iframe_blocks()
 					);
+					break;
 				case ( isset( $response->redirect_url ) ):
-					return array(
-						'result'   => static::RESPONSE_SUCCESS,
-						'redirect' => $response->redirect_url,
-					);
+					$response_array = $this->create_response( $response->redirect_url );
+					break;
 				default:
 					$woocommerce->cart->empty_cart();
-
 					$this->updateOrderStatus( $order, $response );
-
-					return array(
-						'result'   => static::RESPONSE_SUCCESS,
-						'redirect' => $data['return_success_url'],
-					);
+					$response_array = $this->create_response( $data['return_success_url'] );
 			}
+
+			return $response_array;
 		} catch ( \Exception $exception ) {
 
 			if ( isset( $genesis ) && isset( $genesis->response()->getResponseObject()->message ) ) {
@@ -607,30 +602,24 @@ class WC_Emerchantpay_Direct extends WC_emerchantpay_Method {
 							'checksum' => $unique_id_hash,
 						)
 					);
-
-					return array(
-						'result'   => static::RESPONSE_SUCCESS,
-						'redirect' => WC()->api_request_url( WC_Emerchantpay_Threeds_Form_Helper::class ) . "?{$url_params}",
+					$response_array = $this->create_response(
+						WC()->api_request_url( WC_Emerchantpay_Threeds_Form_Helper::class ) . "?{$url_params}",
+						$this->is_iframe_blocks()
 					);
+					break;
 				case ( isset( $response->redirect_url ) ):
-					return array(
-						'result'   => static::RESPONSE_SUCCESS,
-						'redirect' => $response->redirect_url,
-					);
+					$response_array = $this->create_response( $response->redirect_url );
+					break;
 				default:
 					$this->updateOrderStatus( $order, $response );
-
 					if ( ! $this->process_after_init_recurring_payment( $order, $response ) ) {
 						return false;
 					}
-
 					$woocommerce->cart->empty_cart();
-
-					return array(
-						'result'   => static::RESPONSE_SUCCESS,
-						'redirect' => $data['return_success_url'],
-					);
+					$response_array = $this->create_response( $data['return_success_url'] );
 			}
+
+			return $response_array;
 		} catch ( \Exception $exception ) {
 			if ( isset( $genesis ) && isset( $genesis->response()->getResponseObject()->message ) ) {
 				$error_message = $genesis->response()->getResponseObject()->message;

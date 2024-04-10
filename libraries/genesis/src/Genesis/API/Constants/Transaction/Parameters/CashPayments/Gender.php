@@ -23,70 +23,42 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Request\NonFinancial\Reconcile;
+namespace Genesis\API\Constants\Transaction\Parameters\CashPayments;
 
-use Genesis\API\Traits\Request\NonFinancial\DateAttributes;
+use Genesis\Utils\Common;
 
 /**
- * Reconcile request by Date Range
- *
- * @package    Genesis
- * @subpackage Request
+ * Class Gender
+ * @package Genesis\API\Constants\Transaction\Parameters\CashPayments
  */
-class DateRange extends \Genesis\API\Request
+class Gender
 {
-    use DateAttributes;
-
     /**
-     * the page within the paginated result
-     *
-     * default: 1
+     * Male
      *
      * @var int
      */
-    protected $page;
+    const MALE = 0;
 
     /**
-     * Set the per-request configuration
+     * Female
      *
-     * @return void
+     * @var int
      */
-    protected function initConfiguration()
-    {
-        $this->initXmlConfiguration();
-
-        $this->initApiGatewayConfiguration('reconcile/by_date');
-    }
+    const FEMALE = 1;
 
     /**
-     * Set the required fields
+     * Other
      *
-     * @return void
+     * @var int
      */
-    protected function setRequiredFields()
-    {
-        $requiredFields = [
-            'start_date'
-        ];
-
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
-    }
+    const OTHER = 2;
 
     /**
-     * Create the request's Tree structure
-     *
-     * @return void
+     * @return array
      */
-    protected function populateStructure()
+    public static function getAll()
     {
-        $treeStructure = [
-            'reconcile' => [
-                'start_date' => $this->getStartDate(),
-                'end_date'   => $this->getEndDate(),
-                'page'       => $this->page
-            ]
-        ];
-
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        return Common::getClassConstants(self::class);
     }
 }

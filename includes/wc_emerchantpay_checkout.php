@@ -268,30 +268,10 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 	 * @return array
 	 */
 	protected function get_wpf_transaction_types() {
-		$data = array();
+		$data              = array();
 
 		$transaction_types = Types::getWPFTransactionTypes();
-		$excluded_types    = array_map(
-			function ( $value ) {
-				return $value;
-			},
-			$this->get_wpf_recurring_transaction_types()
-		);
-
-		// Exclude SDD Recurring
-		array_push( $excluded_types, Types::SDD_INIT_RECURRING_SALE );
-
-		// Exlucde PPRO transaction. This is not standalone transaction type
-		array_push( $excluded_types, Types::PPRO );
-
-		// Exclude GooglePay transaction in order to provide choosable payment types
-		array_push( $excluded_types, Types::GOOGLE_PAY );
-
-		// Exclude PayPal transaction in order to provide choosable payment types
-		array_push( $excluded_types, Types::PAY_PAL );
-
-		// Exclude Apple Pay transaction in order to provide choosable payment types
-		array_push( $excluded_types, Types::APPLE_PAY );
+		$excluded_types    = $this->excluded_transaction_types();
 
 		// Exclude Transaction types
 		$transaction_types = array_diff( $transaction_types, $excluded_types );
@@ -357,6 +337,24 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * List of transaction types to be excluded
+	 *
+	 * @return array
+	 */
+	protected function excluded_transaction_types() {
+		$excluded_init_recurring_types = array_keys( $this->get_wpf_recurring_transaction_types() );
+
+		$excluded_types                = [
+			Types::PPRO,        // Exclude PPRO transaction. This is not standalone transaction type
+			Types::GOOGLE_PAY,  // Exclude GooglePay transaction in order to provide choosable payment types
+			Types::PAY_PAL,     // Exclude PayPal transaction in order to provide choosable payment types
+			Types::APPLE_PAY    // Exclude Apple Pay transaction in order to provide choosable payment types
+		];
+
+		return array_merge( $excluded_init_recurring_types, $excluded_types );
 	}
 
 	/**
@@ -454,6 +452,9 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				static::getTranslatedText( Names::getName( Types::INIT_RECURRING_SALE ) ),
 			Types::INIT_RECURRING_SALE_3D =>
 				static::getTranslatedText( Names::getName( Types::INIT_RECURRING_SALE_3D ) ),
+			Types::SDD_INIT_RECURRING_SALE =>
+				static::getTranslatedText( Names::getName( Types::SDD_INIT_RECURRING_SALE ) ),
+
 		);
 	}
 
@@ -852,10 +853,7 @@ class WC_emerchantpay_Checkout extends WC_emerchantpay_Method {
 				// Create One-time token to prevent redirect abuse
 				$this->set_one_time_token( $order_id, $this->generateTransactionId() );
 
-				return array(
-					'result'   => static::RESPONSE_SUCCESS,
-					'redirect' => $response->redirect_url,
-				);
+				return $this->create_response( $response->redirect_url, $this->is_iframe_blocks() );
 			} else {
 				throw new \Exception(
 					static::getTranslatedText(

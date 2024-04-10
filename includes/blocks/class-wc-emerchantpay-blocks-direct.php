@@ -102,10 +102,11 @@ final class WC_Emerchantpay_Blocks_Direct extends WC_Emerchantpay_Blocks_Base {
 	 */
 	public function get_payment_method_data() {
 		return array(
-			'title'          => $this->settings['title'],
-			'description'    => $this->settings['description'],
-			'supports'       => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
-			'show_cc_holder' => $this->settings['show_cc_holder'],
+			'title'             => $this->settings['title'],
+			'description'       => $this->settings['description'],
+			'supports'          => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
+			'show_cc_holder'    => $this->settings['show_cc_holder'],
+			'iframe_processing' => $this->settings['iframe_processing'],
 		);
 	}
 }

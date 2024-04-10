@@ -1731,11 +1731,12 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	 * Returns a list with data used for preparing a request to the gateway
 	 *
 	 * @param WC_Order $order
-	 * @param bool     $isRecurring
-	 * @throws \Exception
+	 * @param bool     $is_recurring
+	 *
 	 * @return array
+	 *@throws \Exception
 	 */
-	protected function populateGateRequestData( $order, $isRecurring = false ) {
+	protected function populateGateRequestData( $order, $is_recurring = false ) {
 		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
 			throw new \Exception( 'Invalid WooCommerce Order!' );
 		}
@@ -1758,7 +1759,9 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 			'usage'              => WC_emerchantpay_Genesis_Helper::getPaymentTransactionUsage( false ),
 			'description'        => $this->get_item_description( $order ),
 			'customer_email'     => $order->get_billing_email(),
-			'customer_phone'     => $order->get_billing_phone(),
+			'customer_phone'     => true === $is_recurring
+				? WC_emerchantpay_Genesis_Helper::handle_phone_number($order->get_billing_phone())
+				: $order->get_billing_phone(),
 			// URLs
 			'notification_url'   => WC()->api_request_url( get_class( $this ) ),
 			'return_success_url' => $return_success_url,
@@ -2535,10 +2538,16 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	protected function process_subscription_payment( $order, $amount ) {
 		$referenceId = WC_emerchantpay_Subscription_Helper::getOrderInitRecurringIdMeta( $order->get_id() );
 
+		$order_subscription_transaction_type = WC_emerchantpay_Subscription_Helper::get_order_init_recurring_transaction_type( $order->get_id() );
+
+		$subscription_class = WC_emerchantpay_Subscription_Helper::get_order_subscription_transaction_class(
+			$order_subscription_transaction_type
+		);
+
 		$this->init_recurring_token( $order );
 
 		$genesis = WC_emerchantpay_Genesis_Helper::getGatewayRequestByTxnType(
-			Types::RECURRING_SALE
+			$subscription_class
 		);
 
 		$genesis
@@ -3312,7 +3321,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	 * @return array
 	 */
 	protected function get_business_attributes_setting_keys() {
-		return [
+		return array(
 			self::SETTING_KEY_BUSINESS_FLIGHT_ARRIVAL_DATE,
 			self::SETTING_KEY_BUSINESS_FLIGHT_DEPARTURE_DATE,
 			self::SETTING_KEY_BUSINESS_AIRLINE_CODE,
@@ -3348,7 +3357,7 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 			self::SETTING_KEY_BUSINESS_ATOL_CERTIFICATE,
 			self::SETTING_KEY_BUSINESS_PICK_UP_DATE,
 			self::SETTING_KEY_BUSINESS_RETURN_DATE,
-		];
+		);
 	}
 
 	/**
@@ -3497,8 +3506,8 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 	protected function build_sca_exemption_options_form_fields() {
 		return array(
 			'sca_exemption_attributes'             => array(
-				'type'        => 'title',
-				'title'       => static::getTranslatedText( 'SCA Exemption options' ),
+				'type'  => 'title',
+				'title' => static::getTranslatedText( 'SCA Exemption options' ),
 			),
 			self::SETTING_KEY_SCA_EXEMPTION        => array(
 				'type'        => 'select',
@@ -3678,6 +3687,39 @@ abstract class WC_emerchantpay_Method extends WC_Payment_Gateway_CC {
 		Config::setToken(
 			$this->getRecurringToken( $order )
 		);
+	}
+
+	/**
+	 * Create redirect response with or without iFrame
+	 *
+	 * @param string $redirect_response
+	 * @param bool   $is_blocks_iframe
+	 *
+	 * @return array
+	 */
+	protected function create_response( $redirect_response, $is_blocks_iframe = false ) {
+		$response = array(
+			'result'   => static::RESPONSE_SUCCESS,
+			'redirect' => $redirect_response,
+		);
+
+		if ( $is_blocks_iframe ) {
+			$response['redirect']        = '';
+			$response['blocks_redirect'] = $redirect_response;
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Check if should redirect to an iFrame
+	 *
+	 * @return bool
+	 */
+	protected function is_iframe_blocks() {
+		$blocks_order = sanitize_text_field( wp_unslash( $_POST[ "{$this->id}_blocks_order" ] ?? null ) );
+
+		return 'yes' === $this->getMethodSetting( self::SETTING_KEY_IFRAME_PROCESSING ) && $blocks_order;
 	}
 }
 

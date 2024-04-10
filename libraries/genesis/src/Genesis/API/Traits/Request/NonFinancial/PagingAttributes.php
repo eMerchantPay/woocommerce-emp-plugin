@@ -23,70 +23,71 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Request\NonFinancial\Reconcile;
-
-use Genesis\API\Traits\Request\NonFinancial\DateAttributes;
+namespace Genesis\API\Traits\Request\NonFinancial;
 
 /**
- * Reconcile request by Date Range
+ * Trait PagingAttributes
+ * @package Genesis\API\Traits\Request\NonFinancial
  *
- * @package    Genesis
- * @subpackage Request
+ * @method int getPage() Get the page within the paginated result
+ * @method int getPerPage() Get number of entities on page
  */
-class DateRange extends \Genesis\API\Request
+trait PagingAttributes
 {
-    use DateAttributes;
-
     /**
-     * the page within the paginated result
+     * The page within the paginated result
+     * defaults to 1
      *
-     * default: 1
-     *
-     * @var int
+     * @var int $page
      */
     protected $page;
 
     /**
-     * Set the per-request configuration
+     * Number of entities on page
+     * default to 100
      *
-     * @return void
+     * @var int $per_page
      */
-    protected function initConfiguration()
-    {
-        $this->initXmlConfiguration();
+    protected $per_page;
 
-        $this->initApiGatewayConfiguration('reconcile/by_date');
+    /**
+     * Set the page within the paginated result
+     *
+     * @param $value
+     * @return $this
+     */
+    public function setPage($value)
+    {
+        $this->page = (int) $value;
+
+        return $this;
     }
 
     /**
-     * Set the required fields
+     * Set the number of elements per page
      *
-     * @return void
+     * @param $value
+     * @return $this
      */
-    protected function setRequiredFields()
+    public function setPerPage($value)
     {
-        $requiredFields = [
-            'start_date'
-        ];
+        $this->per_page = (int) $value;
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        return $this;
     }
 
     /**
-     * Create the request's Tree structure
+     * GraphQL code to request paging information
      *
-     * @return void
+     * @return string
      */
-    protected function populateStructure()
+    protected function pagingGraphQlFields()
     {
-        $treeStructure = [
-            'reconcile' => [
-                'start_date' => $this->getStartDate(),
-                'end_date'   => $this->getEndDate(),
-                'page'       => $this->page
-            ]
-        ];
-
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        return 'paging {
+                    page
+                    perPage
+                    pagesCount
+                    totalCount
+                }';
     }
 }

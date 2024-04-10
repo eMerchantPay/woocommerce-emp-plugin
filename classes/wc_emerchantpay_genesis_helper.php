@@ -147,4 +147,17 @@ class WC_emerchantpay_Genesis_Helper {
 	public static function has_payment( $reconcile ) {
 		return isset( $reconcile->payment_transaction );
 	}
+
+	/**
+	 * @param $phone_number
+	 *
+	 * @return string
+	 */
+	public static function handle_phone_number( $phone_number ) {
+
+		if ( strpos( $phone_number, '+' ) === 0 || empty( $phone_number ) )
+			return $phone_number;
+
+		return "+{$phone_number}";
+	}
 }

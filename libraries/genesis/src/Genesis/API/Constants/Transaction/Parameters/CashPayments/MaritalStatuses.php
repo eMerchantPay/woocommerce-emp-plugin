@@ -23,70 +23,56 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Request\NonFinancial\Reconcile;
+namespace Genesis\API\Constants\Transaction\Parameters\CashPayments;
 
-use Genesis\API\Traits\Request\NonFinancial\DateAttributes;
+use Genesis\Utils\Common;
 
 /**
- * Reconcile request by Date Range
- *
- * @package    Genesis
- * @subpackage Request
+ * Class MaritalStatuses
+ * @package Genesis\API\Constants\Transaction\Parameters\CashPayments
  */
-class DateRange extends \Genesis\API\Request
+class MaritalStatuses
 {
-    use DateAttributes;
-
     /**
-     * the page within the paginated result
-     *
-     * default: 1
-     *
      * @var int
      */
-    protected $page;
+    const NOT_MARRIED = 0;
 
     /**
-     * Set the per-request configuration
-     *
-     * @return void
+     * @var int
      */
-    protected function initConfiguration()
-    {
-        $this->initXmlConfiguration();
-
-        $this->initApiGatewayConfiguration('reconcile/by_date');
-    }
+    const MARRIED = 1;
 
     /**
-     * Set the required fields
-     *
-     * @return void
+     * @var int
      */
-    protected function setRequiredFields()
-    {
-        $requiredFields = [
-            'start_date'
-        ];
-
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
-    }
+    const DIVORCED = 2;
 
     /**
-     * Create the request's Tree structure
-     *
-     * @return void
+     * @var int
      */
-    protected function populateStructure()
-    {
-        $treeStructure = [
-            'reconcile' => [
-                'start_date' => $this->getStartDate(),
-                'end_date'   => $this->getEndDate(),
-                'page'       => $this->page
-            ]
-        ];
+    const SEPARATE = 3;
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+    /**
+     * @var int
+     */
+    const WIDOWER = 4;
+
+    /**
+     * @var int
+     */
+    const SINGLE = 5;
+
+    /**
+     * @var int
+     */
+    const OTHER = 6;
+
+    /**
+     * @return array
+     */
+    public static function getAll()
+    {
+        return Common::getClassConstants(self::class);
     }
 }

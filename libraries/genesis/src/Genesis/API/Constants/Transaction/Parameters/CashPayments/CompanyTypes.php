@@ -23,70 +23,66 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Request\NonFinancial\Reconcile;
+namespace Genesis\API\Constants\Transaction\Parameters\CashPayments;
 
-use Genesis\API\Traits\Request\NonFinancial\DateAttributes;
+use Genesis\Utils\Common;
 
 /**
- * Reconcile request by Date Range
- *
- * @package    Genesis
- * @subpackage Request
+ * Class CompanyTypes
+ * @package Genesis\API\Constants\Transaction\Parameters\CashPayments
  */
-class DateRange extends \Genesis\API\Request
+class CompanyTypes
 {
-    use DateAttributes;
-
     /**
-     * the page within the paginated result
-     *
-     * default: 1
-     *
      * @var int
      */
-    protected $page;
+    const SA = 0;
 
     /**
-     * Set the per-request configuration
-     *
-     * @return void
+     * @var int
      */
-    protected function initConfiguration()
-    {
-        $this->initXmlConfiguration();
-
-        $this->initApiGatewayConfiguration('reconcile/by_date');
-    }
+    const LTDA = 1;
 
     /**
-     * Set the required fields
-     *
-     * @return void
+     * @var int
      */
-    protected function setRequiredFields()
-    {
-        $requiredFields = [
-            'start_date'
-        ];
-
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
-    }
+    const MEI = 2;
 
     /**
-     * Create the request's Tree structure
-     *
-     * @return void
+     * @var int
      */
-    protected function populateStructure()
-    {
-        $treeStructure = [
-            'reconcile' => [
-                'start_date' => $this->getStartDate(),
-                'end_date'   => $this->getEndDate(),
-                'page'       => $this->page
-            ]
-        ];
+    const ME = 3;
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+    /**
+     * @var int
+     */
+    const EIRELI = 4;
+
+    /**
+     * @var int
+     */
+    const CONDOMINIUM = 5;
+
+    /**
+     * @var int
+     */
+    const CLOSED = 6;
+
+    /**
+     * @var int
+     */
+    const SIMPLE_EIRELI = 7;
+
+    /**
+     * @var int
+     */
+    const OUTROS = 8;
+
+    /**
+     * @return array
+     */
+    public static function getAll()
+    {
+        return Common::getClassConstants(self::class);
     }
 }

@@ -84,11 +84,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @woocommerce/settings */ "@woocommerce/settings");
 /* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _ModalBlock__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ModalBlock */ "./resources/js/frontend/ModalBlock.js");
+
+
 
 
 
 
 const checkoutSettings = (0,_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__.getSetting)('emerchantpay-checkout-blocks_data', {});
+const METHOD_NAME = 'emerchantpay_checkout';
 let EmerchantpayBlocksCheckout = {};
 if (Object.keys(checkoutSettings).length) {
   const defaultLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Emerchantpay checkout', 'woocommerce-emerchantpay');
@@ -101,8 +105,49 @@ if (Object.keys(checkoutSettings).length) {
       text: label
     });
   };
-  const Description = () => {
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_2__.decodeEntities)(checkoutSettings.description || ''));
+  const Description = props => {
+    const {
+      eventRegistration,
+      emitResponse
+    } = props;
+    const {
+      onPaymentProcessing,
+      onCheckoutSuccess
+    } = eventRegistration;
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+      if (checkoutSettings.iframe_processing !== 'yes') {
+        return;
+      }
+      const handleCheckoutSuccess = props => {
+        const parentDiv = document.querySelector('.emp-threeds-modal');
+        const iframe = document.querySelector('.emp-threeds-iframe');
+        const redirectUrl = props.processingResponse.paymentDetails.blocks_redirect;
+        parentDiv.style.display = 'block';
+        iframe.style.display = 'block';
+        iframe.src = redirectUrl;
+      };
+      const unsubscribe = onCheckoutSuccess(handleCheckoutSuccess);
+      return () => {
+        unsubscribe();
+      };
+    }, [onCheckoutSuccess, checkoutSettings.iframe_processing]);
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+      const unsubscribe = onPaymentProcessing(async () => {
+        const paymentMethodData = {
+          [`${METHOD_NAME}_blocks_order`]: true
+        };
+        return {
+          type: emitResponse.responseTypes.SUCCESS,
+          meta: {
+            paymentMethodData
+          }
+        };
+      });
+      return () => {
+        unsubscribe();
+      };
+    }, [emitResponse.responseTypes.ERROR, emitResponse.responseTypes.SUCCESS, onPaymentProcessing]);
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_2__.decodeEntities)(checkoutSettings.description || '')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ModalBlock__WEBPACK_IMPORTED_MODULE_4__["default"], null));
   };
   EmerchantpayBlocksCheckout = {
     name: "emerchantpay_checkout",
@@ -139,7 +184,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @woocommerce/settings */ "@woocommerce/settings");
 /* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _CreditCardInputs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CreditCardInputs */ "./resources/js/frontend/CreditCardInputs.js");
-/* harmony import */ var _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./EmpPopulateBrowserParams */ "./resources/js/frontend/EmpPopulateBrowserParams.js");
+/* harmony import */ var _ModalBlock__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ModalBlock */ "./resources/js/frontend/ModalBlock.js");
+/* harmony import */ var _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./EmpPopulateBrowserParams */ "./resources/js/frontend/EmpPopulateBrowserParams.js");
+
 
 
 
@@ -152,19 +199,24 @@ const METHOD_NAME = 'emerchantpay_direct';
 const CreditCardForm = props => {
   const [creditCardData, setCreditCardData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   const cardWrapperRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  const browserParams = _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_5__["default"].execute(METHOD_NAME);
+  const browserParams = _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_6__["default"].execute(METHOD_NAME);
   const {
     eventRegistration,
     emitResponse
   } = props;
   const {
-    onPaymentProcessing
+    onPaymentProcessing,
+    onCheckoutSuccess
   } = eventRegistration;
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     const unsubscribe = onPaymentProcessing(async () => {
+      const blocksCheckout = {
+        [`${METHOD_NAME}_blocks_order`]: true
+      };
       const paymentMethodData = {
         ...browserParams,
-        ...creditCardData
+        ...creditCardData,
+        ...blocksCheckout
       };
       return {
         type: emitResponse.responseTypes.SUCCESS,
@@ -177,6 +229,34 @@ const CreditCardForm = props => {
       unsubscribe();
     };
   }, [emitResponse.responseTypes.ERROR, emitResponse.responseTypes.SUCCESS, onPaymentProcessing, creditCardData]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (directSettings.iframe_processing !== 'yes') {
+      return;
+    }
+    const handleCheckoutSuccess = props => {
+      const iframe = document.querySelector('.emp-threeds-iframe');
+      const parentDiv = document.querySelector('.emp-threeds-modal');
+      const redirectUrl = props.processingResponse.paymentDetails.blocks_redirect;
+      iframe.style.display = 'block';
+      try {
+        fetch(redirectUrl, {
+          method: 'GET'
+        }).then(function (response) {
+          return response.text();
+        }).then(function (html) {
+          const doc = iframe.contentWindow.document;
+          doc.open();
+          doc.write(html);
+          doc.close();
+          parentDiv.style.display = 'block';
+        });
+      } catch (e) {}
+    };
+    const unsubscribe = onCheckoutSuccess(handleCheckoutSuccess);
+    return () => {
+      unsubscribe();
+    };
+  }, [onCheckoutSuccess, directSettings.iframe_processing]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     __webpack_require__.e(/*! import() */ "resources_js_frontend_card_js").then(__webpack_require__.t.bind(__webpack_require__, /*! ./card.js */ "./resources/js/frontend/card.js", 23)).then(Card => {
       new Card.default({
@@ -197,12 +277,12 @@ const CreditCardForm = props => {
       [e.target.name]: e.target.value
     }));
   };
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CreditCardInputs__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_CreditCardInputs__WEBPACK_IMPORTED_MODULE_4__["default"], {
     handleInputChange: handleInputChange,
     METHOD_NAME: METHOD_NAME,
     directSettings: directSettings,
     cardWrapperRef: cardWrapperRef
-  });
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ModalBlock__WEBPACK_IMPORTED_MODULE_5__["default"], null));
 };
 let EmerchantpayBlocksDirect = {};
 if (Object.keys(directSettings).length) {
@@ -258,6 +338,68 @@ const empPopulateBrowserParams = {
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (empPopulateBrowserParams);
+
+/***/ }),
+
+/***/ "./resources/js/frontend/ModalBlock.js":
+/*!*********************************************!*\
+  !*** ./resources/js/frontend/ModalBlock.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+const ModalBlock = () => {
+  const iframeRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const iframe = iframeRef.current;
+    const document = iframe.contentDocument || iframe.contentWindow.document;
+    const content = `
+	  <html>
+	  <head>
+		<title>Payment Processing</title>
+		<style>
+		  body { font-family: Arial, sans-serif; text-align: center; background-color: #fff; overflow: hidden; }
+		  .center { display: flex; justify-content: center; align-items: center; height: 100vh; }
+		  .content { text-align: center; }
+		  .screen-logo img { width: 100px; }
+		  h3 { color: #333; }
+		  h3 span { display: block; margin-top: 20px; font-size: 0.9em; }
+		</style>
+	  </head>
+	  <body>
+		<div class="center">
+		  <div class="content">
+			<h3>The payment is being processed<span>Please wait</span></h3>
+		  </div>
+		</div>
+	  </body>
+	  </html>
+	`;
+    document.open();
+    document.write(content);
+    document.close();
+  }, []);
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "emp-threeds-modal"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("iframe", {
+    ref: iframeRef,
+    className: "emp-threeds-iframe",
+    frameBorder: "0",
+    style: {
+      border: 'none',
+      'border-radius': '10px',
+      display: 'none'
+    }
+  }));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ModalBlock);
 
 /***/ }),
 
@@ -512,7 +654,7 @@ module.exports = window["wp"]["i18n"];
 /******/ 				var scripts = document.getElementsByTagName("script");
 /******/ 				if(scripts.length) {
 /******/ 					var i = scripts.length - 1;
-/******/ 					while (i > -1 && !scriptUrl) scriptUrl = scripts[i--].src;
+/******/ 					while (i > -1 && (!scriptUrl || !/^http(s?):/.test(scriptUrl))) scriptUrl = scripts[i--].src;
 /******/ 				}
 /******/ 			}
 /******/ 		}

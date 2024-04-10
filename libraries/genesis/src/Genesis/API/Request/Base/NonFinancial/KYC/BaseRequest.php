@@ -28,7 +28,7 @@ namespace Genesis\API\Request\Base\NonFinancial\KYC;
 use Genesis\API\Request\Base\BaseVersionedRequest;
 use Genesis\Builder;
 use Genesis\Exceptions\EnvironmentNotSet;
-use Genesis\API\Constants\NonFinancial\KYC\Genders;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class BaseRequest
@@ -47,13 +47,6 @@ abstract class BaseRequest extends BaseVersionedRequest
     private $request_path;
 
     /**
-     * Switch between KYC and Gate
-     *
-     * @var string
-     */
-    private $kyc_subdomain;
-
-    /**
      * KYC constructor.
      *
      * @param string $requestPath
@@ -61,7 +54,6 @@ abstract class BaseRequest extends BaseVersionedRequest
     public function __construct($requestPath)
     {
         $this->request_path = $requestPath;
-        $this->kyc_subdomain = 'kyc';
 
         parent::__construct($this->request_path, Builder::JSON, ['v1']);
     }
@@ -71,12 +63,11 @@ abstract class BaseRequest extends BaseVersionedRequest
      *
      * @return void
      * @throws EnvironmentNotSet
-     * @SuppressWarnings("unused")
      */
-    protected function initConfiguration($subdomain = 'kyc')
+    protected function initConfiguration()
     {
-        parent::initConfiguration($this->kyc_subdomain);
-        $this->initApiGatewayConfiguration('api/' . $this->getVersion() . '/' . $this->request_path,false, $this->kyc_subdomain);  // @codingStandardsIgnoreLine
+        parent::initConfiguration();
+        $this->initApiGatewayConfiguration("api/{$this->getVersion()}/$this->request_path", false, 'kyc');
     }
 
     /**
@@ -86,7 +77,7 @@ abstract class BaseRequest extends BaseVersionedRequest
      */
     protected function populateStructure()
     {
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject(
+        $this->treeStructure = CommonUtils::createArrayObject(
             $this->getRequestStructure()
         );
     }

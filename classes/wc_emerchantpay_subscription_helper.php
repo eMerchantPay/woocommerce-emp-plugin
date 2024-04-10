@@ -30,10 +30,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WC_emerchantpay_Subscription_Helper {
 
-	const META_INIT_RECURRING_ID             = '_init_recurring_id';
-	const META_RECURRING_TERMINAL_TOKEN      = '_recurring_terminal_token';
-	const META_INIT_RECURRING_FINISHED       = '_init_recurring_finished';
-	const META_WCS_SUBSCRIPTION_TRIAL_LENGTH = '_subscription_trial_length';
+	const META_INIT_RECURRING_ID               = '_init_recurring_id';
+	const META_RECURRING_TERMINAL_TOKEN        = '_recurring_terminal_token';
+	const META_INIT_RECURRING_FINISHED         = '_init_recurring_finished';
+	const META_WCS_SUBSCRIPTION_TRIAL_LENGTH   = '_subscription_trial_length';
+	const META_INIT_RECURRING_TRANSACTION_TYPE = '_transaction_type';
 
 	const WC_SUBSCRIPTIONS_PLUGIN_FILTER = 'woocommerce-subscriptions/woocommerce-subscriptions.php';
 
@@ -123,6 +124,7 @@ class WC_emerchantpay_Subscription_Helper {
 
 		foreach ( $subscriptions as $subscription ) {
 			update_post_meta( $subscription->get_id(), self::META_INIT_RECURRING_ID, $response->unique_id );
+			update_post_meta( $subscription->get_id(), self::META_INIT_RECURRING_TRANSACTION_TYPE, $response->transaction_type );
 		}
 
 		WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_INIT_RECURRING_ID, $response->unique_id );
@@ -134,6 +136,34 @@ class WC_emerchantpay_Subscription_Helper {
 	 */
 	public static function getOrderInitRecurringIdMeta( $orderId ) {
 		return WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_INIT_RECURRING_ID );
+	}
+
+	/**
+	 * Returns init recurring transaction type
+	 *
+	 * @param $orderId
+	 *
+	 * @return mixed
+	 */
+	public static function get_order_init_recurring_transaction_type( $orderId ) {
+		return WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_INIT_RECURRING_TRANSACTION_TYPE );
+	}
+
+	/**
+	 * Returns Subscription transaction class
+	 *
+	 * @param $transaction_type
+	 *
+	 * @return string
+	 */
+	public static function get_order_subscription_transaction_class( $transaction_type ) {
+
+		switch ( $transaction_type ) {
+			case \Genesis\API\Constants\Transaction\Types::SDD_INIT_RECURRING_SALE:
+				return \Genesis\API\Constants\Transaction\Types::SDD_RECURRING_SALE;
+			default:
+				return \Genesis\API\Constants\Transaction\Types::RECURRING_SALE;
+		}
 	}
 
 	/**
@@ -239,6 +269,7 @@ class WC_emerchantpay_Subscription_Helper {
 		$initRecurringTxnTypes = array(
 			\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE,
 			\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D,
+			\Genesis\API\Constants\Transaction\Types::SDD_INIT_RECURRING_SALE,
 		);
 
 		return in_array( $transactionType, $initRecurringTxnTypes );

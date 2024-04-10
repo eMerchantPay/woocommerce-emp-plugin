@@ -55,6 +55,7 @@ abstract class WC_Emerchantpay_Blocks_Base extends AbstractPaymentMethodType {
 	private $required_settings = array(
 		'title',
 		'description',
+		'iframe_processing',
 	);
 
 	/**

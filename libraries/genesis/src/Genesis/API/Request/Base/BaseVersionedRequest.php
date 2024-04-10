@@ -136,7 +136,7 @@ abstract class BaseVersionedRequest extends \Genesis\API\Request
      * @return void
      * @throws EnvironmentNotSet
      */
-    protected function initConfiguration($subdomain = 'gateway')
+    protected function initConfiguration()
     {
         switch ($this->requestType) {
             case Builder::XML:
@@ -147,7 +147,7 @@ abstract class BaseVersionedRequest extends \Genesis\API\Request
                 break;
         }
 
-        $this->initApiGatewayConfiguration($this->version . '/' . $this->requestPath, false, $subdomain);
+        $this->initApiGatewayConfiguration("$this->version/$this->requestPath", false);
     }
 
     /**

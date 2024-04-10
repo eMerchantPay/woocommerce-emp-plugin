@@ -23,70 +23,51 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\API\Request\NonFinancial\Reconcile;
+namespace Genesis\API\Traits\Request\NonFinancial\BillingApi;
 
-use Genesis\API\Traits\Request\NonFinancial\DateAttributes;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
- * Reconcile request by Date Range
+ * Trait OrderByDirection
+ * @package Genesis\API\Traits\Request\NonFinancial\BillingApi
  *
- * @package    Genesis
- * @subpackage Request
+ * @method string getOrderByDirection()
  */
-class DateRange extends \Genesis\API\Request
+trait OrderByDirection
 {
-    use DateAttributes;
+    /**
+     * Direction result collection is sorted by.
+     * Possible values: asc, desc. Default value: asc
+     *
+     * @var string
+     */
+    protected $order_by_direction;
 
     /**
-     * the page within the paginated result
+     * Set the order by direction parameter
      *
-     * default: 1
-     *
-     * @var int
+     * @param string $value
+     * @return $this
+     * @throws InvalidArgument
      */
-    protected $page;
-
-    /**
-     * Set the per-request configuration
-     *
-     * @return void
-     */
-    protected function initConfiguration()
+    public function setOrderByDirection($value)
     {
-        $this->initXmlConfiguration();
-
-        $this->initApiGatewayConfiguration('reconcile/by_date');
+        return $this->allowedOptionsSetter(
+            'order_by_direction',
+            $this->getOrderByDirectionAllowedValues(),
+            strtolower($value),
+            'Invalid value given for orderByDirection. Allowed values: ' .
+            implode(', ', $this->getOrderByDirectionAllowedValues())
+        );
     }
 
     /**
-     * Set the required fields
+     * List of allowed response ordering directions
      *
-     * @return void
+     * @return string[]
      */
-    protected function setRequiredFields()
+    protected function getOrderByDirectionAllowedValues()
     {
-        $requiredFields = [
-            'start_date'
-        ];
-
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
-    }
-
-    /**
-     * Create the request's Tree structure
-     *
-     * @return void
-     */
-    protected function populateStructure()
-    {
-        $treeStructure = [
-            'reconcile' => [
-                'start_date' => $this->getStartDate(),
-                'end_date'   => $this->getEndDate(),
-                'page'       => $this->page
-            ]
-        ];
-
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        return ['asc', 'desc'];
     }
 }

@@ -22,22 +22,23 @@
  * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
-namespace Genesis\Exceptions;
+
+namespace Genesis\API\Traits\Request\Financial;
 
 /**
- * Class InvalidMethod
+ * Trait PurposeOfPaymentAttributes
+ * @package Genesis\API\Traits\Request\Financial
  *
- * @package Genesis\Exceptions
+ * @method $this setPurposeOfPayment($value)
+ * @method string getPurposeOfPayment()
  */
-class InvalidMethod extends Exception
+trait PurposeOfPaymentAttributes
 {
     /**
-     * @return string
+     * Purpose of Payment code, required for Visa OCTs with recipients
+     * in Argentina, Bangladesh, Egypt, India, Chile and Colombia.
+     *
+     * @var $purpose_of_payment
      */
-    protected function getCustomMessage()
-    {
-        return ($this->getMessage()) ?
-            $this->getMessage() : 'You\'re trying to call a non-existent method!' . PHP_EOL .
-               'For proper usage, please refer to the documentation!';
-    }
+    protected $purpose_of_payment;
 }
