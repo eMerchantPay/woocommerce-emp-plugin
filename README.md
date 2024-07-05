@@ -6,11 +6,11 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x, 5.x or 6.x (Tested up to 6.4.3)
-* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.0 (Tested up to 8.6.1)
+* WordPress 4.x, 5.x or 6.x (Tested up to 6.6-RC2)
+* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.0 (Tested up to 9.0.2)
 * [GenesisPHP v1.24.6](https://github.com/GenesisGateway/genesis_php/releases/tag/1.24.6) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
-* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x (Tested up to 6.0.0) in order to use **Subscriptions**
+* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x (Tested up to 6.4.1) in order to use **Subscriptions**
 
 GenesisPHP Requirements
 ------------
@@ -188,6 +188,7 @@ Supported Transactions
       * __Interac Combined Pay-in (CPI)__ 
       * __Bancontact (BCT)__ 
       * __Blik One Click (BLK)__
+      * __SPEI__
     * __OXXO__
     * __P24__
     * __Pago Facil__
@@ -221,3 +222,23 @@ _Note_: If you have trouble with your credentials or terminal configuration, get
 You're now ready to process payments through our gateway.
 
 [support]: mailto:tech-support@emerchantpay.net
+
+Development
+------------
+
+* Pack installation archive (Linux or macOS only)
+```shell
+composer pack
+```
+* Install dev packages
+```shell
+composer install
+```
+* Run PHP Code Sniffer
+```shell
+composer php-cs
+```
+* Run PHP Mess Detector
+```shell
+composer php-md
+```

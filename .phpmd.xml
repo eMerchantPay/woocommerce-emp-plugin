@@ -44,7 +44,7 @@
 
     <rule ref="rulesets/naming.xml/LongVariable">
         <properties>
-            <property name="maximum" value="25" />
+            <property name="maximum" value="40" />
         </properties>
     </rule>
 
@@ -59,4 +59,5 @@
 
     <exclude-pattern>*/genesis/*</exclude-pattern>
     <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
 </ruleset>

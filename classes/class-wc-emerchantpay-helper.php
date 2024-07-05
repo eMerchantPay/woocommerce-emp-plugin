@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2018 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,8 +13,9 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     classes\class-wc-emerchantpay-helper
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,11 +23,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * emerchantpay Helper Class
+ * Emerchantpay Helper Class
  *
- * @class   WC_emerchantpay_Helper
+ * @class   WC_Emerchantpay_Helper
  */
-class WC_emerchantpay_Helper {
+class WC_Emerchantpay_Helper {
 
 	const LOG_NAME              = 'emerchantpay';
 	const WP_NOTICE_TYPE_ERROR  = 'error';
@@ -41,28 +42,34 @@ class WC_emerchantpay_Helper {
 	const MORE_THAN_60_DAYS_INDICATOR    = 'more_than_60_days';
 
 	/**
+	 * Check whether the request is 'GET'
+	 *
 	 * @return bool
 	 * @SuppressWarnings(PHPMD)
 	 */
-	public static function isGetRequest() {
-		return $_SERVER['REQUEST_METHOD'] == 'GET';
+	public static function is_get_request() {
+		if ( ! empty( $_SERVER['REQUEST_METHOD'] ) ) {
+			return isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' === $_SERVER['REQUEST_METHOD'];
+		}
 	}
 
 	/**
+	 * Check whether the request is 'POST'
+	 *
 	 * @return bool
 	 * @SuppressWarnings(PHPMD)
 	 */
-	public static function isPostRequest() {
-		return $_SERVER['REQUEST_METHOD'] == 'POST';
+	public static function is_post_request() {
+		return isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'];
 	}
 
 	/**
 	 * Detects if a WordPress plugin is active
 	 *
-	 * @param string $plugin_filter
+	 * @param string $plugin_filter Current plugin that been filtered.
 	 * @return bool
 	 */
-	public static function isWPPluginActive( $plugin_filter ) {
+	public static function is_wp_plugin_active( $plugin_filter ) {
 		if ( ! function_exists( 'is_plugin_active' ) ) {
 			include_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
@@ -75,7 +82,7 @@ class WC_emerchantpay_Helper {
 	 *
 	 * @return bool
 	 */
-	public static function isStoreOverSecuredConnection() {
+	public static function is_store_over_secured_connection() {
 		return ( is_ssl() || get_option( 'woocommerce_force_ssl_checkout' ) === 'yes' );
 	}
 
@@ -91,7 +98,7 @@ class WC_emerchantpay_Helper {
 
 		$site_url = get_site_url();
 
-		return $site_url ?: null;
+		return $site_url ? $site_url : null;
 	}
 
 	/**
@@ -110,7 +117,7 @@ class WC_emerchantpay_Helper {
 			return null;
 		}
 
-		$url_params = parse_url( $site_url );
+		$url_params = wp_parse_url( $site_url );
 
 		if ( is_array( $url_params ) && array_key_exists( 'host', $url_params ) ) {
 			return $url_params['host'];
@@ -154,31 +161,33 @@ class WC_emerchantpay_Helper {
 			$remote_address = static::get_wp_site_host_ip_address();
 		}
 
-		return $remote_address ?: '127.0.0.1';
+		return $remote_address ? $remote_address : '127.0.0.1';
 	}
 
 	/**
 	 * Prints WordPress Notice HTML
 	 *
-	 * @param string $text
-	 * @param string $noticeType
+	 * @param string $text Text notice.
+	 * @param string $notice_type Notice type.
 	 */
-	public static function printWpNotice( $text, $noticeType ) {
+	public static function print_wp_notice( $text, $notice_type ) {
 		?>
-			<div class="<?php echo $noticeType; ?>">
-				<p><?php echo $text; ?></p>
+			<div class="<?php echo esc_attr( $notice_type ); ?>">
+				<p><?php echo esc_html( $text ); ?></p>
 			</div>
 		<?php
 	}
 
 	/**
-	 * @param string $haystack
-	 * @param string $needle
+	 * Determines whether string ends with specific string
+	 *
+	 * @param string $haystack Passed string.
+	 * @param string $needle Searched value.
 	 * @return bool
 	 */
-	public static function getStringEndsWith( $haystack, $needle ) {
+	public static function get_string_ends_with( $haystack, $needle ) {
 		$length = strlen( $needle );
-		if ( $length == 0 ) {
+		if ( 0 === $length ) {
 			return true;
 		}
 
@@ -188,11 +197,11 @@ class WC_emerchantpay_Helper {
 	/**
 	 * Compares the WooCommerce Version with the given one
 	 *
-	 * @param string $version
-	 * @param string $operator
+	 * @param string $version Version to compare.
+	 * @param string $operator Comparison parameter (<, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>,).
 	 * @return bool|mixed
 	 */
-	public static function isWooCommerceVersion( $version, $operator ) {
+	public static function is_woocommerce_version( $version, $operator ) {
 		if ( defined( 'WOOCOMMERCE_VERSION' ) ) {
 			return version_compare( WOOCOMMERCE_VERSION, $version, $operator );
 		}
@@ -201,67 +210,79 @@ class WC_emerchantpay_Helper {
 	}
 
 	/**
-	 * @param \Exception|string $exception
+	 * Returns error of class WP_Error
+	 *
+	 * @SuppressWarnings(PHPMD.MissingImport)
+	 * @param \Exception|string $exception Exception instance.
 	 * @return \WP_Error
 	 */
-	public static function getWPError( $exception ) {
+	public static function get_wp_error( $exception ) {
 		if ( $exception instanceof \Exception ) {
-			return new \WP_Error(
-				$exception->getCode() ?: 999,
+			return new WP_Error(
+				$exception->getCode() ? $exception->getCode() : 999,
 				$exception->getMessage()
 			);
 		}
 
-		return new \WP_Error( 999, $exception );
+		return new WP_Error( 999, $exception );
 	}
 
 	/**
 	 * Writes a message / Exception to the error log
 	 *
-	 * @param \Exception|string $error
+	 * @SuppressWarnings(PHPMD.MissingImport)
+	 * @param \Exception|string $error Exception instance.
 	 */
-	public static function logException( $error ) {
+	public static function log_exception( $error ) {
 		$error_message = $error instanceof \Exception
 			? $error->getMessage()
 			: $error;
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( $error_message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
 
-		error_log( $error_message );
-
-		if ( self::isWooCommerceVersion( '2.7', '>=' ) ) {
-			wc_get_logger()->error( $error_message, [ 'source' => self::LOG_NAME ] );
+		if ( self::is_woocommerce_version( '2.7', '>=' ) ) {
+			wc_get_logger()->error( $error_message, array( 'source' => self::LOG_NAME ) );
 		} else {
 			( new WC_Logger() )->add( self::LOG_NAME, $error_message );
 		}
 	}
 
 	/**
-	 * @param array  $arr
-	 * @param string $key
+	 * Get array of Items by keys
+	 *
+	 * @param array  $arr Array of items.
+	 * @param string $key Searched key.
+	 * @param array  $default_arr Default value.
+	 *
 	 * @return array|mixed
 	 */
-	public static function getArrayItemsByKey( $arr, $key, $default = array() ) {
+	public static function get_array_items_by_key( $arr, $key, $default_arr = array() ) {
 		if ( ! is_array( $arr ) ) {
-			return $default;
+			return $default_arr;
 		}
 
 		if ( ! array_key_exists( $key, $arr ) ) {
-			return $default;
+			return $default_arr;
 		}
 
 		return $arr[ $key ];
 	}
 
 	/**
+	 * Determines that user is logged
+	 *
 	 * @return bool
 	 */
-	public static function isUserLogged() {
+	public static function is_user_logged() {
 		return get_current_user_id() !== 0;
 	}
 
 	/**
 	 * Compare today and the given date for last update
 	 *
-	 * @param $date
+	 * @SuppressWarnings(PHPMD.MissingImport)
+	 * @param string $date Given date for last update.
 	 *
 	 * @return string
 	 */

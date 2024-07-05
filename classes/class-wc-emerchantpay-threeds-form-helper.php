@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2018-2023 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
  * @author      emerchantpay Ltd.
  * @copyright   2018-2022 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     classes\class-wc-emerchantpay-threeds-form-helper
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,11 +23,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'WC_Emerchantpay_Threeds_Base' ) ) {
-	require_once dirname( __FILE__, 2 ) . '/classes/class-wc-emerchantpay-threeds-base.php';
+	require_once __DIR__ . '/class-wc-emerchantpay-threeds-base.php';
 }
 
 /**
- * emerchantpay 3DS v2 Form Helper Class
+ * Emerchantpay 3DS v2 Form Helper Class
  *
  * @class WC_Emerchantpay_Threeds_Form_Helper
  */
@@ -34,6 +35,7 @@ class WC_Emerchantpay_Threeds_Form_Helper extends WC_Emerchantpay_Threeds_Base {
 	/**
 	 * Load template with hidden iframe and scripts
 	 *
+	 * @suppressWarnings(PHPMD.ExitExpression)
 	 * @return void
 	 */
 	public function display_form_and_iframe() {
@@ -47,6 +49,7 @@ class WC_Emerchantpay_Threeds_Form_Helper extends WC_Emerchantpay_Threeds_Base {
 
 		wc_get_template( $template_name, $args, '', $default_path );
 
+		// TODO: Fix exit expression
 		exit;
 	}
 }

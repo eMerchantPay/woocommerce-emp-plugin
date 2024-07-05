@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2018-2023 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
  * @author      emerchantpay Ltd.
  * @copyright   2018-2022 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     classes\class-wc-emerchantpay-threeds-base
  */
 
 use Genesis\API\Constants\DateTimeFormat;
@@ -26,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * emerchantpay 3DS v2 Base Class
+ * Emerchantpay 3DS v2 Base Class
  *
  * @class WC_Emerchantpay_Threeds_Base
  */
@@ -34,16 +35,20 @@ class WC_Emerchantpay_Threeds_Base {
 	/**
 	 * Get $order_id from url params and check if order with that number exists.
 	 *
+	 * @suppressWarnings(PHPMD.Superglobals)
 	 * @return string|null
 	 */
 	public function load_order() {
+		// TODO: Fix Nonce verification.
+		// TODO: Fix superglobals
+		// phpcs:ignore WordPress.Security.NonceVerification
 		$order_id = sanitize_text_field( wp_unslash( $_GET['order_id'] ?? null ) );
 		if ( ! $order_id ) {
 			return null;
 		}
 
-		$order = WC_emerchantpay_Order_Helper::getOrderById( $order_id );
-		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
+		$order = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order( $order ) ) {
 			return null;
 		}
 
@@ -53,14 +58,14 @@ class WC_Emerchantpay_Threeds_Base {
 	/**
 	 * Create valid signature
 	 *
-	 * @param object $response_obj
-	 * @param string $unique_id
+	 * @param object $response_obj Response object.
+	 * @param string $unique_id Unique ID.
 	 *
 	 * @return string
 	 */
 	public function create_signature( $response_obj, $unique_id ) {
 		$options      = get_option( 'woocommerce_' . WC_Emerchantpay_Direct::get_method_code() . '_settings' );
-		$customer_pwd = trim( $options[ WC_emerchantpay_Method::SETTING_KEY_PASSWORD ] );
+		$customer_pwd = trim( $options[ WC_Emerchantpay_Method_Base::SETTING_KEY_PASSWORD ] );
 		$date_add     = $response_obj->date_add;
 		$timestamp    = date_create_from_format( 'U', $date_add );
 
@@ -75,7 +80,7 @@ class WC_Emerchantpay_Threeds_Base {
 	/**
 	 * Create method_continue handler url
 	 *
-	 * @param string $url_params http request variables
+	 * @param string $url_params http request variables.
 	 *
 	 * @return string
 	 */
@@ -86,7 +91,7 @@ class WC_Emerchantpay_Threeds_Base {
 	/**
 	 * Create url to the status checker method
 	 *
-	 * @param string $url_params http request variables
+	 * @param string $url_params http request variables.
 	 *
 	 * @return string
 	 */
@@ -97,14 +102,19 @@ class WC_Emerchantpay_Threeds_Base {
 	/**
 	 * Sanitize GET/POST variables and add common variables
 	 *
+	 * @SuppressWarnings(PHPMD.MissingImport)
+	 * @suppressWarnings(PHPMD.Superglobals)
 	 * @return array|null
 	 */
 	protected function get_data_from_url() {
+		// TODO: Fix Nonce verification.
+		// TODO: Fix super globals
+		// phpcs:ignore WordPress.Security.NonceVerification
 		$unique_id_hash = sanitize_text_field( wp_unslash( $_GET['checksum'] ?? null ) );
 
 		$threeds_base = new WC_Emerchantpay_Threeds_Base();
 		$order_id     = $threeds_base->load_order();
-		$response_arr = get_post_meta( $order_id, WC_emerchantpay_Transactions_Tree::META_DATA_KEY_LIST, true );
+		$response_arr = get_post_meta( $order_id, WC_Emerchantpay_Transactions_Tree::META_DATA_KEY_LIST, true );
 
 		if ( ! $response_arr ) {
 			return null;
@@ -143,8 +153,8 @@ class WC_Emerchantpay_Threeds_Base {
 	/**
 	 * Create API Request url and append specific request variables
 	 *
-	 * @param string $suffix
-	 * @param string $url_params http request variables
+	 * @param string $suffix Suffix.
+	 * @param string $url_params http request variables.
 	 *
 	 * @return string
 	 */

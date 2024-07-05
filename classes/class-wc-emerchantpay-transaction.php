@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2018 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,42 +13,132 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     classes\class-wc-emerchantpay-transaction
  */
+
+use Genesis\API\Constants\Transaction\States;
+use Genesis\API\Constants\Transaction\Types;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
 /**
- * emerchantpay Helper Class
+ * Emerchantpay Helper Class
  *
- * @class WC_emerchantpay_Transaction
+ * @class WC_Emerchantpay_Transaction
  *
  * @SuppressWarnings(PHPMD)
  */
-class WC_emerchantpay_Transaction {
+class WC_Emerchantpay_Transaction {
 
 	const TYPE_CHECKOUT = 'checkout';
 
+	/**
+	 * Unique id defined by gateway
+	 *
+	 * @var string
+	 */
 	public $unique_id;
+
+	/**
+	 * Transaction parent id
+	 *
+	 * @var string
+	 */
 	public $parent_id;
+
+	/**
+	 * Date added
+	 *
+	 * @var string
+	 */
 	public $date_add;
+
+	/**
+	 * Type of transaction
+	 *
+	 * @var string
+	 */
 	public $type;
+
+	/**
+	 * Status of transaction
+	 *
+	 * @var string
+	 */
 	public $status;
+
+	/**
+	 * Transaction message
+	 *
+	 * @var string
+	 */
 	public $message;
+
+	/**
+	 * Transaction currency
+	 *
+	 * @var string
+	 */
 	public $currency;
+
+	/**
+	 * Transaction amount
+	 *
+	 * @var int
+	 */
 	public $amount;
+
+	/**
+	 * Terminal token
+	 *
+	 * @var string
+	 */
 	public $terminal;
+
+	/**
+	 * 3DSecure Method URL
+	 *
+	 * @var string
+	 */
 	public $threeds_method_url;
+
+	/**
+	 * 3DSecure Method Continue URL
+	 *
+	 * @var string
+	 */
 	public $threeds_method_continue_url;
+
+	/**
+	 * URL where customer is sent to after successful payment
+	 *
+	 * @var string
+	 */
 	public $return_success_url;
+
+	/**
+	 * URL where customer is sent to after unsuccessful payment
+	 *
+	 * @var string
+	 */
 	public $return_failure_url;
 
+	/**
+	 * WC_Emerchantpay_Transaction constructor.
+	 *
+	 * @param null   $response Response object from Gateway.
+	 * @param bool   $parent_id Transaction parent id.
+	 * @param string $type Type of transation.
+	 *
+	 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
+	 */
 	public function __construct( $response = null, $parent_id = false, $type = '' ) {
 		if ( $response ) {
-			$this->importResponse( $response );
+			$this->import_response( $response );
 		}
 
 		$this->parent_id = $parent_id;
@@ -57,9 +147,9 @@ class WC_emerchantpay_Transaction {
 	/**
 	 * Import a Genesis Response Object
 	 *
-	 * @param stdClass|WC_emerchantpay_Transaction $trx
+	 * @param stdClass|WC_Emerchantpay_Transaction $trx Response object.
 	 */
-	public function importResponse( $trx ) {
+	public function import_response( $trx ) {
 		if ( isset( $trx->unique_id ) ) {
 			$this->unique_id = $trx->unique_id;
 		}
@@ -104,45 +194,53 @@ class WC_emerchantpay_Transaction {
 	}
 
 	/**
-	 * @param string $parentType
+	 * Change parent transaction status
+	 *
+	 * @param string $parent_type Parent transaction type.
 	 *
 	 * @return bool
 	 */
-	public function shouldChangeParentStatus( $parentType ) {
-		switch ( $parentType ) {
+	public function should_change_parent_status( $parent_type ) {
+		switch ( $parent_type ) {
 			case static::TYPE_CHECKOUT:
 				return true;
 			default:
-				return $this->status === \Genesis\API\Constants\Transaction\States::APPROVED;
+				return States::APPROVED === $this->status;
 		}
 	}
 
 	/**
+	 * Get status of order
+	 *
 	 * @return string
 	 */
-	public function getStatusText() {
-		if ( \Genesis\API\Constants\Transaction\Types::isRefund( $this->type ) ) {
-			return \Genesis\API\Constants\Transaction\States::REFUNDED;
+	public function get_status_text() {
+		if ( Types::isRefund( $this->type ) ) {
+			return States::REFUNDED;
 		}
 
-		if ( \Genesis\API\Constants\Transaction\Types::VOID === $this->type ) {
-			return \Genesis\API\Constants\Transaction\States::VOIDED;
+		if ( Types::VOID === $this->type ) {
+			return States::VOIDED;
 		}
 
 		return $this->status;
 	}
 
 	/**
+	 * Checks whether transaction is authorize
+	 *
 	 * @return bool
 	 */
-	public function isAuthorize() {
-		return \Genesis\API\Constants\Transaction\Types::isAuthorize( $this->type ) ||
-			\Genesis\API\Constants\Transaction\Types::GOOGLE_PAY === $this->type ||
-			\Genesis\API\Constants\Transaction\Types::PAY_PAL === $this->type ||
-			\Genesis\API\Constants\Transaction\Types::APPLE_PAY === $this->type;
+	public function is_authorize() {
+		return Types::isAuthorize( $this->type ) ||
+			Types::GOOGLE_PAY === $this->type ||
+			Types::PAY_PAL === $this->type ||
+			Types::APPLE_PAY === $this->type;
 	}
 
 	/**
+	 * Gets return success URL
+	 *
 	 * @return string
 	 */
 	public function get_return_success_url() {
@@ -150,14 +248,18 @@ class WC_emerchantpay_Transaction {
 	}
 
 	/**
-	 * @param string $return_success_url
+	 * Sets return success URL
+	 *
+	 * @param string $return_success_url Return success URL.
 	 */
 	public function set_return_success_url( $return_success_url ) {
 		$this->return_success_url = $return_success_url;
 	}
 
 	/**
-	 * @param string $return_failure_url
+	 * Sets return failure URL
+	 *
+	 * @param string $return_failure_url Return success URL.
 	 */
 	public function set_return_failure_url( $return_failure_url ) {
 		$this->return_failure_url = $return_failure_url;

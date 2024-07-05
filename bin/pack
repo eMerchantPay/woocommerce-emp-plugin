@@ -1,0 +1,32 @@
+#!/bin/bash
+
+folder_name="emerchantpay-payment-page-for-woocommerce"
+
+# Remove any existing package
+[ -f "${folder_name}.zip" ] && rm "${folder_name}.zip"
+
+# Install Genesis PHP SDK and remove dev packages
+composer install -q --no-dev
+
+# Add a symlink to simulate folder
+[ ! -L "${folder_name}" ] && ln -s "$(pwd)" "${folder_name}"
+
+# Zip with the folder
+zip -rq "${folder_name}" \
+    "${folder_name}/assets" \
+    "${folder_name}/classes" \
+    "${folder_name}/includes" \
+    "${folder_name}/languages" \
+    "${folder_name}/libraries" \
+    "${folder_name}/resources" \
+    "${folder_name}/templates" \
+    "${folder_name}/webpack.config.js" \
+    "${folder_name}/index.php" \
+    "${folder_name}/package-lock.json" \
+    "${folder_name}/package.json" \
+    "${folder_name}/composer.json" \
+    "${folder_name}/composer.lock" \
+    "${folder_name}/README.md" \
+    "${folder_name}/readme.txt"
+[ -L "${folder_name}" ] && rm "${folder_name}"
+[ -f "${folder_name}.zip" ] && echo "The installation package (${folder_name}.zip) was packed!"

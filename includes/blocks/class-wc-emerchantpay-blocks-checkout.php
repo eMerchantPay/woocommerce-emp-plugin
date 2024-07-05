@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2018-2023 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,12 +13,13 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2023 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     includes\blocks\class-wc-emerchantpay-blocks-checkout
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -35,21 +36,22 @@ final class WC_Emerchantpay_Blocks_Checkout extends WC_Emerchantpay_Blocks_Base 
 
 	/**
 	 * Initializes the payment method type.
+	 * @SuppressWarnings(PHPMD.MissingImport)
 	 */
 	public function initialize() {
 		$options        = array(
 			'draw_transaction_tree' => false,
 		);
-		$this->gateway  = new WC_emerchantpay_Checkout( $options );
+		$this->gateway  = new WC_Emerchantpay_Checkout( $options );
 		$this->supports = $this->gateway->supports;
 		$this->settings = $this->get_filtered_plugin_settings( 'woocommerce_emerchantpay_checkout_settings' );
 	}
 
 	/**
+	 * Returns an array of scripts/handles to be registered for this payment method.
 	 * new WC_Payment_Gateway();
 	 *
-	 * Returns an array of scripts/handles to be registered for this payment method.
-	 *
+	 * @SuppressWarnings(PHPMD.MissingImport)
 	 * @return array
 	 */
 	public function get_payment_method_script_handles() {
@@ -59,7 +61,7 @@ final class WC_Emerchantpay_Blocks_Checkout extends WC_Emerchantpay_Blocks_Base 
 			? require $script_asset_path
 			: array(
 				'dependencies' => array(),
-				'version'      => WC_emerchantpay_Helper::get_plugin_version(),
+				'version'      => WC_Emerchantpay_Helper::get_plugin_version(),
 			);
 		$script_url        = WC_Emerchantpay_Constants::plugin_url() . $script_path;
 

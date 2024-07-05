@@ -4,3 +4,6 @@ libraries/.DS_Store
 libraries/genesis/.DS_Store
 node_modules/
 vendor/
+phpcs_report.xml
+phpmd_report.xml
+emerchantpay-payment-page-for-woocommerce.zip

@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2022 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,8 +13,9 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2022 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     classes\class-wc-emerchantpay-threeds-helper
  */
 
 use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\ShippingIndicators;
@@ -25,29 +26,41 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * emerchantpay Threeds Helper Class
+ * Emerchantpay Threeds Helper Class
  *
  * Class WC_Emerchantpay_Threeds_helper
  *
  * @suppressWarnings(PHPMD.LongVariable)
  */
 class WC_Emerchantpay_Threeds_Helper {
+
 	/**
-	 * @var string Date format
+	 * Date format
+	 *
+	 * @var string Date format type.
 	 */
 	private $date_format;
 
+	/**
+	 * List of paid statuses
+	 *
+	 * @var array
+	 */
 	private $paid_statuses = array(
-		WC_emerchantpay_Method::ORDER_STATUS_PROCESSING,
-		WC_emerchantpay_Method::ORDER_STATUS_COMPLETED,
+		WC_Emerchantpay_Method_Base::ORDER_STATUS_PROCESSING,
+		WC_Emerchantpay_Method_Base::ORDER_STATUS_COMPLETED,
 	);
 
 	/**
+	 * Order instance
+	 *
 	 * @var WC_Order
 	 */
 	private $order;
 
 	/**
+	 * Customer instance
+	 *
 	 * @var WC_Customer
 	 */
 	private $customer;
@@ -69,8 +82,9 @@ class WC_Emerchantpay_Threeds_Helper {
 	/**
 	 * WC_Emerchantpay_Threeds_Helper constructor.
 	 *
-	 * @param WC_Order $order
-	 * @param WC_Customer $customer
+	 * @param WC_Order    $order Order object.
+	 * @param WC_Customer $customer Customer object.
+	 * @param string      $date_format Date format.
 	 */
 	public function __construct( $order, $customer, $date_format ) {
 		$this->order       = $order;
@@ -107,8 +121,8 @@ class WC_Emerchantpay_Threeds_Helper {
 		}
 
 		if ( $this->order->has_shipping_address() &&
-			 $this->order->has_billing_address() &&
-			 ! $this->is_guest_customer()
+			$this->order->has_billing_address() &&
+			! $this->is_guest_customer()
 		) {
 			return ShippingIndicators::STORED_ADDRESS;
 		}
@@ -119,8 +133,6 @@ class WC_Emerchantpay_Threeds_Helper {
 	/**
 	 * Check if item from the Order is already being ordered
 	 *
-	 * @param WC_Order $order Order object.
-	 *
 	 * @return string
 	 */
 	public function fetch_reorder_items_indicator() {
@@ -130,14 +142,14 @@ class WC_Emerchantpay_Threeds_Helper {
 
 		$ordered_items = array_values(
 			array_map(
-				array( WC_emerchantpay_Order_Helper::class, 'get_item_id' ),
+				array( WC_Emerchantpay_Order_Helper::class, 'get_item_id' ),
 				$this->order->get_items()
 			)
 		);
 
 		$previous_ordered_items = array_filter(
 			$this->customer_orders,
-			function( $value ) use ( $ordered_items ) {
+			function ( $value ) use ( $ordered_items ) {
 				return count( array_intersect( $ordered_items, $value['product_ids'] ) ) > 0;
 			}
 		);
@@ -148,7 +160,7 @@ class WC_Emerchantpay_Threeds_Helper {
 	/**
 	 * Count the Orders count for the last 24 hours, no matter of the status
 	 *
-	 * @var string $comparison
+	 * @SuppressWarnings(PHPMD.MissingImport)
 	 * @return int
 	 */
 	public function get_transactions_last_24_hours() {
@@ -159,7 +171,7 @@ class WC_Emerchantpay_Threeds_Helper {
 				$this->customer_orders,
 				function ( $order_data ) use ( $comparison_date ) {
 					return WC_DateTime::CreateFromFormat( $this->date_format, $order_data['date_created'] ) >=
-						   $comparison_date;
+						$comparison_date;
 				}
 			)
 		);
@@ -188,6 +200,9 @@ class WC_Emerchantpay_Threeds_Helper {
 	}
 
 	/**
+	 * Returns paid transaction for 6 months
+	 *
+	 * @SuppressWarnings(PHPMD.MissingImport)
 	 * @return int
 	 */
 	public function get_paid_transactions_for_6_months() {
@@ -256,8 +271,8 @@ class WC_Emerchantpay_Threeds_Helper {
 		return count(
 			array_filter(
 				$this->order->get_items(),
-				function( $item ) {
-					$product = WC_emerchantpay_Order_Helper::getItemProduct( $item );
+				function ( $item ) {
+					$product = WC_Emerchantpay_Order_Helper::get_item_product( $item );
 					return $product->is_virtual();
 				}
 			)
@@ -275,13 +290,13 @@ class WC_Emerchantpay_Threeds_Helper {
 				'orderby'        => 'ID',
 				'order'          => 'ASC',
 				'customer_id'    => $this->customer->get_id(),
-				'payment_method' => WC_emerchantpay_Checkout::get_method_code(),
+				'payment_method' => WC_Emerchantpay_Checkout::get_method_code(),
 				'limit'          => -1,
 				'paginate'       => false,
 			)
 		);
 
-		// Pop the current order with pending status
+		// Pop the current order with pending status.
 		array_pop( $customer_orders );
 
 		$this->customer_orders = array_map(
@@ -295,7 +310,7 @@ class WC_Emerchantpay_Threeds_Helper {
 					'date_updated' => $customer_order->get_date_modified()->date( $this->date_format ),
 					'product_ids'  => array_values(
 						array_map(
-							array( WC_emerchantpay_Order_Helper::class, 'get_item_id' ),
+							array( WC_Emerchantpay_Order_Helper::class, 'get_item_id' ),
 							$customer_order->get_items()
 						)
 					),

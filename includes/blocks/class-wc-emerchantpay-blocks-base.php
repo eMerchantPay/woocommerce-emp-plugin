@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2018-2023 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,12 +13,13 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2023 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     includes\blocks\class-wc-emerchantpay-blocks-base
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
@@ -37,6 +38,8 @@ abstract class WC_Emerchantpay_Blocks_Base extends AbstractPaymentMethodType {
 
 	/**
 	 * The gateway instance.
+	 *
+	 * @var \stdClass
 	 */
 	protected $gateway;
 
@@ -74,6 +77,9 @@ abstract class WC_Emerchantpay_Blocks_Base extends AbstractPaymentMethodType {
 
 	/**
 	 * Get array with the necessary settings only
+	 *
+	 * @param array $method_settings Method settings.
+	 * @param array $additional_settings Additional settings.
 	 *
 	 * @return array
 	 */

@@ -1,10 +1,13 @@
-/*!
- * jQuery Cookie Plugin v1.3.1
+/**
+ * JQuery Cookie Plugin v1.3.1
  * https://github.com/carhartl/jquery-cookie
  *
  * Copyright 2013 Klaus Hartl
  * Released under the MIT license
+ *
+ * @package     assets/javascript/treegrid/cookie.js
  */
+
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as anonymous module.
@@ -40,7 +43,7 @@
 
 	var config = $.cookie = function (key, value, options) {
 
-		// Write
+		// Write.
 		if (value !== undefined) {
 			options = $.extend( {}, config.defaults, options );
 
@@ -55,14 +58,14 @@
 				config.raw ? key : encodeURIComponent( key ),
 				'=',
 				config.raw ? value : encodeURIComponent( value ),
-				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE.
 				options.path ? '; path=' + options.path : '',
 				options.domain ? '; domain=' + options.domain : '',
 				options.secure ? '; secure' : ''
 			].join( '' ));
 		}
 
-		// Read
+		// Read.
 		var cookies = document.cookie.split( '; ' );
 		var result  = key ? undefined : {};
 		for (var i = 0, l = cookies.length; i < l; i++) {

@@ -1,10 +1,29 @@
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     assets/javascript/order-transactions-tree.js
+ */
+
 var $senderButton;
 var $closeButton;
 var $spinner;
 var $modalInputs;
 
 jQuery( document ).ready(
-	function() {
+	function () {
 		jQuery( '.tree' ).treegrid(
 			{
 				expanderExpandedClass:  'dashicons dashicons-arrow-down',
@@ -12,7 +31,7 @@ jQuery( document ).ready(
 			}
 		);
 
-		jQuery.exists = function(selector) {
+		jQuery.exists = function (selector) {
 			return (jQuery( selector ).length > 0);
 		};
 
@@ -31,7 +50,7 @@ jQuery( document ).ready(
 				exampleValue: 'exampleValue'
 			},
 
-			validate: function(validator, $field, options) {
+			validate: function (validator, $field, options) {
 				var fieldValue = $field.val(),
 				regexp         = /^(([0-9]*)|(([0-9]*)\.([0-9]*)))$/i,
 				isValid        = true,
@@ -50,7 +69,7 @@ jQuery( document ).ready(
 		jQuery( '[data-toggle="emerchantpay-tooltip"]' ).tooltip();
 
 		jQuery( '.btn-transaction' ).click(
-			function() {
+			function () {
 				if (jQuery( this ).is( "[data-disabled]" )) {
 					return;
 				}
@@ -63,21 +82,21 @@ jQuery( document ).ready(
 		transactionAmountInput = jQuery( '#emerchantpay_transaction_amount', modalObj );
 
 		jQuery( '.btn-submit' ).click(
-			function() {
+			function () {
 				jQuery( '#emerchantpay-modal-form' ).submit();
 			}
 		);
 
 		modalObj.on(
 			'hide.bs.modal',
-			function() {
+			function () {
 				destroyBootstrapValidator( '#emerchantpay-modal-form' );
 			}
 		);
 
 		modalObj.on(
 			'shown.bs.modal',
-			function() {
+			function () {
 				doRemoveEMerchantPayNotices();
 
 				/* enable the submit button just in case (if the bootstrapValidator is enabled it will disable the button if necessary */
@@ -99,7 +118,7 @@ jQuery( document ).ready(
 		jQuery( '#emerchantpay-modal-submit' ).on( 'click', transactionAction );
 
 		// Experimental use of the WooCommerce Integrated Refund functionality
-		//jQuery( '#woocommerce-order-items' ).find( 'button.refund-items' ).remove();
+		// jQuery( '#woocommerce-order-items' ).find( 'button.refund-items' ).remove();.
 
 		$senderButton = jQuery( '#emerchantpay-modal-submit' );
 		$closeButton  = jQuery( '#emerchantpay-modal-close' );
@@ -305,7 +324,12 @@ function successfulRequest($successNotice) {
 	$successNotice.slideDown(
 		'slow',
 		function () {
-			setTimeout( function() { window.location.reload();}, 2000 );
+			setTimeout(
+				function () {
+					window.location.reload();
+				},
+				2000
+			);
 		}
 	);
 }
@@ -403,20 +427,20 @@ function createBootstrapValidator(submitFormId) {
 	)
 		.on(
 			'error.field.bv',
-			function(e, data) {
+			function (e, data) {
 				jQuery( '#emerchantpay-modal-submit' ).attr( 'disabled', 'disabled' );
 			}
 		)
 		.on(
 			'success.field.bv',
-			function(e) {
+			function (e) {
 				jQuery( '#emerchantpay-modal-submit' ).removeAttr( 'disabled' );
 			}
 		)
 		.on(
 			'success.form.bv',
-			function(e) {
-				e.preventDefault(); // Prevent the form from submitting
+			function (e) {
+				e.preventDefault(); // Prevent the form from submitting.
 
 				/* submits the transaction form (No validators have failed) */
 				submitForm.bootstrapValidator( 'defaultSubmit' );

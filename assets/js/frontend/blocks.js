@@ -17,6 +17,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/html-entities */ "@wordpress/html-entities");
 /* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__);
 
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/EmerchantpayDirect
+ */
+
 
 
 const CreditCardInputs = ({
@@ -85,6 +104,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @woocommerce/settings */ "@woocommerce/settings");
 /* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _ModalBlock__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ModalBlock */ "./resources/js/frontend/ModalBlock.js");
+
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/EmerchantpayCheckout
+ */
 
 
 
@@ -186,6 +224,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CreditCardInputs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CreditCardInputs */ "./resources/js/frontend/CreditCardInputs.js");
 /* harmony import */ var _ModalBlock__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ModalBlock */ "./resources/js/frontend/ModalBlock.js");
 /* harmony import */ var _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./EmpPopulateBrowserParams */ "./resources/js/frontend/EmpPopulateBrowserParams.js");
+
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/EmerchantpayDirect
+ */
 
 
 
@@ -314,6 +371,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/EmpPopulateBrowserParams
+ */
+
 const empPopulateBrowserParams = {
   initParameters: function (methodName) {
     let java_enabled;
@@ -353,6 +429,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/ModalBlock
+ */
 
 
 const ModalBlock = () => {
@@ -767,6 +862,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _woocommerce_blocks_registry__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_blocks_registry__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _EmerchantpayCheckout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EmerchantpayCheckout */ "./resources/js/frontend/EmerchantpayCheckout.js");
 /* harmony import */ var _EmerchantpayDirect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EmerchantpayDirect */ "./resources/js/frontend/EmerchantpayDirect.js");
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/index
+ */
+
 
 
 

@@ -3,7 +3,7 @@
   "description": "emerchantpay Payment Gateway for WooCommerce",
   "minimum-stability": "stable",
   "license": "GPL-2.0",
-  "version": "1.15.0",
+  "version": "1.15.1",
   "authors": [
     {
       "name": "emerchantpay",
@@ -11,14 +11,45 @@
       "homepage":"https://emerchantpay.com"
     }
   ],
-  "config": {
+    "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
   "require-dev": {
-    "wp-coding-standards/wpcs": "^3.0",
-    "squizlabs/php_codesniffer": "^3.8",
+    "wp-coding-standards/wpcs": "^3.1",
+    "squizlabs/php_codesniffer": "^3.9",
     "phpmd/phpmd" : "^2.15"
+  },
+  "scripts": {
+      "pack": [
+        "@gen-language",
+        "@build",
+        "bin/pack"
+      ],
+      "gen-language": [
+        "msgfmt languages/woocommerce-emerchantpay-en_GB.po -o languages/woocommerce-emerchantpay-en_GB.mo",
+        "msgfmt languages/woocommerce-emerchantpay-en_US.po -o languages/woocommerce-emerchantpay-en_US.mo"
+      ],
+      "build": [
+        "npm install",
+        "npm run build"
+      ],
+      "php-cs": [
+        "vendor/bin/phpcs --standard=./.phpcs.xml --report=full --colors ./"
+      ],
+      "php-cs-jenkins": [
+        "vendor/bin/phpcs -d memory_limit=-1 --standard=./.phpcs.xml --report=checkstyle --report-file=phpcs_report.xml ./"
+      ],
+      "php-md": [
+        "vendor/bin/phpmd --color ./ ansi ./.phpmd.xml --not-strict"
+      ],
+      "php-md-jenkins": [
+        "vendor/bin/phpmd ./ xml ./.phpmd.xml --reportfile=phpmd_report.xml --not-strict --ignore-violations-on-exit"
+      ],
+      "styles": [
+        "@php-cs",
+        "@php-md"
+    ]
   }
 }

@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2018 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,22 +13,24 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     classes\class-wc-emerchantpay-subscription-helper
  */
+
+use Genesis\API\Constants\Transaction\Types;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
 /**
- * emerchantpay Subscription Helper Class
- *
- * Class WC_emerchantpay_Subscription_Helper
+ * Class WC_Emerchantpay_Subscription_Helper
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @class WC_Emerchantpay_Subscription_Helper
  */
-class WC_emerchantpay_Subscription_Helper {
+class WC_Emerchantpay_Subscription_Helper {
 
 	const META_INIT_RECURRING_ID               = '_init_recurring_id';
 	const META_RECURRING_TERMINAL_TOKEN        = '_recurring_terminal_token';
@@ -58,11 +60,11 @@ class WC_emerchantpay_Subscription_Helper {
 	/**
 	 * Is $order_id a subscription?
 	 *
-	 * @param  int $order_id
+	 * @param  int $order_id Order identifier.
 	 * @return boolean
 	 */
-	public static function hasOrderSubscriptions( $order_id ) {
-		if ( ! WC_emerchantpay_Order_Helper::isValidOrderId( $order_id ) ) {
+	public static function has_order_subscriptions( $order_id ) {
+		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order_id( $order_id ) ) {
 			return false;
 		}
 
@@ -79,31 +81,32 @@ class WC_emerchantpay_Subscription_Helper {
 	 *
 	 * @return bool
 	 */
-	public static function isWCSubscriptionsInstalled() {
-		return WC_emerchantpay_Helper::isWPPluginActive( self::WC_SUBSCRIPTIONS_PLUGIN_FILTER ) &&
+	public static function is_wc_subscriptions_installed() {
+		return WC_Emerchantpay_Helper::is_wp_plugin_active( self::WC_SUBSCRIPTIONS_PLUGIN_FILTER ) &&
 			class_exists( self::WC_SUBSCRIPTIONS_ORDER_CLASS );
 	}
 
 	/**
 	 * Retrieves a list with Subscriptions for a specific order
 	 *
-	 * @param $orderId
+	 * @param int $order_id Order identifier.
+	 *
 	 * @return array
 	 */
-	public static function getOrderSubscriptions( $orderId ) {
-		if ( ! static::isWCSubscriptionsInstalled() ) {
+	public static function get_order_subscriptions( $order_id ) {
+		if ( ! static::is_wc_subscriptions_installed() ) {
 			return array();
 		}
 
-		if ( ! WC_emerchantpay_Order_Helper::isValidOrderId( $orderId ) ) {
+		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order_id( $order_id ) ) {
 			return array();
 		}
 
-		// Also store it on the subscriptions being purchased or paid for in the order
-		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $orderId ) ) {
-			return wcs_get_subscriptions_for_order( $orderId );
-		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $orderId ) ) {
-			return wcs_get_subscriptions_for_renewal_order( $orderId );
+		// Also store it on the subscriptions being purchased or paid for in the order.
+		if ( function_exists( 'wcs_order_contains_subscription' ) && wcs_order_contains_subscription( $order_id ) ) {
+			return wcs_get_subscriptions_for_order( $order_id );
+		} elseif ( function_exists( 'wcs_order_contains_renewal' ) && wcs_order_contains_renewal( $order_id ) ) {
+			return wcs_get_subscriptions_for_renewal_order( $order_id );
 		}
 
 		return array();
@@ -112,57 +115,60 @@ class WC_emerchantpay_Subscription_Helper {
 	/**
 	 * Saves additional data from the Init Recurring Response to the Order Subscriptions
 	 *
-	 * @param int       $orderId
-	 * @param \stdClass $response
+	 * @param int      $order_id Order identifier.
+	 * @param stdClass $response Response object.
 	 */
-	public static function saveInitRecurringResponseToOrderSubscriptions( $orderId, $response ) {
-		if ( ! WC_emerchantpay_Order_Helper::isValidOrderId( $orderId ) ) {
+	public static function save_init_recurring_response_to_order_subscriptions( $order_id, $response ) {
+		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order_id( $order_id ) ) {
 			return;
 		}
 
-		$subscriptions = static::getOrderSubscriptions( $orderId );
+		$subscriptions = static::get_order_subscriptions( $order_id );
 
 		foreach ( $subscriptions as $subscription ) {
 			update_post_meta( $subscription->get_id(), self::META_INIT_RECURRING_ID, $response->unique_id );
 			update_post_meta( $subscription->get_id(), self::META_INIT_RECURRING_TRANSACTION_TYPE, $response->transaction_type );
 		}
 
-		WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_INIT_RECURRING_ID, $response->unique_id );
+		WC_Emerchantpay_Order_Helper::set_order_meta_data( $order_id, self::META_INIT_RECURRING_ID, $response->unique_id );
 	}
 
 	/**
-	 * @param int $orderId
+	 * Get current subscription meta data
+	 *
+	 * @param int $order_id Order identifier.
+	 *
 	 * @return mixed
 	 */
-	public static function getOrderInitRecurringIdMeta( $orderId ) {
-		return WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_INIT_RECURRING_ID );
+	public static function get_order_init_recurring_id_meta( $order_id ) {
+		return WC_Emerchantpay_Order_Helper::get_order_meta_data( $order_id, self::META_INIT_RECURRING_ID );
 	}
 
 	/**
 	 * Returns init recurring transaction type
 	 *
-	 * @param $orderId
+	 * @param int $order_id Order identifier.
 	 *
 	 * @return mixed
 	 */
-	public static function get_order_init_recurring_transaction_type( $orderId ) {
-		return WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_INIT_RECURRING_TRANSACTION_TYPE );
+	public static function get_order_init_recurring_transaction_type( $order_id ) {
+		return WC_Emerchantpay_Order_Helper::get_order_meta_data( $order_id, self::META_INIT_RECURRING_TRANSACTION_TYPE );
 	}
 
 	/**
 	 * Returns Subscription transaction class
 	 *
-	 * @param $transaction_type
+	 * @param string $transaction_type Transaction type.
 	 *
 	 * @return string
 	 */
 	public static function get_order_subscription_transaction_class( $transaction_type ) {
 
 		switch ( $transaction_type ) {
-			case \Genesis\API\Constants\Transaction\Types::SDD_INIT_RECURRING_SALE:
-				return \Genesis\API\Constants\Transaction\Types::SDD_RECURRING_SALE;
+			case Types::SDD_INIT_RECURRING_SALE:
+				return Types::SDD_RECURRING_SALE;
 			default:
-				return \Genesis\API\Constants\Transaction\Types::RECURRING_SALE;
+				return Types::RECURRING_SALE;
 		}
 	}
 
@@ -201,7 +207,7 @@ class WC_emerchantpay_Subscription_Helper {
 		}
 
 		foreach ( $cart_contents as $product ) {
-			if ( self::isSubscriptionProduct( $product['data'] ) ) {
+			if ( self::is_subscription_product( $product['data'] ) ) {
 				$has_subscriptions = true;
 				break;
 			}
@@ -211,12 +217,14 @@ class WC_emerchantpay_Subscription_Helper {
 	}
 
 	/**
-	 * @param \WC_Product $product
+	 * Checks for subscription product
+	 *
+	 * @param WC_Product $product Product object.
 	 * @return bool
 	 */
-	public static function isSubscriptionProduct( \WC_Product $product ) {
-		return $product instanceof \WC_Product_Subscription ||
-			   $product instanceof \WC_Product_Subscription_Variation;
+	public static function is_subscription_product( WC_Product $product ) {
+		return $product instanceof WC_Product_Subscription ||
+			$product instanceof WC_Product_Subscription_Variation;
 	}
 
 	/**
@@ -225,10 +233,10 @@ class WC_emerchantpay_Subscription_Helper {
 	 *    + Init Recurring Payment
 	 *    + Recurring Sale (if needed - without trial period)
 	 *
-	 * @param int $orderId
+	 * @param int $order_id Order identifier.
 	 */
-	public static function setInitRecurringOrderFinished( $orderId ) {
-		WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_INIT_RECURRING_FINISHED, true );
+	public static function set_init_recurring_order_finished( $order_id ) {
+		WC_Emerchantpay_Order_Helper::set_order_meta_data( $order_id, self::META_INIT_RECURRING_FINISHED, true );
 	}
 
 	/**
@@ -237,87 +245,101 @@ class WC_emerchantpay_Subscription_Helper {
 	 *    + Recurring Sale (if needed - without trial period)
 	 * Will be used in Notification Handler for Init Recurring 3D (to ensure not charging the Merchant twice)
 	 *
-	 * @param string $orderId
+	 * @param string $order_id Order identifier.
+	 *
 	 * @return bool
 	 */
-	public static function isInitRecurringOrderFinished( $orderId ) {
-		$orderFinished = WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_INIT_RECURRING_FINISHED );
+	public static function is_init_recurring_order_finished( $order_id ) {
+		$order_finished = WC_Emerchantpay_Order_Helper::get_order_meta_data( $order_id, self::META_INIT_RECURRING_FINISHED );
 
-		return ! empty( $orderFinished );
+		return ! empty( $order_finished );
 	}
 
 	/**
-	 * @param \stdClass $response
+	 *  Checks that initial gateway response is successful
+	 *
+	 * @param stdClass $response Response object.
 	 * @return bool
 	 */
-	public static function isInitGatewayResponseSuccessful( $response ) {
-		$successfulStatuses = array(
+	public static function is_init_gateway_response_successful( $response ) {
+		$successful_statuses = array(
 			\Genesis\API\Constants\Transaction\States::APPROVED,
 			\Genesis\API\Constants\Transaction\States::PENDING_ASYNC,
 		);
 
 		return isset( $response->unique_id ) &&
 			isset( $response->status ) &&
-			in_array( $response->status, $successfulStatuses );
+			in_array( $response->status, $successful_statuses, true );
 	}
 
 	/**
-	 * @param string $transactionType
+	 * Check that is initial subscription transaction
+	 *
+	 * @param string $transaction_type Transaction type.
+	 *
 	 * @return bool
 	 */
-	public static function isInitRecurring( $transactionType ) {
-		$initRecurringTxnTypes = array(
-			\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE,
-			\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D,
-			\Genesis\API\Constants\Transaction\Types::SDD_INIT_RECURRING_SALE,
+	public static function is_init_recurring( $transaction_type ) {
+		$init_recurring_txn_types = array(
+			Types::INIT_RECURRING_SALE,
+			Types::INIT_RECURRING_SALE_3D,
+			Types::SDD_INIT_RECURRING_SALE,
 		);
 
-		return in_array( $transactionType, $initRecurringTxnTypes );
+		return in_array( $transaction_type, $init_recurring_txn_types, true );
 	}
 
 	/**
-	 * @param stdClass|ArrayObject $reconcile
+	 * Checks init recurring reconciliation
+	 *
+	 * @param stdClass|ArrayObject $reconcile Genesis Reconcile Object.
 	 * @return bool
 	 */
-	public static function isInitRecurringReconciliation( $reconcile ) {
-		$payment_object = WC_emerchantpay_Genesis_Helper::getReconcilePaymentTransaction( $reconcile );
+	public static function is_init_recurring_reconciliation( $reconcile ) {
+		$payment_object = WC_Emerchantpay_Genesis_Helper::get_reconcile_payment_transaction( $reconcile );
 
 		$payment_transaction = $payment_object;
-		if ( $payment_object instanceof \ArrayObject ) {
+		if ( $payment_object instanceof ArrayObject ) {
 			unset( $payment_transaction );
 			$payment_transaction = $payment_object[0];
 		}
 
-		return property_exists( $payment_transaction, 'transaction_type' ) && static::isInitRecurring( $payment_transaction->transaction_type );
+		return property_exists( $payment_transaction, 'transaction_type' ) && static::is_init_recurring( $payment_transaction->transaction_type );
 	}
 
 	/**
-	 * @param int    $orderId
-	 * @param string $terminalToken
+	 * Saves terminal token to order subscription
+	 *
+	 * @param int    $order_id Order identifier.
+	 * @param string $terminal_token Terminal token.
+	 *
 	 * @return bool
 	 */
-	public static function saveTerminalTokenToOrderSubscriptions( $orderId, $terminalToken ) {
-		if ( ! self::hasOrderSubscriptions( $orderId ) ) {
+	public static function save_terminal_token_to_order_subscriptions( $order_id, $terminal_token ) {
+		if ( ! self::has_order_subscriptions( $order_id ) ) {
 			return false;
 		}
 
-		$subscriptions = static::getOrderSubscriptions( $orderId );
+		$subscriptions = static::get_order_subscriptions( $order_id );
 
 		foreach ( $subscriptions as $subscription ) {
-			update_post_meta( $subscription->get_id(), self::META_RECURRING_TERMINAL_TOKEN, $terminalToken );
+			update_post_meta( $subscription->get_id(), self::META_RECURRING_TERMINAL_TOKEN, $terminal_token );
 		}
 
-		WC_emerchantpay_Order_Helper::setOrderMetaData( $orderId, self::META_RECURRING_TERMINAL_TOKEN, $terminalToken );
+		WC_Emerchantpay_Order_Helper::set_order_meta_data( $order_id, self::META_RECURRING_TERMINAL_TOKEN, $terminal_token );
 
 		return count( $subscriptions ) > 0;
 	}
 
 	/**
-	 * @param int $orderId
+	 * Returns terminal token meta from order subscription
+	 *
+	 * @param int $order_id Order identifier.
+	 *
 	 * @return mixed
 	 */
-	public static function getTerminalTokenMetaFromSubscriptionOrder( $orderId ) {
-		return WC_emerchantpay_Order_Helper::getOrderMetaData( $orderId, self::META_RECURRING_TERMINAL_TOKEN );
+	public static function get_terminal_token_meta_from_subscription_order( $order_id ) {
+		return WC_Emerchantpay_Order_Helper::get_order_meta_data( $order_id, self::META_RECURRING_TERMINAL_TOKEN );
 	}
 
 	/**
@@ -327,24 +349,26 @@ class WC_emerchantpay_Subscription_Helper {
 	 * @param string   $status WC Subscription Status.
 	 * @param string   $note   Description.
 	 */
-	public static function updateOrderSubscriptionsStatus( $order, $status, $note = '' ) {
-		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
+	public static function update_order_subscriptions_status( $order, $status, $note = '' ) {
+		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order( $order ) ) {
 			return;
 		}
 
-		$subscriptions = static::getOrderSubscriptions( $order->get_id() );
+		$subscriptions = static::get_order_subscriptions( $order->get_id() );
 
 		foreach ( $subscriptions as $subscription ) {
-			static::updateSubscriptionStatus( $subscription, $status, $note );
+			static::update_subscription_status( $subscription, $status, $note );
 		}
 	}
 
 	/**
-	 * @param WC_Subscription $subscription
-	 * @param string          $status
-	 * @param string          $note
+	 * Updates status of subscription
+	 *
+	 * @param WC_Subscription $subscription Subscription object.
+	 * @param string          $status Current status.
+	 * @param string          $note Description.
 	 */
-	public static function updateSubscriptionStatus( $subscription, $status, $note = '' ) {
+	public static function update_subscription_status( $subscription, $status, $note = '' ) {
 		$subscription->update_status( $status, $note );
 	}
 
@@ -370,12 +394,12 @@ class WC_emerchantpay_Subscription_Helper {
 	/**
 	 * Get expiration_date and frequency or null for recurring transactions
 	 *
-	 * @param int $order_id
+	 * @param int $order_id Order identifier.
 	 *
 	 * @return array|null[]
 	 */
 	public static function get_3dsv2_recurring_parameters( $order_id ) {
-		$subscription = WC_emerchantpay_subscription_helper::getOrderSubscriptions( $order_id );
+		$subscription = WC_Emerchantpay_subscription_helper::get_order_subscriptions( $order_id );
 
 		if ( empty( $subscription ) ) {
 			return array(
@@ -386,10 +410,12 @@ class WC_emerchantpay_Subscription_Helper {
 
 		$subscription_obj = array_values( $subscription )[0];
 		$expiration_date  = $subscription_obj->get_date( 'end' );
+
 		if ( 0 === $expiration_date ) {
 			$expiration_date = null;
-		};
-		$period    = $subscription_obj->get_billing_period(); // days, weeks, months, years
+		}
+
+		$period    = $subscription_obj->get_billing_period(); // days, weeks, months, years.
 		$interval  = $subscription_obj->get_billing_interval();
 		$frequency = self::RECURRING_PERIOD[ $period ] * $interval;
 

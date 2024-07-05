@@ -21,4 +21,5 @@
     <exclude-pattern>*.js</exclude-pattern>
     <exclude-pattern>*.min.css</exclude-pattern>
     <exclude-pattern>*.asset.php</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
 </ruleset>

@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2022 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,8 +13,9 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2022 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     classes\class-wc-emerchantpay-indicators-helper
  */
 
 use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\ShippingAddressUsageIndicators;
@@ -27,25 +28,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * emerchantpay Indicators Helper Class
+ * Emerchantpay Indicators Helper Class
  *
  * @class   WC_Emerchantpay_Indicator_Helper
  */
 class WC_Emerchantpay_Indicators_Helper {
 
 	/**
-	 * @var WC_Customer $customer Holds customer's object
+	 * Customer instance
+	 *
+	 * @var WC_Customer $customer Holds customer's object.
 	 */
 	private $customer;
 
 	/**
-	 * @var string WC date format
+	 * Date format
+	 *
+	 * @var string WC date format.
 	 */
 	private $date_format;
 
 	/**
-	 * @param $customer
-	 * @param $date_format
+	 * Indicators helper constructor
+	 *
+	 * @param WC_Customer $customer Customer argument.
+	 * @param string      $date_format Date format argument.
 	 */
 	public function __construct( $customer, $date_format ) {
 		$this->customer    = $customer;
@@ -56,10 +63,9 @@ class WC_Emerchantpay_Indicators_Helper {
 	 * Fetch the CardHolder Account Update Indicator
 	 *
 	 * @return string
-	 * @throws Exception
 	 */
 	public function fetch_account_update_indicator() {
-		// WooCommerce doesn't have Address history
+		// WooCommerce doesn't have Address history.
 		return $this->get_indicator_value_by_class(
 			UpdateIndicators::class,
 			$this->get_customer_modified_date()
@@ -70,7 +76,6 @@ class WC_Emerchantpay_Indicators_Helper {
 	 * Fetch the Password change indicator based on the Customer modified date
 	 *
 	 * @return string
-	 * @throws Exception
 	 */
 	public function fetch_password_change_indicator() {
 		$last_update_date = $this->get_customer_modified_date();
@@ -88,11 +93,9 @@ class WC_Emerchantpay_Indicators_Helper {
 	/**
 	 * Fetch the Shipping Address Usage Indicator based on the date of Shipping Address's first usage
 	 *
-	 * @param $address_first_used
+	 * @param string $address_first_used First usage of shipping address.
 	 *
 	 * @return string
-	 *
-	 * @throws Exception
 	 */
 	public function fetch_shipping_address_usage_indicator( $address_first_used ) {
 		return $this->get_indicator_value_by_class(
@@ -104,9 +107,9 @@ class WC_Emerchantpay_Indicators_Helper {
 	/**
 	 * Fetch the registration indicator
 	 *
-	 * @return string
+	 * @param string $order_date Date when order created.
 	 *
-	 * @throws Exception
+	 * @return string
 	 */
 	public function fetch_registration_indicator( $order_date ) {
 		return $this->get_indicator_value_by_class(
@@ -138,18 +141,18 @@ class WC_Emerchantpay_Indicators_Helper {
 	/**
 	 * Build dynamically the indicator class
 	 *
-	 * @param string $class_indicator
-	 * @param string $date
+	 * @param string $class_indicator Class of indicator.
+	 * @param string $date  Last update date.
 	 *
 	 * @return string
 	 */
 	private function get_indicator_value_by_class( $class_indicator, $date ) {
-		switch ( WC_emerchantpay_Helper::get_transaction_indicator( $date ) ) {
-			case WC_emerchantpay_Helper::LESS_THAN_30_DAYS_INDICATOR:
+		switch ( WC_Emerchantpay_Helper::get_transaction_indicator( $date ) ) {
+			case WC_Emerchantpay_Helper::LESS_THAN_30_DAYS_INDICATOR:
 				return $class_indicator::LESS_THAN_30DAYS;
-			case WC_emerchantpay_Helper::MORE_30_LESS_60_DAYS_INDICATOR:
+			case WC_Emerchantpay_Helper::MORE_30_LESS_60_DAYS_INDICATOR:
 				return $class_indicator::FROM_30_TO_60_DAYS;
-			case WC_emerchantpay_Helper::MORE_THAN_60_DAYS_INDICATOR:
+			case WC_Emerchantpay_Helper::MORE_THAN_60_DAYS_INDICATOR:
 				return $class_indicator::MORE_THAN_60DAYS;
 			default:
 				if ( PasswordChangeIndicators::class === $class_indicator ) {

@@ -1,6 +1,6 @@
 <?php
-/*
- * Copyright (C) 2018-2023 emerchantpay Ltd.
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
  * @author      emerchantpay Ltd.
  * @copyright   2018-2022 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     classes\class-wc-emerchantpay-threeds-backend-helper
  */
 
 use Genesis\API\Constants\DateTimeFormat;
@@ -30,11 +31,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'WC_Emerchantpay_Threeds_Base' ) ) {
-	require_once dirname( __FILE__, 2 ) . '/classes/class-wc-emerchantpay-threeds-base.php';
+	require_once __DIR__ . '/class-wc-emerchantpay-threeds-base.php';
 }
 
 /**
- * emerchantpay 3DS v2 Backend Helper Class
+ * Emerchantpay 3DS v2 Backend Helper Class
  *
  * @class   WC_Emerchantpay_Threeds_Backend_Helper
  */
@@ -45,17 +46,23 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 	/**
 	 * Handles callback from Genesis
 	 *
+	 * @suppressWarnings(PHPMD.Superglobals)
+	 * @suppressWarnings(PHPMD.ExitExpression)
 	 * @return void|null
 	 */
 	public function callback_handler() {
+		// TODO: Processing form data without nonce verification.
+		// TODO: Fix Superglobals
+		// phpcs:ignore WordPress.Security.NonceVerification
 		$order_id = sanitize_text_field( wp_unslash( $_GET['order_id'] ?? null ) );
-		$order    = WC_emerchantpay_Order_Helper::getOrderById( $order_id );
-		if ( ! WC_emerchantpay_Order_Helper::isValidOrder( $order ) ) {
+		$order    = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order( $order ) ) {
 			wp_die( 'Invalid order!' );
 		}
-
+		// TODO Processing form data without nonce verification.
+		// phpcs:ignore WordPress.Security.NonceVerification
 		$status = sanitize_text_field( wp_unslash( $_POST['threeds_method_status'] ?? null ) );
-		WC_Emerchantpay_Order_Helper::setOrderMetaData( $order_id, self::META_DATA_ORDER_STATUS, $status );
+		WC_Emerchantpay_Order_Helper::set_order_meta_data( $order_id, self::META_DATA_ORDER_STATUS, $status );
 
 		exit;
 	}
@@ -76,7 +83,7 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 
 		wp_send_json(
 			array(
-				'status' => WC_Emerchantpay_Order_Helper::getOrderMetaData( $args['order_id'], self::META_DATA_ORDER_STATUS ),
+				'status' => WC_Emerchantpay_Order_Helper::get_order_meta_data( $args['order_id'], self::META_DATA_ORDER_STATUS ),
 			)
 		);
 	}
@@ -86,9 +93,9 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 	 *
 	 * @return void
 	 *
-	 * @throws InvalidArgument
-	 * @throws InvalidClassMethod
-	 * @throws InvalidResponse
+	 * @throws InvalidArgument When the passed argument is not an array, a string or null.
+	 * @throws InvalidClassMethod When attempting to call a method on an object that doesn't exist or isn't accessible within the current context.
+	 * @throws InvalidResponse When the response is not valid.
 	 */
 	public function method_continue_handler() {
 		ob_start();
@@ -99,8 +106,8 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 			wp_die( 'Missing data!' );
 		}
 
-		$order           = WC_emerchantpay_Order_Helper::getOrderById( $args['order_id'] );
-		$payment_gateway = WC_emerchantpay_Order_Helper::getPaymentMethodInstanceByOrder( $order );
+		$order           = WC_Emerchantpay_Order_Helper::get_order_by_id( $args['order_id'] );
+		$payment_gateway = WC_Emerchantpay_Order_Helper::get_payment_method_instance_by_order( $order );
 
 		$payment_gateway->set_credentials();
 
@@ -111,7 +118,11 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 
 		$genesis = new Genesis( 'Financial\Cards\Threeds\V2\MethodContinue' );
 
-		/** @var MethodContinue $request */
+		/**
+		 * Create instans of method continue class
+		 *
+		 * @var MethodContinue $request Method continue instance.
+		 */
 		$request = $genesis->request();
 
 		try {
@@ -133,7 +144,7 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 				}
 			}
 		} catch ( \Exception $exception ) {
-			WC_emerchantpay_Helper::logException( $exception->getMessage() );
+			WC_Emerchantpay_Helper::log_exception( $exception->getMessage() );
 		}
 
 		wp_send_json(

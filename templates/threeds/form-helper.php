@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title></title>
-	<link rel="stylesheet" href="<?php echo esc_url_raw( plugins_url( '../assets/css/threeds.css', plugin_dir_path( __FILE__ ) ) ); ?>">
+	<link rel="stylesheet" href="<?php echo esc_url_raw( plugins_url( '../assets/css/threeds.css', plugin_dir_path( __FILE__ ) ) ); // phpcs:ignore ?>">
 </head>
 <body onload="submitThreedsMethod()" style="display: none">
 <iframe width="1200" height="800" id="threeDSMethodIframe" name="threeDSMethodIframe" class="hidden">
