@@ -870,3 +870,15 @@ msgstr ""
 "This is your Gateway token. "
 "If you do not have a token, contact tech-support@emerchantpay.com "
 "to enable Smart Router for your account."
+
+msgid "Renewal payment error:"
+msgstr "Renewal payment error:"
+
+msgid "Checkout payment error:"
+msgstr "Checkout payment error:"
+
+msgid "Direct payment error:"
+msgstr "Direct payment error:"
+
+msgid "Init subscription payment error:"
+msgstr "Init subscription payment error:"

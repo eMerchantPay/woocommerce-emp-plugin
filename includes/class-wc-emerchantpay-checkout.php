@@ -18,10 +18,11 @@
  * @package     classes\class-wc-emerchantpay-checkout
  */
 
-use Genesis\API\Constants\Transaction\Names;
-use Genesis\API\Constants\Transaction\States;
-use Genesis\API\Constants\Transaction\Types;
-use Genesis\API\Constants\Banks;
+use Genesis\Api\Constants\i18n;
+use Genesis\Api\Constants\Payment\Methods;
+use Genesis\Api\Constants\Transaction\Names;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Constants\Banks;
 use Genesis\Utils\Common as CommonUtils;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -275,14 +276,6 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 		// Exclude Transaction types.
 		$transaction_types = array_diff( $transaction_types, $excluded_types );
 
-		// Add PPRO Types.
-		$ppro_types = array_map(
-			function ( $type ) {
-				return $type . WC_Emerchantpay_Method_Base::PPRO_TRANSACTION_SUFFIX;
-			},
-			\Genesis\API\Constants\Payment\Methods::getMethods()
-		);
-
 		// Add Google Pay Methods.
 		$google_pay_types = array_map(
 			function ( $type ) {
@@ -319,7 +312,6 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 
 		$transaction_types = array_merge(
 			$transaction_types,
-			$ppro_types,
 			$google_pay_types,
 			$paypal_types,
 			$apple_pay_types
@@ -327,7 +319,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 		asort( $transaction_types );
 
 		foreach ( $transaction_types as $type ) {
-			$name = \Genesis\API\Constants\Transaction\Names::getName( $type );
+			$name = Names::getName( $type );
 			if ( ! Types::isValidTransactionType( $type ) ) {
 				$name = strtoupper( $type );
 			}
@@ -379,35 +371,35 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 		$data = array();
 
 		$names = array(
-			\Genesis\API\Constants\i18n::AR => 'Arabic',
-			\Genesis\API\Constants\i18n::BG => 'Bulgarian',
-			\Genesis\API\Constants\i18n::DE => 'German',
-			\Genesis\API\Constants\i18n::EN => 'English',
-			\Genesis\API\Constants\i18n::ES => 'Spanish',
-			\Genesis\API\Constants\i18n::FR => 'French',
-			\Genesis\API\Constants\i18n::HI => 'Hindu',
-			\Genesis\API\Constants\i18n::JA => 'Japanese',
-			\Genesis\API\Constants\i18n::IS => 'Icelandic',
-			\Genesis\API\Constants\i18n::IT => 'Italian',
-			\Genesis\API\Constants\i18n::NL => 'Dutch',
-			\Genesis\API\Constants\i18n::PT => 'Portuguese',
-			\Genesis\API\Constants\i18n::PL => 'Polish',
-			\Genesis\API\Constants\i18n::RU => 'Russian',
-			\Genesis\API\Constants\i18n::TR => 'Turkish',
-			\Genesis\API\Constants\i18n::ZH => 'Mandarin Chinese',
-			\Genesis\API\Constants\i18n::ID => 'Indonesian',
-			\Genesis\API\Constants\i18n::MS => 'Malay',
-			\Genesis\API\Constants\i18n::TH => 'Thai',
-			\Genesis\API\Constants\i18n::CS => 'Czech',
-			\Genesis\API\Constants\i18n::HR => 'Croatian',
-			\Genesis\API\Constants\i18n::SL => 'Slovenian',
-			\Genesis\API\Constants\i18n::FI => 'Finnish',
-			\Genesis\API\Constants\i18n::NO => 'Norwegian',
-			\Genesis\API\Constants\i18n::DA => 'Danish',
-			\Genesis\API\Constants\i18n::SV => 'Swedish',
+			i18n::AR => 'Arabic',
+			i18n::BG => 'Bulgarian',
+			i18n::DE => 'German',
+			i18n::EN => 'English',
+			i18n::ES => 'Spanish',
+			i18n::FR => 'French',
+			i18n::HI => 'Hindu',
+			i18n::JA => 'Japanese',
+			i18n::IS => 'Icelandic',
+			i18n::IT => 'Italian',
+			i18n::NL => 'Dutch',
+			i18n::PT => 'Portuguese',
+			i18n::PL => 'Polish',
+			i18n::RU => 'Russian',
+			i18n::TR => 'Turkish',
+			i18n::ZH => 'Mandarin Chinese',
+			i18n::ID => 'Indonesian',
+			i18n::MS => 'Malay',
+			i18n::TH => 'Thai',
+			i18n::CS => 'Czech',
+			i18n::HR => 'Croatian',
+			i18n::SL => 'Slovenian',
+			i18n::FI => 'Finnish',
+			i18n::NO => 'Norwegian',
+			i18n::DA => 'Danish',
+			i18n::SV => 'Swedish',
 		);
 
-		foreach ( \Genesis\API\Constants\i18n::getAll() as $language ) {
+		foreach ( i18n::getAll() as $language ) {
 			$name = array_key_exists( $language, $names ) ? $names[ $language ] : strtoupper( $language );
 
 			$data[ $language ] = self::get_translated_text( $name );
@@ -496,12 +488,12 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @throws \Genesis\Exceptions\InvalidMethod Invalid method exception.
 	 */
 	protected function prepare_initial_genesis_request( $data ) {
-		$genesis = new \Genesis\Genesis( 'WPF\Create' );
+		$genesis = new \Genesis\Genesis( 'Wpf\Create' );
 
 		/**
 		 * WPF request
 		 *
-		 * @var \Genesis\API\Request\WPF\Create $wpf_request
+		 * @var \Genesis\Api\Request\Wpf\Create $wpf_request
 		 */
 		$wpf_request = $genesis->request();
 
@@ -741,7 +733,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 		/**
 		 * Web Payment Form request object.
 		 *
-		 * @var \Genesis\API\Request\WPF\Create $wpf_request
+		 * @var \Genesis\Api\Request\Wpf\Create $wpf_request
 		 */
 		$wpf_request = $genesis->request();
 
@@ -760,7 +752,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	/**
 	 * Add customer parameters to transaction types
 	 *
-	 * @param \Genesis\API\Request\WPF\Create $wpf_request Web Payment Form request object.
+	 * @param \Genesis\Api\Request\Wpf\Create $wpf_request Web Payment Form request object.
 	 * @param WC_Order                        $order Order object.
 	 * @param array                           $request_data Request data object.
 	 *
@@ -878,44 +870,35 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 
 			$genesis->execute();
 
+			if ( ! $genesis->response()->isSuccessful() ) {
+				throw new \Exception( $genesis->response()->getErrorDescription() );
+			}
+
 			$response = $genesis->response()->getResponseObject();
 
-			$is_wpf_successfully_created =
-				( States::NEW_STATUS === $response->status ) &&
-				isset( $response->redirect_url );
-
-			if ( $is_wpf_successfully_created ) {
-				$this->save_checkout_trx_to_order( $response, WC_emerchantpay_Order_Helper::get_order_prop( $order, 'id' ) );
+			if ( $genesis->response()->isNew() && isset( $response->redirect_url ) ) {
+				$this->save_checkout_trx_to_order( $response, $order );
 
 				if ( ! empty( $data['customer_email'] ) ) {
 					$this->save_tokenization_data( $data['customer_email'], $response );
 				}
 
-				// Create One-time token to prevent redirect abuse.
-				$this->set_one_time_token( $order_id, $this->generate_transaction_id() );
-
 				return $this->create_response( $response->redirect_url, $this->is_iframe_blocks() );
-			} else {
-				throw new \Exception(
-					static::get_translated_text(
-						'An error has been encountered while initiating Web Payment Form! Please try again later.'
-					)
-				);
-			}
-		} catch ( \Exception $exception ) {
-			if ( isset( $genesis ) && isset( $genesis->response()->getResponseObject()->message ) ) {
-				$error_message = $genesis->response()->getResponseObject()->message;
-			} else {
-				$error_message = self::get_translated_text(
-					'We were unable to process your order!<br/>Please double check your data and try again.'
-				);
 			}
 
-			WC_Emerchantpay_Message_Helper::add_error_notice( $error_message );
+			$message         = static::get_translated_text( 'An error has been encountered while initiating Web Payment Form! Please try again later.' );
+			$gateway_message = WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $response );
+
+			throw new \Exception( "$message $gateway_message" );
+		} catch ( \Exception $exception ) {
+			$message    = static::get_translated_text( 'Checkout payment error:' );
+			$concat_msg = "$message {$exception->getMessage()}";
 
 			WC_Emerchantpay_Helper::log_exception( $exception );
+			// Adds the error on the Admin Order view in the notes
+			$order->add_order_note( $concat_msg );
 
-			return false;
+			throw new \Exception( esc_html( $concat_msg ) );
 		}
 	}
 
@@ -923,18 +906,19 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * Sets transaction to order transaction
 	 *
 	 * @param stdClass $response_obj Response object from Gateway.
-	 * @param Order    $order_id Order identifier.
+	 * @param WC_Order $order Order identifier.
+	 *
+	 * @throws Exception
 	 */
-	protected function save_checkout_trx_to_order( $response_obj, $order_id ) {
+	protected function save_checkout_trx_to_order( $response_obj, $order ) {
 		// Save the Checkout Id.
-		WC_emerchantpay_Order_Helper::set_order_meta_data(
-			$order_id,
-			self::META_CHECKOUT_TRANSACTION_ID,
-			$response_obj->unique_id
-		);
+		wc_emerchantpay_order_proxy()->set_order_meta_data( $order, self::META_CHECKOUT_TRANSACTION_ID, $response_obj->unique_id );
 
 		// Save whole trx.
-		WC_emerchantpay_Order_Helper::save_initial_trx_to_order( $order_id, $response_obj );
+		wc_emerchantpay_order_proxy()->save_initial_trx_to_order( $order, $response_obj );
+
+		// Create One-time token to prevent redirect abuse.
+		$this->set_one_time_token( $order, self::generate_transaction_id() );
 	}
 
 	/**
@@ -957,17 +941,11 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @return bool
 	 */
 	protected function set_terminal_token( $order ) {
-		$token = WC_emerchantpay_Order_Helper::get_order_meta_data(
-			$order->get_id(),
-			self::META_TRANSACTION_TERMINAL_TOKEN
-		);
+		$token = wc_emerchantpay_order_proxy()->get_order_meta_data( $order, self::META_TRANSACTION_TERMINAL_TOKEN );
 
 		// Check for Recurring Token.
 		if ( empty( $token ) ) {
-			$token = WC_emerchantpay_Order_Helper::get_order_meta_data(
-				$order->get_id(),
-				WC_emerchantpay_Subscription_Helper::META_RECURRING_TERMINAL_TOKEN
-			);
+			$token = wc_emerchantpay_order_proxy()->get_order_meta_data( $order, WC_emerchantpay_Subscription_Helper::META_RECURRING_TERMINAL_TOKEN );
 		}
 
 		if ( empty( $token ) ) {
@@ -986,29 +964,15 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 */
 	private function get_payment_types() {
 		$processed_list = array();
-		$alias_map      = array();
-
-		$selected_types = $this->order_card_transaction_types(
-			$this->get_method_setting( self::SETTING_KEY_TRANSACTION_TYPES )
-		);
-
-		$methods = \Genesis\API\Constants\Payment\Methods::getMethods();
-
-		foreach ( $methods as $method ) {
-			$alias_map[ $method . self::PPRO_TRANSACTION_SUFFIX ] = Types::PPRO;
-		}
-
-		$alias_map = array_merge(
-			$alias_map,
-			array(
-				self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE => Types::GOOGLE_PAY,
-				self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_SALE      => Types::GOOGLE_PAY,
-				self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_AUTHORIZE         => Types::PAY_PAL,
-				self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_SALE              => Types::PAY_PAL,
-				self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_EXPRESS           => Types::PAY_PAL,
-				self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE   => Types::APPLE_PAY,
-				self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_SALE        => Types::APPLE_PAY,
-			)
+		$selected_types = $this->order_card_transaction_types( $this->get_method_setting( self::SETTING_KEY_TRANSACTION_TYPES ) );
+		$alias_map      = array(
+			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE => Types::GOOGLE_PAY,
+			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_SALE      => Types::GOOGLE_PAY,
+			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_AUTHORIZE         => Types::PAY_PAL,
+			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_SALE              => Types::PAY_PAL,
+			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_EXPRESS           => Types::PAY_PAL,
+			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE   => Types::APPLE_PAY,
+			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_SALE        => Types::APPLE_PAY,
 		);
 
 		foreach ( $selected_types as $selected_type ) {
@@ -1022,7 +986,6 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 				$processed_list[ $transaction_type ]['parameters'][] = array(
 					$key => str_replace(
 						array(
-							self::PPRO_TRANSACTION_SUFFIX,
 							self::GOOGLE_PAY_TRANSACTION_PREFIX,
 							self::PAYPAL_TRANSACTION_PREFIX,
 							self::APPLE_PAY_TRANSACTION_PREFIX,
@@ -1073,7 +1036,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 			return $recurring_token;
 		}
 
-		return WC_emerchantpay_Subscription_Helper::get_terminal_token_meta_from_subscription_order( $order->get_id() );
+		return WC_emerchantpay_Subscription_Helper::get_terminal_token_meta_from_subscription_order( $order );
 	}
 
 	/**
@@ -1084,9 +1047,6 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 */
 	private function get_custom_parameter_key( $transaction_type ) {
 		switch ( $transaction_type ) {
-			case Types::PPRO:
-				$result = 'payment_method';
-				break;
 			case Types::PAY_PAL:
 				$result = 'payment_type';
 				break;

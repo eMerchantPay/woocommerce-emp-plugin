@@ -1,7 +1,7 @@
-body {
+body.emp-form-helper-body {
 	padding-top: 50px;
 }
-.center {
+.emp-center {
 	max-width: 819px;
 	height: 423px;
 	background-color: #ffffff;
@@ -12,13 +12,13 @@ body {
 	justify-content: center;
 	align-items: center;
 }
-.center h3 {
+.emp-center h3 {
 	font-family: 'Segoe UI', Arial, sans-serif;
 	text-align: center;
 	font-weight: 500;
 	font-size: 2em;
 }
-.center h3 span {
+.emp-center h3 span {
 	font-family: 'Segoe UI', Arial, sans-serif;
 	display: block;
 	text-align: center;
@@ -26,10 +26,10 @@ body {
 	font-size: 16px;
 	padding-top: 30px;
 }
-.hidden {
+.emp-hidden {
 	display: none;
 }
-.screen-logo
+.emp-screen-logo
 {
 	width: 152px;
 	height: 50px;

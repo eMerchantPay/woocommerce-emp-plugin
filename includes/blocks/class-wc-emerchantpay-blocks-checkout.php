@@ -40,7 +40,8 @@ final class WC_Emerchantpay_Blocks_Checkout extends WC_Emerchantpay_Blocks_Base 
 	 */
 	public function initialize() {
 		$options        = array(
-			'draw_transaction_tree' => false,
+			'draw_transaction_tree'          => false,
+			'register_renewal_subscriptions' => false,
 		);
 		$this->gateway  = new WC_Emerchantpay_Checkout( $options );
 		$this->supports = $this->gateway->supports;

@@ -18,7 +18,7 @@
  * @package     classes\class-wc-emerchantpay-threeds-base
  */
 
-use Genesis\API\Constants\DateTimeFormat;
+use Genesis\Api\Constants\DateTimeFormat;
 use Genesis\Utils\Currency;
 use Genesis\Utils\Threeds\V2 as ThreedsV2Utils;
 
@@ -47,7 +47,7 @@ class WC_Emerchantpay_Threeds_Base {
 			return null;
 		}
 
-		$order = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+		$order = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order( $order ) ) {
 			return null;
 		}

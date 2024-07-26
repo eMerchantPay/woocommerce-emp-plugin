@@ -18,12 +18,17 @@
  * @package     classes\class-wc-emerchantpay-method-base
  */
 
-use Genesis\API\Constants\Transaction\Parameters\ScaExemptions;
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
-use Genesis\API\Constants\Transaction\States;
-use Genesis\API\Constants\Transaction\Types;
-use Genesis\API\Notification;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\Endpoints;
+use Genesis\Api\Constants\Environments;
+use Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories;
+use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Notification;
 use Genesis\Config;
 use Genesis\Genesis;
 
@@ -54,6 +59,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	const META_ORDER_TRANSACTION_AMOUNT   = '_order_transaction_amount';
 	const META_REFUNDED_AMOUNT            = '_refunded_amount';
 	const META_CHECKOUT_RETURN_TOKEN      = '_checkout_return_token';
+	const META_HPOS_DIRECT_TRANSACTION_ID = '_direct_transaction_id';
 
 	/**
 	 * Method Setting Keys
@@ -178,8 +184,6 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		'WC_Emerchantpay_Indicators_Helper'      => 'class-wc-emerchantpay-indicators-helper',
 	);
 
-	const PPRO_TRANSACTION_SUFFIX = '_ppro';
-
 	/**
 	 * Google Pay transaction prefix and payment methods constants
 	 */
@@ -235,7 +239,8 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @var array
 	 */
 	protected $options = array(
-		'draw_transaction_tree' => true, // Conditionally draw the table with the transaction tree.
+		'draw_transaction_tree'          => true, // Conditionally draw the table with the transaction tree.
+		'register_renewal_subscriptions' => true, //Conditionally register WooCommerce Subscriptions Scheduled Renew Payment
 	);
 
 	/**
@@ -347,7 +352,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		if ( is_admin() && function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
 
-			return null !== $screen && in_array( $screen->id, array( 'shop_order', 'shop_subscription' ), true );
+			return null !== $screen && in_array( $screen->id, array( 'shop_order', 'shop_subscription', 'woocommerce_page_wc-orders', 'woocommerce_page_wc-orders--shop_subscription' ), true );
 		}
 
 		return false;
@@ -524,7 +529,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @param int $order_id Order identifier.
 	 */
 	public function display_transactions_list_for_order( $order_id ) {
-		$order = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+		$order = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 
 		if ( WC_Emerchantpay_Order_Helper::get_order_prop( $order, 'payment_method' ) !== $this->id ) {
 			return;
@@ -535,7 +540,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		$transactions = WC_Emerchantpay_Transactions_Tree::create_from_order( $order );
 		$parent_id    = $order->get_data()['parent_id'] ?? null;
 		if ( count( $transactions->trx_list ) === 0 && $parent_id ) {
-			$order        = WC_Emerchantpay_Order_Helper::get_order_by_id( $parent_id );
+			$order        = wc_emerchantpay_order_proxy()->get_order_by_id( $parent_id );
 			$transactions = WC_Emerchantpay_Transactions_Tree::create_from_order( $order );
 		}
 
@@ -770,7 +775,8 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @param array $options Options array.
 	 */
 	public function __construct( $options = array() ) {
-		$this->id = static::$method_code;
+		$this->id      = static::$method_code;
+		$this->options = array_merge( $this->options, $options );
 
 		$this->supports = array(
 			self::FEATURE_PRODUCTS,
@@ -789,8 +795,6 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		// Public title/description.
 		$this->title       = $this->get_option( self::SETTING_KEY_TITLE );
 		$this->description = $this->get_option( self::SETTING_KEY_DESCRIPTION );
-
-		$this->options = array_merge( $this->options, $options );
 
 		// Register the method callback.
 		$this->add_wp_simple_actions(
@@ -841,7 +845,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			)
 		);
 
-		if ( WC_Emerchantpay_Subscription_Helper::is_wc_subscriptions_installed() ) {
+		if ( WC_Emerchantpay_Subscription_Helper::is_wc_subscriptions_installed() && $this->options['register_renewal_subscriptions'] ) {
 			// Add handler for Recurring Sale Transactions.
 			$this->add_wp_action(
 				self::WC_ACTION_SCHEDULED_SUBSCRIPTION_PAYMENT,
@@ -1000,7 +1004,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @return bool
 	 */
 	protected function process_after_init_recurring_payment( $order, $gateway_response ) {
-		if ( WC_Emerchantpay_Subscription_Helper::is_init_recurring_order_finished( $order->get_id() ) ) {
+		if ( WC_Emerchantpay_Subscription_Helper::is_init_recurring_order_finished( $order ) ) {
 			return false;
 		}
 
@@ -1016,8 +1020,8 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			return false;
 		}
 
-		WC_Emerchantpay_Subscription_Helper::save_init_recurring_response_to_order_subscriptions( $order->get_id(), $payment_transaction_response );
-		WC_Emerchantpay_Subscription_Helper::set_init_recurring_order_finished( $order->get_id() );
+		WC_Emerchantpay_Subscription_Helper::save_init_recurring_response_to_order_subscriptions( $order, $payment_transaction_response );
+		WC_Emerchantpay_Subscription_Helper::set_init_recurring_order_finished( $order );
 
 		return true;
 	}
@@ -1077,9 +1081,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		$reason   = $data['reason'];
 		$amount   = $data['amount'];
 
-		$order = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+		$order = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 
-		$payment_gateway = WC_Emerchantpay_Order_Helper::get_payment_method_instance_by_order( $order );
+		$payment_gateway = wc_emerchantpay_order_proxy()->get_payment_method_instance_by_order( $order );
 
 		if ( ! $order || ! $order->get_transaction_id() ) {
 			return WC_Emerchantpay_Helper::get_wp_error( 'No order exists with the specified reference id' );
@@ -1118,10 +1122,14 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 
 			$genesis->execute();
 
+			if ( ! $genesis->response()->isSuccessful() ) {
+				throw new \Exception( $genesis->response()->getErrorDescription() );
+			}
+
 			$response = $genesis->response()->getResponseObject();
 
-			if ( States::APPROVED === $response->status ) {
-				WC_Emerchantpay_Order_Helper::set_order_meta_data( $order_id, self::META_TRANSACTION_CAPTURE_ID, $response->unique_id );
+			if ( $genesis->response()->isApproved() ) {
+				wc_emerchantpay_order_proxy()->set_order_meta_data( $order, self::META_TRANSACTION_CAPTURE_ID, $response->unique_id );
 
 				$order->add_order_note(
 					static::get_translated_text( 'Payment Captured!' ) . PHP_EOL . PHP_EOL .
@@ -1131,12 +1139,12 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 
 				$response->parent_id = $data['trx_id'];
 
-				WC_Emerchantpay_Order_Helper::save_trx_list_to_order( $order, array( $response ) );
+				wc_emerchantpay_order_proxy()->save_trx_list_to_order( $order, array( $response ) );
 
 				return $response;
 			}
 
-			return WC_Emerchantpay_Helper::get_wp_error( $response->technical_message );
+			return WC_Emerchantpay_Helper::get_wp_error( WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $response ) );
 		} catch ( \Exception $exception ) {
 			WC_Emerchantpay_Helper::log_exception( $exception );
 
@@ -1195,7 +1203,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			}
 
 			$order_id = absint( $_POST['order_id'] );
-			$order    = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+			$order    = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 
 			if ( empty( $_POST['trx_id'] ) ) {
 				throw new exception( static::get_translated_text( 'Empty transaction id!' ) );
@@ -1246,10 +1254,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			}
 
 			if ( States::APPROVED !== $gateway_response->status ) {
-				throw new Exception(
-					$gateway_response->message
-						? null : $gateway_response->technical_message
-				);
+				throw new Exception( WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $gateway_response ) );
 			}
 
 			$captured_amount += (float) $capture_amount;
@@ -1307,7 +1312,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			}
 
 			$order_id = absint( $_POST['order_id'] );
-			$order    = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+			$order    = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 
 			if ( empty( $_POST['trx_id'] ) ) {
 				throw new exception( static::get_translated_text( 'Empty transaction id!' ) );
@@ -1331,7 +1336,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 
 			$void_reason = sanitize_text_field( wp_unslash( $_POST['void_reason'] ) );
 
-			$payment_gateway = WC_Emerchantpay_Order_Helper::get_payment_method_instance_by_order( $order );
+			$payment_gateway = wc_emerchantpay_order_proxy()->get_payment_method_instance_by_order( $order );
 
 			if ( ! $order || ! $order->get_transaction_id() ) {
 				return false;
@@ -1359,6 +1364,11 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 
 			try {
 				$void->execute();
+
+				if ( ! $void->response()->isSuccessful() ) {
+					throw new \Exception( $void->response()->getErrorDescription() );
+				}
+
 				// Create the refund object.
 				$gateway_response = $void->response()->getResponseObject();
 			} catch ( \Exception $exception ) {
@@ -1369,41 +1379,22 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 				throw new Exception( $gateway_response->get_error_message() );
 			}
 
-			if ( States::APPROVED === $gateway_response->status ) {
-				$order->add_order_note(
-					static::get_translated_text( 'Payment Voided!' ) . PHP_EOL . PHP_EOL .
-					static::get_translated_text( 'Id: ' ) . $gateway_response->unique_id
-				);
-
-				$order->update_status(
-					self::ORDER_STATUS_CANCELLED,
-					$gateway_response->technical_message
-				);
-
-				$gateway_response->parent_id = $void_trx_id;
-
-				WC_Emerchantpay_Order_Helper::save_trx_list_to_order( $order, array( $gateway_response ) );
-			} else {
-				throw new Exception(
-					$gateway_response->message
-						? null : $gateway_response->technical_message
-				);
+			if ( ! $void->response()->isApproved() ) {
+				throw new Exception( WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $gateway_response ) );
 			}
 
-			$response_data = array(
-				'gateway' => $gateway_response,
-			);
+			$order->add_order_note( static::get_translated_text( 'Payment Voided!' ) . PHP_EOL . PHP_EOL . static::get_translated_text( 'Id: ' ) . $gateway_response->unique_id );
+			$order->update_status( self::ORDER_STATUS_CANCELLED, WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $gateway_response ) );
+			$gateway_response->parent_id = $void_trx_id;
+			wc_emerchantpay_order_proxy()->save_trx_list_to_order( $order, array( $gateway_response ) );
 
-			wp_send_json_success( $response_data );
+			wp_send_json_success( array( 'gateway' => $gateway_response ) );
+
 			return true;
 		} catch ( Exception $exception ) {
 			WC_Emerchantpay_Helper::log_exception( $exception );
 
-			wp_send_json_error(
-				array(
-					'error' => $exception->getMessage(),
-				)
-			);
+			wp_send_json_error( array( 'error' => $exception->getMessage() ) );
 
 			return false;
 		}
@@ -1416,7 +1407,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @return void
 	 */
 	public function display_admin_order_after_totals( $order_id ) {
-		$order = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+		$order = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 
 		if ( $order->get_payment_method() !== $this->id ) {
 			return;
@@ -1730,12 +1721,12 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		// phpcs:disable WordPress.Security.NonceVerification
 		if ( isset( $_GET['act'] ) && isset( $_GET['oid'] ) ) {
 			$order_id = absint( $_GET['oid'] );
-			$order    = wc_get_order( $order_id );
+			$order    = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 
-			if ( $this->get_one_time_token( $order_id ) === '|CLEAR|' ) {
+			if ( $this->get_one_time_token( $order ) === '|CLEAR|' ) {
 				wp_safe_redirect( wc_get_page_permalink( 'cart' ) );
 			} else {
-				$this->set_one_time_token( $order_id, '|CLEAR|' );
+				$this->set_one_time_token( $order, '|CLEAR|' );
 				$return_url = $order->get_view_order_url();
 
 				switch ( esc_sql( sanitize_text_field( wp_unslash( $_GET['act'] ) ) ) ) {
@@ -1801,7 +1792,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 				$reconcile = $notification->getReconciliationObject();
 
 				if ( $reconcile ) {
-					$order = WC_Emerchantpay_Order_Helper::load_order_from_reconcile_object(
+					$order = wc_emerchantpay_order_proxy()->load_order_from_reconcile_object(
 						$reconcile,
 						$this->get_checkout_transaction_id_meta_key()
 					);
@@ -1940,26 +1931,6 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	}
 
 	/**
-	 * Determines if Order has valid Meta Data for a specific key
-	 *
-	 * @param int|WC_Order $order Order object.
-	 * @param string       $meta_key Meta key from post meta table.
-	 * @return bool
-	 */
-	protected static function get_has_order_valid_meta( $order, $meta_key ) {
-		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order( $order ) ) {
-			$order = WC_Emerchantpay_Order_Helper::get_order_by_id( $order );
-		}
-
-		$data = WC_Emerchantpay_Order_Helper::get_order_meta_data(
-			$order->get_id(),
-			$meta_key
-		);
-
-		return ! empty( $data );
-	}
-
-	/**
 	 * Updates the Order Status and creates order note
 	 *
 	 * @param WC_Order          $order Order object.
@@ -2062,10 +2033,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			$raw_trx_list = array( $raw_trx_list[0] );
 		}
 
-		WC_Emerchantpay_Order_Helper::save_trx_list_to_order(
-			$order,
-			$raw_trx_list
-		);
+		wc_emerchantpay_order_proxy()->save_trx_list_to_order( $order, $raw_trx_list );
 
 		// Update the order, just to be sure, sometimes transaction is not being set!
 		// WC_Emerchantpay_Order_Helper::setOrderMetaData($order->id, self::META_TRANSACTION_ID, $gatewayResponseObject->unique_id);
@@ -2095,8 +2063,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 */
 	protected static function update_order_status_refunded( WC_Order $order, $gateway_response_object ) {
 		$is_initial_refund         = wc_format_decimal( 0 ) === wc_format_decimal( $order->get_total_refunded() );
-		$gateway_technical_message = isset( $gateway_response_object->technical_message ) ?
-			' (' . $gateway_response_object->technical_message . ')' : '';
+		$gateway_technical_message = WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $gateway_response_object );
 		$fully_refunded            = false;
 		$total_order_amount        = $order->get_total();
 		$payment_transactions      = WC_Emerchantpay_Genesis_Helper::get_reconcile_payment_transaction(
@@ -2218,14 +2185,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @param stdClass $gateway_response_object Gateway response object.
 	 */
 	protected function update_order_status_error( WC_Order $order, $gateway_response_object ) {
-		$order->add_order_note(
-			static::get_translated_text( 'Payment transaction returned an error!' )
-		);
+		$order->add_order_note( static::get_translated_text( 'Payment transaction returned an error!' ) );
 
-		$order->update_status(
-			self::ORDER_STATUS_FAILED,
-			$gateway_response_object->technical_message
-		);
+		$order->update_status( self::ORDER_STATUS_FAILED, WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $gateway_response_object ) );
 	}
 
 	/**
@@ -2235,14 +2197,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @param stdClass $gateway_response_object Gateway response object.
 	 */
 	protected function update_order_status_declined( WC_Order $order, $gateway_response_object ) {
-		$order->add_order_note(
-			static::get_translated_text( 'Payment transaction has been declined!' )
-		);
+		$order->add_order_note( static::get_translated_text( 'Payment transaction has been declined!' ) );
 
-		$order->update_status(
-			self::ORDER_STATUS_FAILED,
-			$gateway_response_object->technical_message
-		);
+		$order->update_status( self::ORDER_STATUS_FAILED, WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $gateway_response_object ) );
 	}
 
 	/**
@@ -2255,14 +2212,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	protected function update_order_status_cancelled( WC_Order $order, $gateway_response_object, $custom_text = '' ) {
 		$order->add_order_note( static::get_translated_text( 'Payment transaction has been cancelled!' ) );
 
-		$message = isset( $gateway_response_object->technical_message ) ?
-			$gateway_response_object->technical_message :
-			static::get_translated_text( $custom_text );
+		$gateway_message = WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $gateway_response_object );
 
-		$order->update_status(
-			self::ORDER_STATUS_CANCELLED,
-			$message
-		);
+		$order->update_status( self::ORDER_STATUS_CANCELLED, $gateway_message ?: static::get_translated_text( $custom_text ) ); // phpcs:ignore Universal.Operators.DisallowShortTernary.Found
 	}
 
 	/**
@@ -2328,16 +2280,14 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			$amount = $trx->amount;
 		}
 
-		$order_id = WC_Emerchantpay_Order_Helper::get_order_prop( $order, 'id' );
-
-		WC_Emerchantpay_Order_Helper::set_order_meta_data(
-			$order_id,
+		wc_emerchantpay_order_proxy()->set_order_meta_data(
+			$order,
 			self::META_TRANSACTION_TYPE,
 			$trx->transaction_type
 		);
 
-		WC_Emerchantpay_Order_Helper::set_order_meta_data(
-			$order_id,
+		wc_emerchantpay_order_proxy()->set_order_meta_data(
+			$order,
 			self::META_ORDER_TRANSACTION_AMOUNT,
 			$amount
 		);
@@ -2348,16 +2298,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 				: null;
 
 		if ( ! empty( $terminal_token ) ) {
-			WC_Emerchantpay_Order_Helper::set_order_meta_data(
-				$order_id,
-				self::META_TRANSACTION_TERMINAL_TOKEN,
-				$terminal_token
-			);
+			wc_emerchantpay_order_proxy()->set_order_meta_data( $order, self::META_TRANSACTION_TERMINAL_TOKEN, $terminal_token );
 
-			WC_Emerchantpay_Subscription_Helper::save_terminal_token_to_order_subscriptions(
-				$order_id,
-				$terminal_token
-			);
+			WC_Emerchantpay_Subscription_Helper::save_terminal_token_to_order_subscriptions( $order, $terminal_token );
 		}
 	}
 
@@ -2463,7 +2406,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		$order_refund = false
 	) {
 		try {
-			$order = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+			$order = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 			if ( ! $order || ! $order->get_transaction_id() ) {
 				return false;
 			}
@@ -2476,8 +2419,8 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			}
 
 			if ( ! $transaction_id ) {
-				$reference_transaction_id = WC_Emerchantpay_Order_Helper::get_order_meta_data(
-					$order_id,
+				$reference_transaction_id = wc_emerchantpay_order_proxy()->get_order_meta_data(
+					$order,
 					self::META_TRANSACTION_CAPTURE_ID
 				);
 			} else {
@@ -2530,7 +2473,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 				);
 			}
 
-			$payment_gateway = WC_Emerchantpay_Order_Helper::get_payment_method_instance_by_order( $order );
+			$payment_gateway = wc_emerchantpay_order_proxy()->get_payment_method_instance_by_order( $order );
 			$payment_gateway->set_credentials();
 			$payment_gateway->set_terminal_token( $order );
 
@@ -2564,11 +2507,15 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 
 			$genesis->execute();
 
+			if ( ! $genesis->response()->isSuccessful() ) {
+				throw new \Exception( $genesis->response()->getErrorDescription() );
+			}
+
 			$response = $genesis->response()->getResponseObject();
 
 			$response->parent_id = $reference_transaction_id;
 
-			WC_Emerchantpay_Order_Helper::save_trx_list_to_order( $order, array( $response ) );
+			wc_emerchantpay_order_proxy()->save_trx_list_to_order( $order, array( $response ) );
 
 			switch ( $response->status ) {
 				case States::APPROVED:
@@ -2584,10 +2531,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 
 					break;
 				default:
-					return WC_Emerchantpay_Helper::get_wp_error(
-						isset( $response->technical_message ) ?
-							$response->technical_message : static::get_translated_text( 'Unknown Error' )
-					);
+					$message = WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $response );
+
+					return WC_Emerchantpay_Helper::get_wp_error( $message ?: static::get_translated_text( 'Unknown Error' ) ); // phpcs:ignore Universal.Operators.DisallowShortTernary.Found
 			}
 
 			$order->add_order_note(
@@ -2625,8 +2571,8 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @return void
 	 */
 	protected function cancel_order_subscriptions( $order ) {
-		$order_transaction_type = WC_Emerchantpay_Order_Helper::get_order_meta_data(
-			$order->get_id(),
+		$order_transaction_type = wc_emerchantpay_order_proxy()->get_order_meta_data(
+			$order,
 			self::META_TRANSACTION_TYPE
 		);
 
@@ -2694,9 +2640,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @throws \Genesis\Exceptions\InvalidMethod Throws invalid method exception.
 	 */
 	protected function process_subscription_payment( $order, $amount ) {
-		$reference_id = WC_Emerchantpay_Subscription_Helper::get_order_init_recurring_id_meta( $order->get_id() );
+		$reference_id = WC_Emerchantpay_Subscription_Helper::get_order_init_recurring_id_meta( $order );
 
-		$order_subscription_transaction_type = WC_Emerchantpay_Subscription_Helper::get_order_init_recurring_transaction_type( $order->get_id() );
+		$order_subscription_transaction_type = WC_Emerchantpay_Subscription_Helper::get_order_init_recurring_transaction_type( $order );
 
 		$subscription_class = WC_Emerchantpay_Subscription_Helper::get_order_subscription_transaction_class(
 			$order_subscription_transaction_type
@@ -2730,6 +2676,12 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 				);
 		try {
 			$genesis->execute();
+
+			if ( ! $genesis->response()->isSuccessful() ) {
+				$message = static::get_translated_text( 'Renewal payment error:' );
+
+				throw new \Exception( "$message {$genesis->response()->getErrorDescription()}" );
+			}
 
 			return $genesis->response()->getResponseObject();
 		} catch ( Exception $recurring_exception ) {
@@ -2859,13 +2811,13 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	/**
 	 * Get a one-time token
 	 *
-	 * @param int $order_id Order identifier.
+	 * @param WC_Order $order Order identifier.
 	 *
 	 * @return mixed|string
 	 */
-	protected function get_one_time_token( $order_id ) {
-		return WC_Emerchantpay_Order_Helper::get_order_meta_data(
-			$order_id,
+	protected function get_one_time_token( $order ) {
+		return wc_emerchantpay_order_proxy()->get_order_meta_data(
+			$order,
 			self::META_CHECKOUT_RETURN_TOKEN
 		);
 	}
@@ -2873,15 +2825,11 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	/**
 	 * Set one-time token
 	 *
-	 * @param int   $order_id Order identifier.
-	 * @param mixed $value The value of the post meta value.
+	 * @param WC_Order $order Order identifier.
+	 * @param mixed    $value The value of the post meta value.
 	 */
-	protected function set_one_time_token( $order_id, $value ) {
-		WC_Emerchantpay_Order_Helper::set_order_meta_data(
-			$order_id,
-			self::META_CHECKOUT_RETURN_TOKEN,
-			$value
-		);
+	protected function set_one_time_token( $order, $value ) {
+		wc_emerchantpay_order_proxy()->set_order_meta_data( $order, self::META_CHECKOUT_RETURN_TOKEN, $value );
 	}
 
 	/**
@@ -2891,18 +2839,12 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @throws \Genesis\Exceptions\InvalidArgument Invalid argument.
 	 */
 	public function set_credentials() {
-		Config::setEndpoint(
-			\Genesis\API\Constants\Endpoints::EMERCHANTPAY
-		);
+		$env = $this->get_method_bool_setting( self::SETTING_KEY_TEST_MODE ) ? Environments::STAGING : Environments::PRODUCTION;
 
+		Config::setEndpoint( Endpoints::EMERCHANTPAY );
 		Config::setUsername( $this->get_method_setting( self::SETTING_KEY_USERNAME ) );
 		Config::setPassword( $this->get_method_setting( self::SETTING_KEY_PASSWORD ) );
-
-		Config::setEnvironment(
-			$this->get_method_bool_setting( self::SETTING_KEY_TEST_MODE )
-				? \Genesis\API\Constants\Environments::STAGING
-				: \Genesis\API\Constants\Environments::PRODUCTION
-		);
+		Config::setEnvironment( $env );
 	}
 
 	/**
@@ -3034,7 +2976,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date when the flight departs in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3049,7 +2991,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date when the flight arrives in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3122,7 +3064,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date when event starts in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3137,7 +3079,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date when event ends in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3174,7 +3116,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date when order was placed in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3189,7 +3131,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'Date of the expected delivery in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3217,7 +3159,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The data when the customer check-in in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3232,7 +3174,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The data when the customer check-out in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3260,7 +3202,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date when customer takes the vehicle in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3277,7 +3219,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3305,7 +3247,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date when cruise begins in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3320,7 +3262,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date when cruise ends in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3339,7 +3281,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date of arrival in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3354,7 +3296,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'The date of departure in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3441,7 +3383,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'Pick-up date in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3456,7 +3398,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 					static::get_translated_text( 'Return date in format %s' ),
 					implode(
 						static::get_translated_text( ' or ' ),
-						\Genesis\API\Constants\DateTimeFormat::getDateFormats()
+						DateTimeFormat::getDateFormats()
 					)
 				),
 				'desc_tip'    => true,
@@ -3771,7 +3713,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		/**
 		 * WPF request object
 		 *
-		 * @var \Genesis\API\Request\WPF\Create $wpf_request WPF create request.
+		 * @var \Genesis\Api\Request\Wpf\Create $wpf_request WPF create request.
 		 */
 		$wpf_request = $genesis->request();
 
@@ -3796,16 +3738,16 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			// Purchase category.
 			->setThreedsV2PurchaseCategory(
 				$threeds->has_physical_product() ?
-					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories::GOODS :
-					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories::SERVICE
+					Categories::GOODS :
+					Categories::SERVICE
 			)
 
 			// Merchant_risk.
 			->setThreedsV2MerchantRiskShippingIndicator( $threeds->fetch_shipping_indicator() )
 			->setThreedsV2MerchantRiskDeliveryTimeframe(
 				$threeds->has_physical_product() ?
-					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes::ANOTHER_DAY :
-					\Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes::ELECTRONICS
+					DeliveryTimeframes::ANOTHER_DAY :
+					DeliveryTimeframes::ELECTRONICS
 			)
 			->setThreedsV2MerchantRiskReorderItemsIndicator( $threeds->fetch_reorder_items_indicator() );
 

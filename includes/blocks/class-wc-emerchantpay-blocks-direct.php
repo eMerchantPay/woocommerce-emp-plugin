@@ -50,8 +50,9 @@ final class WC_Emerchantpay_Blocks_Direct extends WC_Emerchantpay_Blocks_Base {
 	 */
 	public function initialize() {
 		$options        = array(
-			'draw_transaction_tree' => false,
-			'blocks_instantiate'    => true,
+			'draw_transaction_tree'          => false,
+			'blocks_instantiate'             => true,
+			'register_renewal_subscriptions' => false,
 		);
 		$this->gateway  = new WC_Emerchantpay_Direct( $options );
 		$this->supports = $this->gateway->supports;

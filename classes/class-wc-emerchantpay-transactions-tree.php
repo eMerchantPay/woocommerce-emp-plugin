@@ -18,8 +18,8 @@
  * @package     classes\class-wc-emerchantpay-transactions-tree
  */
 
-use Genesis\API\Constants\Transaction\States;
-use Genesis\API\Constants\Transaction\Types;
+use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Constants\Transaction\Types;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
@@ -92,10 +92,7 @@ class WC_Emerchantpay_Transactions_Tree {
 	 */
 	public static function get_transactions_list_from_order( WC_Order $order ) {
 		return static::get_transaction_tree(
-			WC_Emerchantpay_Order_Helper::get_order_meta_data(
-				WC_Emerchantpay_Order_Helper::get_order_prop( $order, 'id' ),
-				static::META_DATA_KEY_LIST
-			)
+			wc_emerchantpay_order_proxy()->get_order_meta_data( $order, static::META_DATA_KEY_LIST )
 		);
 	}
 
@@ -684,7 +681,7 @@ class WC_Emerchantpay_Transactions_Tree {
 		Thousand Separator -> empty
 		Otherwise an exception could be thrown from genesis.
 		 */
-		return number_format( $amount, 2, '.', '' );
+		return number_format( (float) $amount, 2, '.', '' );
 	}
 
 	/**

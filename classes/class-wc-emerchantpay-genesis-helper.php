@@ -18,8 +18,8 @@
  * @package     classes\classes-wc-emerchantpay-genesis-helper
  */
 
-use Genesis\API\Constants\Transaction\States;
-use Genesis\API\Constants\Transaction\Types;
+use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Constants\Transaction\Types;
 use Genesis\Exceptions\DeprecatedMethod;
 use Genesis\Exceptions\InvalidArgument;
 use Genesis\Exceptions\InvalidMethod;
@@ -183,5 +183,19 @@ class WC_Emerchantpay_Genesis_Helper {
 		}
 
 		return "+{$phone_number}";
+	}
+
+	/**
+	 * Fetch the Gateway Response message and technical_message upon declined payment
+	 *
+	 * @param stdClass $response_obj Genesis Gateway Response Object
+	 *
+	 * @return string
+	 */
+	public static function fetch_gateway_response_message( $response_obj ) {
+		$message           = $response_obj->message ?? '';
+		$technical_message = $response_obj->technical_message ?? '';
+
+		return trim( "$message $technical_message" );
 	}
 }

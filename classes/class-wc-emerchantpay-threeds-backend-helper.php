@@ -18,9 +18,10 @@
  * @package     classes\class-wc-emerchantpay-threeds-backend-helper
  */
 
-use Genesis\API\Constants\DateTimeFormat;
-use Genesis\API\Constants\Transaction\States;
-use Genesis\API\Request\Financial\Cards\Threeds\V2\MethodContinue;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Request\Financial\Cards\Threeds\V2\MethodContinue;
+use Genesis\Exceptions\Exception;
 use Genesis\Exceptions\InvalidArgument;
 use Genesis\Exceptions\InvalidClassMethod;
 use Genesis\Exceptions\InvalidResponse;
@@ -55,14 +56,14 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 		// TODO: Fix Superglobals
 		// phpcs:ignore WordPress.Security.NonceVerification
 		$order_id = sanitize_text_field( wp_unslash( $_GET['order_id'] ?? null ) );
-		$order    = WC_Emerchantpay_Order_Helper::get_order_by_id( $order_id );
+		$order    = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order( $order ) ) {
 			wp_die( 'Invalid order!' );
 		}
 		// TODO Processing form data without nonce verification.
 		// phpcs:ignore WordPress.Security.NonceVerification
 		$status = sanitize_text_field( wp_unslash( $_POST['threeds_method_status'] ?? null ) );
-		WC_Emerchantpay_Order_Helper::set_order_meta_data( $order_id, self::META_DATA_ORDER_STATUS, $status );
+		wc_emerchantpay_order_proxy()->set_order_meta_data( $order, self::META_DATA_ORDER_STATUS, $status );
 
 		exit;
 	}
@@ -81,9 +82,11 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 			wp_die( 'Missing data!' );
 		}
 
+		$order = wc_emerchantpay_order_proxy()->get_order_by_id( $args['order_id'] );
+
 		wp_send_json(
 			array(
-				'status' => WC_Emerchantpay_Order_Helper::get_order_meta_data( $args['order_id'], self::META_DATA_ORDER_STATUS ),
+				'status' => wc_emerchantpay_order_proxy()->get_order_meta_data( $order, self::META_DATA_ORDER_STATUS ),
 			)
 		);
 	}
@@ -106,8 +109,8 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 			wp_die( 'Missing data!' );
 		}
 
-		$order           = WC_Emerchantpay_Order_Helper::get_order_by_id( $args['order_id'] );
-		$payment_gateway = WC_Emerchantpay_Order_Helper::get_payment_method_instance_by_order( $order );
+		$order           = wc_emerchantpay_order_proxy()->get_order_by_id( $args['order_id'] );
+		$payment_gateway = wc_emerchantpay_order_proxy()->get_payment_method_instance_by_order( $order );
 
 		$payment_gateway->set_credentials();
 
@@ -133,6 +136,10 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 				->setTransactionTimestamp( $timestamp->format( DateTimeFormat::YYYY_MM_DD_H_I_S_ZULU ) );
 
 			$genesis->execute();
+
+			if ( ! $genesis->response()->isSuccessful() ) {
+				throw new Exception( $genesis->response()->getErrorDescription() );
+			}
 
 			$result = $genesis->response()->getResponseObject();
 

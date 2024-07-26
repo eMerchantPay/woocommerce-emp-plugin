@@ -18,6 +18,10 @@
  * @package     classes\class-wc-emerchantpay-constants
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 ); // Exit if accessed directly.
+}
+
 /**
  * Emerchantpay Constants
  *

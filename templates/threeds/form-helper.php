@@ -30,16 +30,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<title></title>
 	<link rel="stylesheet" href="<?php echo esc_url_raw( plugins_url( '../assets/css/threeds.css', plugin_dir_path( __FILE__ ) ) ); // phpcs:ignore ?>">
 </head>
-<body onload="submitThreedsMethod()" style="display: none">
-<iframe width="1200" height="800" id="threeDSMethodIframe" name="threeDSMethodIframe" class="hidden">
+<body class="emp-form-helper-body" onload="submitThreedsMethod()" style="display: none">
+<iframe width="1200" height="800" id="threeDSMethodIframe" name="threeDSMethodIframe" class="emp-hidden">
 	<html>
 	<body>
 	</body>
 	</html>
 </iframe>
-<div class="center">
+<div class="emp-center">
 	<div class="content">
-		<div class="screen-logo">
+		<div class="emp-screen-logo">
 			<img src="<?php echo esc_url_raw( plugins_url( '../assets/images/emerchantpay_logo.png', plugin_dir_path( __FILE__ ) ) ); ?>" alt="Emerchantpay logo">
 		</div>
 		<h3>The payment is being processed

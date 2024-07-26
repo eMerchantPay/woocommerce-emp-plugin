@@ -18,8 +18,8 @@
  * @package     classes\class-wc-emerchantpay-transaction
  */
 
-use Genesis\API\Constants\Transaction\States;
-use Genesis\API\Constants\Transaction\Types;
+use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Constants\Transaction\Types;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );

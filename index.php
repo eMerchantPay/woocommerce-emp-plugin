@@ -6,12 +6,12 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.15.1
+ * Version: 1.16.0
  * Requires at least: 4.0
  * Tested up to: 6.6
  * WC requires at least: 3.0.0
- * WC tested up to: 9.0.2
- * WCS tested up to: 6.4.1
+ * WC tested up to: 9.1.2
+ * WCS tested up to: 6.5.0
  * WCB tested up to: 11.7.0
  * License: GPL-2.0
  * License URI: http://opensource.org/licenses/gpl-2.0.php
@@ -51,6 +51,13 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			include __DIR__ . '/includes/class-wc-emerchantpay-checkout.php';
 			include __DIR__ . '/includes/class-wc-emerchantpay-direct.php';
 			include __DIR__ . '/classes/class-wc-emerchantpay-constants.php';
+
+			include __DIR__ . '/classes/adapters/order/interface-wc-emerchantpay-order-adapter-interface.php';
+			include __DIR__ . '/classes/adapters/order/class-wc-emerchantpay-posts-adapter.php';
+			include __DIR__ . '/classes/adapters/order/class-wc-emerchantpay-legacy-order-adapter.php';
+			include __DIR__ . '/classes/adapters/order/class-wc-emerchantpay-hpos-order-adapter.php';
+			include __DIR__ . '/classes/adapters/order/class-wc-emerchantpay-order-factory.php';
+			include __DIR__ . '/classes/adapters/class-wc-emerchantpay-order-proxy.php';
 
 			/**
 			 * Add the emerchantpay Gateway to WooCommerce's
@@ -183,6 +190,15 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	}
 	add_action( 'woocommerce_after_checkout_form', 'emp_direct_threeds_iframe' );
 
+	add_action(
+		'before_woocommerce_init',
+		function () {
+			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+			}
+		}
+	);
+
 	add_action( 'plugins_loaded', 'woocommerce_emerchantpay_init', 0 );
 	add_action( 'wp_enqueue_scripts', 'emp_add_css_and_js_to_checkout' );
 	add_filter( 'woocommerce_checkout_fields', 'emp_add_hidden_fields_to_checkout' );
@@ -244,4 +260,22 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	 * Registers WooCommerce Blocks integration
 	 */
 	add_action( 'woocommerce_blocks_loaded', 'emerchantpay_blocks_support' );
+
+	if ( ! function_exists( 'wc_emerchantpay_post_adapter' ) ) {
+		/**
+		 * @return WC_Emerchantpay_Posts_Adapter|null
+		 */
+		function wc_emerchantpay_post_adapter() {
+			return WC_Emerchantpay_Posts_Adapter::get_instance();
+		}
+	}
+
+	if ( ! function_exists( 'wc_emerchantpay_order_proxy' ) ) {
+		/**
+		 * @return WC_Emerchantpay_Order_Proxy
+		 */
+		function wc_emerchantpay_order_proxy() {
+			return WC_Emerchantpay_Order_Proxy::get_instance();
+		}
+	}
 }

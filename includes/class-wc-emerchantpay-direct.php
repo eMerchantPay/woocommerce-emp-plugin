@@ -18,8 +18,9 @@
  * @package     classes\class-wc-emerchantpay-transaction
  */
 
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
+use Genesis\Api\Constants\Transaction\Types;
 use Genesis\Config;
 use Genesis\Genesis;
 
@@ -98,7 +99,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 * @return string
 	 */
 	protected function get_checkout_transaction_id_meta_key() {
-		return self::META_TRANSACTION_ID;
+		return WC_Emerchantpay_Order_Factory::is_hpos_enabled() ? self::META_HPOS_DIRECT_TRANSACTION_ID : self::META_TRANSACTION_ID;
 	}
 
 	/**
@@ -248,13 +249,13 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 				'type'        => 'select',
 				'title'       => static::get_translated_text( 'Transaction Type' ),
 				'options'     => array(
-					\Genesis\API\Constants\Transaction\Types::AUTHORIZE    =>
+					Types::AUTHORIZE    =>
 						static::get_translated_text( 'Authorize' ),
-					\Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D =>
+					Types::AUTHORIZE_3D =>
 						static::get_translated_text( 'Authorize (3D-Secure)' ),
-					\Genesis\API\Constants\Transaction\Types::SALE         =>
+					Types::SALE         =>
 						static::get_translated_text( 'Sale' ),
-					\Genesis\API\Constants\Transaction\Types::SALE_3D      =>
+					Types::SALE_3D      =>
 						static::get_translated_text( 'Sale (3D-Secure)' ),
 				),
 				'description' => static::get_translated_text( 'Select transaction type for the payment transaction' ),
@@ -303,9 +304,9 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 					'type'        => 'select',
 					'title'       => static::get_translated_text( 'Init Recurring Transaction Type' ),
 					'options'     => array(
-						\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE =>
+						Types::INIT_RECURRING_SALE    =>
 							static::get_translated_text( 'Init Recurring Sale' ),
-						\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D =>
+						Types::INIT_RECURRING_SALE_3D =>
 							static::get_translated_text( 'Init Recurring Sale (3D-Secure)' ),
 					),
 					'description' => static::get_translated_text( 'Select transaction type for the initial recurring transaction' ),
@@ -324,7 +325,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	private function is_3d_transaction( $is_recurring = false ) {
 		if ( $is_recurring ) {
 			$three_d_recurring_txn_types = array(
-				\Genesis\API\Constants\Transaction\Types::INIT_RECURRING_SALE_3D,
+				Types::INIT_RECURRING_SALE_3D,
 			);
 
 			return in_array(
@@ -335,8 +336,8 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 		}
 
 		$three_d_transaction_types = array(
-			\Genesis\API\Constants\Transaction\Types::AUTHORIZE_3D,
-			\Genesis\API\Constants\Transaction\Types::SALE_3D,
+			Types::AUTHORIZE_3D,
+			Types::SALE_3D,
 		);
 
 		$selected_transaction_types = $this->get_method_setting( self::SETTING_KEY_TRANSACTION_TYPE );
@@ -393,7 +394,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	protected function process_order_payment( $order_id ) {
 		global $woocommerce;
 
-		$order = WC_emerchantpay_Order_Helper::get_order_by_id( $order_id );
+		$order = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 
 		$data = $this->populate_gate_request_data( $order );
 
@@ -410,32 +411,25 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 
 			$genesis->execute();
 
+			if ( ! $genesis->response()->isSuccessful() ) {
+				throw new \Exception( $genesis->response()->getErrorDescription() );
+			}
+
 			$response = $genesis->response()->getResponseObject();
 
 			// Saves the entire transaction.
-			WC_emerchantpay_Order_Helper::save_initial_trx_to_order( $order_id, $response, $data );
+			$this->save_direct_trx_data_to_order( $response, $order, $data );
 
-			// Create One-time token to prevent redirect abuse.
-			$this->set_one_time_token( $order_id, static::generate_transaction_id() );
+			if ( ! WC_emerchantpay_Subscription_Helper::is_init_gateway_response_successful( $response ) ) {
+				$message         = static::get_translated_text( 'We were unable to process your order!<br/>Please double check your data and try again.' );
+				$gateway_message = WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $response );
 
-			$payment_successful = WC_emerchantpay_Subscription_Helper::is_init_gateway_response_successful( $response );
-
-			if ( ! $payment_successful ) {
-				$error_message = ( isset( $genesis ) && isset( $genesis->response()->getResponseObject()->message ) ) ?
-					$genesis->response()->getResponseObject()->message :
-					static::get_translated_text(
-						'We were unable to process your order!<br/>' .
-						'Please double check your data and try again.'
-					);
-
-				WC_Emerchantpay_Message_Helper::add_error_notice( $error_message );
-
-				throw new Exception( $error_message );
+				throw new Exception( "$message $gateway_message" );
 			}
 
 			// Save the Checkout Id.
-			WC_emerchantpay_Order_Helper::set_order_meta_data( $order_id, $this->get_checkout_transaction_id_meta_key(), $response->unique_id );
-			WC_emerchantpay_Order_Helper::set_order_meta_data( $order_id, self::META_TRANSACTION_TYPE, $response->transaction_type );
+			wc_emerchantpay_order_proxy()->set_order_meta_data( $order, $this->get_checkout_transaction_id_meta_key(), $response->unique_id );
+			wc_emerchantpay_order_proxy()->set_order_meta_data( $order, self::META_TRANSACTION_TYPE, $response->transaction_type );
 
 			switch ( true ) {
 				case ( isset( $response->threeds_method_url ) ):
@@ -462,23 +456,14 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 
 			return $response_array;
 		} catch ( \Exception $exception ) {
-
-			if ( isset( $genesis ) && isset( $genesis->response()->getResponseObject()->message ) ) {
-				$error_message = $genesis->response()->getResponseObject()->message;
-			} else {
-				$error_message = static::get_translated_text(
-					'We were unable to process your order!<br/>' .
-					'Please double check your data and try again.'
-				);
-			}
-
-			WC_Emerchantpay_Message_Helper::add_error_notice( $error_message );
+			$message    = static::get_translated_text( 'Direct payment error:' );
+			$concat_msg = "$message {$exception->getMessage()}";
 
 			WC_Emerchantpay_Helper::log_exception( $exception );
+			// Add the error on the Admin Order view
+			$order->add_order_note( $concat_msg );
 
-			// phpcs:disable WordPress.Security.EscapeOutput
-			throw new Exception( $error_message );
-			// phpcs:enable
+			throw new Exception( esc_html( $concat_msg ) );
 		} // End of try section.
 	}
 
@@ -562,7 +547,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	protected function process_init_subscription_payment( $order_id ) {
 		global $woocommerce;
 
-		$order = WC_emerchantpay_Order_Helper::get_order_by_id( $order_id );
+		$order = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 
 		$data = $this->populate_gate_request_data( $order, true );
 
@@ -580,29 +565,26 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 
 			$genesis->execute();
 
+			if ( ! $genesis->response()->isSuccessful() ) {
+				throw new \Exception( $genesis->response()->getErrorDescription() );
+			}
+
 			$response = $genesis->response()->getResponseObject();
-			WC_emerchantpay_Order_Helper::save_initial_trx_to_order( $order_id, $response, $data );
+			wc_emerchantpay_order_proxy()->save_initial_trx_to_order( $order, $response, $data );
 
 			// Create One-time token to prevent redirect abuse.
-			$this->set_one_time_token( $order_id, static::generate_transaction_id() );
+			$this->set_one_time_token( $order, static::generate_transaction_id() );
 
-			$payment_successful = WC_emerchantpay_Subscription_Helper::is_init_gateway_response_successful( $response );
+			if ( ! WC_emerchantpay_Subscription_Helper::is_init_gateway_response_successful( $response ) ) {
+				$message         = static::get_translated_text( 'We were unable to process your order!<br/>Please double check your data and try again.' );
+				$gateway_message = WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $response );
 
-			if ( ! $payment_successful ) {
-				$error_message = ( isset( $genesis ) && isset( $genesis->response()->getResponseObject()->message ) ) ?
-					$genesis->response()->getResponseObject()->message :
-					static::get_translated_text(
-						'We were unable to process your order!<br/>' .
-						'Please double check your data and try again.'
-					);
-				WC_Emerchantpay_Message_Helper::add_error_notice( $error_message );
-
-				return false;
+				throw new Exception( "$message $gateway_message" );
 			}
 
 			// Save the Checkout Id.
-			WC_emerchantpay_Order_Helper::set_order_meta_data( $order_id, $this->get_checkout_transaction_id_meta_key(), $response->unique_id );
-			WC_emerchantpay_Order_Helper::set_order_meta_data( $order_id, self::META_TRANSACTION_TYPE, $response->transaction_type );
+			wc_emerchantpay_order_proxy()->set_order_meta_data( $order, $this->get_checkout_transaction_id_meta_key(), $response->unique_id );
+			wc_emerchantpay_order_proxy()->set_order_meta_data( $order, self::META_TRANSACTION_TYPE, $response->transaction_type );
 			switch ( true ) {
 				case isset( $response->threeds_method_continue_url ):
 					$unique_id_hash = hash( 'sha256', $response->unique_id );
@@ -623,7 +605,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 				default:
 					$this->update_order_status( $order, $response );
 					if ( ! $this->process_after_init_recurring_payment( $order, $response ) ) {
-						return false;
+						throw new Exception( WC_Emerchantpay_Genesis_Helper::fetch_gateway_response_message( $response ) );
 					}
 					$woocommerce->cart->empty_cart();
 					$response_array = $this->create_response( $data['return_success_url'] );
@@ -631,20 +613,14 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 
 			return $response_array;
 		} catch ( \Exception $exception ) {
-			if ( isset( $genesis ) && isset( $genesis->response()->getResponseObject()->message ) ) {
-				$error_message = $genesis->response()->getResponseObject()->message;
-			} else {
-				$error_message = static::get_translated_text(
-					'We were unable to process your order!<br/>' .
-					'Please double check your data and try again.'
-				);
-			}
-
-			WC_Emerchantpay_Message_Helper::add_error_notice( $error_message );
+			$message    = static::get_translated_text( 'Init subscription payment error:' );
+			$concat_msg = "$message {$exception->getMessage()}";
 
 			WC_Emerchantpay_Helper::log_exception( $exception );
+			// Add the error on the Admin Order view
+			$order->add_order_note( $concat_msg );
 
-			return false;
+			throw new Exception( esc_html( $concat_msg ) );
 		} // End of try block.
 	}
 
@@ -657,6 +633,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 		parent::set_credentials();
 
 		$terminal_token = $this->get_method_setting( self::SETTING_KEY_TOKEN ) ?? null;
+
 		Config::setToken( $terminal_token );
 
 		if ( ! Config::getToken() ) {
@@ -672,26 +649,24 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 * @return bool
 	 */
 	protected function set_terminal_token( $order ) {
-		$token = WC_emerchantpay_Order_Helper::get_order_meta_data(
-			$order->get_id(),
-			self::META_TRANSACTION_TERMINAL_TOKEN
-		);
-
-		// Check for Recurring Token.
-		if ( empty( $token ) ) {
-			$token = WC_emerchantpay_Order_Helper::get_order_meta_data(
-				$order->get_id(),
-				WC_emerchantpay_Subscription_Helper::META_RECURRING_TERMINAL_TOKEN
-			);
+		if ( Config::getForceSmartRouting() ) {
+			// Skip terminal token when Smart Routing is turned on
+			return false;
 		}
 
-		if ( empty( $token ) ) {
-			Config::setForceSmartRouting( true );
+		// Default Terminal Token, used for Credit Card based transaction
+		$terminal_token = wc_emerchantpay_order_proxy()->get_order_meta_data( $order, self::META_TRANSACTION_TERMINAL_TOKEN );
 
-			return true;
+		if ( ! empty( $teminal_token ) ) {
+			Config::setToken( $terminal_token );
 		}
 
-		Config::setToken( $token );
+		// Used for the Recurring transactions. Subscriptions token overrides the default token
+		$recurring_token = wc_emerchantpay_order_proxy()->get_order_meta_data( $order, WC_emerchantpay_Subscription_Helper::META_RECURRING_TERMINAL_TOKEN );
+
+		if ( ! empty( $recurring_token ) ) {
+			Config::setToken( $recurring_token );
+		}
 
 		return true;
 	}
@@ -742,6 +717,25 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 
 		Config::setForceSmartRouting( false );
 		parent::init_recurring_token( $order );
+	}
+
+	/**
+	 * Store the initial transaction to order
+	 *
+	 * @param \stdClass $response_obj Gateway Response Obj
+	 * @param WC_Order  $order        WC Order
+	 * @param array     $data         Mapped data
+	 *
+	 * @return void
+	 */
+	protected function save_direct_trx_data_to_order( $response_obj, $order, $data ) {
+		wc_emerchantpay_order_proxy()->save_initial_trx_to_order( $order, $response_obj, $data );
+
+		// Empty token will mean that Smart Routing is used
+		wc_emerchantpay_order_proxy()->set_order_meta_data( $order, self::META_TRANSACTION_TERMINAL_TOKEN, $this->get_method_setting( self::SETTING_KEY_TOKEN ) );
+
+		// Create One-time token to prevent redirect abuse. Used for 3DSv2 payment flow
+		$this->set_one_time_token( $order, static::generate_transaction_id() );
 	}
 
 	/**

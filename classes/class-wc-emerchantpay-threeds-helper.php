@@ -18,8 +18,8 @@
  * @package     classes\class-wc-emerchantpay-threeds-helper
  */
 
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\ShippingIndicators;
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\ReorderItemIndicators;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\ShippingIndicators;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\ReorderItemIndicators;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
