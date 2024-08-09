@@ -2199,7 +2199,9 @@ module.exports = window["wp"]["i18n"];
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
 /******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			var chunkIds = data[0];
+/******/ 			var moreModules = data[1];
+/******/ 			var runtime = data[2];
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
 /******/ 			var moduleId, chunkId, i = 0;
@@ -2222,7 +2224,7 @@ module.exports = window["wp"]["i18n"];
 /******/ 		
 /******/ 		}
 /******/ 		
-/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkemerchantpay_payment_page_for_woocommerce"] = globalThis["webpackChunkemerchantpay_payment_page_for_woocommerce"] || [];
+/******/ 		var chunkLoadingGlobal = self["webpackChunkemerchantpay_payment_page_for_woocommerce"] = self["webpackChunkemerchantpay_payment_page_for_woocommerce"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	})();

@@ -8,7 +8,7 @@ Requirements
 
 * WordPress 4.x, 5.x or 6.x (Tested up to 6.6.1)
 * WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.x, 9.x (Tested up to 9.1.2)
-* [GenesisPHP v2.0.1](https://github.com/GenesisGateway/genesis_php/releases/tag/2.0.1) - (Integrated in Module)
+* [GenesisPHP v2.0.2](https://github.com/GenesisGateway/genesis_php/releases/tag/2.0.2) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x, 6.x (Tested up to 6.5.0) in order to use **Subscriptions**
 
@@ -186,8 +186,9 @@ Supported Transactions
     * __Online Banking__
       * __Interac Combined Pay-in (CPI)__ 
       * __Bancontact (BCT)__ 
-      * __Blik One Click (BLK)__
-      * __SPEI__
+      * __BLIK (BLK)__
+      * __SPEI (SE)__
+      * __LatiPay (PID)__
     * __OXXO__
     * __P24__
     * __Pago Facil__

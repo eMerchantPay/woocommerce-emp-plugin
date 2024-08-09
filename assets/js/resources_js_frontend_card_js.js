@@ -1,4 +1,4 @@
-(globalThis["webpackChunkemerchantpay_payment_page_for_woocommerce"] = globalThis["webpackChunkemerchantpay_payment_page_for_woocommerce"] || []).push([["resources_js_frontend_card_js"],{
+(self["webpackChunkemerchantpay_payment_page_for_woocommerce"] = self["webpackChunkemerchantpay_payment_page_for_woocommerce"] || []).push([["resources_js_frontend_card_js"],{
 
 /***/ "./resources/js/frontend/card.js":
 /*!***************************************!*\

@@ -357,8 +357,9 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 		return array(
 			Banks::CPI => 'Interac Combined Pay-in',
 			Banks::BCT => 'Bancontact',
-			Banks::BLK => 'Blik One Click',
+			Banks::BLK => 'BLIK',
 			Banks::SE  => 'SPEI',
+			Banks::PID => 'LatiPay',
 		);
 	}
 
