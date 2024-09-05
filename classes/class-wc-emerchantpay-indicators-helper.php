@@ -22,6 +22,8 @@ use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\Sh
 use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
 use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\UpdateIndicators;
 use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\PasswordChangeIndicators;
+use WC_DateTime as WooCommerceDateTime;
+use DateTimeZone as SystemDateTimeZone;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
@@ -124,8 +126,14 @@ class WC_Emerchantpay_Indicators_Helper {
 	 * @return null|string
 	 */
 	public function get_customer_modified_date() {
-		return $this->customer->get_date_modified() ?
-			$this->customer->get_date_modified()->date( $this->date_format ) : null;
+		$modified_date = $this->convert_date_time_to_utc( $this->customer->get_date_modified() );
+		$today         = new WooCommerceDateTime();
+
+		if ( ! $modified_date instanceof WooCommerceDateTime ) {
+			return null;
+		}
+
+		return $modified_date <= $today ? $modified_date->date( $this->date_format ) : null;
 	}
 
 	/**
@@ -134,8 +142,14 @@ class WC_Emerchantpay_Indicators_Helper {
 	 * @return null|string
 	 */
 	public function get_customer_created_date() {
-		return $this->customer->get_date_created() ?
-			$this->customer->get_date_created()->date( $this->date_format ) : null;
+		$created_date = $this->convert_date_time_to_utc( $this->customer->get_date_created() );
+		$today        = new WooCommerceDateTime();
+
+		if ( ! $created_date instanceof WooCommerceDateTime ) {
+			return null;
+		}
+
+		return $created_date <= $today ? $created_date->date( $this->date_format ) : null;
 	}
 
 	/**
@@ -160,5 +174,24 @@ class WC_Emerchantpay_Indicators_Helper {
 				}
 				return $class_indicator::CURRENT_TRANSACTION;
 		}
+	}
+
+	/**
+	 * Converts WooCommerce DateTime object to UTC DateTimeZone
+	 * The Gateway works on UTC DateTimeZone
+	 *
+	 * @param $datetime
+	 *
+	 * @return DateTime|null
+	 */
+	private function convert_date_time_to_utc( $datetime ) {
+		if ( ! $datetime instanceof DateTime ) {
+			return null;
+		}
+
+		// Gateway works on UTC DateTimeZone
+		$datetime->setTimezone( new SystemDateTimeZone( 'UTC' ) );
+
+		return $datetime;
 	}
 }

@@ -18,6 +18,7 @@
  * @package     classes\class-wc-emerchantpay-transaction
  */
 
+use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
 use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
 use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
 use Genesis\Api\Constants\Transaction\Types;
@@ -303,12 +304,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 				self::SETTING_KEY_INIT_RECURRING_TXN_TYPE => array(
 					'type'        => 'select',
 					'title'       => static::get_translated_text( 'Init Recurring Transaction Type' ),
-					'options'     => array(
-						Types::INIT_RECURRING_SALE    =>
-							static::get_translated_text( 'Init Recurring Sale' ),
-						Types::INIT_RECURRING_SALE_3D =>
-							static::get_translated_text( 'Init Recurring Sale (3D-Secure)' ),
-					),
+					'options'     => $this->get_recurring_transaction_types(),
 					'description' => static::get_translated_text( 'Select transaction type for the initial recurring transaction' ),
 					'desc_tip'    => true,
 				),
@@ -326,6 +322,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 		if ( $is_recurring ) {
 			$three_d_recurring_txn_types = array(
 				Types::INIT_RECURRING_SALE_3D,
+				Types::SALE_3D,
 			);
 
 			return in_array(
@@ -475,8 +472,8 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 * @return Genesis
 	 *
 	 * @throws \Genesis\Exceptions\DeprecatedMethod Deprecated method exception.
-	 * @throws \Genesis\Exceptions\InvalidArgument Invalid argument exception.
-	 * @throws \Genesis\Exceptions\InvalidMethod Invalid method exception.
+	 * @throws \Genesis\Exceptions\InvalidArgument  Invalid argument exception.
+	 * @throws \Genesis\Exceptions\InvalidMethod    Invalid method exception.
 	 */
 	protected function prepare_initial_genesis_request( $data ) {
 		$genesis = WC_emerchantpay_Genesis_Helper::get_gateway_request_by_txn_type( $data['transaction_type'] );
@@ -555,6 +552,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 			$this->set_credentials();
 
 			$genesis = $this->prepare_initial_genesis_request( $data );
+			$this->set_recurring_attribute( $genesis, $data );
 
 			if ( $this->is_3dsv2_enabled() && $this->is_3d_transaction( true ) ) {
 				$this->add_3dsv2_parameters( $genesis, $order, $data, true );
@@ -628,6 +626,8 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 * Set the Genesis PHP Lib Credentials, based on the customer's admin settings
 	 *
 	 * @return void
+	 *
+	 * @throws \Genesis\Exceptions\InvalidArgument
 	 */
 	public function set_credentials() {
 		parent::set_credentials();
@@ -723,10 +723,12 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 * Store the initial transaction to order
 	 *
 	 * @param \stdClass $response_obj Gateway Response Obj
-	 * @param WC_Order  $order        WC Order
-	 * @param array     $data         Mapped data
+	 * @param WC_Order  $order WC Order
+	 * @param array     $data Mapped data
 	 *
 	 * @return void
+	 *
+	 * @throws Exception
 	 */
 	protected function save_direct_trx_data_to_order( $response_obj, $order, $data ) {
 		wc_emerchantpay_order_proxy()->save_initial_trx_to_order( $order, $response_obj, $data );
@@ -778,11 +780,25 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	}
 
 	/**
+	 * Retrieve Recurring WPF Transaction Types with translations
+	 *
+	 * @return array
+	 */
+	protected function get_recurring_transaction_types() {
+		return $this->get_translated_recurring_trx_types(
+			array_merge(
+				WC_Emerchantpay_Constants::COMMON_RECURRING_PAYMENT_METHODS,
+				WC_Emerchantpay_Constants::RECURRING_METHODS_V2,
+			)
+		);
+	}
+
+	/**
 	 * Adds 3DSv2 parameters to the Request
 	 *
-	 * @param Genesis  $genesis Genesis object.
-	 * @param WC_Order $order Order identifier.
-	 * @param array    $data Request data.
+	 * @param Genesis  $genesis      Genesis object.
+	 * @param WC_Order $order        Order identifier.
+	 * @param array    $data         Request data.
 	 * @param bool     $is_recurring Defines that request should be recurring or not. Default false.
 	 *
 	 * @return void
@@ -858,6 +874,20 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 				self::WC_ACTION_CREDIT_CARD_FORM_START,
 				'before_cc_form'
 			);
+		}
+	}
+
+	/**
+	 * Set recurring_type attribute according to the chosen transaction type
+	 *
+	 * @param $genesis
+	 * @param $data
+	 *
+	 * @return void
+	 */
+	private function set_recurring_attribute( $genesis, $data ) {
+		if ( in_array( $data['transaction_type'], array( Types::SALE, Types::SALE_3D ), true ) ) {
+			$genesis->request()->setRecurringType( RecurringTypes::INITIAL );
 		}
 	}
 }

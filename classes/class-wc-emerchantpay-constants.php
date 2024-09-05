@@ -18,6 +18,8 @@
  * @package     classes\class-wc-emerchantpay-constants
  */
 
+use Genesis\Api\Constants\Transaction\Types;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 ); // Exit if accessed directly.
 }
@@ -32,6 +34,20 @@ class WC_Emerchantpay_Constants {
 	const EMERCHANTPAY_CHECKOUT_BLOCKS = 'emerchantpay-checkout-blocks';
 
 	const EMERCHANTPAY_DIRECT_BLOCKS = 'emerchantpay-direct-blocks';
+
+	const COMMON_RECURRING_PAYMENT_METHODS = array(
+		Types::INIT_RECURRING_SALE,
+		Types::INIT_RECURRING_SALE_3D,
+	);
+
+	const WPF_RECURRING_PAYMENT_METHODS = array(
+		Types::SDD_INIT_RECURRING_SALE,
+	);
+
+	const RECURRING_METHODS_V2 = array(
+		Types::SALE,
+		Types::SALE_3D,
+	);
 
 	/**
 	 * Plugin url

@@ -21,12 +21,14 @@
 use Genesis\Api\Constants\DateTimeFormat;
 use Genesis\Api\Constants\Endpoints;
 use Genesis\Api\Constants\Environments;
+use Genesis\Api\Constants\Transaction\Names;
 use Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
 use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
 use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
 use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes;
 use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories;
 use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
 use Genesis\Api\Constants\Transaction\Types;
 use Genesis\Api\Notification;
 use Genesis\Config;
@@ -1662,7 +1664,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 				'title'       => static::get_translated_text( 'Recurring Token' ),
 				'description' => static::get_translated_text(
 					'This is your Genesis Token for Recurring Transaction (Must be CVV-OFF).' .
-					'Leave it empty in order to use the token, which has been used for the processing transaction.'
+					'Leave it empty in order to use the token, which has been used for the processing transaction.' .
+					'If you are using Sale or Sale 3D for recurring transactions contact tech support for recurring ' .
+					'tokens used for the renewal payments.'
 				),
 				'desc_tip'    => true,
 			),
@@ -2650,31 +2654,34 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 
 		$this->init_recurring_token( $order );
 
-		$genesis = WC_Emerchantpay_Genesis_Helper::get_gateway_request_by_txn_type(
-			$subscription_class
-		);
-
-		$genesis
-			->request()
-				->setTransactionId(
-					static::generate_transaction_id()
-				)
-				->setReferenceId(
-					$reference_id
-				)
-				->setUsage(
-					WC_Emerchantpay_Genesis_Helper::get_payment_transaction_usage( true )
-				)
-				->setRemoteIp(
-					WC_Emerchantpay_Helper::get_client_remote_ip_address()
-				)
-				->setCurrency(
-					$order->get_currency()
-				)
-				->setAmount(
-					$amount
-				);
 		try {
+			$genesis = WC_Emerchantpay_Genesis_Helper::get_gateway_request_by_txn_type(
+				$subscription_class
+			);
+
+			$genesis
+				->request()
+					->setTransactionId(
+						static::generate_transaction_id()
+					)
+					->setReferenceId(
+						$reference_id
+					)
+					->setUsage(
+						WC_Emerchantpay_Genesis_Helper::get_payment_transaction_usage( true )
+					)
+					->setRemoteIp(
+						WC_Emerchantpay_Helper::get_client_remote_ip_address()
+					)
+					->setCurrency(
+						$order->get_currency()
+					)
+					->setAmount(
+						$amount
+					);
+			if ( Types::SALE === $subscription_class ) {
+				$genesis->request()->setRecurringType( RecurringTypes::SUBSEQUENT );
+			}
 			$genesis->execute();
 
 			if ( ! $genesis->response()->isSuccessful() ) {
@@ -3877,6 +3884,23 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		$blocks_order = sanitize_text_field( wp_unslash( $_POST[ "{$this->id}_blocks_order" ] ?? null ) );
 
 		return 'yes' === $this->get_method_setting( self::SETTING_KEY_IFRAME_PROCESSING ) && $blocks_order;
+	}
+
+	/**
+	 * Retrieve common Recurring Transaction Types with translations
+	 *
+	 * @return array|string[]
+	 */
+	protected function get_translated_recurring_trx_types( $transaction_types ) {
+		return array_combine(
+			$transaction_types,
+			array_map(
+				function ( $type ) {
+					return static::get_translated_text( Names::getName( $type ) );
+				},
+				$transaction_types
+			)
+		);
 	}
 }
 

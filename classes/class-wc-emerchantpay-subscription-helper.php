@@ -164,6 +164,9 @@ class WC_Emerchantpay_Subscription_Helper {
 		switch ( $transaction_type ) {
 			case Types::SDD_INIT_RECURRING_SALE:
 				return Types::SDD_RECURRING_SALE;
+			case Types::SALE:
+			case Types::SALE_3D:
+				return Types::SALE;
 			default:
 				return Types::RECURRING_SALE;
 		}
@@ -277,10 +280,10 @@ class WC_Emerchantpay_Subscription_Helper {
 	 * @return bool
 	 */
 	public static function is_init_recurring( $transaction_type ) {
-		$init_recurring_txn_types = array(
-			Types::INIT_RECURRING_SALE,
-			Types::INIT_RECURRING_SALE_3D,
-			Types::SDD_INIT_RECURRING_SALE,
+		$init_recurring_txn_types = array_merge(
+			WC_Emerchantpay_Constants::COMMON_RECURRING_PAYMENT_METHODS,
+			WC_Emerchantpay_Constants::WPF_RECURRING_PAYMENT_METHODS,
+			WC_Emerchantpay_Constants::RECURRING_METHODS_V2,
 		);
 
 		return in_array( $transaction_type, $init_recurring_txn_types, true );

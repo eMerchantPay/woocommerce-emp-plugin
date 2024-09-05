@@ -45,22 +45,18 @@ class WC_Emerchantpay_Helper {
 	 * Check whether the request is 'GET'
 	 *
 	 * @return bool
-	 * @SuppressWarnings(PHPMD)
 	 */
 	public static function is_get_request() {
-		if ( ! empty( $_SERVER['REQUEST_METHOD'] ) ) {
-			return isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' === $_SERVER['REQUEST_METHOD'];
-		}
+		return self::is_request_type( 'GET' );
 	}
 
 	/**
 	 * Check whether the request is 'POST'
 	 *
 	 * @return bool
-	 * @SuppressWarnings(PHPMD)
 	 */
 	public static function is_post_request() {
-		return isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'];
+		return self::is_request_type( 'POST' );
 	}
 
 	/**
@@ -87,65 +83,6 @@ class WC_Emerchantpay_Helper {
 	}
 
 	/**
-	 * Retrieves the WP Site Url
-	 *
-	 * @return null|string
-	 */
-	protected static function get_wp_site_url() {
-		if ( ! function_exists( 'get_site_url' ) ) {
-			return null;
-		}
-
-		$site_url = get_site_url();
-
-		return $site_url ? $site_url : null;
-	}
-
-	/**
-	 * Retrieves the Host name from the WP Site
-	 *
-	 * @return null|string
-	 */
-	protected static function get_wp_site_host_name() {
-		if ( ! function_exists( 'parse_url' ) ) {
-			return null;
-		}
-
-		$site_url = static::get_wp_site_url();
-
-		if ( null === $site_url ) {
-			return null;
-		}
-
-		$url_params = wp_parse_url( $site_url );
-
-		if ( is_array( $url_params ) && array_key_exists( 'host', $url_params ) ) {
-			return $url_params['host'];
-		}
-
-		return null;
-	}
-
-	/**
-	 * Retrieves the Host IP from the WP Site
-	 *
-	 * @return null|string
-	 */
-	protected static function get_wp_site_host_ip_address() {
-		if ( ! function_exists( 'gethostbyname' ) ) {
-			return null;
-		}
-
-		$site_host_name = static::get_wp_site_host_name();
-
-		if ( null === $site_host_name ) {
-			return null;
-		}
-
-		return gethostbyname( $site_host_name );
-	}
-
-	/**
 	 * Retrieves the Client IP Address of the Customer
 	 * Used in the Direct (Hosted) Payment Method
 	 *
@@ -154,14 +91,18 @@ class WC_Emerchantpay_Helper {
 	 * @SuppressWarnings(PHPMD)
 	 */
 	public static function get_client_remote_ip_address() {
-		$remote_address = ( ( isset( $_SERVER ) && array_key_exists( 'REMOTE_ADDR', $_SERVER ) ) ) ?
-			sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		$remote_address = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) );
 
-		if ( empty( $remote_address ) ) {
-			$remote_address = static::get_wp_site_host_ip_address();
+		if ( $remote_address ) {
+			return $remote_address;
 		}
 
-		return $remote_address ? $remote_address : '127.0.0.1';
+		$site_host_ip = static::get_wp_site_host_ip_address();
+		if ( $site_host_ip ) {
+			return $site_host_ip;
+		}
+
+		return '127.0.0.1';
 	}
 
 	/**
@@ -182,91 +123,70 @@ class WC_Emerchantpay_Helper {
 	 * Determines whether string ends with specific string
 	 *
 	 * @param string $haystack Passed string.
-	 * @param string $needle Searched value.
+	 * @param string $needle   Searched value.
+	 *
 	 * @return bool
 	 */
 	public static function get_string_ends_with( $haystack, $needle ) {
-		$length = strlen( $needle );
-		if ( 0 === $length ) {
-			return true;
-		}
-
-		return ( substr( $haystack, -$length ) === $needle );
+		return '' === $needle || substr( $haystack, -strlen( $needle ) ) === $needle;
 	}
 
 	/**
 	 * Compares the WooCommerce Version with the given one
 	 *
-	 * @param string $version Version to compare.
+	 * @param string $version  Version to compare.
 	 * @param string $operator Comparison parameter (<, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>,).
-	 * @return bool|mixed
+	 *
+	 * @return bool
 	 */
 	public static function is_woocommerce_version( $version, $operator ) {
-		if ( defined( 'WOOCOMMERCE_VERSION' ) ) {
-			return version_compare( WOOCOMMERCE_VERSION, $version, $operator );
-		}
-
-		return false;
+		return defined( 'WOOCOMMERCE_VERSION' ) && version_compare( WOOCOMMERCE_VERSION, $version, $operator );
 	}
 
 	/**
 	 * Returns error of class WP_Error
 	 *
+	 * @param Exception|string $exception Exception instance.
+	 *
+	 * @return WP_Error
+	 *
 	 * @SuppressWarnings(PHPMD.MissingImport)
-	 * @param \Exception|string $exception Exception instance.
-	 * @return \WP_Error
 	 */
 	public static function get_wp_error( $exception ) {
-		if ( $exception instanceof \Exception ) {
-			return new WP_Error(
-				$exception->getCode() ? $exception->getCode() : 999,
-				$exception->getMessage()
-			);
-		}
+		$code    = $exception instanceof Exception ? $exception->getCode() : 999;
+		$message = $exception instanceof Exception ? $exception->getMessage() : $exception;
 
-		return new WP_Error( 999, $exception );
+		return new WP_Error( $code ? $code : 999, $message );
 	}
 
 	/**
 	 * Writes a message / Exception to the error log
 	 *
+	 * @param Exception|string $error Exception instance.
+	 *
 	 * @SuppressWarnings(PHPMD.MissingImport)
-	 * @param \Exception|string $error Exception instance.
 	 */
 	public static function log_exception( $error ) {
-		$error_message = $error instanceof \Exception
-			? $error->getMessage()
-			: $error;
+		$error_message = $error instanceof Exception ? $error->getMessage() : $error;
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log( $error_message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		}
 
-		if ( self::is_woocommerce_version( '2.7', '>=' ) ) {
-			wc_get_logger()->error( $error_message, array( 'source' => self::LOG_NAME ) );
-		} else {
-			( new WC_Logger() )->add( self::LOG_NAME, $error_message );
-		}
+		$logger = self::is_woocommerce_version( '2.7', '>=' ) ? wc_get_logger() : new WC_Logger();
+		$logger->error( $error_message, array( 'source' => self::LOG_NAME ) );
 	}
 
 	/**
 	 * Get array of Items by keys
 	 *
-	 * @param array  $arr Array of items.
-	 * @param string $key Searched key.
+	 * @param array  $arr         Array of items.
+	 * @param string $key         Searched key.
 	 * @param array  $default_arr Default value.
 	 *
 	 * @return array|mixed
 	 */
 	public static function get_array_items_by_key( $arr, $key, $default_arr = array() ) {
-		if ( ! is_array( $arr ) ) {
-			return $default_arr;
-		}
-
-		if ( ! array_key_exists( $key, $arr ) ) {
-			return $default_arr;
-		}
-
-		return $arr[ $key ];
+		return is_array( $arr ) && array_key_exists( $key, $arr ) ? $arr[ $key ] : $default_arr;
 	}
 
 	/**
@@ -281,14 +201,17 @@ class WC_Emerchantpay_Helper {
 	/**
 	 * Compare today and the given date for last update
 	 *
-	 * @SuppressWarnings(PHPMD.MissingImport)
 	 * @param string $date Given date for last update.
 	 *
 	 * @return string
+	 *
+	 * @throws Exception
+	 *
+	 * @SuppressWarnings(PHPMD.MissingImport)
 	 */
 	public static function get_transaction_indicator( $date ) {
 		$today         = new WC_DateTime();
-		$last_update   = new WC_DateTime( $date );
+		$last_update   = new WC_DateTime( $date ?? '' );
 		$date_interval = $last_update->diff( $today );
 
 		if ( 0 < $date_interval->days && $date_interval->days < 30 ) {
@@ -305,20 +228,63 @@ class WC_Emerchantpay_Helper {
 
 		return self::CURRENT_TRANSACTION_INDICATOR;
 	}
+
 	/**
 	 * Get version data from plugin description
 	 *
 	 * @return  bool|string
 	 */
 	public static function get_plugin_version() {
-		$version = false;
-		$path    = dirname( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'index.php';
-
+		$path        = dirname( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'index.php';
 		$plugin_data = get_plugin_data( $path );
-		if ( is_array( $plugin_data ) && ! empty( $plugin_data['Version'] ) ) {
-			$version = $plugin_data['Version'];
+
+		return $plugin_data['Version'] ?? false;
+	}
+
+	/**
+	 * Retrieves the WP Site Url
+	 *
+	 * @return null|string
+	 */
+	protected static function get_wp_site_url() {
+		return function_exists( 'get_site_url' ) ? get_site_url() : null;
+	}
+
+	/**
+	 * Retrieves the Host name from the WP Site
+	 *
+	 * @return null|string
+	 */
+	protected static function get_wp_site_host_name() {
+		$site_url = static::get_wp_site_url();
+		if ( ! $site_url ) {
+			return null;
 		}
 
-		return $version;
+		$url_params = wp_parse_url( $site_url );
+
+		return $url_params['host'] ?? null;
+	}
+
+	/**
+	 * Retrieves the Host IP from the WP Site
+	 *
+	 * @return null|string
+	 */
+	protected static function get_wp_site_host_ip_address() {
+		$site_host_name = static::get_wp_site_host_name();
+
+		return $site_host_name ? gethostbyname( $site_host_name ) : null;
+	}
+
+	/**
+	 * @param $type
+	 *
+	 * @return bool
+	 *
+	 * @SuppressWarnings(PHPMD)
+	 */
+	private static function is_request_type( $type ) {
+		return isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === $type;
 	}
 }

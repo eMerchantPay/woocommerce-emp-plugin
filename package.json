@@ -1,6 +1,6 @@
 {
   "name": "emerchantpay-payment-page-for-woocommerce",
-  "version": "1.16.1",
+  "version": "1.16.2",
   "description": "Extend WooCommerce's Checkout options with emerchantpay's Genesis Gateway",
   "main": "index.js",
   "author": "Emerchantpay",

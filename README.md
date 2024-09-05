@@ -7,10 +7,10 @@ Requirements
 ------------
 
 * WordPress 4.x, 5.x or 6.x (Tested up to 6.6.1)
-* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.x, 9.x (Tested up to 9.1.2)
+* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.x, 9.x (Tested up to 9.2.3)
 * [GenesisPHP v2.0.2](https://github.com/GenesisGateway/genesis_php/releases/tag/2.0.2) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
-* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x, 6.x (Tested up to 6.5.0) in order to use **Subscriptions**
+* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x, 6.x (Tested up to 6.6.1) in order to use **Subscriptions**
 
 GenesisPHP Requirements
 ------------
@@ -106,6 +106,9 @@ and add the following line to execute the **WordPress Cron** once per 10 Minutes
 ```sh
 */10 * * * * cd /path/to/wordpress/root && php -q wp-cron.php
 ```
+
+__Note:__ If you are using Sale or Sale 3D for recurring transactions, please ensure that you contact tech support to obtain a **recurring token** used for renewal payments. The recurring token is mandatory for all consecutive transactions after the initial payment.
+
 
 Refunds
 ------------
@@ -204,6 +207,7 @@ Supported Transactions
     * __SafetyPay__
     * __Sale__
     * __Sale (3D-Secure)__
+    * __SDD Init Recurring Sale__
     * __Santander__
     * __Sepa Direct Debit__
     * __SOFORT__
@@ -217,6 +221,7 @@ Supported Transactions
     * __WeChat__
         
 _Note_: If you have trouble with your credentials or terminal configuration, get in touch with our [support] team
+Recurring Transactions with Sale/Sale 3D
 
 You're now ready to process payments through our gateway.
 

@@ -19,10 +19,11 @@
  */
 
 use Genesis\Api\Constants\i18n;
-use Genesis\Api\Constants\Payment\Methods;
 use Genesis\Api\Constants\Transaction\Names;
 use Genesis\Api\Constants\Transaction\Types;
 use Genesis\Api\Constants\Banks;
+use Genesis\Api\Request\Wpf\Create;
+use Genesis\Exceptions\ErrorParameter;
 use Genesis\Utils\Common as CommonUtils;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -336,7 +337,12 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @return array
 	 */
 	protected function excluded_transaction_types() {
-		$excluded_init_recurring_types = array_keys( $this->get_wpf_recurring_transaction_types() );
+		$excluded_init_recurring_types = array_keys(
+			array_merge(
+				WC_Emerchantpay_Constants::COMMON_RECURRING_PAYMENT_METHODS,
+				WC_Emerchantpay_Constants::WPF_RECURRING_PAYMENT_METHODS,
+			)
+		);
 
 		$excluded_types = array(
 			Types::PPRO,        // Exclude PPRO transaction. This is not standalone transaction type.
@@ -427,7 +433,11 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 					'css'         => 'height:auto',
 					'title'       => static::get_translated_text( 'Init Recurring Transaction Types' ),
 					'options'     => $this->get_wpf_recurring_transaction_types(),
-					'description' => static::get_translated_text( 'Select transaction types for the initial recurring transaction' ),
+					'description' => static::get_translated_text(
+						'Select transaction types for the initial recurring transaction.' .
+						'If you are using Sale or Sale 3D for recurring transactions contact tech support for recurring ' .
+						'tokens used for the renewal payments.'
+					),
 					'desc_tip'    => true,
 				),
 			)
@@ -440,14 +450,13 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @return array
 	 */
 	protected function get_wpf_recurring_transaction_types() {
-		return array(
-			Types::INIT_RECURRING_SALE     =>
-				static::get_translated_text( Names::getName( Types::INIT_RECURRING_SALE ) ),
-			Types::INIT_RECURRING_SALE_3D  =>
-				static::get_translated_text( Names::getName( Types::INIT_RECURRING_SALE_3D ) ),
-			Types::SDD_INIT_RECURRING_SALE =>
-				static::get_translated_text( Names::getName( Types::SDD_INIT_RECURRING_SALE ) ),
+		$wpf_trx_types = array_merge(
+			WC_Emerchantpay_Constants::COMMON_RECURRING_PAYMENT_METHODS,
+			WC_Emerchantpay_Constants::WPF_RECURRING_PAYMENT_METHODS,
+			WC_Emerchantpay_Constants::RECURRING_METHODS_V2,
 		);
+
+		return $this->get_translated_recurring_trx_types( $wpf_trx_types );
 	}
 
 	/**
@@ -484,7 +493,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 *
 	 * @return \Genesis\Genesis
 	 * @throws \Genesis\Exceptions\DeprecatedMethod Deprecated method exception.
-	 * @throws \Genesis\Exceptions\ErrorParameter Error parameter exception.
+	 * @throws ErrorParameter Error parameter exception.
 	 * @throws \Genesis\Exceptions\InvalidArgument Invalid argument exception.
 	 * @throws \Genesis\Exceptions\InvalidMethod Invalid method exception.
 	 */
@@ -494,7 +503,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 		/**
 		 * WPF request
 		 *
-		 * @var \Genesis\Api\Request\Wpf\Create $wpf_request
+		 * @var Create $wpf_request
 		 */
 		$wpf_request = $genesis->request();
 
@@ -727,39 +736,33 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @param bool             $is_recurring Defines that request should be recurring or not. Default false.
 	 *
 	 * @return void
-	 * @throws \Genesis\Exceptions\ErrorParameter Throws error parameter exception.
+	 * @throws ErrorParameter Throws error parameter exception.
 	 */
 	protected function add_transaction_types_to_gateway_request( $genesis, $order, $request_data, $is_recurring ) {
 
 		/**
 		 * Web Payment Form request object.
 		 *
-		 * @var \Genesis\Api\Request\Wpf\Create $wpf_request
+		 * @var Create $wpf_request
 		 */
 		$wpf_request = $genesis->request();
 
 		if ( $is_recurring ) {
-			$recurring_types = $this->get_recurring_payment_types();
-			foreach ( $recurring_types as $type ) {
-				$wpf_request->addTransactionType( $type );
-			}
-
-			return;
+			$this->add_recurring_custom_parameters( $wpf_request );
 		}
 
-		$this->addCustomParametersToTrxTypes( $wpf_request, $order, $request_data );
+		$this->addCustomParametersToTrxTypes( $wpf_request, $order );
 	}
 
 	/**
 	 * Add customer parameters to transaction types
 	 *
-	 * @param \Genesis\Api\Request\Wpf\Create $wpf_request Web Payment Form request object.
-	 * @param WC_Order                        $order Order object.
-	 * @param array                           $request_data Request data object.
+	 * @param Create    $wpf_request  Web Payment Form request object.
+	 * @param WC_Order  $order        Order object.
 	 *
-	 * @throws \Genesis\Exceptions\ErrorParameter Error parameters exception.
+	 * @throws ErrorParameter Error parameters exception.
 	 */
-	private function addCustomParametersToTrxTypes( $wpf_request, WC_Order $order, $request_data ) {
+	private function addCustomParametersToTrxTypes( $wpf_request, WC_Order $order ) {
 		$types                     = $this->get_payment_types();
 		$transaction_custom_params = array();
 
@@ -1080,6 +1083,26 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 			$sorted_array,
 			array_diff( $selected_types, $sorted_array )
 		);
+	}
+
+	/**
+	 * Add recurring custom parameters to the WPF request
+	 *
+	 * @param Create $wpf_request
+	 *
+	 * @return Create
+	 */
+	private function add_recurring_custom_parameters( $wpf_request ) {
+		$recurring_types = $this->get_recurring_payment_types();
+		foreach ( $recurring_types as $type ) {
+			$transaction_custom_params = array();
+			if ( in_array( $type, array( Types::SALE, Types::SALE_3D ), true ) ) {
+				$transaction_custom_params = array(
+					'recurring_type' => 'initial',
+				);
+			}
+			$wpf_request->addTransactionType( $type, $transaction_custom_params );
+		}
 	}
 }
 

@@ -51,6 +51,7 @@ class WC_Emerchantpay_Genesis_Helper {
 	 * @param string $transaction_type Selected transaction type.
 	 *
 	 * @return Genesis
+	 *
 	 * @throws DeprecatedMethod Throws deprecated methods.
 	 * @throws InvalidArgument Throws invalid argument of current method.
 	 * @throws InvalidMethod  Throws invalid method.
