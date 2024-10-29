@@ -287,4 +287,38 @@ class WC_Emerchantpay_Helper {
 	private static function is_request_type( $type ) {
 		return isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === $type;
 	}
+
+	/**
+	 * Get Emerchantpay Plugin Options
+	 *
+	 * @param string $method
+	 * @param string $key
+	 *
+	 * @return array|mixed
+	 */
+	public static function get_plugin_method_options( $method, $key = '' ) {
+		$options = get_option( "woocommerce_{$method}_settings" );
+
+		if ( empty( $key ) ) {
+			return $options;
+		}
+
+		return self::get_array_items_by_key( $options, $key, false );
+	}
+
+	/**
+	 * Add Defined Array Arguments to URL endpoint
+	 *
+	 * @param string $url
+	 * @param array $arguments
+	 *
+	 * @return string
+	 */
+	public static function append_url_query_arguments( $url, $arguments ) {
+		$url_query_arguments  = wp_parse_url( $url, PHP_URL_QUERY );
+		$query_arguments      = http_build_query( $arguments );
+		$concatenation_string = $url_query_arguments ? '&' : '?';
+
+		return "{$url}{$concatenation_string}{$query_arguments}";
+	}
 }

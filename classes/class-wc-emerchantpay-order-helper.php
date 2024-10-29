@@ -22,8 +22,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-use Genesis\Api\Request\Financial\Alternatives\Klarna\Item as KlarnaItem;
-use Genesis\Api\Request\Financial\Alternatives\Klarna\Items;
+use Genesis\Api\Request\Financial\Alternatives\Transaction\Item as InvoiceItem;
+use Genesis\Api\Request\Financial\Alternatives\Transaction\Items as InvoiceItems;
+use Genesis\Api\Constants\Financial\Alternative\Transaction\ItemTypes as InvoiceItemTypes;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class wc_emerchantpay_order_helper
@@ -140,69 +143,72 @@ class WC_Emerchantpay_Order_Helper {
 	}
 
 	/**
-	 * Handles Klarna custom params
+	 * Handles Invoice custom params
 	 *
 	 * @param WC_Order $order Order object.
-	 * @return Items $items
-	 * @throws \Genesis\Exceptions\ErrorParameter Throws error parameters.
+	 *
+	 * @return InvoiceItems $items
+	 *
+	 * @throws ErrorParameter|InvalidArgument
 	 */
-	public static function get_klarna_custom_param_items( WC_Order $order ) {
-		$items       = new Items( $order->get_currency() );
+	public static function get_invoice_custom_param_items( WC_Order $order ) {
+		$items       = new InvoiceItems();
 		$order_items = $order->get_items();
+		$items->setCurrency( $order->get_currency() );
 
 		foreach ( $order_items as $item ) {
 			$product = self::get_item_product( $item );
 
-			$klarna_item = new KlarnaItem(
-				self::get_item_name( $item ),
-				$product->is_virtual() ? KlarnaItem::ITEM_TYPE_DIGITAL : KlarnaItem::ITEM_TYPE_PHYSICAL,
-				self::get_item_quantity( $item ),
-				wc_get_price_excluding_tax(
-					$product,
-					array(
-						'qty'   => self::get_item_quantity( $item ),
-						'price' => '',
+			$invoice_item = new InvoiceItem();
+			$invoice_item
+				->setName( self::get_item_name( $item ) )
+				->setItemType( $product->is_virtual() ? InvoiceItemTypes::DIGITAL : InvoiceItemTypes::PHYSICAL )
+				->setQuantity( self::get_item_quantity( $item ) )
+				->setUnitPrice(
+					wc_get_price_excluding_tax(
+						$product,
+						array(
+							'qty'   => self::get_item_quantity( $item ),
+							'price' => '',
+						)
 					)
-				)
-			);
+				);
 
-			$items->addItem( $klarna_item );
+			$items->addItem( $invoice_item );
 		}
 
 		$taxes = floatval( $order->get_total_tax() );
 		if ( $taxes ) {
-			$items->addItem(
-				new KlarnaItem(
-					WC_Emerchantpay_Method_Base::get_translated_text( 'Taxes' ),
-					KlarnaItem::ITEM_TYPE_SURCHARGE,
-					1,
-					$taxes
-				)
-			);
+			$invoice_item = new InvoiceItem();
+			$invoice_item
+				->setName( WC_Emerchantpay_Method_Base::get_translated_text( 'Taxes' ) )
+				->setItemType( InvoiceItemTypes::SURCHARGE )
+				->setQuantity( 1 )
+				->setUnitPrice( $taxes );
+
+			$items->addItem( $invoice_item );
 		}
 
 		$discount = floatval( $order->get_discount_total() );
 		if ( $discount ) {
-			$items->addItem(
-				new KlarnaItem(
-					WC_Emerchantpay_Method_Base::get_translated_text( 'Discount' ),
-					KlarnaItem::ITEM_TYPE_DISCOUNT,
-					1,
-					-$discount
-				)
-			);
+			$invoice_item = new InvoiceItem();
+			$invoice_item
+				->setName( WC_Emerchantpay_Method_Base::get_translated_text( 'Discount' ) )
+				->setItemType( InvoiceItemTypes::DISCOUNT )
+				->setQuantity( 1 )
+				->setUnitPrice( -$discount );
+			$items->addItem( $invoice_item );
 		}
 
 		$total_shipping_cost = floatval( $order->get_shipping_total() );
 		if ( $total_shipping_cost ) {
-			$items->addItem(
-				new KlarnaItem(
-					WC_Emerchantpay_Method_Base::get_translated_text( 'Shipping Costs' ),
-					KlarnaItem::ITEM_TYPE_SHIPPING_FEE,
-					1,
-					$total_shipping_cost
-				)
-			);
+			$invoice_item = new InvoiceItem();
+			$invoice_item
+				->setName( WC_Emerchantpay_Method_Base::get_translated_text( 'Shipping Costs' ) )
+				->setItemType( InvoiceItemTypes::SHIPPING_FEE )
+				->setQuantity( 1 )
+				->setUnitPrice( $total_shipping_cost );
+			$items->addItem( $invoice_item );
 		}
 
 		return $items;

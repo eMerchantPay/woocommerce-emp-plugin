@@ -321,7 +321,7 @@ class WC_Emerchantpay_Transactions_Tree {
 			array(
 				Types::AUTHORIZE,
 				Types::AUTHORIZE_3D,
-				Types::KLARNA_AUTHORIZE,
+				Types::INVOICE,
 				Types::GOOGLE_PAY,
 				Types::PAY_PAL,
 				Types::APPLE_PAY,
@@ -349,11 +349,11 @@ class WC_Emerchantpay_Transactions_Tree {
 				'status' => States::REFUNDED,
 			),
 			array(
-				'type'   => Types::KLARNA_CAPTURE,
+				'type'   => Types::INVOICE_CAPTURE,
 				'status' => States::APPROVED,
 			),
 			array(
-				'type'   => Types::KLARNA_CAPTURE,
+				'type'   => Types::INVOICE_CAPTURE,
 				'status' => States::REFUNDED,
 			),
 		);
@@ -385,7 +385,7 @@ class WC_Emerchantpay_Transactions_Tree {
 			$transaction['unique_id'],
 			array(
 				Types::REFUND,
-				Types::KLARNA_REFUND,
+				Types::INVOICE_REFUND,
 				Types::BITPAY_REFUND,
 			),
 			States::APPROVED
@@ -581,7 +581,7 @@ class WC_Emerchantpay_Transactions_Tree {
 		return $child['parent_id'] === $parent_trx['unique_id'] &&
 			( Types::VOID === $child['type'] ||
 				Types::CAPTURE === $child['type'] ||
-				Types::KLARNA_CAPTURE === $child['type'] );
+				Types::INVOICE_CAPTURE === $child['type'] );
 	}
 
 	/**

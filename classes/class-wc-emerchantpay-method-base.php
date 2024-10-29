@@ -119,6 +119,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	const SETTING_KEY_SCA_EXEMPTION                       = 'sca_exemption';
 	const SETTING_KEY_SCA_EXEMPTION_AMOUNT                = 'sca_exemption_amount';
 	const SETTING_KEY_IFRAME_PROCESSING                   = 'iframe_processing';
+	const SETTING_KEY_CUSTOM_THANKYOU_URL                 = 'custom_thankyou_url';
 
 	/**
 	 * Order cancel/failure settings
@@ -354,7 +355,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		if ( is_admin() && function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
 
-			return null !== $screen && in_array( $screen->id, array( 'shop_order', 'shop_subscription', 'woocommerce_page_wc-orders', 'woocommerce_page_wc-orders--shop_subscription' ), true );
+			return null !== $screen && in_array( $screen->id, $this->get_screen_id_list(), true );
 		}
 
 		return false;
@@ -612,7 +613,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @return bool
 	 */
 	private function allow_partial_capture( $authorize ) {
-		return empty( $authorize ) ? false : Types::KLARNA_AUTHORIZE !== $authorize->type;
+		return empty( $authorize ) ? false : Types::INVOICE !== $authorize->type;
 	}
 
 	/**
@@ -623,7 +624,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @return bool
 	 */
 	private function allow_partial_refund( $capture ) {
-		return empty( $capture ) ? false : Types::KLARNA_CAPTURE !== $capture->type;
+		return empty( $capture ) ? false : Types::INVOICE_CAPTURE !== $capture->type;
 	}
 
 	/**
@@ -1118,8 +1119,8 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 						$amount
 					);
 
-			if ( Types::getCaptureTransactionClass( Types::KLARNA_AUTHORIZE ) === $type ) {
-				$genesis->request()->setItems( WC_Emerchantpay_Order_Helper::get_klarna_custom_param_items( $order ) );
+			if ( Types::getCaptureTransactionClass( Types::INVOICE ) === $type ) {
+				$genesis->request()->setItems( WC_Emerchantpay_Order_Helper::get_invoice_custom_param_items( $order ) );
 			}
 
 			$genesis->execute();
@@ -1609,11 +1610,17 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 */
 	protected function build_redirect_form_fields() {
 		$form_fields = array(
-			'return_redirect'                  => array(
+			'return_redirect'                     => array(
 				'type'  => 'title',
 				'title' => 'Return redirects',
 			),
-			self::SETTING_KEY_REDIRECT_FAILURE => array(
+			self::SETTING_KEY_CUSTOM_THANKYOU_URL => array(
+				'type'        => 'text',
+				'title'       => static::get_translated_text( 'Custom Thank You page URL' ),
+				'description' => static::get_translated_text( 'Provide a complete URL where the customer will be redirected upon successful payment. Works only with default WooCommerce Thank You page hooks.' ),
+				'desc_tip'    => true,
+			),
+			self::SETTING_KEY_REDIRECT_FAILURE    => array(
 				'type'        => 'select',
 				'title'       => static::get_translated_text( 'Redirect upon failure' ),
 				'options'     => $this->get_available_redirect_pages(),
@@ -2505,8 +2512,8 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 						$amount
 					);
 
-			if ( Types::getRefundTransactionClass( Types::KLARNA_CAPTURE ) === $type ) {
-				$genesis->request()->setItems( WC_Emerchantpay_Order_Helper::get_klarna_custom_param_items( $order ) );
+			if ( Types::getRefundTransactionClass( Types::INVOICE_CAPTURE ) === $type ) {
+				$genesis->request()->setItems( WC_Emerchantpay_Order_Helper::get_invoice_custom_param_items( $order ) );
 			}
 
 			$genesis->execute();
@@ -3901,6 +3908,21 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 				$transaction_types
 			)
 		);
+	}
+
+	/**
+	 * Retrieves the WooCommerce screen ID list based on custom orders table availability.
+	 *
+	 * @return array|string[]
+	 */
+	private function get_screen_id_list() {
+		$legacy_screens = array( 'shop_order', 'shop_subscription' );
+
+		$hpos_screens = class_exists( '\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController' )
+			? array_map( 'wc_get_page_screen_id', $legacy_screens )
+			: array();
+
+		return array_merge( $legacy_screens, $hpos_screens );
 	}
 }
 

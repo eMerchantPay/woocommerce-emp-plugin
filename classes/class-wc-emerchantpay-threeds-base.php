@@ -36,7 +36,7 @@ class WC_Emerchantpay_Threeds_Base {
 	 * Get $order_id from url params and check if order with that number exists.
 	 *
 	 * @suppressWarnings(PHPMD.Superglobals)
-	 * @return string|null
+	 * @return WC_Order|null
 	 */
 	public function load_order() {
 		// TODO: Fix Nonce verification.
@@ -52,7 +52,7 @@ class WC_Emerchantpay_Threeds_Base {
 			return null;
 		}
 
-		return $order_id;
+		return $order;
 	}
 
 	/**
@@ -113,8 +113,8 @@ class WC_Emerchantpay_Threeds_Base {
 		$unique_id_hash = sanitize_text_field( wp_unslash( $_GET['checksum'] ?? null ) );
 
 		$threeds_base = new WC_Emerchantpay_Threeds_Base();
-		$order_id     = $threeds_base->load_order();
-		$response_arr = get_post_meta( $order_id, WC_Emerchantpay_Transactions_Tree::META_DATA_KEY_LIST, true );
+		$order        = $threeds_base->load_order();
+		$response_arr = wc_emerchantpay_order_proxy()->get_order_meta_data( $order, WC_Emerchantpay_Transactions_Tree::META_DATA_KEY_LIST );
 
 		if ( ! $response_arr ) {
 			return null;
@@ -130,7 +130,7 @@ class WC_Emerchantpay_Threeds_Base {
 
 		$url_params              = http_build_query(
 			array(
-				'order_id' => $order_id,
+				'order_id' => $order->get_id(),
 				'checksum' => $unique_id_hash,
 			)
 		);
@@ -140,7 +140,7 @@ class WC_Emerchantpay_Threeds_Base {
 
 		return array(
 			'method_continue_handler' => $method_continue_handler,
-			'order_id'                => $order_id,
+			'order_id'                => $order->get_id(),
 			'response_obj'            => $response_obj,
 			'signature'               => $signature,
 			'status_checker_url'      => $status_checker_url,

@@ -343,9 +343,6 @@ msgstr "Itau"
 msgid "Japanese"
 msgstr "Japanese"
 
-msgid "Klarna"
-msgstr "Klarna"
-
 msgid "Malay"
 msgstr "Malay"
 
@@ -884,3 +881,9 @@ msgstr "Direct payment error:"
 
 msgid "Init subscription payment error:"
 msgstr "Init subscription payment error:"
+
+msgid "Custom Thank You page URL"
+msgstr "Custom Thank You page URL"
+
+msgid "Provide a complete URL where the customer will be redirected upon successful payment. Works only with default WooCommerce Thank You page hooks."
+msgstr "Provide a complete URL where the customer will be redirected upon successful payment. Works only with default WooCommerce Thank You page hooks."

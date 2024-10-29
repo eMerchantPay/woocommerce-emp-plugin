@@ -760,7 +760,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @param Create    $wpf_request  Web Payment Form request object.
 	 * @param WC_Order  $order        Order object.
 	 *
-	 * @throws ErrorParameter Error parameters exception.
+	 * @throws ErrorParameter|\Genesis\Exceptions\InvalidArgument
 	 */
 	private function addCustomParametersToTrxTypes( $wpf_request, WC_Order $order ) {
 		$types                     = $this->get_payment_types();
@@ -781,8 +781,8 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 						'customer_account_id' => $user_id_hash,
 					);
 					break;
-				case Types::KLARNA_AUTHORIZE:
-					$transaction_custom_params = WC_emerchantpay_Order_Helper::get_klarna_custom_param_items( $order )->toArray();
+				case Types::INVOICE:
+					$transaction_custom_params = WC_emerchantpay_Order_Helper::get_invoice_custom_param_items( $order )->toArray();
 					break;
 				case Types::TRUSTLY_SALE:
 					$user_id         = WC_emerchantpay_Genesis_Helper::get_current_user_id();
