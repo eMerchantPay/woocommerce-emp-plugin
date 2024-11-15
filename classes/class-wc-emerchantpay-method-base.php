@@ -168,26 +168,6 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	const PLATFORM_TRANSACTION_PREFIX = 'wc-';
 
 	/**
-	 * Contains helper classes as a key and related files as a value
-	 *
-	 * @var array
-	 */
-	protected static $helpers = array(
-		'WC_Emerchantpay_Helper'                 => 'class-wc-emerchantpay-helper',
-		'WC_Emerchantpay_Genesis_Helper'         => 'class-wc-emerchantpay-genesis-helper',
-		'WC_Emerchantpay_Order_Helper'           => 'class-wc-emerchantpay-order-helper',
-		'WC_Emerchantpay_Subscription_Helper'    => 'class-wc-emerchantpay-subscription-helper',
-		'WC_Emerchantpay_Message_Helper'         => 'class-wc-emerchantpay-message-helper',
-		'WC_Emerchantpay_Threeds_Helper'         => 'class-wc-emerchantpay-threeds-helper',
-		'WC_Emerchantpay_Threeds_Form_Helper'    => 'class-wc-emerchantpay-threeds-form-helper',
-		'WC_Emerchantpay_Threeds_Backend_Helper' => 'class-wc-emerchantpay-threeds-backend-helper',
-		'WC_Emerchantpay_Threeds_Base'           => 'class-wc-emerchantpay-threeds-base',
-		'WC_Emerchantpay_Transaction'            => 'class-wc-emerchantpay-transaction',
-		'WC_Emerchantpay_Transaction_Tree'       => 'class-wc-emerchantpay-transactions-tree',
-		'WC_Emerchantpay_Indicators_Helper'      => 'class-wc-emerchantpay-indicators-helper',
-	);
-
-	/**
 	 * Google Pay transaction prefix and payment methods constants
 	 */
 	const GOOGLE_PAY_TRANSACTION_PREFIX     = 'google_pay_';
@@ -385,19 +365,6 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		// phpcs:enable
 
 		return false;
-	}
-
-	/**
-	 * Registers Helper Classes for both method classes
-	 *
-	 * @return void
-	 */
-	public static function register_helpers() {
-		foreach ( static::$helpers as $helper_class => $helper_file ) {
-			if ( ! class_exists( $helper_class ) ) {
-				require_once "{$helper_file}.php";
-			}
-		}
 	}
 
 	/**
@@ -2040,7 +2007,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 
 		// Do not modify whole transaction tree for the reference transactions of the Init Recurring type.
 		// The Reconcile Object can bring Recurring Sale transactions and their reference transactions.
-		if ( count( $raw_trx_list ) > 1 && WC_Emerchantpay_Subscription_Helper::is_init_recurring( $raw_trx_list[0]->transaction_type ) ) {
+		if ( count( $raw_trx_list ) > 1 && WC_Emerchantpay_Subscription_Helper::is_init_recurring( $raw_trx_list[0] ) ) {
 			$raw_trx_list = array( $raw_trx_list[0] );
 		}
 
@@ -2303,10 +2270,11 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			$amount
 		);
 
-		$terminal_token =
-			isset( $trx->terminal_token )
-				? $trx->terminal_token
-				: null;
+		$terminal_token = $trx->terminal_token ?? null;
+
+		if ( empty( $terminal_token ) && isset( $trx->recurring_type ) && RecurringTypes::SUBSEQUENT === $trx->recurring_type ) {
+			$terminal_token = \Genesis\Config::getToken();
+		}
 
 		if ( ! empty( $terminal_token ) ) {
 			wc_emerchantpay_order_proxy()->set_order_meta_data( $order, self::META_TRANSACTION_TERMINAL_TOKEN, $terminal_token );
@@ -2557,7 +2525,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			 * Cancel Subscription when Init Recurring
 			 */
 			if ( WC_Emerchantpay_Subscription_Helper::has_order_subscriptions( $order_id ) ) {
-				$payment_gateway->cancel_order_subscriptions( $order );
+				$payment_gateway->cancel_order_subscriptions( $order, $reference_transaction_id );
 			}
 
 			if ( States::PENDING_ASYNC === $response->status ) {
@@ -2579,15 +2547,16 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * Cancels all Order Subscriptions
 	 *
 	 * @param WC_Order $order Order object.
+	 * @param string $reference_transaction_id Reference payment transaction which determinate for initial or subsequent payment
 	 * @return void
 	 */
-	protected function cancel_order_subscriptions( $order ) {
-		$order_transaction_type = wc_emerchantpay_order_proxy()->get_order_meta_data(
-			$order,
-			self::META_TRANSACTION_TYPE
-		);
+	protected function cancel_order_subscriptions( $order, $reference_transaction_id ) {
+		$payment = WC_Emerchantpay_Transactions_Tree::get_trx_from_order( $order, $reference_transaction_id );
 
-		if ( ! WC_Emerchantpay_Subscription_Helper::is_init_recurring( $order_transaction_type ) ) {
+		// Map Order Trx list to gateway response
+		$payment['transaction_type'] = $payment['type'];
+
+		if ( ! WC_Emerchantpay_Subscription_Helper::is_init_recurring( (object) $payment ) ) {
 			return;
 		}
 
@@ -3925,5 +3894,3 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		return array_merge( $legacy_screens, $hpos_screens );
 	}
 }
-
-WC_Emerchantpay_Method_Base::register_helpers();

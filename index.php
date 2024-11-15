@@ -6,11 +6,11 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.17.0
+ * Version: 1.17.1
  * Requires at least: 4.0
  * Tested up to: 6.7
  * WC requires at least: 3.0.0
- * WC tested up to: 9.3.3
+ * WC tested up to: 9.4.1
  * WCS tested up to: 6.8.0
  * WCB tested up to: 11.7.0
  * License: GPL-2.0
@@ -23,8 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-require __DIR__ . '/includes/autoload.php';
-require_once __DIR__ . '/libraries/genesis/vendor/autoload.php';
+require_once 'libraries/vendor/autoload.php';
 
 /* there is no need to load the plugin if woocommerce is not active */
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ), true ) ) {

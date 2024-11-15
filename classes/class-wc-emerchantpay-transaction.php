@@ -128,6 +128,13 @@ class WC_Emerchantpay_Transaction {
 	public $return_failure_url;
 
 	/**
+	 * Recurring Type used for the Subscription payment
+	 *
+	 * @var string
+	 */
+	public $recurring_type;
+
+	/**
 	 * WC_Emerchantpay_Transaction constructor.
 	 *
 	 * @param null   $response Response object from Gateway.
@@ -190,6 +197,9 @@ class WC_Emerchantpay_Transaction {
 		}
 		if ( isset( $trx->threeds_method_continue_url ) ) {
 			$this->threeds_method_continue_url = $trx->threeds_method_continue_url;
+		}
+		if ( isset( $trx->recurring_type ) ) {
+			$this->recurring_type = $trx->recurring_type;
 		}
 	}
 

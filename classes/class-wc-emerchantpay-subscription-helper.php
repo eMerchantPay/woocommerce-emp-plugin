@@ -20,6 +20,7 @@
 
 use Genesis\Api\Constants\Transaction\States;
 use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
@@ -275,18 +276,22 @@ class WC_Emerchantpay_Subscription_Helper {
 	/**
 	 * Check that is initial subscription transaction
 	 *
-	 * @param string $transaction_type Transaction type.
+	 * @param \stdClass $payment_transaction Transaction type.
 	 *
 	 * @return bool
 	 */
-	public static function is_init_recurring( $transaction_type ) {
+	public static function is_init_recurring( $payment_transaction ) {
 		$init_recurring_txn_types = array_merge(
 			WC_Emerchantpay_Constants::COMMON_RECURRING_PAYMENT_METHODS,
 			WC_Emerchantpay_Constants::WPF_RECURRING_PAYMENT_METHODS,
 			WC_Emerchantpay_Constants::RECURRING_METHODS_V2,
 		);
 
-		return in_array( $transaction_type, $init_recurring_txn_types, true );
+		if ( isset( $payment_transaction->recurring_type ) && in_array( $payment_transaction->transaction_type, WC_Emerchantpay_Constants::RECURRING_METHODS_V2, true ) ) {
+			return RecurringTypes::INITIAL === $payment_transaction->recurring_type;
+		}
+
+		return in_array( $payment_transaction->transaction_type, $init_recurring_txn_types, true );
 	}
 
 	/**
@@ -304,7 +309,7 @@ class WC_Emerchantpay_Subscription_Helper {
 			$payment_transaction = $payment_object[0];
 		}
 
-		return property_exists( $payment_transaction, 'transaction_type' ) && static::is_init_recurring( $payment_transaction->transaction_type );
+		return property_exists( $payment_transaction, 'transaction_type' ) && static::is_init_recurring( $payment_transaction );
 	}
 
 	/**

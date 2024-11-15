@@ -7,3 +7,4 @@ vendor/
 phpcs_report.xml
 phpmd_report.xml
 emerchantpay-payment-page-for-woocommerce.zip
+!libraries/vendor/

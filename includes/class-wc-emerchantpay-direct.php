@@ -468,6 +468,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 * Add initial data to the Request
 	 *
 	 * @param array $data Transaction data.
+	 * @param array $is_recurring Indicates recurring payment creation
 	 *
 	 * @return Genesis
 	 *
@@ -475,7 +476,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 * @throws \Genesis\Exceptions\InvalidArgument  Invalid argument exception.
 	 * @throws \Genesis\Exceptions\InvalidMethod    Invalid method exception.
 	 */
-	protected function prepare_initial_genesis_request( $data ) {
+	protected function prepare_initial_genesis_request( $data, $is_recurring = false ) {
 		$genesis = WC_emerchantpay_Genesis_Helper::get_gateway_request_by_txn_type( $data['transaction_type'] );
 
 		$genesis
@@ -517,10 +518,6 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 				->setShippingState( $data['shipping']['state'] )
 				->setShippingCountry( $data['shipping']['country'] );
 
-		$is_recurring = WC_emerchantpay_Subscription_Helper::is_init_recurring(
-			$data['transaction_type']
-		);
-
 		if ( $this->is_3d_transaction( $is_recurring ) ) {
 			$genesis
 				->request()
@@ -551,7 +548,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 		try {
 			$this->set_credentials();
 
-			$genesis = $this->prepare_initial_genesis_request( $data );
+			$genesis = $this->prepare_initial_genesis_request( $data, true );
 			$this->set_recurring_attribute( $genesis, $data );
 
 			if ( $this->is_3dsv2_enabled() && $this->is_3d_transaction( true ) ) {
