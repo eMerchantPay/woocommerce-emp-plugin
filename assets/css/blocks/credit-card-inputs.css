@@ -11,8 +11,12 @@
 }
 
 .emp-direct-card-form input.emp-input-wide {
-	display: block;
-	width: 100%;
+	width: 80%;
+	margin: 5px;
+}
+
+.emp-direct-card-form input.emp-input-half {
+	margin: 5px;
 }
 
 .emp-direct-card-form .emp-input-half-wrapper input {

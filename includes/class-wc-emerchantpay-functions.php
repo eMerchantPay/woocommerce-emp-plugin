@@ -67,6 +67,9 @@ class WC_Emerchantpay_Functions {
 		add_action( 'woocommerce_api_' . strtolower( WC_Emerchantpay_Frame_Handler::class ), array( new WC_Emerchantpay_Frame_Handler(), 'frame_handler' ) );
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'emp_direct_threeds_iframe' ) );
 		add_action( 'woocommerce_before_thankyou', array( $this, 'emp_woo_custom_redirect_after_purchase' ) );
+
+		// Add arguments to JS script source
+		add_filter( 'script_loader_tag', array( $this, 'handle_cse_script_arguments' ), 10, 2 );
 	}
 
 	/**
@@ -103,34 +106,23 @@ class WC_Emerchantpay_Functions {
 
 		if ( is_checkout() && empty( $wp->query_vars['order-pay'] ) && ! isset( $wp->query_vars['order-received'] ) ) {
 
-			$this->enqueue_script(
-				'emp-direct-method-browser-params-helper',
-				'/assets/javascript/direct-method-browser-params-helper.js'
-			);
+			$this->enqueue_script( 'emp-direct-method-browser-params-helper', '/assets/javascript/direct-method-browser-params-helper.js' );
 
 			if ( WC_Emerchantpay_Method_Base::SETTING_VALUE_YES === $direct_iframe_processing ) {
-				$this->enqueue_script(
-					'emp-direct-method-form-helper',
-					'/assets/javascript/direct-method-form-helper.js'
-				);
+				$this->enqueue_script( 'emp-direct-method-form-helper', '/assets/javascript/direct-method-form-helper.js' );
 			}
 
 			if ( WC_Emerchantpay_Method_Base::SETTING_VALUE_YES === $checkout_iframe_processing ) {
-				$this->enqueue_script(
-					'emp-checkout-method-form-helper',
-					'/assets/javascript/checkout-method-form-helper.js'
-				);
+				$this->enqueue_script( 'emp-checkout-method-form-helper', '/assets/javascript/checkout-method-form-helper.js' );
 			}
-			$this->enqueue_style(
-				'emp-iframe-checkout',
-				'/assets/css/iframe-checkout.css'
-			);
+			$this->enqueue_style( 'emp-iframe-checkout', '/assets/css/iframe-checkout.css' );
+
+			// Client Side Encryption scripts
+			wp_enqueue_script( 'emp-cse-direct', 'https://d3ptmkrtf16kmh.cloudfront.net/encrypto-1.0.1.js', array(), WC_Emerchantpay_Helper::get_plugin_version(), true );
+			$this->enqueue_script( 'emp-cse-direct-encrypt', '/assets/javascript/direct-credit-card-data-encrypt.js' );
 		}
 
-		$this->enqueue_style(
-			'emp-threeds',
-			'/assets/css/threeds.css'
-		);
+		$this->enqueue_style( 'emp-threeds', '/assets/css/threeds.css' );
 	}
 
 	/**
@@ -151,6 +143,14 @@ class WC_Emerchantpay_Functions {
 					'default' => null,
 				);
 			}
+		);
+
+		// Add Client-Side Encryption public key to the WooCommerce shortcode checkout
+		$cse_public_key = WC_Emerchantpay_Helper::get_plugin_method_options( WC_Emerchantpay_Direct::get_method_code(), WC_Emerchantpay_Direct::SETTING_KEY_CSE_PUBLIC_KEY );
+
+		$fields['order'][ WC_Emerchantpay_Direct::get_method_code() . '_cse_public_key' ] = array(
+			'type'    => 'hidden',
+			'default' => WC_Emerchantpay_Helper::deep_trim( $cse_public_key ),
 		);
 
 		return $fields;
@@ -199,6 +199,26 @@ class WC_Emerchantpay_Functions {
 
 		// Stop script execution
 		exit;
+	}
+
+	/**
+	 * Adds arguments to specified scripts
+	 *
+	 * @param $tag
+	 * @param $handle
+	 *
+	 * @return array|mixed|string|string[]
+	 */
+	public function handle_cse_script_arguments( $tag, $handle ) {
+		if ( 'emp-cse-direct' === $handle ) {
+			return str_replace(
+				' src',
+				sprintf( ' integrity="%s" crossorigin="anonymous" src', WC_Emerchantpay_Direct::ENCRYPT_LIBRARY_INTEGRITY_HASH ),
+				$tag
+			);
+		}
+
+		return $tag;
 	}
 
 	/**

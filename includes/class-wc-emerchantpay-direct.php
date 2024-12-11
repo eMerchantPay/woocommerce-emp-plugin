@@ -60,6 +60,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	const SETTING_KEY_TRANSACTION_TYPE        = 'transaction_type';
 	const SETTING_KEY_SHOW_CC_HOLDER          = 'show_cc_holder';
 	const SETTING_KEY_INIT_RECURRING_TXN_TYPE = 'init_recurring_txn_type';
+	const SETTING_KEY_CSE_PUBLIC_KEY          = 'cse_public_key';
 
 	const THREEDS_V2_JAVA_ENABLED                 = 'java_enabled';
 	const THREEDS_V2_COLOR_DEPTH                  = 'color_depth';
@@ -68,6 +69,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	const THREEDS_V2_SCREEN_WIDTH                 = 'screen_width';
 	const THREEDS_V2_USER_AGENT                   = 'user_agent';
 	const THREEDS_V2_BROWSER_TIMEZONE_ZONE_OFFSET = 'browser_timezone_zone_offset';
+	const ENCRYPT_LIBRARY_INTEGRITY_HASH          = 'sha512-fezEmqlQWwvKq3A2s897RSda3JsDen/xmPTsBmnx6TWk++rnofg2omiNLHhCbQvQ8DtEvfAvXQTsvE95DlELAw==';
 
 	/**
 	 * Constant contains browser parameters field names
@@ -277,6 +279,14 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 				'default'     => static::SETTING_VALUE_YES,
 				'desc_tip'    => true,
 			),
+			self::SETTING_KEY_CSE_PUBLIC_KEY    => array(
+				'type'        => 'textarea',
+				'title'       => static::get_translated_text( 'Client-Side Encryption Public Key' ),
+				'label'       => static::get_translated_text( 'Turn CSE by filling up your public key.' ),
+				'description' => static::get_translated_text( 'Client Side Encryption public key is located in your Console Admin. For more info ask tech-support@emerchantpay.com.' ),
+				'default'     => '',
+				'desc_tip'    => true,
+			),
 		);
 
 		$this->form_fields += $this->build_3dsv2_attributes_form_fields();
@@ -360,7 +370,11 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 
 		list( $month, $year )      = explode( '/', $card_info['expiration'] );
 		$card_info['expire_month'] = trim( $month );
-		$card_info['expire_year']  = substr( gmdate( 'Y' ), 0, 2 ) . substr( trim( $year ), -2 );
+		$card_info['expire_year']  = trim( $year );
+
+		if ( ! $card_info['encrypted'] ) {
+			$card_info['expire_year'] = substr( gmdate( 'Y' ), 0, 2 ) . substr( $card_info['expire_year'], -2 );
+		}
 
 		$data['card'] = $card_info;
 
@@ -460,6 +474,8 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 			// Add the error on the Admin Order view
 			$order->add_order_note( $concat_msg );
 
+			WC()->session->reload_checkout = true;
+
 			throw new Exception( esc_html( $concat_msg ) );
 		} // End of try section.
 	}
@@ -525,6 +541,9 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 					->setReturnSuccessUrl( $data['return_success_url'] )
 					->setReturnFailureUrl( $data['return_failure_url'] );
 		}
+
+		// Client Side Encryption
+		$genesis->request()->setClientSideEncryption( $data['card']['encrypted'] );
 
 		return $genesis;
 	}
@@ -614,6 +633,8 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 			WC_Emerchantpay_Helper::log_exception( $exception );
 			// Add the error on the Admin Order view
 			$order->add_order_note( $concat_msg );
+
+			WC()->session->reload_checkout = true;
 
 			throw new Exception( esc_html( $concat_msg ) );
 		} // End of try block.
@@ -773,6 +794,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 			'number'     => $number,
 			'expiration' => $expiration,
 			'cvv'        => $cvc,
+			'encrypted'  => strlen( $number ?? '' ) > 19,
 		);
 	}
 

@@ -321,4 +321,15 @@ class WC_Emerchantpay_Helper {
 
 		return "{$url}{$concatenation_string}{$query_arguments}";
 	}
+
+	/**
+	 * Removes whitespaces, break and tabs characters from string
+	 *
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	public static function deep_trim( $value ) {
+		return str_replace( array( "\n", "\t", "\r\n", "\r", ' ' ), '', (string) $value );
+	}
 }

@@ -29,15 +29,20 @@ const directSettings = getSetting('emerchantpay-direct-blocks_data', {});
 const METHOD_NAME = 'emerchantpay_direct';
 
 const CreditCardForm = (props) => {
-	const [creditCardData, setCreditCardData]      = useState({});
+	let [creditCardData, setCreditCardData]        = useState({});
 	const cardWrapperRef                           = useRef(null);
 	const browserParams                            = empPopulateBrowserParams.execute(METHOD_NAME);
 	const {eventRegistration, emitResponse}        = props;
 	const {onPaymentProcessing, onCheckoutSuccess} = eventRegistration;
+	const publicKey	                               = directSettings.cse_public_key
 
 	useEffect(() => {
 		const unsubscribe = onPaymentProcessing(
 				async () => {
+					if ( publicKey ) {
+						creditCardData = cseEncrypt( creditCardData )
+					}
+
 				const blocksCheckout    = {[`${METHOD_NAME}_blocks_order`]: true};
 				const paymentMethodData = {
 					...browserParams,
@@ -123,6 +128,20 @@ const CreditCardForm = (props) => {
 			)
 			.catch(error => console.error('Error loading card.js:', error));
 	}, []);
+
+	let cseEncrypt = ( data ) => {
+		if ( ! data || ! data[`${METHOD_NAME}-card-number`] || data[`${METHOD_NAME}-card-number`]?.length > 16 ) return
+
+		let [month, year] = empCardDataEncrypt.transformCardExpiry(data[`${METHOD_NAME}-card-expiry`])
+		data['month'] 	  = month
+		data['year']      = year
+
+		data = empCardDataEncrypt.encrypt( publicKey, data )
+
+		data[`${METHOD_NAME}-card-expiry`] = `${data['month']}/${data['year']}`
+
+		return data
+	}
 
 	const handleInputChange = (e) => {
 		setCreditCardData(

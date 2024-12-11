@@ -335,7 +335,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		if ( is_admin() && function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
 
-			return null !== $screen && in_array( $screen->id, $this->get_screen_id_list(), true );
+			return null !== $screen && in_array( $screen->id, array( 'shop_order', 'shop_subscription', 'woocommerce_page_wc-orders', 'woocommerce_page_wc-orders--shop_subscription' ), true );
 		}
 
 		return false;
@@ -3877,20 +3877,5 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 				$transaction_types
 			)
 		);
-	}
-
-	/**
-	 * Retrieves the WooCommerce screen ID list based on custom orders table availability.
-	 *
-	 * @return array|string[]
-	 */
-	private function get_screen_id_list() {
-		$legacy_screens = array( 'shop_order', 'shop_subscription' );
-
-		$hpos_screens = class_exists( '\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController' )
-			? array_map( 'wc_get_page_screen_id', $legacy_screens )
-			: array();
-
-		return array_merge( $legacy_screens, $hpos_screens );
 	}
 }

@@ -53,8 +53,8 @@ class WC_Emerchantpay_Blocks_Functions {
 	 * @return void
 	 */
 	public function init() {
-		add_action( 'after_setup_theme', array( $this, 'add_credit_card_input_styles' ) );
 		add_action( 'woocommerce_blocks_loaded', array( $this, 'emerchantpay_blocks_support' ) );
+		add_action( 'woocommerce_blocks_loaded', array( $this, 'add_credit_card_input_styles' ) );
 	}
 
 	/**
@@ -65,7 +65,7 @@ class WC_Emerchantpay_Blocks_Functions {
 	public function add_credit_card_input_styles() {
 		$block_name = 'genesisgateway/emerchantpay_direct';
 		$args       = array(
-			'handle' => 'credit-card-input-styles',
+			'handle' => 'emp-credit-card-input-styles',
 			'src'    => plugins_url( '/assets/css/blocks/credit-card-inputs.css', $this->file ),
 			'path'   => plugins_url( '/assets/css/blocks/credit-card-inputs.css', $this->file ),
 			'ver'    => WC_Emerchantpay_Helper::get_plugin_version(),

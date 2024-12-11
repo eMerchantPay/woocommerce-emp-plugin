@@ -46,45 +46,40 @@ const CreditCardInputs = ({
   cardWrapperRef
 }) => {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-    className: "emp-direct-card-form",
+    className: "wc-credit-card-form wc-payment-form emp-direct-card-form",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
       children: (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(directSettings.description || '')
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
       id: "emp-direct-card-wrapper",
       ref: cardWrapperRef
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      children: [directSettings.show_cc_holder === 'yes' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-        type: "text",
-        name: `${METHOD_NAME}-card-holder`,
-        placeholder: "Cardholder Name",
-        onChange: handleInputChange,
-        autoComplete: "off",
-        className: "emp-input-wide"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-        type: "text",
-        name: `${METHOD_NAME}-card-number`,
-        placeholder: "Card Number",
-        onChange: handleInputChange,
-        autoComplete: "off",
-        className: "emp-input-wide"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-        className: "emp-input-half-wrapper",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-          type: "text",
-          name: `${METHOD_NAME}-card-expiry`,
-          placeholder: "Expiry Date",
-          onChange: handleInputChange,
-          autoComplete: "off",
-          className: "emp-input-half"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-          type: "text",
-          name: `${METHOD_NAME}-card-cvc`,
-          placeholder: "CVC",
-          onChange: handleInputChange,
-          autoComplete: "off",
-          className: "emp-input-half"
-        })]
-      })]
+    }), directSettings.show_cc_holder === 'yes' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+      type: "text",
+      name: `${METHOD_NAME}-card-holder`,
+      placeholder: "Cardholder Name",
+      onChange: handleInputChange,
+      autoComplete: "off",
+      className: "input-text emp-input-wide"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+      type: "text",
+      name: `${METHOD_NAME}-card-number`,
+      placeholder: "Card Number",
+      onChange: handleInputChange,
+      autoComplete: "off",
+      className: "input-text emp-input-wide"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+      type: "text",
+      name: `${METHOD_NAME}-card-expiry`,
+      placeholder: "Expiry Date",
+      onChange: handleInputChange,
+      autoComplete: "off",
+      className: "input-text emp-input-half"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+      type: "text",
+      name: `${METHOD_NAME}-card-cvc`,
+      placeholder: "CVC",
+      onChange: handleInputChange,
+      autoComplete: "off",
+      className: "input-text emp-input-half"
     })]
   });
 };
@@ -267,7 +262,7 @@ __webpack_require__.r(__webpack_exports__);
 const directSettings = (0,_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__.getSetting)('emerchantpay-direct-blocks_data', {});
 const METHOD_NAME = 'emerchantpay_direct';
 const CreditCardForm = props => {
-  const [creditCardData, setCreditCardData] = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)({});
+  let [creditCardData, setCreditCardData] = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)({});
   const cardWrapperRef = (0,react__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
   const browserParams = _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_6__["default"].execute(METHOD_NAME);
   const {
@@ -278,8 +273,12 @@ const CreditCardForm = props => {
     onPaymentProcessing,
     onCheckoutSuccess
   } = eventRegistration;
+  const publicKey = directSettings.cse_public_key;
   (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
     const unsubscribe = onPaymentProcessing(async () => {
+      if (publicKey) {
+        creditCardData = cseEncrypt(creditCardData);
+      }
       const blocksCheckout = {
         [`${METHOD_NAME}_blocks_order`]: true
       };
@@ -341,6 +340,15 @@ const CreditCardForm = props => {
       });
     }).catch(error => console.error('Error loading card.js:', error));
   }, []);
+  let cseEncrypt = data => {
+    if (!data || !data[`${METHOD_NAME}-card-number`] || data[`${METHOD_NAME}-card-number`]?.length > 16) return;
+    let [month, year] = empCardDataEncrypt.transformCardExpiry(data[`${METHOD_NAME}-card-expiry`]);
+    data['month'] = month;
+    data['year'] = year;
+    data = empCardDataEncrypt.encrypt(publicKey, data);
+    data[`${METHOD_NAME}-card-expiry`] = `${data['month']}/${data['year']}`;
+    return data;
+  };
   const handleInputChange = e => {
     setCreditCardData(prevData => ({
       ...prevData,
@@ -2199,9 +2207,7 @@ module.exports = window["wp"]["i18n"];
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
 /******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var chunkIds = data[0];
-/******/ 			var moreModules = data[1];
-/******/ 			var runtime = data[2];
+/******/ 			var [chunkIds, moreModules, runtime] = data;
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
 /******/ 			var moduleId, chunkId, i = 0;
@@ -2224,13 +2230,15 @@ module.exports = window["wp"]["i18n"];
 /******/ 		
 /******/ 		}
 /******/ 		
-/******/ 		var chunkLoadingGlobal = self["webpackChunkemerchantpay_payment_page_for_woocommerce"] = self["webpackChunkemerchantpay_payment_page_for_woocommerce"] || [];
+/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkemerchantpay_payment_page_for_woocommerce"] = globalThis["webpackChunkemerchantpay_payment_page_for_woocommerce"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	})();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
 /*!****************************************!*\
   !*** ./resources/js/frontend/index.js ***!
   \****************************************/
@@ -2267,6 +2275,8 @@ if (Object.keys(_EmerchantpayCheckout__WEBPACK_IMPORTED_MODULE_1__["default"]).l
 if (Object.keys(_EmerchantpayDirect__WEBPACK_IMPORTED_MODULE_2__["default"]).length > 0) {
   (0,_woocommerce_blocks_registry__WEBPACK_IMPORTED_MODULE_0__.registerPaymentMethod)(_EmerchantpayDirect__WEBPACK_IMPORTED_MODULE_2__["default"]);
 }
+})();
+
 /******/ })()
 ;
 //# sourceMappingURL=blocks.js.map

@@ -893,3 +893,12 @@ msgstr "Custom Thank You page URL"
 
 msgid "Provide a complete URL where the customer will be redirected upon successful payment. Works only with default WooCommerce Thank You page hooks."
 msgstr "Provide a complete URL where the customer will be redirected upon successful payment. Works only with default WooCommerce Thank You page hooks."
+
+msgid "Client-Side Encryption Public Key"
+msgstr "Client-Side Encryption Public Key"
+
+msgid "Turn CSE by filling up your public key."
+msgstr "Turn CSE by filling up your public key."
+
+msgid "Client Side Encryption public key is located in your Console Admin. For more info ask tech-support@emerchantpay.com."
+msgstr "Client Side Encryption public key is located in your Console Admin. For more info ask tech-support@emerchantpay.com."
