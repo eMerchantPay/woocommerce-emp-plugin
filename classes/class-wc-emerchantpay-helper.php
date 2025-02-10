@@ -236,7 +236,7 @@ class WC_Emerchantpay_Helper {
 	 */
 	public static function get_plugin_version() {
 		$path        = dirname( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'index.php';
-		$plugin_data = get_plugin_data( $path );
+		$plugin_data = get_plugin_data( $path, false, false );
 
 		return $plugin_data['Version'] ?? false;
 	}

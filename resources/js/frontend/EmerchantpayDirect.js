@@ -130,7 +130,7 @@ const CreditCardForm = (props) => {
 	}, []);
 
 	let cseEncrypt = ( data ) => {
-		if ( ! data || ! data[`${METHOD_NAME}-card-number`] || data[`${METHOD_NAME}-card-number`]?.length > 16 ) return
+		if ( ! data || ! data[`${METHOD_NAME}-card-number`] || data[`${METHOD_NAME}-card-number`]?.length > 19 ) return
 
 		let [month, year] = empCardDataEncrypt.transformCardExpiry(data[`${METHOD_NAME}-card-expiry`])
 		data['month'] 	  = month

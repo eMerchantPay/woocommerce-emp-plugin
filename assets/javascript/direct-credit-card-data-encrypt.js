@@ -79,7 +79,8 @@ const empCardDataEncrypt = {
 
         if (month && year) {
             month = month.trim()
-            year  = `${year_now.toString().substring( 0, 2 )}${year.trim().substring( -2 )}`
+            year  = year.trim()
+            year  = `${year_now.toString().substring( 0, 2 )}${year.substring( year.length -2 )}`
         }
 
         return [month ?? '', year ?? '']

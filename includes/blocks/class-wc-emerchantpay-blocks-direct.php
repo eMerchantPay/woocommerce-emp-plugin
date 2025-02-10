@@ -111,7 +111,7 @@ final class WC_Emerchantpay_Blocks_Direct extends WC_Emerchantpay_Blocks_Base {
 			'supports'          => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
 			'show_cc_holder'    => $this->settings['show_cc_holder'],
 			'iframe_processing' => $this->settings['iframe_processing'],
-			'cse_public_key'    => WC_Emerchantpay_Helper::deep_trim( $this->settings[ WC_Emerchantpay_Direct::SETTING_KEY_CSE_PUBLIC_KEY ] ),
+			'cse_public_key'    => WC_Emerchantpay_Helper::deep_trim( $this->settings[ WC_Emerchantpay_Direct::SETTING_KEY_CSE_PUBLIC_KEY ] ?? '' ),
 		);
 	}
 }

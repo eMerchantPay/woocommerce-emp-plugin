@@ -28,5 +28,6 @@ zip -rq "${folder_name}" \
     "${folder_name}/composer.lock" \
     "${folder_name}/README.md" \
     "${folder_name}/readme.txt"
+
 [ -L "${folder_name}" ] && rm "${folder_name}"
 [ -f "${folder_name}.zip" ] && echo "The installation package (${folder_name}.zip) was packed!"

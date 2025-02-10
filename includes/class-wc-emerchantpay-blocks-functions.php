@@ -54,7 +54,6 @@ class WC_Emerchantpay_Blocks_Functions {
 	 */
 	public function init() {
 		add_action( 'woocommerce_blocks_loaded', array( $this, 'emerchantpay_blocks_support' ) );
-		add_action( 'woocommerce_blocks_loaded', array( $this, 'add_credit_card_input_styles' ) );
 	}
 
 	/**
@@ -90,6 +89,7 @@ class WC_Emerchantpay_Blocks_Functions {
 					$payment_method_registry->register( new WC_Emerchantpay_Blocks_Direct() );
 				}
 			);
+			add_action( 'wp_enqueue_scripts', array( $this, 'add_credit_card_input_styles' ) );
 		}
 	}
 }

@@ -365,7 +365,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 			Banks::BCT => 'Bancontact',
 			Banks::BLK => 'BLIK',
 			Banks::SE  => 'SPEI',
-			Banks::PID => 'LatiPay',
+			Banks::PID => 'PayID',
 		);
 	}
 
