@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -68,10 +68,9 @@ class Payout extends \Genesis\Api\Request\Base\Financial
     use DocumentAttributes;
     use NotificationAttributes;
     use PaymentAttributes;
-    use UcofAttributes;
 
     const ID_CARD_NUMBER_MAX_LENGTH          = 30;
-    const PAYER_BANK_PHONE_NUMBER_MAX_LENGTH = 11;
+    const PAYER_BANK_PHONE_NUMBER_MAX_LENGTH = 14;
     const DOCUMENT_TYPE_MAX_LENGTH           = 10;
     const ACCOUNT_ID_MAX_LENGTH              = 255;
     const USER_ID_MAX_LENGTH                 = 255;
@@ -406,11 +405,6 @@ class Payout extends \Genesis\Api\Request\Base\Financial
             ]
         ];
 
-        $requiredFieldValuesConditional = array_merge(
-            $requiredFieldValuesConditional,
-            $this->getDocumentIdConditions()
-        );
-
         $this->requiredFieldValuesConditional = Common::createArrayObject($requiredFieldValuesConditional);
     }
 
@@ -436,7 +430,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
                 'bank_account_number'             => $this->bank_account_number,
                 'bank_province'                   => $this->bank_province,
                 'id_card_number'                  => $this->id_card_number,
-                'payer_bank_account_number'       => $this->payer_bank_phone_number,
+                'payer_bank_phone_number'         => $this->payer_bank_phone_number,
                 'bank_account_type'               => $this->bank_account_type,
                 'bank_account_verification_digit' => $this->bank_account_verification_digit,
                 'document_type'                   => $this->document_type,
@@ -449,8 +443,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
                 'pix_key'                         => $this->pix_key,
                 'document_id'                     => $this->getDocumentId()
             ],
-            $this->getCustomerParamsStructure(),
-            $this->getUcofAttributesStructure()
+            $this->getCustomerParamsStructure()
         );
     }
 
@@ -465,6 +458,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
     protected function checkRequirements()
     {
         $this->validateBRLCurrency();
+        $this->validateDocumentId();
         parent::checkRequirements();
     }
 
@@ -488,5 +482,26 @@ class Payout extends \Genesis\Api\Request\Base\Financial
         if (empty($this->bank_name)) {
             unset($this->requiredFieldValuesConditional['currency']['BRL']);
         }
+    }
+
+    /**
+     * Add Document ID validations only if document_id variable is set
+     *
+     * @return void
+     */
+    protected function validateDocumentId()
+    {
+        if (empty($this->document_id)) {
+            return;
+        }
+
+        $requiredFieldValuesConditional = (array) $this->requiredFieldValuesConditional;
+
+        $requiredFieldValuesConditional = array_merge(
+            $requiredFieldValuesConditional,
+            $this->getDocumentIdConditions()
+        );
+
+        $this->requiredFieldValuesConditional = Common::createArrayObject($requiredFieldValuesConditional);
     }
 }

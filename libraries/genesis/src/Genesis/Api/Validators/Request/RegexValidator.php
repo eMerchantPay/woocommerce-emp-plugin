@@ -20,12 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Validators\Request;
 
+use Genesis\Exceptions\ErrorParameter;
 use Genesis\Utils\Common as CommonUtils;
 
 /**
@@ -147,6 +148,8 @@ class RegexValidator extends \Genesis\Api\Validators\Request\Base\Validator
      * Execute field name validation
      *
      * @return bool
+     *
+     * @throws ErrorParameter
      */
     protected function validate()
     {
@@ -154,9 +157,6 @@ class RegexValidator extends \Genesis\Api\Validators\Request\Base\Validator
             return false;
         }
 
-        return (bool) preg_match(
-            $this->pattern,
-            $this->getRequestValue()
-        );
+        return (bool) preg_match($this->pattern, (string) $this->getRequestValue());
     }
 }
