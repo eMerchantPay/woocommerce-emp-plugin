@@ -3,7 +3,7 @@
   "description": "emerchantpay Payment Gateway for WooCommerce",
   "minimum-stability": "stable",
   "license": "GPL-2.0",
-  "version": "1.17.4",
+  "version": "1.17.5",
   "type": "wordpress-plugin",
   "authors": [
     {
