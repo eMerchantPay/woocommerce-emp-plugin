@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2018-2024 emerchantpay Ltd.
+ * Copyright (C) 2018-2025 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

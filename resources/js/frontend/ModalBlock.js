@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018-2024 emerchantpay Ltd.
+ * Copyright (C) 2018-2025 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2024 emerchantpay Ltd.
+ * @copyright   2018-2025 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     resources/js/frontend/ModalBlock
  */
@@ -54,7 +54,7 @@ const ModalBlock = () => {
 
 	return (
 		<div className="emp-threeds-modal">
-		<iframe ref={iframeRef} className="emp-threeds-iframe" frameBorder="0" style={{border: 'none', 'border-radius': '10px', display: 'none'}}></iframe>
+		<iframe ref={iframeRef} className="emp-threeds-iframe" allow="payment" frameBorder="0" style={{border: 'none', 'border-radius': '10px', display: 'none'}}></iframe>
 	</div>
 );
 };

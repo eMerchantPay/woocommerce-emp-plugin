@@ -8,9 +8,9 @@ Requirements
 
 * WordPress 4.x, 5.x or 6.x (Tested up to 6.8)
 * WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.x, 9.x (Tested up to 9.8.1)
-* [GenesisPHP v2.1.3](https://github.com/GenesisGateway/genesis_php/releases/tag/2.1.3) - (Integrated in Module)
+* [GenesisPHP v2.1.5](https://github.com/GenesisGateway/genesis_php/releases/tag/2.1.5) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
-* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x, 6.x 7.x (Tested up to 7.4.0) in order to use **Subscriptions**
+* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x, 6.x 7.x (Tested up to 7.6.0) in order to use **Subscriptions**
 
 GenesisPHP Requirements
 ------------

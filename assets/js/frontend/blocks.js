@@ -1353,7 +1353,8 @@ exports.jsxs = jsxs;
 
 
 
-if (false) {} else {
+if (false) // removed by dead control flow
+{} else {
   module.exports = __webpack_require__(/*! ./cjs/react-jsx-runtime.development.js */ "./node_modules/react/cjs/react-jsx-runtime.development.js");
 }
 
@@ -1376,7 +1377,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 /**
- * Copyright (C) 2018-2024 emerchantpay Ltd.
+ * Copyright (C) 2018-2025 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1389,7 +1390,7 @@ __webpack_require__.r(__webpack_exports__);
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2024 emerchantpay Ltd.
+ * @copyright   2018-2025 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     resources/js/frontend/EmerchantpayDirect
  */
@@ -1466,7 +1467,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 /**
- * Copyright (C) 2018-2024 emerchantpay Ltd.
+ * Copyright (C) 2018-2025 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1479,7 +1480,7 @@ __webpack_require__.r(__webpack_exports__);
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2024 emerchantpay Ltd.
+ * @copyright   2018-2025 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     resources/js/frontend/EmerchantpayCheckout
  */
@@ -1591,7 +1592,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./EmpPopulateBrowserParams */ "./resources/js/frontend/EmpPopulateBrowserParams.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 /**
- * Copyright (C) 2018-2024 emerchantpay Ltd.
+ * Copyright (C) 2018-2025 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1604,7 +1605,7 @@ __webpack_require__.r(__webpack_exports__);
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2024 emerchantpay Ltd.
+ * @copyright   2018-2025 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     resources/js/frontend/EmerchantpayDirect
  */
@@ -1755,7 +1756,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /**
- * Copyright (C) 2018-2024 emerchantpay Ltd.
+ * Copyright (C) 2018-2025 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1768,7 +1769,7 @@ __webpack_require__.r(__webpack_exports__);
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2024 emerchantpay Ltd.
+ * @copyright   2018-2025 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     resources/js/frontend/EmpPopulateBrowserParams
  */
@@ -1814,7 +1815,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 /**
- * Copyright (C) 2018-2024 emerchantpay Ltd.
+ * Copyright (C) 2018-2025 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1827,7 +1828,7 @@ __webpack_require__.r(__webpack_exports__);
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2024 emerchantpay Ltd.
+ * @copyright   2018-2025 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     resources/js/frontend/ModalBlock
  */
@@ -1870,6 +1871,7 @@ const ModalBlock = () => {
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("iframe", {
       ref: iframeRef,
       className: "emp-threeds-iframe",
+      allow: "payment",
       frameBorder: "0",
       style: {
         border: 'none',
@@ -2248,7 +2250,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _EmerchantpayCheckout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EmerchantpayCheckout */ "./resources/js/frontend/EmerchantpayCheckout.js");
 /* harmony import */ var _EmerchantpayDirect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EmerchantpayDirect */ "./resources/js/frontend/EmerchantpayDirect.js");
 /**
- * Copyright (C) 2018-2024 emerchantpay Ltd.
+ * Copyright (C) 2018-2025 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -2261,7 +2263,7 @@ __webpack_require__.r(__webpack_exports__);
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2024 emerchantpay Ltd.
+ * @copyright   2018-2025 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     resources/js/frontend/index
  */
