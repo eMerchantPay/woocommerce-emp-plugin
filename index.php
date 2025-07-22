@@ -6,7 +6,7 @@
  * Text Domain: woocommerce-emerchantpay
  * Author: emerchantpay
  * Author URI: https://www.emerchantpay.com/
- * Version: 1.17.6
+ * Version: 1.17.7
  * Requires at least: 4.0
  * Tested up to: 6.8.1
  * WC requires at least: 3.0.0
@@ -25,10 +25,69 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once 'libraries/vendor/autoload.php';
 
+/**
+ * Load the emerchantpay plugin text domain
+ */
+function woocommerce_emerchantpay_load_textdomain() {
+	$translation = load_plugin_textdomain(
+		'woocommerce-emerchantpay',
+		false,
+		basename( __DIR__ ) . DIRECTORY_SEPARATOR . 'languages'
+	);
+
+	if ( ! $translation && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		error_log( 'Unable to load language file for locale: ' . get_locale() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+	}
+}
+
+
+/**
+ * Filter for handling emerchantpay orders in My Account
+ *
+ * @param  array    $actions List of available actions
+ * @param  WC_Order $order   The order object
+ *
+ * @return array Modified actions
+ */
+function woocommerce_emerchantpay_my_orders_actions( $actions, $order ) {
+	$is_pending = $order && $order->has_status( 'pending' );
+	$is_emp     = ( $order instanceof WC_Order ) && in_array(
+		$order->get_payment_method(),
+		array(
+			WC_Emerchantpay_Checkout::get_method_code(),
+			WC_Emerchantpay_Direct::get_method_code(),
+		),
+		true
+	);
+
+	if ( $is_emp && $is_pending ) {
+		unset( $actions['pay'] );
+		unset( $actions['cancel'] );
+	}
+
+	return $actions;
+}
+
+/**
+ * Add emerchantpay payment gateways
+ *
+ * @param array $methods Existing payment gateways
+ * @return array
+ */
+function woocommerce_add_emerchantpay_gateway( $methods ) {
+	$methods[] = 'WC_Emerchantpay_Checkout';
+	$methods[] = 'WC_Emerchantpay_Direct';
+
+	return $methods;
+}
+
 /* there is no need to load the plugin if woocommerce is not active */
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ), true ) ) {
 
 	if ( ! function_exists( 'woocommerce_emerchantpay_init' ) ) {
+		/**
+		 * Init woocommerce emerchantpay plugin.
+		 */
 		/**
 		 * Init woocommerce emerchantpay plugin.
 		 */
@@ -37,43 +96,10 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				return;
 			}
 
-			$translation = load_plugin_textdomain(
-				'woocommerce-emerchantpay',
-				false,
-				basename( __DIR__ ) . DIRECTORY_SEPARATOR . 'languages'
-			);
-
-			if ( ! $translation ) {
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					error_log( 'Unable to load language file for locale: ' . get_locale() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-				}
-			}
-
-			/**
-			 * Add the emerchantpay Gateway to WooCommerce's
-			 * list of installed gateways
-			 *
-			 * @param $methods Array of existing Payment Gateways
-			 *
-			 * @return array $methods Appended Payment Gateway
-			 */
-			if ( ! function_exists( 'woocommerce_add_emerchantpay_gateway' ) ) {
-				/**
-				 * Add emerchantpay payment gateways
-				 *
-				 * @param array $methods An existing Payment Gateways.
-				 *
-				 * @return array
-				 */
-				function woocommerce_add_emerchantpay_gateway( $methods ) {
-					$methods[] = 'WC_Emerchantpay_Checkout';
-					$methods[] = 'WC_Emerchantpay_Direct';
-
-					return $methods;
-				}
-			}
+			woocommerce_emerchantpay_load_textdomain();
 
 			add_filter( 'woocommerce_payment_gateways', 'woocommerce_add_emerchantpay_gateway' );
+			add_filter( 'woocommerce_my_account_my_orders_actions', 'woocommerce_emerchantpay_my_orders_actions', 10, 2 );
 		}
 	}
 	add_action( 'plugins_loaded', 'woocommerce_emerchantpay_init', 0 );
