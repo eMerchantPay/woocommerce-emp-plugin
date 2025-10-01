@@ -24,53 +24,42 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\Api\Request\NonFinancial\Reconcile;
+namespace Genesis\Api\Request\Financial\Payout;
 
-use Genesis\Api\Request\Base\NonFinancial\Reconcile\BaseRequest;
-use Genesis\Exceptions\EnvironmentNotSet;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 use Genesis\Utils\Common as CommonUtils;
 
 /**
- * Reconcile request by arn, transaction_id or unique_id
+ * Class GlobalPayout
  *
- * @package    Genesis
- * @subpackage Request
+ * Global Payout is a transaction type based on Open Banking APIs, used for initiating bank payments
+ *
+ * @package Genesis\Api\Request\Financial\Payout
+ *
+ * @method $this  setPayeeAccountId($value);
+ * @method string getPayeeAccountId()
  */
-class Transaction extends BaseRequest
+class GlobalPayout extends Financial
 {
+    use BillingInfoAttributes;
+    use PaymentAttributes;
+
     /**
-     * Acquirer's Reference Number
+     * Unique Account ID of the Payee
      *
      * @var string
      */
-    protected $arn;
+    protected $payee_account_id;
 
     /**
-     * Transaction id of an existing transaction
-     *
-     * @var string
+     * @return string
      */
-    protected $transaction_id;
-
-    /**
-     * Unique id of an existing transaction
-     *
-     * @var string
-     */
-    protected $unique_id;
-
-    /**
-     * Set the per-request configuration
-     *
-     * @return void
-     *
-     * @throws EnvironmentNotSet
-     */
-    protected function initConfiguration()
+    protected function getTransactionType()
     {
-        $this->path = 'reconcile';
-
-        parent::initConfiguration();
+        return Types::GLOBAL_PAYOUT;
     }
 
     /**
@@ -80,28 +69,28 @@ class Transaction extends BaseRequest
      */
     protected function setRequiredFields()
     {
-        $requiredFieldsGroups = [
-            'id'  => ['arn', 'transaction_id', 'unique_id']
+        $requiredFields = [
+            'transaction_id',
+            'amount',
+            'currency',
+            'payee_account_id'
         ];
 
-        $this->requiredFieldsGroups = CommonUtils::createArrayObject($requiredFieldsGroups);
+        $this->requiredFields = CommonUtils::createArrayObject($requiredFields);
     }
 
     /**
-     * Create the request's Tree structure
+     * Return additional request attributes
      *
-     * @return void
+     * @return array
      */
-    protected function populateStructure()
+    protected function getPaymentTransactionStructure()
     {
-        $treeStructure = [
-            'reconcile' => [
-                'arn'               => $this->arn,
-                'transaction_id'    => $this->transaction_id,
-                'unique_id'         => $this->unique_id
-            ]
+        return [
+            'amount'           => $this->transformAmount($this->amount, $this->currency),
+            'currency'         => $this->currency,
+            'payee_account_id' => $this->payee_account_id,
+            'billing_address'  => $this->getBillingAddressParamsStructure()
         ];
-
-        $this->treeStructure = CommonUtils::createArrayObject($treeStructure);
     }
 }

@@ -8,7 +8,7 @@ Requirements
 
 * WordPress 4.x, 5.x or 6.x (Tested up to 6.8)
 * WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.x, 9.x (Tested up to 9.8.1)
-* [GenesisPHP v2.1.5](https://github.com/GenesisGateway/genesis_php/releases/tag/2.1.5) - (Integrated in Module)
+* [GenesisPHP v2.2.0](https://github.com/GenesisGateway/genesis_php/releases/tag/2.2.0) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
 * [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x, 6.x 7.x (Tested up to 7.6.0) in order to use **Subscriptions**
 
@@ -158,10 +158,8 @@ Supported Transactions
     * __Bancomer__
     * __Bancontact__
     * __Banco de Occidente__
-    * __Banco do Brasil__
     * __BitPay__
     * __Boleto__
-    * __Bradesco__
     * __Cabal__
     * __CashU__
     * __Cencosud__
@@ -178,7 +176,6 @@ Supported Transactions
     * __InitRecurringSale__
     * __InitRecurringSale (3D-Secure)__
     * __Intersolve__
-    * __Itau__
     * __Multibanco__
     * __MyBank__
     * __Naranja__
@@ -200,14 +197,11 @@ Supported Transactions
     * __Pix__
     * __POLi__
     * __Post Finance__
-    * __PSE__
     * __RapiPago__
-    * __Redpagos__
     * __SafetyPay__
     * __Sale__
     * __Sale (3D-Secure)__
     * __SDD Init Recurring Sale__
-    * __Santander__
     * __Sepa Direct Debit__
     * __SOFORT__
     * __Tarjeta Shopping__
@@ -216,7 +210,6 @@ Supported Transactions
     * __TrustPay__
     * __UPI__
     * __WebMoney__
-    * __WebPay__
     * __WeChat__
         
 _Note_: If you have trouble with your credentials or terminal configuration, get in touch with our [support] team

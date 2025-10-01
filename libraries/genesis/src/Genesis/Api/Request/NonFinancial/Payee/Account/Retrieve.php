@@ -24,84 +24,83 @@
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\Api\Request\NonFinancial\Reconcile;
+namespace Genesis\Api\Request\NonFinancial\Payee\Account;
 
-use Genesis\Api\Request\Base\NonFinancial\Reconcile\BaseRequest;
+use Genesis\Api\Request\Base\NonFinancial\Payee\BaseRequest;
+use Genesis\Api\Traits\Request\NonFinancial\PayeeAccountAttributes;
+use Genesis\Api\Traits\Request\NonFinancial\PayeeAttributes;
 use Genesis\Exceptions\EnvironmentNotSet;
 use Genesis\Utils\Common as CommonUtils;
 
 /**
- * Reconcile request by arn, transaction_id or unique_id
+ * Class Retrieve
  *
- * @package    Genesis
- * @subpackage Request
+ * Handles the retrieval of a specific payee account details.
+ *
+ * @package Genesis\Api\Request\NonFinancial\Payee\Account
+ *
  */
-class Transaction extends BaseRequest
+class Retrieve extends BaseRequest
 {
-    /**
-     * Acquirer's Reference Number
-     *
-     * @var string
-     */
-    protected $arn;
+    use PayeeAccountAttributes;
+    use PayeeAttributes;
+
+    const REQUEST_PATH = 'payee/:payee_unique_id/account/:account_unique_id';
 
     /**
-     * Transaction id of an existing transaction
-     *
-     * @var string
+     * Retrieve constructor.
      */
-    protected $transaction_id;
-
-    /**
-     * Unique id of an existing transaction
-     *
-     * @var string
-     */
-    protected $unique_id;
-
-    /**
-     * Set the per-request configuration
-     *
-     * @return void
-     *
-     * @throws EnvironmentNotSet
-     */
-    protected function initConfiguration()
+    public function __construct()
     {
-        $this->path = 'reconcile';
-
-        parent::initConfiguration();
+        parent::__construct(self::REQUEST_PATH);
     }
 
     /**
-     * Set the required fields
+     * Updates the request path with proper payee unique ID and account unique ID.
+     *
+     * @throws EnvironmentNotSet
+     */
+    protected function updateRequestPath()
+    {
+        $this->setRequestPath(
+            str_replace(
+                [':payee_unique_id', ':account_unique_id'],
+                [(string)$this->payee_unique_id, (string)$this->account_unique_id],
+                static::REQUEST_PATH
+            )
+        );
+    }
+
+    /**
+     * Set the required fields.
      *
      * @return void
      */
     protected function setRequiredFields()
     {
-        $requiredFieldsGroups = [
-            'id'  => ['arn', 'transaction_id', 'unique_id']
+        $requiredFields       = [
+            'payee_unique_id'
         ];
-
-        $this->requiredFieldsGroups = CommonUtils::createArrayObject($requiredFieldsGroups);
+        $this->requiredFields = CommonUtils::createArrayObject($requiredFields);
     }
 
     /**
-     * Create the request's Tree structure
+     * Configures a Secured Post Request with JSON body
      *
      * @return void
      */
-    protected function populateStructure()
+    protected function initJsonConfiguration()
     {
-        $treeStructure = [
-            'reconcile' => [
-                'arn'               => $this->arn,
-                'transaction_id'    => $this->transaction_id,
-                'unique_id'         => $this->unique_id
-            ]
-        ];
+        $this->setGetRequest();
+    }
 
-        $this->treeStructure = CommonUtils::createArrayObject($treeStructure);
+    /**
+     * Returns an empty request structure (GET requests don't need a body).
+     *
+     * @return array
+     */
+    protected function getRequestStructure()
+    {
+        return [];
     }
 }
