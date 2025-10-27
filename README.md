@@ -45,8 +45,6 @@ This steps should be followed if you wish to use the ```emerchantpay Direct``` M
 * Navigate to ```WooCommerce``` - > ```Settings``` -> ```Advanced```
 * In Section ```Page Setup``` check ```Force secure checkout```
 
-__If you are using Tokenization for Web Payment Form, please make sure Guest Checkout is disabled.__
-
 Subscriptions
 ------------
 In order to process **Subscriptions** the [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/)

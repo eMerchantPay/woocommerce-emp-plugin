@@ -177,16 +177,6 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 			);
 		}
 
-		if ( $this->get_method_bool_setting( self::SETTING_KEY_TOKENIZATION ) ) {
-			WC_Emerchantpay_Helper::print_wp_notice(
-				static::get_translated_text(
-					'Tokenization is enabled for Web Payment Form, ' .
-					'please make sure Guest Checkout is disabled.'
-				),
-				WC_Emerchantpay_Helper::WP_NOTICE_TYPE_ERROR
-			);
-		}
-
 		return true;
 	}
 
@@ -648,8 +638,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 */
 	protected function is_tokenization_available( $customer_email ) {
 		return ! empty( $customer_email ) &&
-			$this->get_method_bool_setting( self::SETTING_KEY_TOKENIZATION ) &&
-				get_current_user_id() !== 0;
+			$this->get_method_bool_setting( self::SETTING_KEY_TOKENIZATION );
 	}
 
 	/**
