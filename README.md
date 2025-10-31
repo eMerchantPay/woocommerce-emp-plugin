@@ -105,7 +105,7 @@ and add the following line to execute the **WordPress Cron** once per 10 Minutes
 */10 * * * * cd /path/to/wordpress/root && php -q wp-cron.php
 ```
 
-__Note:__ If you are using Sale or Sale 3D for recurring transactions, please ensure that you contact tech support to obtain a **recurring token** used for renewal payments. The recurring token is mandatory for all consecutive transactions after the initial payment.
+__Note:__ If you are using Sale, Sale 3D, Apple Pay or Google Pay for recurring transactions, please ensure that you contact tech support to obtain a **recurring token** used for renewal payments. The recurring token is mandatory for all consecutive transactions after the initial payment.
 
 
 Refunds

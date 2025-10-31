@@ -24,6 +24,7 @@ use Genesis\Api\Constants\Transaction\Types;
 use Genesis\Api\Constants\Banks;
 use Genesis\Api\Request\Wpf\Create;
 use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
 use Genesis\Utils\Common as CommonUtils;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -440,13 +441,25 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @return array
 	 */
 	protected function get_wpf_recurring_transaction_types() {
-		$wpf_trx_types = array_merge(
+		$data = array();
+
+		// Merge recurring payment methods
+		$transaction_types = array_merge(
 			WC_Emerchantpay_Constants::COMMON_RECURRING_PAYMENT_METHODS,
 			WC_Emerchantpay_Constants::WPF_RECURRING_PAYMENT_METHODS,
-			WC_Emerchantpay_Constants::RECURRING_METHODS_V2,
 		);
 
-		return $this->get_translated_recurring_trx_types( $wpf_trx_types );
+		// Add Google Pay and Apple Pay transaction types
+		$transaction_types[] = WC_Emerchantpay_Method_Base::APPLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::APPLE_PAY_PAYMENT_TYPE_SALE;
+		$transaction_types[] = WC_Emerchantpay_Method_Base::GOOGLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::GOOGLE_PAY_PAYMENT_TYPE_SALE;
+
+		// Map transaction types to their names
+		foreach ( $transaction_types as $type ) {
+			$name          = Types::isValidTransactionType( $type ) ? Names::getName( $type ) : strtoupper( $type );
+			$data[ $type ] = static::get_translated_text( $name );
+		}
+
+		return $data;
 	}
 
 	/**
@@ -482,10 +495,8 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @param array $data Request data.
 	 *
 	 * @return \Genesis\Genesis
-	 * @throws \Genesis\Exceptions\DeprecatedMethod Deprecated method exception.
 	 * @throws ErrorParameter Error parameter exception.
 	 * @throws \Genesis\Exceptions\InvalidArgument Invalid argument exception.
-	 * @throws \Genesis\Exceptions\InvalidMethod Invalid method exception.
 	 */
 	protected function prepare_initial_genesis_request( $data ) {
 		$genesis = new \Genesis\Genesis( 'Wpf\Create' );
@@ -725,7 +736,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @param bool             $is_recurring Defines that request should be recurring or not. Default false.
 	 *
 	 * @return void
-	 * @throws ErrorParameter Throws error parameter exception.
+	 * @throws ErrorParameter|InvalidArgument Throws error parameter exception.
 	 */
 	protected function add_transaction_types_to_gateway_request( $genesis, $order, $request_data, $is_recurring ) {
 
@@ -749,64 +760,16 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 * @param Create    $wpf_request  Web Payment Form request object.
 	 * @param WC_Order  $order        Order object.
 	 *
-	 * @throws ErrorParameter|\Genesis\Exceptions\InvalidArgument
 	 */
 	private function addCustomParametersToTrxTypes( $wpf_request, WC_Order $order ) {
-		$types                     = $this->get_payment_types();
-		$transaction_custom_params = array();
+		$selected = $this->order_card_transaction_types(
+			$this->get_method_setting( self::SETTING_KEY_TRANSACTION_TYPES )
+		);
 
-		foreach ( $types as $type ) {
-			if ( is_array( $type ) ) {
-				$wpf_request->addTransactionType( $type['name'], $type['parameters'] );
-
-				continue;
-			}
-
-			switch ( $type ) {
-				case Types::IDEBIT_PAYIN:
-				case Types::INSTA_DEBIT_PAYIN:
-					$user_id_hash              = WC_emerchantpay_Genesis_Helper::get_current_user_id_hash();
-					$transaction_custom_params = array(
-						'customer_account_id' => $user_id_hash,
-					);
-					break;
-				case Types::INVOICE:
-					$transaction_custom_params = WC_emerchantpay_Order_Helper::get_invoice_custom_param_items( $order )->toArray();
-					break;
-				case Types::TRUSTLY_SALE:
-					$user_id         = WC_emerchantpay_Genesis_Helper::get_current_user_id();
-					$trustly_user_id = empty( $user_id ) ? WC_emerchantpay_Genesis_Helper::get_current_user_id_hash() : $user_id;
-
-					$transaction_custom_params = array(
-						'user_id' => $trustly_user_id,
-					);
-					break;
-				case Types::ONLINE_BANKING_PAYIN:
-					$available_bank_codes = $this->get_method_setting( self::SETTING_KEY_BANK_CODES );
-					if ( CommonUtils::isValidArray( $available_bank_codes ) ) {
-						$transaction_custom_params['bank_codes'] = array_map(
-							function ( $value ) {
-								return array(
-									'bank_code' => $value,
-								);
-							},
-							$available_bank_codes
-						);
-					}
-					break;
-				case Types::PAYSAFECARD:
-					$user_id     = WC_emerchantpay_Genesis_Helper::get_current_user_id();
-					$customer_id = empty( $user_id ) ? WC_emerchantpay_Genesis_Helper::get_current_user_id_hash() : $user_id;
-
-					$transaction_custom_params = array(
-						'customer_id' => $customer_id,
-					);
-					break;
-				default:
-					$transaction_custom_params = array();
-			}
-
-			$wpf_request->addTransactionType( $type, $transaction_custom_params );
+		foreach ( $selected as $raw_type ) {
+			list($type, $base) = $this->normalize_trx_type_base( $raw_type, false );
+			$typed             = $this->build_type_specific_params( $type, $order ); // само тук!
+			$wpf_request->addTransactionType( $type, array_merge( $base, $typed ) );
 		}
 	}
 
@@ -915,7 +878,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	}
 
 	/**
-	 * Save`s  tokanization data
+	 * Save`s tokenization data
 	 *
 	 * @param string   $customer_email Customer e-mail.
 	 * @param stdClass $response_obj Response object.
@@ -948,51 +911,6 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 		\Genesis\Config::setToken( $token );
 
 		return true;
-	}
-
-	/**
-	 * Get payment/transaction types array
-	 *
-	 * @return array
-	 */
-	private function get_payment_types() {
-		$processed_list = array();
-		$selected_types = $this->order_card_transaction_types( $this->get_method_setting( self::SETTING_KEY_TRANSACTION_TYPES ) );
-		$alias_map      = array(
-			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE => Types::GOOGLE_PAY,
-			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_SALE      => Types::GOOGLE_PAY,
-			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_AUTHORIZE         => Types::PAY_PAL,
-			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_SALE              => Types::PAY_PAL,
-			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_EXPRESS           => Types::PAY_PAL,
-			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE   => Types::APPLE_PAY,
-			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_SALE        => Types::APPLE_PAY,
-		);
-
-		foreach ( $selected_types as $selected_type ) {
-			if ( array_key_exists( $selected_type, $alias_map ) ) {
-				$transaction_type = $alias_map[ $selected_type ];
-
-				$processed_list[ $transaction_type ]['name'] = $transaction_type;
-
-				$key = $this->get_custom_parameter_key( $transaction_type );
-
-				$processed_list[ $transaction_type ]['parameters'][] = array(
-					$key => str_replace(
-						array(
-							self::GOOGLE_PAY_TRANSACTION_PREFIX,
-							self::PAYPAL_TRANSACTION_PREFIX,
-							self::APPLE_PAY_TRANSACTION_PREFIX,
-						),
-						'',
-						$selected_type
-					),
-				);
-			} else {
-				$processed_list[] = $selected_type;
-			}
-		}
-
-		return $processed_list;
 	}
 
 	/**
@@ -1033,7 +951,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	}
 
 	/**
-	 * Returns custome parameter by added transaction type
+	 * Returns custom parameter by added transaction type
 	 *
 	 * @param string $transaction_type Transaction type.
 	 * @return string
@@ -1079,18 +997,121 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base {
 	 *
 	 * @param Create $wpf_request
 	 *
-	 * @return Create
+	 * @return void
 	 */
 	private function add_recurring_custom_parameters( $wpf_request ) {
-		$recurring_types = $this->get_recurring_payment_types();
-		foreach ( $recurring_types as $type ) {
-			$transaction_custom_params = array();
-			if ( in_array( $type, array( Types::SALE, Types::SALE_3D ), true ) ) {
-				$transaction_custom_params = array(
-					'recurring_type' => 'initial',
-				);
-			}
-			$wpf_request->addTransactionType( $type, $transaction_custom_params );
+		foreach ( $this->get_recurring_payment_types() as $raw_type ) {
+			list($type, $base) = $this->normalize_trx_type_base( $raw_type, true );
+			$wpf_request->addTransactionType( $type, $base );
+		}
+	}
+
+	/**
+	 * Returns alias map for special transaction types
+	 *
+	 * @return array
+	 */
+	private function get_alias_map() {
+		return array(
+			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE => Types::GOOGLE_PAY,
+			self::GOOGLE_PAY_TRANSACTION_PREFIX . self::GOOGLE_PAY_PAYMENT_TYPE_SALE      => Types::GOOGLE_PAY,
+			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_AUTHORIZE         => Types::PAY_PAL,
+			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_SALE              => Types::PAY_PAL,
+			self::PAYPAL_TRANSACTION_PREFIX . self::PAYPAL_PAYMENT_TYPE_EXPRESS           => Types::PAY_PAL,
+			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE   => Types::APPLE_PAY,
+			self::APPLE_PAY_TRANSACTION_PREFIX . self::APPLE_PAY_PAYMENT_TYPE_SALE        => Types::APPLE_PAY,
+		);
+	}
+
+	/**
+	 * Strips alias prefix from transaction type
+	 *
+	 * @param string $trx Transaction type.
+	 * @return string
+	 */
+	private function strip_alias_prefix( $trx ) {
+		return str_replace(
+			array(
+				self::GOOGLE_PAY_TRANSACTION_PREFIX,
+				self::PAYPAL_TRANSACTION_PREFIX,
+				self::APPLE_PAY_TRANSACTION_PREFIX,
+			),
+			'',
+			$trx
+		);
+	}
+
+	/**
+	 * Normalizes transaction type and builds base parameters
+	 *
+	 * @param string $raw_type     Raw transaction type.
+	 * @param bool   $is_recurring Defines that request should be recurring or not. Default false.
+	 * @return array
+	 */
+	private function normalize_trx_type_base( $raw_type, $is_recurring = false ) {
+		$alias_map   = $this->get_alias_map();
+		$type        = $alias_map[ $raw_type ] ?? $raw_type;
+		$base_params = array();
+
+		if ( isset( $alias_map[ $raw_type ] ) ) {
+			$key                 = $this->get_custom_parameter_key( $type );
+			$base_params[ $key ] = $this->strip_alias_prefix( $raw_type );
+		}
+
+		if ( $is_recurring && in_array(
+			$raw_type,
+			array_merge(
+				WC_Emerchantpay_Constants::RECURRING_METHODS_V2,
+				WC_Emerchantpay_Constants::RECURRING_MOBILE_METHODS
+			),
+			true
+		)
+		) {
+			$base_params['recurring_type'] = 'initial';
+		}
+
+		return array( $type, $base_params );
+	}
+
+	/**
+	 * Builds type specific parameters
+	 *
+	 * @param string        $type  Transaction type.
+	 * @param WC_Order|null $order Order object.
+	 *
+	 * @throws ErrorParameter|InvalidArgument
+	 *
+	 * @return array
+	 */
+	private function build_type_specific_params( $type, WC_Order $order = null ) {
+		switch ( $type ) {
+			case Types::IDEBIT_PAYIN:
+			case Types::INSTA_DEBIT_PAYIN:
+				return array( 'customer_account_id' => WC_emerchantpay_Genesis_Helper::get_current_user_id_hash() );
+
+			case Types::INVOICE:
+				return $order
+					? WC_emerchantpay_Order_Helper::get_invoice_custom_param_items( $order )->toArray()
+					: array();
+
+			case Types::TRUSTLY_SALE:
+				$user_id         = WC_emerchantpay_Genesis_Helper::get_current_user_id();
+				$trustly_user_id = empty( $user_id ) ? WC_emerchantpay_Genesis_Helper::get_current_user_id_hash() : $user_id;
+				return array( 'user_id' => $trustly_user_id );
+
+			case Types::ONLINE_BANKING_PAYIN:
+				$codes = $this->get_method_setting( self::SETTING_KEY_BANK_CODES );
+				return CommonUtils::isValidArray( $codes )
+					? array( 'bank_codes' => array_map( fn( $v ) => array( 'bank_code' => $v ), $codes ) )
+					: array();
+
+			case Types::PAYSAFECARD:
+				$user_id     = WC_emerchantpay_Genesis_Helper::get_current_user_id();
+				$customer_id = empty( $user_id ) ? WC_emerchantpay_Genesis_Helper::get_current_user_id_hash() : $user_id;
+				return array( 'customer_id' => $customer_id );
+
+			default:
+				return array();
 		}
 	}
 }

@@ -30,6 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class WC_Emerchantpay_Subscription_Helper
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @class WC_Emerchantpay_Subscription_Helper
  */
 class WC_Emerchantpay_Subscription_Helper {
@@ -167,6 +168,8 @@ class WC_Emerchantpay_Subscription_Helper {
 				return Types::SDD_RECURRING_SALE;
 			case Types::SALE:
 			case Types::SALE_3D:
+			case Types::GOOGLE_PAY:
+			case Types::APPLE_PAY:
 				return Types::SALE;
 			default:
 				return Types::RECURRING_SALE;
@@ -280,18 +283,36 @@ class WC_Emerchantpay_Subscription_Helper {
 	 *
 	 * @return bool
 	 */
-	public static function is_init_recurring( $payment_transaction ) {
-		$init_recurring_txn_types = array_merge(
-			WC_Emerchantpay_Constants::COMMON_RECURRING_PAYMENT_METHODS,
-			WC_Emerchantpay_Constants::WPF_RECURRING_PAYMENT_METHODS,
-			WC_Emerchantpay_Constants::RECURRING_METHODS_V2,
-		);
+	public static function is_init_recurring( $payment_transaction ): bool {
+		if ( is_object( $payment_transaction ) && property_exists( $payment_transaction, 'transaction_type' ) ) {
+			$trx_type = $payment_transaction->transaction_type;
 
-		if ( isset( $payment_transaction->recurring_type ) && in_array( $payment_transaction->transaction_type, WC_Emerchantpay_Constants::RECURRING_METHODS_V2, true ) ) {
-			return RecurringTypes::INITIAL === $payment_transaction->recurring_type;
+			if ( isset( $payment_transaction->recurring_type ) &&
+				in_array(
+					self::normalize_mobile_alias( $trx_type ),
+					array_unique(
+						array_map(
+							array( self::class, 'normalize_mobile_alias' ),
+							array_merge(
+								WC_Emerchantpay_Constants::RECURRING_METHODS_V2,
+								WC_Emerchantpay_Constants::RECURRING_MOBILE_METHODS
+							)
+						)
+					),
+					true
+				)
+			) {
+				return RecurringTypes::INITIAL === $payment_transaction->recurring_type;
+			}
+
+			return self::is_init_recurring_type( $trx_type );
 		}
 
-		return in_array( $payment_transaction->transaction_type, $init_recurring_txn_types, true );
+		if ( is_string( $payment_transaction ) ) {
+			return self::is_init_recurring_type( $payment_transaction );
+		}
+
+		return false;
 	}
 
 	/**
@@ -355,6 +376,8 @@ class WC_Emerchantpay_Subscription_Helper {
 	 * @param WC_Order $order  WC Order Object.
 	 * @param string   $status WC Subscription Status.
 	 * @param string   $note   Description.
+	 *
+	 * @throws Exception
 	 */
 	public static function update_order_subscriptions_status( $order, $status, $note = '' ) {
 		if ( ! WC_Emerchantpay_Order_Helper::is_valid_order( $order ) ) {
@@ -374,6 +397,8 @@ class WC_Emerchantpay_Subscription_Helper {
 	 * @param WC_Subscription $subscription Subscription object.
 	 * @param string          $status Current status.
 	 * @param string          $note Description.
+	 *
+	 * @throws Exception
 	 */
 	public static function update_subscription_status( $subscription, $status, $note = '' ) {
 		$subscription->update_status( $status, $note );
@@ -430,5 +455,48 @@ class WC_Emerchantpay_Subscription_Helper {
 			'expiration_date' => $expiration_date,
 			'frequency'       => $frequency,
 		);
+	}
+
+	/**
+	 * Normalizes mobile payment method aliases
+	 *
+	 * @param string $type Transaction type.
+	 *
+	 * @return string
+	 */
+	private static function normalize_mobile_alias( string $type ) {
+		$apple_base  = rtrim( WC_Emerchantpay_Method_Base::APPLE_PAY_TRANSACTION_PREFIX, '_' );   // "apple_pay"
+		$google_base = rtrim( WC_Emerchantpay_Method_Base::GOOGLE_PAY_TRANSACTION_PREFIX, '_' );  // "google_pay"
+
+		$map = array(
+			WC_Emerchantpay_Method_Base::APPLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::APPLE_PAY_PAYMENT_TYPE_SALE        => $apple_base,
+			WC_Emerchantpay_Method_Base::APPLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::APPLE_PAY_PAYMENT_TYPE_AUTHORIZE   => $apple_base,
+			WC_Emerchantpay_Method_Base::GOOGLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::GOOGLE_PAY_PAYMENT_TYPE_SALE       => $google_base,
+			WC_Emerchantpay_Method_Base::GOOGLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE  => $google_base,
+		);
+
+		return $map[ $type ] ?? $type;
+	}
+
+	/**
+	 * Check if transaction type is initial recurring type
+	 *
+	 * @param string $trx_type Transaction type.
+	 *
+	 * @return bool
+	 */
+	private static function is_init_recurring_type( string $trx_type ) {
+		$normalized = self::normalize_mobile_alias( $trx_type );
+
+		$allowed = array_merge(
+			WC_Emerchantpay_Constants::COMMON_RECURRING_PAYMENT_METHODS,
+			WC_Emerchantpay_Constants::WPF_RECURRING_PAYMENT_METHODS,
+			WC_Emerchantpay_Constants::RECURRING_METHODS_V2,
+			WC_Emerchantpay_Constants::RECURRING_MOBILE_METHODS
+		);
+
+		$allowed = array_unique( array_map( array( self::class, 'normalize_mobile_alias' ), $allowed ) );
+
+		return in_array( $normalized, $allowed, true );
 	}
 }

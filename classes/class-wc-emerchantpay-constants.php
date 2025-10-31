@@ -49,6 +49,11 @@ class WC_Emerchantpay_Constants {
 		Types::SALE_3D,
 	);
 
+	const RECURRING_MOBILE_METHODS = array(
+		WC_Emerchantpay_Method_Base::GOOGLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::APPLE_PAY_PAYMENT_TYPE_SALE,
+		WC_Emerchantpay_Method_Base::APPLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::APPLE_PAY_PAYMENT_TYPE_SALE,
+	);
+
 	/**
 	 * Plugin url
 	 *
