@@ -59,7 +59,9 @@ class WC_Emerchantpay_Functions {
 
 		add_action( 'before_woocommerce_init', array( $this, 'emp_woo_add_hpos_support' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'emp_add_css_and_js_to_checkout' ) );
-		add_filter( 'woocommerce_checkout_fields', array( $this, 'emp_add_hidden_fields_to_checkout' ) );
+
+		add_action( 'woocommerce_review_order_before_payment', array( $this, 'emp_add_hidden_fields_before_payment' ) );
+
 		add_action( 'woocommerce_api_' . $threeds_form_helper_class, array( new WC_Emerchantpay_Threeds_Form_Helper(), 'display_form_and_iframe' ) );
 		add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-method_continue_handler', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'method_continue_handler' ) );
 		add_action( 'woocommerce_api_' . $threeds_backend_helper_class . '-callback_handler', array( new WC_Emerchantpay_Threeds_Backend_Helper(), 'callback_handler' ) );
@@ -71,6 +73,26 @@ class WC_Emerchantpay_Functions {
 		// Add arguments to JS script source
 		add_filter( 'script_loader_tag', array( $this, 'handle_cse_script_arguments' ), 10, 2 );
 	}
+
+	/**
+	 * Add hidden fields after order notes for FunnelKit compatibility.
+	 *
+	 * @return void
+	 */
+	public function emp_add_hidden_fields_before_payment() {
+		$field_names    = WC_Emerchantpay_Direct::THREEDS_V2_BROWSER;
+		$method_code    = WC_Emerchantpay_Direct::get_method_code();
+		$cse_public_key = WC_Emerchantpay_Helper::get_plugin_method_options( $method_code, WC_Emerchantpay_Direct::SETTING_KEY_CSE_PUBLIC_KEY );
+
+		foreach ( $field_names as $field_name ) {
+			$field_id = $method_code . '_' . $field_name;
+			echo '<input type="hidden" name="' . esc_attr( $field_id ) . '" id="' . esc_attr( $field_id ) . '" value="" />';
+		}
+
+		$cse_field_id = $method_code . '_cse_public_key';
+		echo '<input type="hidden" name="' . esc_attr( $cse_field_id ) . '" id="' . esc_attr( $cse_field_id ) . '" value="' . esc_attr( WC_Emerchantpay_Helper::deep_trim( $cse_public_key ) ) . '" />';
+	}
+
 
 	/**
 	 * Indicates WooCommerce HPOS support by the plugin
@@ -123,37 +145,6 @@ class WC_Emerchantpay_Functions {
 		}
 
 		$this->enqueue_style( 'emp-threeds', '/assets/css/threeds.css' );
-	}
-
-	/**
-	 * Add hidden inputs to the Credit Card form.
-	 *
-	 * @param array $fields Hidden fields to checkout.
-	 *
-	 * @return array Modified fields with hidden inputs.
-	 */
-	public function emp_add_hidden_fields_to_checkout( $fields ) {
-		$field_names = WC_Emerchantpay_Direct::THREEDS_V2_BROWSER;
-
-		array_walk(
-			$field_names,
-			function ( $field_name ) use ( &$fields ) {
-				$fields['order'][ WC_Emerchantpay_Direct::get_method_code() . '_' . $field_name ] = array(
-					'type'    => 'hidden',
-					'default' => null,
-				);
-			}
-		);
-
-		// Add Client-Side Encryption public key to the WooCommerce shortcode checkout
-		$cse_public_key = WC_Emerchantpay_Helper::get_plugin_method_options( WC_Emerchantpay_Direct::get_method_code(), WC_Emerchantpay_Direct::SETTING_KEY_CSE_PUBLIC_KEY );
-
-		$fields['order'][ WC_Emerchantpay_Direct::get_method_code() . '_cse_public_key' ] = array(
-			'type'    => 'hidden',
-			'default' => WC_Emerchantpay_Helper::deep_trim( $cse_public_key ),
-		);
-
-		return $fields;
 	}
 
 	/**
