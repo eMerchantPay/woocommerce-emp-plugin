@@ -18,76 +18,102 @@
  */
 
 document.addEventListener(
-    'DOMContentLoaded',
-    function () {
-        jQuery( function ( $ ) {
-            const empClassicDirectEncrypt = {
-                paymentMethod: 'emerchantpay_direct',
-                publicKey: function () {
-                    return this.checkoutForm().find(`input[id="${this.paymentMethod}_cse_public_key"]`)?.val();
-                },
-                checkoutForm: function ( ) {
-                    return $('form.checkout')
-                },
-                creditCardData: function ( wc_checkout_form ) {
-                    let card_holder   = wc_checkout_form.$checkout_form.find(`input[id="${this.paymentMethod}-card-holder"]`)?.val()
-                    let card_number   = wc_checkout_form.$checkout_form.find(`input[id="${this.paymentMethod}-card-number"]`)?.val()
-                    let card_expiry   = wc_checkout_form.$checkout_form.find(`input[id="${this.paymentMethod}-card-expiry"]`).val()
-                    let card_cvv      = wc_checkout_form.$checkout_form.find(`input[id="${this.paymentMethod}-card-cvc"]`).val()
-                    let [month, year] = empCardDataEncrypt.transformCardExpiry( card_expiry )
+	'DOMContentLoaded',
+	function () {
+		jQuery( function ( $ ) {
+			const empClassicDirectEncrypt = {
+				paymentMethod: 'emerchantpay_direct',
+				publicKey: function () {
+					return this.checkoutForm().find(`input[id="${this.paymentMethod}_cse_public_key"]`)?.val();
+				},
+				checkoutForm: function ( ) {
+					return $('form.checkout')
+				},
+				creditCardData: function ( wc_checkout_form ) {
+					let card_holder   = wc_checkout_form.$checkout_form.find(`input[id="${this.paymentMethod}-card-holder"]`)?.val()
+					let card_number   = wc_checkout_form.$checkout_form.find(`input[id="${this.paymentMethod}-card-number"]`)?.val()
+					let card_expiry   = wc_checkout_form.$checkout_form.find(`input[id="${this.paymentMethod}-card-expiry"]`).val()
+					let card_cvv      = wc_checkout_form.$checkout_form.find(`input[id="${this.paymentMethod}-card-cvc"]`).val()
+					let [month, year] = empCardDataEncrypt.transformCardExpiry( card_expiry )
 
-                    return {
-                        card_holder: card_holder,
-                        card_number: card_number?.replaceAll(/\s/g,''),
-                        month: month,
-                        year: year,
-                        cvv: card_cvv?.trim()
-                    }
-                },
-                init: function () {
-                    let _this = this
-                    let form  = this.checkoutForm();
-                    let key   = this.publicKey();
+					return {
+						card_holder: card_holder,
+						card_number: card_number?.replaceAll(/\s/g,''),
+						month: month,
+						year: year,
+						cvv: card_cvv?.trim()
+					}
+				},
+				resetFields: function() {
+					let form = this.checkoutForm();
 
-                    if ( ! form || ! key ) return
+					// Clear blur filter
+					form.find(`input[id="${this.paymentMethod}-card-holder"]`).css('filter', '');
+					form.find(`input[id="${this.paymentMethod}-card-number"]`).css('filter', '');
+					form.find(`input[id="${this.paymentMethod}-card-expiry"]`).css('filter', '');
+					form.find(`input[id="${this.paymentMethod}-card-cvc"]`).css('filter', '');
 
-                    form.on(`checkout_place_order_${this.paymentMethod}`, function (event, wc_checkout_form) {
-                        let encryptedData = empCardDataEncrypt.encrypt( key, _this.creditCardData( wc_checkout_form ) )
+					// Clear input fields
+					form.find(`input[id="${this.paymentMethod}-card-holder"]`).val('');
+					form.find(`input[id="${this.paymentMethod}-card-number"]`).val('');
+					form.find(`input[id="${this.paymentMethod}-card-expiry"]`).val('');
+					form.find(`input[id="${this.paymentMethod}-card-cvc"]`).val('');
+				},
+				init: function () {
+					let _this = this
+					let form  = this.checkoutForm();
+					let key   = this.publicKey();
 
-                        wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-holder"]`).val(encryptedData['card_holder'])
-                        wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-number"]`).val(encryptedData['card_number'])
-                        wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-expiry"]`).val(`${encryptedData['month']}/${encryptedData['year']}`)
-                        wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-cvc"]`).val(encryptedData['cvv'])
+					if ( ! form || ! key ) return
 
-                        return true
-                    })
-                }
-            }
+					$(document.body).on('checkout_error', function() {
+						_this.resetFields();
+					});
 
-            // Attach CSE Classic Checkout CSE
-            empClassicDirectEncrypt.init();
-        })
-    }
+					form.on(`checkout_place_order_${this.paymentMethod}`, function (event, wc_checkout_form) {
+						// Apply blur CSS effect on the fields before encrypt
+						wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-holder"]`).css('filter', 'blur(6px)');
+						wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-number"]`).css('filter', 'blur(6px)');
+						wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-expiry"]`).css('filter', 'blur(6px)');
+						wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-cvc"]`).css('filter', 'blur(6px)');
+
+						let encryptedData = empCardDataEncrypt.encrypt( key, _this.creditCardData( wc_checkout_form ) )
+
+						wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-holder"]`).val(encryptedData['card_holder'])
+						wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-number"]`).val(encryptedData['card_number'])
+						wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-expiry"]`).val(`${encryptedData['month']}/${encryptedData['year']}`)
+						wc_checkout_form.$checkout_form.find(`input[id="${_this.paymentMethod}-card-cvc"]`).val(encryptedData['cvv'])
+
+						return true
+					})
+				}
+			}
+
+			// Attach CSE Classic Checkout CSE
+			empClassicDirectEncrypt.init();
+		})
+	}
 );
 
 const empCardDataEncrypt = {
-    transformCardExpiry: function( card_expiry ) {
-        if ( ! card_expiry ) return ['', '']
+	transformCardExpiry: function( card_expiry ) {
+		if ( ! card_expiry ) return ['', '']
 
-        let year_now      = (new Date()).getFullYear()
-        let [month, year] = card_expiry.toString().split( '/' )
+		let year_now      = (new Date()).getFullYear()
+		let [month, year] = card_expiry.toString().split( '/' )
 
-        if (month && year) {
-            month = month.trim()
-            year  = year.trim()
-            year  = `${year_now.toString().substring( 0, 2 )}${year.substring( year.length -2 )}`
-        }
+		if (month && year) {
+			month = month.trim()
+			year  = year.trim()
+			year  = `${year_now.toString().substring( 0, 2 )}${year.substring( year.length -2 )}`
+		}
 
-        return [month ?? '', year ?? '']
-    },
-    encrypt: function ( key, data ) {
-        let cse = Encrypto.createEncryption( key );
+		return [month ?? '', year ?? '']
+	},
+	encrypt: function ( key, data ) {
+		let cse = Encrypto.createEncryption( key );
 
-        return cse.encrypt( data )
-    }
+		return cse.encrypt( data )
+	}
 }
+

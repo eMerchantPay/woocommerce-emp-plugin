@@ -93,7 +93,6 @@ class WC_Emerchantpay_Functions {
 		echo '<input type="hidden" name="' . esc_attr( $cse_field_id ) . '" id="' . esc_attr( $cse_field_id ) . '" value="' . esc_attr( WC_Emerchantpay_Helper::deep_trim( $cse_public_key ) ) . '" />';
 	}
 
-
 	/**
 	 * Indicates WooCommerce HPOS support by the plugin
 	 *
