@@ -223,7 +223,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 */
 	protected $options = array(
 		'draw_transaction_tree'          => true, // Conditionally draw the table with the transaction tree.
-		'register_renewal_subscriptions' => true, //Conditionally register WooCommerce Subscriptions Scheduled Renew Payment
+		'register_renewal_subscriptions' => true, // Conditionally register WooCommerce Subscriptions Scheduled Renew Payment
 	);
 
 	/**
@@ -265,14 +265,8 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 */
 	public function register_admin_actions() {
 		$this->add_wp_simple_actions(
-			array(
-				self::WC_ACTION_ADMIN_ORDER_TOTALS_AFTER_TOTAL,
-				self::WP_ACTION_ADMIN_NOTICES,
-			),
-			array(
-				'display_admin_order_after_totals',
-				'admin_notices',
-			)
+			self::WP_ACTION_ADMIN_NOTICES,
+			'admin_notices'
 		);
 
 		// Hooks for transactions list in admin order view.
@@ -499,12 +493,19 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @param int $order_id Order identifier.
 	 */
 	public function display_transactions_list_for_order( $order_id ) {
+		static $displayed = false;
+
+		if ( $displayed ) {
+			return;
+		}
+
 		$order = wc_emerchantpay_order_proxy()->get_order_by_id( $order_id );
 
 		if ( WC_Emerchantpay_Order_Helper::get_order_prop( $order, 'payment_method' ) !== $this->id ) {
 			return;
 		}
 
+		$displayed                              = true;
 		$this->should_execute_admin_footer_hook = true;
 
 		$transactions = WC_Emerchantpay_Transactions_Tree::create_from_order( $order );
