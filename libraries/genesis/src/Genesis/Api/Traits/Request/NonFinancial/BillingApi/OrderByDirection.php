@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial\BillingApi;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait OrderByDirection
@@ -49,7 +49,7 @@ trait OrderByDirection
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setOrderByDirection($value)
     {

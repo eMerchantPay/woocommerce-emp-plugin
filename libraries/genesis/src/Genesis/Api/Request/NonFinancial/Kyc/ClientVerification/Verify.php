@@ -26,14 +26,14 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\ClientVerification;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest as KYCBaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\Kyc\KycBackgroundChecksVerifications;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\Kyc\KycDocumentVerifications;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\Kyc\KycFaceVerifications;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\Kyc\KycVerifications;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest as KYCBaseRequest;
+use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use Genesis\Api\Traits\Request\NonFinancial\Kyc\KycBackgroundChecksVerifications;
+use Genesis\Api\Traits\Request\NonFinancial\Kyc\KycDocumentVerifications;
+use Genesis\Api\Traits\Request\NonFinancial\Kyc\KycFaceVerifications;
+use Genesis\Api\Traits\Request\NonFinancial\Kyc\KycVerifications;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common;
 
 /**
  * class Verify
@@ -152,7 +152,7 @@ class Verify extends KYCBaseRequest
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setReferenceId($value)
     {

@@ -26,11 +26,11 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Cards\Recurring;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\AmountTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\Frequencies;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\PaymentTypes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\AmountTypes;
+use Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\Frequencies;
+use Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\PaymentTypes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common;
 
 /**
  * Trait ManagedRecurringIndianCardAttributes
@@ -100,7 +100,7 @@ trait ManagedRecurringIndianCardAttributes
      *
      * @param string|null $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setManagedRecurringPaymentType($value)
     {
@@ -123,7 +123,7 @@ trait ManagedRecurringIndianCardAttributes
      *
      * @param string|null $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setManagedRecurringAmountType($value)
     {
@@ -146,7 +146,7 @@ trait ManagedRecurringIndianCardAttributes
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setManagedRecurringFrequency($value)
     {
@@ -180,7 +180,7 @@ trait ManagedRecurringIndianCardAttributes
     /**
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setManagedRecurringMaxAmount($value)
     {

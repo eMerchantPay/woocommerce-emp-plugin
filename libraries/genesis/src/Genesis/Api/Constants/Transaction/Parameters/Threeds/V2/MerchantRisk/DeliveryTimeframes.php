@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk;
 
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Utils\Common;
 
 /**
  * Indicates the merchandise delivery timeframe.

@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
 
 /**
  * Class Itau
@@ -35,7 +35,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPay
  *
  * @package Genesis\Api\Request\Financial\OnlineBankingPayments
  */
-class Itau extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class Itau extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     use PendingPaymentAttributes;
 
@@ -45,7 +45,7 @@ class Itau extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::ITAU;
+        return \Genesis\Api\Constants\Transaction\Types::ITAU;
     }
 
     /**

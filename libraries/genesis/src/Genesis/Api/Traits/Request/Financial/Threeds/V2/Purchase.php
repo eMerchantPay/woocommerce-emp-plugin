@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Threeds\V2;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories;
 
 /**
  * Trait Purchase

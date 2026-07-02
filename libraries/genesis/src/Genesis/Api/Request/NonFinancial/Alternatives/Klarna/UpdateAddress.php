@@ -26,15 +26,15 @@
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\Klarna;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
+use Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
+use Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
+use Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
 
 /**
  * Class UpdateAddress
  * @package Genesis\Api\Request\NonFinancial\Alternatives\Klarna
  */
-class UpdateAddress extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest
+class UpdateAddress extends BaseRequest
 {
     use BillingInfoAttributes;
     use ShippingInfoAttributes;

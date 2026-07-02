@@ -26,10 +26,9 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Threeds\V2;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
-use woocommerceuse woocommerce
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
+use Genesis\Exceptions\InvalidMethod;
 
 /**
  * Trait WpfAttributes

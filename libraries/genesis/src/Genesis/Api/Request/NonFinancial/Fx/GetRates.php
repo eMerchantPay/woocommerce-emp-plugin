@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Request\NonFinancial\Fx;
 
-use master\libraries\genesis\src\Genesis\Api\Request;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Fx\BaseRequest;
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Request;
+use Genesis\Api\Request\Base\NonFinancial\Fx\BaseRequest;
+use Genesis\Builder;
+use Genesis\Utils\Common;
 
 /**
  * Class GetRates
@@ -38,7 +38,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common;
  *
  * @package Genesis\Api\Request\NonFinancial\Fx
  */
-class GetRates extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Fx\BaseRequest
+class GetRates extends BaseRequest
 {
     const REQUEST_PATH = 'tiers/:tier_id/rates';
 

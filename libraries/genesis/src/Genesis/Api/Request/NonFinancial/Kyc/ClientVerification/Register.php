@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\ClientVerification;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest as KYCBaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest as KYCBaseRequest;
+use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use Genesis\Utils\Common;
 
 /**
  * Class Register

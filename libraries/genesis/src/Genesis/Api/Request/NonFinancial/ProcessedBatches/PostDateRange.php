@@ -26,11 +26,11 @@
 
 namespace Genesis\Api\Request\NonFinancial\ProcessedBatches;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Endpoints;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\DateRangeRequest as BaseDateRangeRequest;
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Config;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\Endpoints;
+use Genesis\Api\Request\Base\NonFinancial\DateRangeRequest as BaseDateRangeRequest;
+use Genesis\Builder;
+use Genesis\Config;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class PostDateRange
@@ -49,7 +49,7 @@ class PostDateRange extends BaseDateRangeRequest
 
     /**
      * @param string $builderInterface
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function __construct($builderInterface = Builder::XML)
     {

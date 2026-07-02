@@ -26,12 +26,11 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives\Transaction;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\MagicAccessors;
-use master\libraries\genesis\src\Genesis\Exceptions\Exception;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Currency as CurrencyUtils;
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Traits\MagicAccessors;
+use Genesis\Exceptions\Exception;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Currency as CurrencyUtils;
 
 /**
  * Class Items
@@ -95,7 +94,7 @@ class Items
      *
      * @return float|int
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function getOrderTaxAmount()
     {
@@ -122,8 +121,8 @@ class Items
      *
      * @return array
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws InvalidArgument
+     * @throws ErrorParameter
      */
     public function toArray()
     {
@@ -149,7 +148,7 @@ class Items
      *
      * @return void
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function validate()
     {
@@ -172,7 +171,7 @@ class Items
      *
      * @return void
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     private function checkCurrency()
     {

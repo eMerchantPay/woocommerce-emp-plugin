@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification;
 
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Utils\Common;
 
 /**
  * Specifies the type of the document ID.

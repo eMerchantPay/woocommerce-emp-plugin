@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Mobile;
 
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
 * @method $this setPaymentSubtype($value) Sets payment type which is of authorize and recurring

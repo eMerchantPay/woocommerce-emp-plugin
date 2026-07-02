@@ -26,11 +26,11 @@
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationOwner;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationSubType;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationType;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Country;
+use Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationOwner;
+use Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationSubType;
+use Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationType;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Country;
 
 /**
  * trait CustomerIdentificationData
@@ -82,7 +82,7 @@ trait CustomerIdentificationData
      *
      * @param string $owner
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setCustomerIdentificationOwner($owner)
     {
@@ -108,7 +108,7 @@ trait CustomerIdentificationData
      *
      * @param string $type
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setCustomerIdentificationType($type)
     {
@@ -134,7 +134,7 @@ trait CustomerIdentificationData
      *
      * @param $country
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setCustomerIdentificationIssuingCountry($country)
     {
@@ -160,7 +160,7 @@ trait CustomerIdentificationData
      *
      * @param string $subtype
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setCustomerIdentificationSubtype($subtype)
     {

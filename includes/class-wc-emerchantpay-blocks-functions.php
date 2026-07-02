@@ -23,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
-use woocommerceuse woocommerceuse woocommerce
 
 /**
  * Class WC_Emerchantpay_Blocks_Functions

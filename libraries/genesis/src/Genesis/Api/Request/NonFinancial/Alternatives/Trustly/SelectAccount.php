@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\Trustly;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
-use master\libraries\genesis\src\Genesis\Utils\Country;
+use Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest;
+use Genesis\Utils\Common as CommonUtils;
+use Genesis\Utils\Country;
 
 /**
  * Class SelectAccount
@@ -46,7 +46,7 @@ use master\libraries\genesis\src\Genesis\Utils\Country;
  * @method $this  setSuccessUrl($value)
  * @method $this  setUniqueId($value)
  */
-class SelectAccount extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest
+class SelectAccount extends BaseRequest
 {
     /**
      * Country code in ISO 3166

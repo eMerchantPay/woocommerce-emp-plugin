@@ -24,7 +24,7 @@
 
 namespace Genesis\Utils;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Currency-related methods
@@ -1118,7 +1118,7 @@ final class Currency
      *
      * @return mixed  - using string as we don't want to cast it without knowing how much precision
      *                is required
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public static function amountToExponent($amount, $iso)
     {
@@ -1159,7 +1159,7 @@ final class Currency
      */
     public static function getList()
     {
-        return master\libraries\genesis\src\Genesis\Utils\Common::getArrayKeys(self::$iso4217);
+        return \Genesis\Utils\Common::getArrayKeys(self::$iso4217);
     }
 
     /**
@@ -1180,7 +1180,7 @@ final class Currency
      * @param int $exp
      * @param string $currency
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public static function validateCurrencyExponent($amount, $exp, $currency)
     {

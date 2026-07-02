@@ -18,11 +18,11 @@
  * @package     classes\class-wc-emerchantpay-threeds-form-helper
  */
 
-use woocommerceif ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-if ( ! class_exists('woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Threeds_Base') ) {
+if ( ! class_exists( 'WC_Emerchantpay_Threeds_Base' ) ) {
 	require_once __DIR__ . '/class-wc-emerchantpay-threeds-base.php';
 }
 

@@ -26,14 +26,14 @@
 
 namespace Genesis\Api\Request\Financial\Cards\Recurring;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\MotoAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common;
-use master\libraries\genesis\src\Genesis\Utils\Currency;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
+use Genesis\Api\Traits\Request\MotoAttributes;
+use Genesis\Utils\Common;
+use Genesis\Utils\Currency;
 
 /**
  * Class RecurringSale
@@ -56,7 +56,7 @@ class RecurringSale extends Financial
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::RECURRING_SALE;
+        return \Genesis\Api\Constants\Transaction\Types::RECURRING_SALE;
     }
 
     /**
@@ -72,7 +72,7 @@ class RecurringSale extends Financial
             'amount'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -80,7 +80,7 @@ class RecurringSale extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setCurrency($value)
     {

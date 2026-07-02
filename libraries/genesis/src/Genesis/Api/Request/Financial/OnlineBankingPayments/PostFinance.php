@@ -26,13 +26,13 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Utils\Common;
 
 /**
  * PostFinance is an online banking provider in Switzerland

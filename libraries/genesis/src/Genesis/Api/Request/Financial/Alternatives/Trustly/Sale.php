@@ -26,13 +26,13 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives\Trustly;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\IFrameTargets;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\Transaction\Parameters\IFrameTargets;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class Sale
@@ -45,7 +45,7 @@ use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
  * @method string getUserId()                 Unique user identifier defined by merchant
  * @method $this  setUserId($value)           Unique user identifier defined by merchant
  */
-class Sale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Sale extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -73,7 +73,7 @@ class Sale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setReturnSuccessUrlTarget($value)
     {
@@ -97,7 +97,7 @@ class Sale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::TRUSTLY_SALE;
+        return \Genesis\Api\Constants\Transaction\Types::TRUSTLY_SALE;
     }
 
     /**
@@ -117,17 +117,17 @@ class Sale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
             'billing_country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'billing_country' => [
                 'AT', 'BE', 'CZ', 'DK', 'EE', 'FI', 'DE', 'LV', 'LT', 'NL', 'NO', 'PL',
                 'SK', 'ES', 'SE', 'GB'
             ],
-            'currency'        => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
+            'currency'        => \Genesis\Utils\Currency::getList()
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

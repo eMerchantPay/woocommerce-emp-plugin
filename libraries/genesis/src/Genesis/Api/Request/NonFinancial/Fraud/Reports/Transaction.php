@@ -32,7 +32,7 @@ namespace Genesis\Api\Request\NonFinancial\Fraud\Reports;
  * @package    Genesis
  * @subpackage Request
  */
-class Transaction extends master\libraries\genesis\src\Genesis\Api\Request
+class Transaction extends \Genesis\Api\Request
 {
     /**
      * Acquirer's Reference Number
@@ -72,7 +72,7 @@ class Transaction extends master\libraries\genesis\src\Genesis\Api\Request
             'original_transaction_unique_id'
         ];
 
-        $this->requiredFieldsOR = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsOR);
+        $this->requiredFieldsOR = \Genesis\Utils\Common::createArrayObject($requiredFieldsOR);
     }
 
     /**
@@ -89,6 +89,6 @@ class Transaction extends master\libraries\genesis\src\Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

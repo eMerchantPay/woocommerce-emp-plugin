@@ -26,11 +26,11 @@
 
 namespace Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Request;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Request;
+use Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Utils\Common;
 
 /**
  * Class BaseRequest

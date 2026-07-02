@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\NonFinancial\Consumers;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
+use Genesis\Api\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
 
 /**
  * Class GetCards
@@ -76,7 +76,7 @@ class GetCards extends ConsumerBaseRequest
             'consumer_id'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

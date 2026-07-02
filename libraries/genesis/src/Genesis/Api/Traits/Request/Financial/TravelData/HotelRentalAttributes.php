@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\TravelData;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Trait HotelRentalAttributes
@@ -80,7 +80,7 @@ trait HotelRentalAttributes
     /**
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setHotelRentalArrivalDate($value)
     {
@@ -110,7 +110,7 @@ trait HotelRentalAttributes
     /**
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setHotelRentalDepartureDate($value)
     {

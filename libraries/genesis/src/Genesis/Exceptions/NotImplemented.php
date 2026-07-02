@@ -26,7 +26,7 @@
 
 namespace Genesis\Exceptions;
 
-use woocommerce/**
+/**
  * Class DeprecatedMethod
  *
  * @package Genesis\Exceptions

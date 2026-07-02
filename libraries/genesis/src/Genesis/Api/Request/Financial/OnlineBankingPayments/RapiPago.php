@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
 
 /**
  * Class RapiPago
@@ -36,7 +36,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPay
  *
  * @package Genesis\Api\Request\Financial\OnlineBankingPayments
  */
-class RapiPago extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class RapiPago extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     use PendingPaymentAttributes;
 
@@ -46,7 +46,7 @@ class RapiPago extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fin
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::RAPI_PAGO;
+        return \Genesis\Api\Constants\Transaction\Types::RAPI_PAGO;
     }
 
     /**

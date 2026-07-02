@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Constants\Transaction\Parameters\CashPayments;
 
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Utils\Common;
 
 /**
  * Class CashTransactionTypes

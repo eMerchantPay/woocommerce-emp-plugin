@@ -26,18 +26,18 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives\TransferTo;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Alternatives\AccountTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Alternatives\PurposeOfRemittances;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\IdentificationTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\Transaction\Parameters\Alternatives\AccountTypes;
+use Genesis\Api\Constants\Transaction\Parameters\Alternatives\PurposeOfRemittances;
+use Genesis\Api\Constants\Transaction\Parameters\IdentificationTypes;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
+use Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common;
 
 /**
  * APM TransferTo Payout
@@ -362,7 +362,7 @@ class Payout extends Financial
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setCustomerEmail($value)
     {
@@ -409,7 +409,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setMsisdn($value)
     {
@@ -432,7 +432,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setAccountType($value)
     {
@@ -455,7 +455,7 @@ class Payout extends Financial
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setIdType($value)
     {
@@ -480,7 +480,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setPurposeOfRemittance($value)
     {
@@ -517,7 +517,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setSenderDateOfBirth($value)
     {
@@ -542,7 +542,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return Payout
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setSenderMsisdn($value)
     {
@@ -565,7 +565,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setSenderIdType($value)
     {

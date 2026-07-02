@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BeneficiaryAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Refund\BankAttributes;
+use Genesis\Api\Traits\Request\Financial\BeneficiaryAttributes;
+use Genesis\Api\Traits\Request\Financial\Refund\BankAttributes;
 
 /**
  * Class Refund
@@ -36,10 +36,10 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Refund\Ban
  *
  * @package Genesis\Api\Request\Financial
  */
-class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
+class Refund extends \Genesis\Api\Request\Base\Financial\Reference
 {
     use BankAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BeneficiaryAttributes;
+    use BeneficiaryAttributes;
 
     const CREDIT_REASON_INDICATOR_TRANSPORT_CANCELLATION   = 'A';
     const CREDIT_REASON_INDICATOR_TRAVEL_TRANSPORT         = 'B';
@@ -78,7 +78,7 @@ class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::REFUND;
+        return \Genesis\Api\Constants\Transaction\Types::REFUND;
     }
 
     /**
@@ -109,7 +109,7 @@ class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      * @param $value
      *
      * @return Refund
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setCreditReasonIndicator1($value)
     {
@@ -120,7 +120,7 @@ class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      * @param $value
      *
      * @return Refund
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setCreditReasonIndicator2($value)
     {
@@ -132,7 +132,7 @@ class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      * @param $value
      *
      * @return Refund
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     protected function setCreditReasonIndicator($field, $value)
     {
@@ -153,7 +153,7 @@ class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      * @param $value
      *
      * @return Refund
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setTicketChangeIndicator($value)
     {

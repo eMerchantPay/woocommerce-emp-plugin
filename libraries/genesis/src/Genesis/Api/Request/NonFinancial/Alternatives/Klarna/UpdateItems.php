@@ -26,11 +26,11 @@
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\Klarna;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
+use Genesis\Api\Request\Financial\Alternatives\Klarna\Items;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class UpdateItems
@@ -38,25 +38,25 @@ use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
  *
  * @method mixed getAmount()
  */
-class UpdateItems extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest
+class UpdateItems extends BaseRequest
 {
     use PaymentAttributes;
 
     /**
      * Items list
      *
-     * @var master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items
+     * @var Items
      */
     protected $items;
 
     /**
      * Set items
      *
-     * @param master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items $items
+     * @param Items $items
      *
      * @return $this
      */
-    public function setItems(master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items $items)
+    public function setItems(Items $items)
     {
         $this->items = $items;
 
@@ -72,9 +72,9 @@ class UpdateItems extends master\libraries\genesis\src\Genesis\Api\Request\Base\
     {
         return array_merge(
             [
-                'amount'   => master\libraries\genesis\src\Genesis\Utils\Currency::amountToExponent($this->amount, $this->currency)
+                'amount'   => \Genesis\Utils\Currency::amountToExponent($this->amount, $this->currency)
             ],
-            $this->items instanceof master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items ? $this->items->toArray() : []
+            $this->items instanceof Items ? $this->items->toArray() : []
         );
     }
 

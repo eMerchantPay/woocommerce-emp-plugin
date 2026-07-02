@@ -323,6 +323,6 @@ final class Country
      */
     public static function getList()
     {
-        return master\libraries\genesis\src\Genesis\Utils\Common::getArrayKeys(self::$countries);
+        return \Genesis\Utils\Common::getArrayKeys(self::$countries);
     }
 }

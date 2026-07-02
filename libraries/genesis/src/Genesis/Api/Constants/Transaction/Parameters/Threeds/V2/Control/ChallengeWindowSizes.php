@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control;
 
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Utils\Common;
 
 /**
  * Identifies the size of the challenge window for the consumer.

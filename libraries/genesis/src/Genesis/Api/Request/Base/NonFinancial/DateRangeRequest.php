@@ -26,11 +26,11 @@
 
 namespace Genesis\Api\Request\Base\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Request;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Request;
+use Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Utils\Common;
 
 /**
  * Class DateRangeRequest
@@ -38,7 +38,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common;
  */
 abstract class DateRangeRequest extends Request
 {
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
+    use PagingAttributes;
 
     /**
      * start of the requested date range
@@ -59,7 +59,7 @@ abstract class DateRangeRequest extends Request
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setStartDate($value)
     {
@@ -82,7 +82,7 @@ abstract class DateRangeRequest extends Request
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setEndDate($value)
     {
@@ -144,7 +144,7 @@ abstract class DateRangeRequest extends Request
     }
 
     /**
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function checkRequirements()
     {
@@ -187,7 +187,7 @@ abstract class DateRangeRequest extends Request
     /**
      * Validates if Date Range is Valid one
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function validateDateRange()
     {

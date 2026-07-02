@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount;
 
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Utils\Common;
 
 /**
  * Indicates the length of time that the payment account was enrolled in the cardholder’s account

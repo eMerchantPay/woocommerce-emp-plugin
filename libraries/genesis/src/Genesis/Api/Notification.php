@@ -26,14 +26,14 @@
 
 namespace Genesis\Api;
 
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidResponse;
-use master\libraries\genesis\src\Genesis\Genesis;
+use Genesis\Builder;
+use Genesis\Exceptions\DeprecatedMethod;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidClassMethod;
+use Genesis\Exceptions\InvalidMethod;
+use Genesis\Exceptions\InvalidResponse;
+use Genesis\Genesis;
 use LogicException;
 
 /**
@@ -70,7 +70,7 @@ class Notification
      *
      * @param $data
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function __construct($data = null)
     {
@@ -85,7 +85,7 @@ class Notification
      * @param array $notification - Incoming notification ($_POST)
      * @param bool  $authenticate - Set to true if you want to validate the notification
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument()
+     * @throws \Genesis\Exceptions\InvalidArgument()
      */
     public function parseNotification($notification = [], $authenticate = true)
     {
@@ -100,7 +100,7 @@ class Notification
 
         $notification = $notificationWalk;
 
-        $this->notificationObj = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($notification);
+        $this->notificationObj = \Genesis\Utils\Common::createArrayObject($notification);
 
         if ($this->isAPINotification()) {
             $this->unique_id = (string)$this->notificationObj->unique_id;
@@ -123,12 +123,12 @@ class Notification
      * Reconcile with the Payment Gateway to get the latest
      * status on the transaction
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidResponse
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod
+     * @throws ErrorParameter
+     * @throws InvalidClassMethod
+     * @throws InvalidResponse
+     * @throws InvalidArgument
+     * @throws InvalidMethod
+     * @throws DeprecatedMethod
      */
     public function initReconciliation()
     {
@@ -153,7 +153,7 @@ class Notification
      * Verify the signature on the parsed Notification
      *
      * @return bool
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function isAuthentic()
     {
@@ -164,7 +164,7 @@ class Notification
         }
 
         $messageSig  = trim($this->notificationObj->signature);
-        $customerPwd = trim(master\libraries\genesis\src\Genesis\Config::getPassword());
+        $customerPwd = trim(\Genesis\Config::getPassword());
 
         switch (strlen($messageSig)) {
             default:

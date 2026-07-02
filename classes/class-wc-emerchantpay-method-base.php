@@ -18,22 +18,21 @@
  * @package     classes\class-wc-emerchantpay-method-base
  */
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Constants\Endpoints;
-use master\libraries\genesis\src\Genesis\Api\Constants\Environments;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Names;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\States;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Notification;
-use master\libraries\genesis\src\Genesis\Config;
-use master\libraries\genesis\src\Genesis\Genesis;
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\Endpoints;
+use Genesis\Api\Constants\Environments;
+use Genesis\Api\Constants\Transaction\Names;
+use Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories;
+use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Notification;
+use Genesis\Config;
+use Genesis\Genesis;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
@@ -1097,7 +1096,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			$payment_gateway->set_terminal_token( $order );
 
 			$type    = self::get_capture_trx_type( $order );
-			$genesis = new master\libraries\genesis\src\Genesis\Genesis( $type );
+			$genesis = new \Genesis\Genesis( $type );
 
 			$genesis
 				->request()
@@ -1349,7 +1348,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			$payment_gateway->set_credentials();
 			$payment_gateway->set_terminal_token( $order );
 
-			$void = new master\libraries\genesis\src\Genesis\Genesis( 'Financial\Cancel' );
+			$void = new \Genesis\Genesis( 'Financial\Cancel' );
 
 			$void
 				->request()
@@ -1704,7 +1703,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * Handle URL callback
 	 *
 	 * @return void
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument Invalid argument.
+	 * @throws \Genesis\Exceptions\InvalidArgument Invalid argument.
 	 */
 	public function callback_handler() {
 		// TODO Check how to fix silencing error.
@@ -2307,7 +2306,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 		$terminal_token = $trx->terminal_token ?? null;
 
 		if ( empty( $terminal_token ) && isset( $trx->recurring_type ) && RecurringTypes::SUBSEQUENT === $trx->recurring_type ) {
-			$terminal_token = master\libraries\genesis\src\Genesis\Config::getToken();
+			$terminal_token = \Genesis\Config::getToken();
 		}
 
 		if ( ! empty( $terminal_token ) ) {
@@ -2491,7 +2490,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 			$payment_gateway->set_terminal_token( $order );
 
 			$type    = self::get_refund_trx_type( $order );
-			$genesis = new master\libraries\genesis\src\Genesis\Genesis( $type );
+			$genesis = new \Genesis\Genesis( $type );
 
 			$genesis
 				->request()
@@ -2649,9 +2648,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * @param float    $amount The amount to charge.
 	 *
 	 * @return \stdClass|\WP_Error
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod Throws deprecates method exception.
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument Throws invalid argument exception.
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod Throws invalid method exception.
+	 * @throws \Genesis\Exceptions\DeprecatedMethod Throws deprecates method exception.
+	 * @throws \Genesis\Exceptions\InvalidArgument Throws invalid argument exception.
+	 * @throws \Genesis\Exceptions\InvalidMethod Throws invalid method exception.
 	 */
 	protected function process_subscription_payment( $order, $amount ) {
 		$reference_id = WC_Emerchantpay_Subscription_Helper::get_order_init_recurring_id_meta( $order );
@@ -2853,7 +2852,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	 * Set the Genesis PHP Lib Credentials, based on the customer's admin settings
 	 *
 	 * @return void
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument Invalid argument.
+	 * @throws \Genesis\Exceptions\InvalidArgument Invalid argument.
 	 */
 	public function set_credentials() {
 		$env = $this->get_method_bool_setting( self::SETTING_KEY_TEST_MODE ) ? Environments::STAGING : Environments::PRODUCTION;
@@ -3527,7 +3526,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	/**
 	 *  Add business attrinutes to gateway request.
 	 *
-	 * @param master\libraries\genesis\src\Genesis\Genesis  $genesis Genesis object.
+	 * @param Genesis  $genesis Genesis object.
 	 * @param WC_Order $order Order object.
 	 *
 	 * @return mixed
@@ -3567,7 +3566,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 
 				if ( $attribute ) {
 					$genesis->request()
-							->{'set' . master\libraries\genesis\src\Genesis\Utils\Common::snakeCaseToCamelCase( $genesis_attribute )}( $attribute );
+							->{'set' . \Genesis\Utils\Common::snakeCaseToCamelCase( $genesis_attribute )}( $attribute );
 				}
 			}
 		}
@@ -3705,7 +3704,7 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	/**
 	 * Add SCA Exemption parameter to Genesis Request
 	 *
-	 * @param master\libraries\genesis\src\Genesis\Genesis $genesis Genesis request object.
+	 * @param Genesis $genesis Genesis request object.
 	 */
 	protected function add_sca_exemption_parameters( $genesis ) {
 		$wpf_amount          = (float) $genesis->request()->getAmount();
@@ -3720,17 +3719,17 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 	/**
 	 * Add 3DSv2 parameters to gateway request
 	 *
-	 * @param master\libraries\genesis\src\Genesis\Genesis  $genesis Genesis request object.
+	 * @param Genesis  $genesis Genesis request object.
 	 * @param WC_Order $order Order object.
 	 * @param bool     $is_recurring Check that is recurring object.
 	 *
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument Invalid argument exception.
+	 * @throws \Genesis\Exceptions\InvalidArgument Invalid argument exception.
 	 */
 	protected function add_3dsv2_parameters_to_gateway_request( $genesis, $order, $is_recurring ) {
 		/**
 		 * WPF request object
 		 *
-		 * @var master\libraries\genesis\src\Genesis\Api\Request\Wpf\Create $wpf_request WPF create request.
+		 * @var \Genesis\Api\Request\Wpf\Create $wpf_request WPF create request.
 		 */
 		$wpf_request = $genesis->request();
 

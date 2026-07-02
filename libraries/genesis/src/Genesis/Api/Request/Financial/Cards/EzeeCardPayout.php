@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Financial\Cards;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Base\Financial\Reference;
 
 /**
  * Class EzeeCardPayout

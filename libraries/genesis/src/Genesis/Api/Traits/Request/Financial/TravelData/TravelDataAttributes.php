@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\TravelData;
 
-use woocommerceuse woocommerceuse woocommerceuse woocommerce/**
+/**
  * Trait TravelDataAttributes
  * @package Genesis\Api\Traits\Request\Financial\TravelData
  *

@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Base\NonFinancial\Fx;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\BaseVersionedRequest;
-use master\libraries\genesis\src\Genesis\Builder;
+use Genesis\Api\Request\Base\BaseVersionedRequest;
+use Genesis\Builder;
 
 /**
  * Class BaseRequest

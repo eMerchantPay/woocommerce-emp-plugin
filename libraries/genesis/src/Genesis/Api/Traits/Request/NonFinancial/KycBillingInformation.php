@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\Genders;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\NonFinancial\Kyc\Genders;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait KycBillingInformation
@@ -106,7 +106,7 @@ trait KycBillingInformation
      * @param $gender
      *
      * @return KycBillingInformation
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setKycBillingGender($gender)
     {
@@ -121,7 +121,7 @@ trait KycBillingInformation
     /**
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setKycBillingBirthDate($value)
     {

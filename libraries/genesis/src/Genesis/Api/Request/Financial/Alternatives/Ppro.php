@@ -26,14 +26,14 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Payment\Methods as PaymentMethods;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BankAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Constants\Payment\Methods as PaymentMethods;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\BankAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Ppro
@@ -49,7 +49,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
  * @method Ppro setIban($value) Set a valid IBAN bank account
  * @method Ppro setAccountPhone($value) Set phone number for destination account to pay out
  */
-class Ppro extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Ppro extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -103,7 +103,7 @@ class Ppro extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::PPRO;
+        return \Genesis\Api\Constants\Transaction\Types::PPRO;
     }
 
     /**
@@ -129,8 +129,8 @@ class Ppro extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
 
         $requiredFieldValues = [
             'payment_type'    => PaymentMethods::getMethods(),
-            'billing_country' => master\libraries\genesis\src\Genesis\Utils\Country::getList(),
-            'currency'        => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
+            'billing_country' => \Genesis\Utils\Country::getList(),
+            'currency'        => \Genesis\Utils\Currency::getList()
         ];
 
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);

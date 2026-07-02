@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait TokenizationApiTokenAttributes
@@ -48,7 +48,7 @@ trait TokenizationApiTokenAttributes
      * @param string $value
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setToken($value)
     {

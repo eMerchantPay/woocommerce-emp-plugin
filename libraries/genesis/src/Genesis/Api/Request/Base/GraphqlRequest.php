@@ -26,11 +26,10 @@
 
 namespace Genesis\Api\Request\Base;
 
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
-use woocommerce
+use Genesis\Builder;
+use Genesis\Exceptions\EnvironmentNotSet;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class GraphqlRequest
@@ -75,7 +74,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function addResponseField($value)
     {
@@ -98,7 +97,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
      *
      * @param array $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setResponseFields($value)
     {
@@ -153,7 +152,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
      * Set the per-request configuration
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws EnvironmentNotSet
      */
     protected function initConfiguration()
     {
@@ -169,7 +168,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
      *
      * @param $request_path
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws \Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initializeServiceApiRouter($request_path)
     {
@@ -214,7 +213,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
             )
         ];
 
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 
     /**

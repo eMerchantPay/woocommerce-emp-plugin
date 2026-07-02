@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait CustomerAttributes
@@ -87,7 +87,7 @@ trait CustomerAttributes
      * @param string $value
      * @return $this
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setIncorporationDate($value)
     {

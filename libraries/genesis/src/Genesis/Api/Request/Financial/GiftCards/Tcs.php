@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Financial\GiftCards;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\GiftCard;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Base\Financial\GiftCard;
 
 /**
  * Class Tcs

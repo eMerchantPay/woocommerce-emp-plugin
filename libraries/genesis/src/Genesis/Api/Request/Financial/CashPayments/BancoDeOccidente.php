@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\CashPayments;
  *
  * @package Genesis\Api\Request\Financial\CashPayments
  */
-class BancoDeOccidente extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class BancoDeOccidente extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class BancoDeOccidente extends master\libraries\genesis\src\Genesis\Api\Request\
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::BANCO_DE_OCCIDENTE;
+        return \Genesis\Api\Constants\Transaction\Types::BANCO_DE_OCCIDENTE;
     }
 
     /**

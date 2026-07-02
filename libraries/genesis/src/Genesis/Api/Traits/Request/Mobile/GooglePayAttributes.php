@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Traits\Request\Mobile;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * @codingStandardsIgnoreStart
@@ -91,7 +91,7 @@ trait GooglePayAttributes
      * Set token signatures
      * @param array|null $signatures
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setTokenSignatures($signatures)
     {

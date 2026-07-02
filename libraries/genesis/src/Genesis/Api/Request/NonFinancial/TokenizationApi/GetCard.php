@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Request\NonFinancial\TokenizationApi;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\TokenizationApi\BaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\TokenizationApiAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\TokenizationApiTokenAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Request\Base\NonFinancial\TokenizationApi\BaseRequest;
+use Genesis\Api\Traits\Request\NonFinancial\TokenizationApiAttributes;
+use Genesis\Api\Traits\Request\NonFinancial\TokenizationApiTokenAttributes;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class GetCard
@@ -38,7 +38,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
  *
  * @package Genesis\Api\Request\NonFinancial\TokenizationApi
  */
-class GetCard extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\TokenizationApi\BaseRequest
+class GetCard extends BaseRequest
 {
     use TokenizationApiAttributes;
     use TokenizationApiTokenAttributes;

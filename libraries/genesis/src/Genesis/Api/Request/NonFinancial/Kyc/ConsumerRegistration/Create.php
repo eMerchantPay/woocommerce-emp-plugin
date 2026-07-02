@@ -26,13 +26,13 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\ConsumerRegistration;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\DeviceFingerprintTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\IndustryTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\ProfileActionTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\ProfileCurrentStatuses;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\CustomerInformation;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\NonFinancial\Kyc\DeviceFingerprintTypes;
+use Genesis\Api\Constants\NonFinancial\Kyc\IndustryTypes;
+use Genesis\Api\Constants\NonFinancial\Kyc\ProfileActionTypes;
+use Genesis\Api\Constants\NonFinancial\Kyc\ProfileCurrentStatuses;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use Genesis\Api\Traits\Request\NonFinancial\CustomerInformation;
 
 /**
  * Class Create
@@ -193,7 +193,7 @@ class Create extends BaseRequest
      * @param $type
      *
      * @return Create
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setDeviceFingerprintType($type)
     {
@@ -209,7 +209,7 @@ class Create extends BaseRequest
      * @param $type
      *
      * @return Create
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setProfileActionType($type)
     {
@@ -225,7 +225,7 @@ class Create extends BaseRequest
      * @param $status
      *
      * @return Create
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setProfileCurrentStatus($status)
     {
@@ -241,7 +241,7 @@ class Create extends BaseRequest
      * @param $type
      *
      * @return Create
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setIndustryType($type)
     {
@@ -256,7 +256,7 @@ class Create extends BaseRequest
     /**
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setCustomerRegistrationDate($value)
     {
@@ -277,7 +277,7 @@ class Create extends BaseRequest
     /**
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setBonusSubmissionDate($value)
     {
@@ -331,7 +331,7 @@ class Create extends BaseRequest
             'country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

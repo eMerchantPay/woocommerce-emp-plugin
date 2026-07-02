@@ -26,9 +26,8 @@
 
 namespace Genesis\Api\Request\Base\Financial\Cards;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\MpiAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Threeds\V2\AllAttributes as AllThreedsV2Attributes;
-use woocommerce
+use Genesis\Api\Traits\Request\Financial\MpiAttributes;
+use Genesis\Api\Traits\Request\Financial\Threeds\V2\AllAttributes as AllThreedsV2Attributes;
 
 /**
  * Class CreditCard3D

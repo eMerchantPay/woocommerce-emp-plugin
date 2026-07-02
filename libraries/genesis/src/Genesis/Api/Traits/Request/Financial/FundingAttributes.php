@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Funding\IdentifierTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Funding\ReceiverAccountTypes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Country;
+use Genesis\Api\Constants\Transaction\Parameters\Funding\IdentifierTypes;
+use Genesis\Api\Constants\Transaction\Parameters\Funding\ReceiverAccountTypes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Country;
 
 /**
  * Trait FundingAttributes
@@ -94,7 +94,7 @@ trait FundingAttributes
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setFundingIdentifierType($value)
     {
@@ -128,7 +128,7 @@ trait FundingAttributes
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setFundingReceiverCountry($value)
     {

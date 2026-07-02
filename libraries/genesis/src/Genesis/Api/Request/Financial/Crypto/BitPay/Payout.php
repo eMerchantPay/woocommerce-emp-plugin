@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Request\Financial\Crypto\BitPay;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Exceptions\ErrorParameter;
 
 /**
  * BitPay Payout is a crypto currency payout method where merchants are requesting
@@ -37,7 +37,7 @@ use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
  *
  * @package Genesis\Api\Request\Financial\Crypto\BitPay
  */
-class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Payout extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -74,7 +74,7 @@ class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      * @param $address
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setCryptoAddress($address)
     {
@@ -162,7 +162,7 @@ class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::BITPAY_PAYOUT;
+        return \Genesis\Api\Constants\Transaction\Types::BITPAY_PAYOUT;
     }
 
     /**
@@ -182,7 +182,7 @@ class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
             'crypto_wallet_provider'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'crypto_wallet_provider' => [
@@ -197,7 +197,7 @@ class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
             ]
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
 
 /**
  * Class Cancel
@@ -35,9 +35,9 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceA
  *
  * @package Genesis\Api\Request\Financial
  */
-class Cancel extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Cancel extends \Genesis\Api\Request\Base\Financial
 {
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+    use ReferenceAttributes;
 
     /**
      * Returns the Request transaction type
@@ -45,7 +45,7 @@ class Cancel extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::VOID;
+        return \Genesis\Api\Constants\Transaction\Types::VOID;
     }
 
     /**
@@ -60,7 +60,7 @@ class Cancel extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
             'reference_id'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

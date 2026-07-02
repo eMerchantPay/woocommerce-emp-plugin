@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\CustomerAddress;
 
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\ErrorParameter;
 
 /**
  * Trait CustomerInfoAttributes
@@ -47,7 +47,7 @@ trait CustomerInfoAttributes
      * @param string $value
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setCustomerEmail($value)
     {

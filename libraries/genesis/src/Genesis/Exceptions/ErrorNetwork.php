@@ -26,7 +26,7 @@
 
 namespace Genesis\Exceptions;
 
-use woocommerce/**
+/**
  * Class ErrorNetwork
  *
  * Used to indicate a problem with network transport

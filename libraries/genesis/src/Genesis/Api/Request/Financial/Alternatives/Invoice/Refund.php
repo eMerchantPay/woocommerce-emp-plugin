@@ -26,11 +26,11 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives\Invoice;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Alternative\Invoice;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Base\Financial\Alternative\Invoice;
+use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common;
 
 /**
  * Class Refund
@@ -73,7 +73,7 @@ class Refund extends Invoice
      *
      * @return array
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     protected function getPaymentTransactionStructure()
     {

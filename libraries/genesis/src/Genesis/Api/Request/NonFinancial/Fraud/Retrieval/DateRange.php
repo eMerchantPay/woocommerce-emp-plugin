@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\NonFinancial\Fraud\Retrieval;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Retrieval request by Date Range
@@ -35,7 +35,7 @@ use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
  * @subpackage Request
  */
 
-class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
+class DateRange extends \Genesis\Api\Request
 {
     /**
      * start of the requested date range
@@ -63,7 +63,7 @@ class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
     /**
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setStartDate($value)
     {
@@ -84,7 +84,7 @@ class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
     /**
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setEndDate($value)
     {
@@ -143,7 +143,7 @@ class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
             'start_date'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -161,6 +161,6 @@ class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

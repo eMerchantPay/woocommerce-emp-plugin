@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Constants\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Constants\Transaction\Types;
 
 /**
  * Class Services

@@ -18,20 +18,19 @@
  * @package     classes\class-wc-emerchantpay-checkout
  */
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Banks;
-use master\libraries\genesis\src\Genesis\Api\Constants\i18n;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Names;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Request\Wpf\Create;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Constants\Banks;
+use Genesis\Api\Constants\i18n;
+use Genesis\Api\Constants\Transaction\Names;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Wpf\Create;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Utils\Common as CommonUtils;
 
 if (!defined('ABSPATH')) {
     exit(0);
 }
 
-if (!class_exists('woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Method_Base')) {
+if (!class_exists('WC_Emerchantpay_Method_Base')) {
     require_once dirname(__DIR__) . '/classes/class-wc-emerchantpay-method-base.php';
 }
 
@@ -665,20 +664,20 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base
      *
      * @param array $data Request data.
      *
-     * @return master\libraries\genesis\src\Genesis\Genesis
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod Deprecated method exception.
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter Error parameter exception.
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument Invalid argument exception.
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod Invalid method exception.
+     * @return \Genesis\Genesis
+     * @throws \Genesis\Exceptions\DeprecatedMethod Deprecated method exception.
+     * @throws ErrorParameter Error parameter exception.
+     * @throws \Genesis\Exceptions\InvalidArgument Invalid argument exception.
+     * @throws \Genesis\Exceptions\InvalidMethod Invalid method exception.
      */
     protected function prepare_initial_genesis_request($data)
     {
-        $genesis = new master\libraries\genesis\src\Genesis\Genesis('Wpf\Create');
+        $genesis = new \Genesis\Genesis('Wpf\Create');
 
         /**
          * WPF request
          *
-         * @var master\libraries\genesis\src\Genesis\Api\Request\Wpf\Create $wpf_request
+         * @var Create $wpf_request
          */
         $wpf_request = $genesis->request();
 
@@ -852,7 +851,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base
     protected function retrieve_consumer_id_from_email($email)
     {
         try {
-            $genesis = new master\libraries\genesis\src\Genesis\Genesis('NonFinancial\Consumers\Retrieve');
+            $genesis = new \Genesis\Genesis('NonFinancial\Consumers\Retrieve');
             $genesis->request()->setEmail($email);
 
             $genesis->execute();
@@ -910,13 +909,13 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base
     /**
      * Add transaction type to Gateway request.
      *
-     * @param master\libraries\genesis\src\Genesis\Genesis $genesis Genesis instance.
+     * @param \Genesis\Genesis $genesis Genesis instance.
      * @param WC_Order $order Order object.
      * @param array $request_data Requested data.
      * @param bool $is_recurring Defines that request should be recurring or not. Default false.
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter Throws error parameter exception.
+     * @throws ErrorParameter Throws error parameter exception.
      */
     protected function add_transaction_types_to_gateway_request($genesis, $order, $request_data, $is_recurring)
     {
@@ -924,7 +923,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base
         /**
          * Web Payment Form request object.
          *
-         * @var master\libraries\genesis\src\Genesis\Api\Request\Wpf\Create $wpf_request
+         * @var Create $wpf_request
          */
         $wpf_request = $genesis->request();
 
@@ -938,10 +937,10 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base
     /**
      * Add customer parameters to transaction types
      *
-     * @param master\libraries\genesis\src\Genesis\Api\Request\Wpf\Create $wpf_request Web Payment Form request object.
+     * @param Create $wpf_request Web Payment Form request object.
      * @param WC_Order $order Order object.
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter|master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws ErrorParameter|\Genesis\Exceptions\InvalidArgument
      */
     private function addCustomParametersToTrxTypes($wpf_request, WC_Order $order)
     {
@@ -1147,7 +1146,7 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base
             return false;
         }
 
-        master\libraries\genesis\src\Genesis\Config::setToken($token);
+        \Genesis\Config::setToken($token);
 
         return true;
     }
@@ -1290,9 +1289,9 @@ class WC_Emerchantpay_Checkout extends WC_Emerchantpay_Method_Base
     /**
      * Add recurring custom parameters to the WPF request
      *
-     * @param master\libraries\genesis\src\Genesis\Api\Request\Wpf\Create $wpf_request
+     * @param Create $wpf_request
      *
-     * @return master\libraries\genesis\src\Genesis\Api\Request\Wpf\Create
+     * @return Create
      */
     private function add_recurring_custom_parameters($wpf_request)
     {

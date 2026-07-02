@@ -18,10 +18,9 @@
  * @package     classes\class-wc-emerchantpay-threeds-base
  */
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Utils\Currency;
-use master\libraries\genesis\src\Genesis\Utils\Threeds\V2 as ThreedsV2Utils;
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Utils\Currency;
+use Genesis\Utils\Threeds\V2 as ThreedsV2Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );

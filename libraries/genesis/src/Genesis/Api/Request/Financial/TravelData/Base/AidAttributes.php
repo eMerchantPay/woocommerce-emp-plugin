@@ -2,7 +2,7 @@
 
 namespace Genesis\Api\Request\Financial\TravelData\Base;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\RestrictedSetter;
+use Genesis\Api\Traits\RestrictedSetter;
 
 abstract class AidAttributes
 {

@@ -26,14 +26,13 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives\Transaction;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Transaction\ItemTypes;
-use master\libraries\genesis\src\Genesis\Api\Traits\MagicAccessors;
-use master\libraries\genesis\src\Genesis\Api\Traits\Validations\Request\Validations;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
-use master\libraries\genesis\src\Genesis\Utils\Currency as CurrencyUtils;
-use woocommerceuse woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Constants\Financial\Alternative\Transaction\ItemTypes;
+use Genesis\Api\Traits\MagicAccessors;
+use Genesis\Api\Traits\Validations\Request\Validations;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
+use Genesis\Utils\Currency as CurrencyUtils;
 
 /**
  * Class Item
@@ -175,7 +174,7 @@ class Item
      *
      * @return $this
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter|master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws ErrorParameter|InvalidArgument
      */
     public function setQuantity($value)
     {
@@ -193,7 +192,7 @@ class Item
      *
      * @return $this
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setUnitPrice($value)
     {
@@ -210,7 +209,7 @@ class Item
      *
      * @return $this
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setTaxRate($value)
     {
@@ -227,7 +226,7 @@ class Item
      *
      * @return $this
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setQuantityUnit($value)
     {
@@ -251,7 +250,7 @@ class Item
      *
      * @return $this
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setTotalDiscountAmount($value)
     {
@@ -312,7 +311,7 @@ class Item
      *
      * @return false|float|string
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function getTotalTaxAmount()
     {
@@ -336,7 +335,7 @@ class Item
      *
      * @return array
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function toArray()
     {
@@ -414,7 +413,7 @@ class Item
         $this->requiredFields = CommonUtils::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'item_type' => master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Transaction\ItemTypes::getAll()
+            'item_type' => ItemTypes::getAll()
         ];
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);
     }
@@ -425,7 +424,7 @@ class Item
      * @param $field
      * @param $value
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     protected function verifyNonNegativeField($field, $value)
     {
@@ -446,7 +445,7 @@ class Item
      * @param $field
      * @param $value
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter|master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws ErrorParameter|InvalidArgument
      */
     protected function verifyNegativeField($field, $value)
     {
@@ -466,13 +465,13 @@ class Item
      *
      * @param $value
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter|master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws ErrorParameter|InvalidArgument
      */
     protected function verifyUnitPriceField($value)
     {
         $this->verifyRequiredField('unit_price', $value);
 
-        if (in_array($this->item_type, [master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Transaction\ItemTypes::DISCOUNT, master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Transaction\ItemTypes::STORE_CREDIT])) {
+        if (in_array($this->item_type, [ItemTypes::DISCOUNT, ItemTypes::STORE_CREDIT])) {
             $this->verifyNegativeField('unit_price', $value);
 
             return;
@@ -487,7 +486,7 @@ class Item
      * @param $field
      * @param $value
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     protected function verifyRequiredField($field, $value)
     {
@@ -508,7 +507,7 @@ class Item
      *
      * @return mixed
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     private function getAmountInProperUnit($value)
     {

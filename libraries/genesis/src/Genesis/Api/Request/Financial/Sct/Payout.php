@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\Financial\Sct;
 
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Payout
@@ -35,7 +35,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
  *
  * @package Genesis\Api\Request\Financial\Sct
  */
-class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Financial\Sdd\Sale
+class Payout extends \Genesis\Api\Request\Financial\Sdd\Sale
 {
     /**
      * Set the required fields
@@ -59,6 +59,6 @@ class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Financial\
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::SCT_PAYOUT;
+        return \Genesis\Api\Constants\Transaction\Types::SCT_PAYOUT;
     }
 }

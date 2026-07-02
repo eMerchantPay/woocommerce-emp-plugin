@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\ConsumerRegistration;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\ProfileCurrentStatuses;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use Genesis\Api\Constants\NonFinancial\Kyc\ProfileCurrentStatuses;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
 
 /**
  * Class Update
@@ -72,7 +72,7 @@ class Update extends BaseRequest
      * @param $status
      *
      * @return Update
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setProfileCurrentStatus($status)
     {
@@ -96,7 +96,7 @@ class Update extends BaseRequest
             'profile_current_status'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldsConditional = [
             'profile_current_status' => [
@@ -106,7 +106,7 @@ class Update extends BaseRequest
             ]
         ];
 
-        $this->requiredFieldsConditional = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
+        $this->requiredFieldsConditional = \Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
     }
 
     /**

@@ -26,7 +26,7 @@
 
 namespace Genesis\Builders;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 use XMLWriter;
 
 /**
@@ -36,7 +36,7 @@ use XMLWriter;
  * @package    Genesis
  * @subpackage Builders
  */
-final class Xml implements master\libraries\genesis\src\Genesis\Interfaces\Builder
+final class Xml implements \Genesis\Interfaces\Builder
 {
     /**
      * Store the XMLWriter instance
@@ -71,13 +71,13 @@ final class Xml implements master\libraries\genesis\src\Genesis\Interfaces\Build
      *
      * @param array $data - tree-structured array
      *
-     * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      *
+     * @return void
      */
     public function populateNodes($data)
     {
-        if (!master\libraries\genesis\src\Genesis\Utils\Common::isValidArray($data)) {
+        if (!\Genesis\Utils\Common::isValidArray($data)) {
             throw new InvalidArgument('Invalid data structure');
         }
 
@@ -112,7 +112,7 @@ final class Xml implements master\libraries\genesis\src\Genesis\Interfaces\Build
      */
     public function iterateArray($name, $data)
     {
-        if (master\libraries\genesis\src\Genesis\Utils\Common::isValidXMLName($name)) {
+        if (\Genesis\Utils\Common::isValidXMLName($name)) {
             $this->context->startElement($name);
         }
 
@@ -141,7 +141,7 @@ final class Xml implements master\libraries\genesis\src\Genesis\Interfaces\Build
             $this->writeElement($key, $value);
         }
 
-        if (master\libraries\genesis\src\Genesis\Utils\Common::isValidXMLName($name)) {
+        if (\Genesis\Utils\Common::isValidXMLName($name)) {
             $this->context->endElement();
         }
     }
@@ -209,7 +209,7 @@ final class Xml implements master\libraries\genesis\src\Genesis\Interfaces\Build
         if (is_array($value)) {
             $this->iterateArray($key, $value);
         } else {
-            $value = master\libraries\genesis\src\Genesis\Utils\Common::booleanToString($value);
+            $value = \Genesis\Utils\Common::booleanToString($value);
 
             $this->context->writeElement($key, $value);
         }

@@ -32,7 +32,7 @@ namespace Genesis\Api\Traits\Request;
  */
 trait AddressInfoAttributes
 {
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\CustomerInfoAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
+    use CustomerAddress\BillingInfoAttributes;
+    use CustomerAddress\CustomerInfoAttributes;
+    use CustomerAddress\ShippingInfoAttributes;
 }

@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WC_Emerchantpay_Posts_Adapter as PostsAdapter;
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse WP_Query as WpQuery;
+use WP_Query as WpQuery;
 
 /**
  * WC legacy order in the posts tables

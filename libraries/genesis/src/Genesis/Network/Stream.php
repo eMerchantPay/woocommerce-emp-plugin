@@ -26,9 +26,8 @@
 
 namespace Genesis\Network;
 
-use master\libraries\genesis\src\Genesis\Api\Request;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorNetwork;
-use woocommerce
+use Genesis\Api\Request;
+use Genesis\Exceptions\ErrorNetwork;
 
 /**
  * Stream Context Network Interface
@@ -65,7 +64,7 @@ class Stream extends Base
      * @param array $requestData
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      *
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
@@ -104,12 +103,12 @@ class Stream extends Base
         ];
 
         // Note: Mitigate CRIME/BEAST attacks
-        if (master\libraries\genesis\src\Genesis\Utils\Common::compareVersions('5.4.13', '>=')) {
+        if (\Genesis\Utils\Common::compareVersions('5.4.13', '>=')) {
             $contextOptions['ssl']['disable_compression'] = true;
         }
 
         // Note: PHP does NOT support SAN certs on PHP version < 5.6
-        if (master\libraries\genesis\src\Genesis\Utils\Common::compareVersions('5.6.0', '<')) {
+        if (\Genesis\Utils\Common::compareVersions('5.6.0', '<')) {
             $contextOptions['ssl']['CN_match']          = $url['host'];
             $contextOptions['ssl']['SNI_server_name']   = $url['host'];
         } else {
@@ -148,7 +147,7 @@ class Stream extends Base
      * @param $errNo  - error code
      * @param $errStr - error message
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorNetwork
+     * @throws \Genesis\Exceptions\ErrorNetwork
      */
     public static function processErrors($errNo, $errStr)
     {

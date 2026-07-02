@@ -19,7 +19,7 @@
  * @package index.php
  */
 
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceif ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
@@ -66,8 +66,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				 * @return array
 				 */
 				function woocommerce_add_emerchantpay_gateway( $methods ) {
-					$methods[] = 'woocommerce-emp-plugin-master\includes\WC_Emerchantpay_Checkout';
-					$methods[] = 'woocommerce-emp-plugin-master\includes\WC_Emerchantpay_Direct';
+					$methods[] = 'WC_Emerchantpay_Checkout';
+					$methods[] = 'WC_Emerchantpay_Direct';
 
 					return $methods;
 				}

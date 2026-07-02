@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\CashPayments;
  *
  * @package Genesis\Api\Request\Financial\CashPayments
  */
-class PagoFacil extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class PagoFacil extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class PagoFacil extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fi
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::PAGO_FACIL;
+        return \Genesis\Api\Constants\Transaction\Types::PAGO_FACIL;
     }
 
     public function getAllowedBillingCountries()

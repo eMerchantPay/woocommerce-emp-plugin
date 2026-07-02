@@ -27,10 +27,10 @@
 namespace Genesis\Api\Traits\Request\NonFinancial\Kyc;
 
 use DateTime;
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common;
 
 /**
  * Trait KycDocumentVerifications
@@ -88,7 +88,7 @@ trait KycDocumentVerifications
      * Supported types of document that can be verified
      *
      * @var string
-     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes
+     * @see VerificationDocumentTypes
      */
     protected $document_supported_types;
 
@@ -97,7 +97,7 @@ trait KycDocumentVerifications
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setDocumentDateOfBirth($value)
     {
@@ -158,12 +158,12 @@ trait KycDocumentVerifications
      *
      * @param array $documentSupportedTypes Array with Document Types
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes
+     * @throws InvalidArgument
+     * @see VerificationDocumentTypes
      */
     public function setDocumentSupportedTypes($documentSupportedTypes)
     {
-        $getAllowed = master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes::getAll();
+        $getAllowed = VerificationDocumentTypes::getAll();
 
         if (!is_array($documentSupportedTypes) || array_diff($documentSupportedTypes, $getAllowed)) {
             throw new InvalidArgument(

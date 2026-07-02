@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\Base\NonFinancial\TokenizationApi;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\BaseVersionedRequest;
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Request\Base\BaseVersionedRequest;
+use Genesis\Builder;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class BaseRequest

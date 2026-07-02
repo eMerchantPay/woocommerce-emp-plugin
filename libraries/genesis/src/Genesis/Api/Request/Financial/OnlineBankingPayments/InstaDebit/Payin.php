@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\OnlineBankingPayments\InstaDebit;
  *
  * @package Genesis\Api\Request\Financial\OnlineBankingPayments\InstaDebit
  */
-class Payin extends master\libraries\genesis\src\Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit\Payin
+class Payin extends \Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit\Payin
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class Payin extends master\libraries\genesis\src\Genesis\Api\Request\Financial\O
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::INSTA_DEBIT_PAYIN;
+        return \Genesis\Api\Constants\Transaction\Types::INSTA_DEBIT_PAYIN;
     }
 
     /**
@@ -58,6 +58,6 @@ class Payin extends master\libraries\genesis\src\Genesis\Api\Request\Financial\O
             'currency'        => ['CAD', 'USD']
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 }

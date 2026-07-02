@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 ); // Exit if accessed directly.
 }
 
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse WP_Query as WpQuery;
+use WP_Query as WpQuery;
 
 /**
  * WC legacy order in the posts tables

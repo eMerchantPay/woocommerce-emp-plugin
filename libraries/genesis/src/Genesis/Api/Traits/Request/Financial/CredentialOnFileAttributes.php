@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CredentialOnFile;
+use Genesis\Api\Constants\Transaction\Parameters\CredentialOnFile;
 
 /**
  * Credential On File (COF)

@@ -18,10 +18,9 @@
  * @package     classes\class-wc-emerchantpay-subscription-helper
  */
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\States;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );

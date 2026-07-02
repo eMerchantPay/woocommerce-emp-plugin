@@ -26,19 +26,19 @@
 
 namespace Genesis\Api\Request\Financial\CashPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\CompanyTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\Gender;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\MaritalStatuses;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\DocumentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CustomerAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Constants\Transaction\Parameters\CashPayments\CompanyTypes;
+use Genesis\Api\Constants\Transaction\Parameters\CashPayments\Gender;
+use Genesis\Api\Constants\Transaction\Parameters\CashPayments\MaritalStatuses;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\DocumentAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use Genesis\Api\Traits\Request\Financial\CustomerAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Pix
@@ -153,13 +153,13 @@ class Pix extends Financial
     /**
      * @param $value
      * @return Pix
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setGender($value)
     {
         return $this->allowedOptionsSetter(
             'gender',
-            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\Gender::getAll(),
+            Gender::getAll(),
             $value,
             'Invalid value for parameter gender provided.'
         );
@@ -168,13 +168,13 @@ class Pix extends Financial
     /**
      * @param $value
      * @return Pix
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setMaritalStatus($value)
     {
         return $this->allowedOptionsSetter(
             'marital_status',
-            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\MaritalStatuses::getAll(),
+            MaritalStatuses::getAll(),
             $value,
             'Invalid value for marital status parameter provided.'
         );
@@ -184,7 +184,7 @@ class Pix extends Financial
     {
         return $this->allowedOptionsSetter(
             'company_type',
-            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\CompanyTypes::getAll(),
+            CompanyTypes::getAll(),
             $value,
             'Invalid value for company type parameter provided.'
         );

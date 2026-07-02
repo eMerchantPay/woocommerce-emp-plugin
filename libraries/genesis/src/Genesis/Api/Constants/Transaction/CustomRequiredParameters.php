@@ -40,7 +40,7 @@ class CustomRequiredParameters
     public static function forPpro()
     {
         return [
-            'payment_method' => master\libraries\genesis\src\Genesis\Api\Constants\Payment\Methods::getMethods()
+            'payment_method' => \Genesis\Api\Constants\Payment\Methods::getMethods()
         ];
     }
 

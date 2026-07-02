@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\Financial\Cards;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 
 /**
  * Class Bancontact
@@ -37,7 +37,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAtt
  *
  * @package Genesis\Api\Request\Financial\Cards
  */
-class Bancontact extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Bancontact extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -49,7 +49,7 @@ class Bancontact extends master\libraries\genesis\src\Genesis\Api\Request\Base\F
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::BANCONTACT;
+        return \Genesis\Api\Constants\Transaction\Types::BANCONTACT;
     }
 
     /**
@@ -68,14 +68,14 @@ class Bancontact extends master\libraries\genesis\src\Genesis\Api\Request\Base\F
             'billing_country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'billing_country' => 'BE',
             'currency'        => 'EUR'
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

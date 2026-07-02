@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial\Kyc;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common;
 
 /**
  * Trait KycBackgroundChecksVerifications
@@ -100,7 +100,7 @@ trait KycBackgroundChecksVerifications
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setBackgroundChecksDateOfBirth($value)
     {

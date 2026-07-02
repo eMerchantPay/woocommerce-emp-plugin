@@ -26,13 +26,13 @@
 
 namespace Genesis\Api\Validators\Request;
 
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class RegexValidator
  * @package Genesis\Api\Validators\Request
  */
-class RegexValidator extends master\libraries\genesis\src\Genesis\Api\Validators\Request\Base\Validator
+class RegexValidator extends \Genesis\Api\Validators\Request\Base\Validator
 {
     /**
      * CC Regex Validation Patterns

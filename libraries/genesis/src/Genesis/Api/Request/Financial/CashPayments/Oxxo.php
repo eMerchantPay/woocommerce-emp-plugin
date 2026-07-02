@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\CashPayments;
  *
  * @package Genesis\Api\Request\Financial\CashPayments
  */
-class Oxxo extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class Oxxo extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class Oxxo extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::OXXO;
+        return \Genesis\Api\Constants\Transaction\Types::OXXO;
     }
 
     public function getAllowedBillingCountries()

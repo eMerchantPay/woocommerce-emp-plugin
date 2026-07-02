@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Cards\Recurring;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types;
+use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types;
 
 /**
  * trait RecurringTypeAttributes
@@ -55,7 +55,7 @@ trait RecurringTypeAttributes
         return [
             'recurring_type' => [
                 $this->recurring_type => [
-                    ['recurring_type' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types::getInitialTypes()]
+                    ['recurring_type' => Types::getInitialTypes()]
                 ]
             ]
         ];
@@ -72,8 +72,8 @@ trait RecurringTypeAttributes
             'recurring_type' => [
                 $this->recurring_type => [
                     ['recurring_type' => array_merge(
-                        master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types::getInitialTypes(),
-                        master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types::getSubsequentTypes()
+                        Types::getInitialTypes(),
+                        Types::getSubsequentTypes()
                     )]
                 ]
             ]
@@ -90,7 +90,7 @@ trait RecurringTypeAttributes
     {
         return [
             'recurring_type' => [
-                master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types::MANAGED => [
+                Types::MANAGED => [
                     'managed_recurring_mode'
                 ]
             ]

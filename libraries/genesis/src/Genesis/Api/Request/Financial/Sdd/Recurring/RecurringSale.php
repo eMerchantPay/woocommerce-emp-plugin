@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\Sdd\Recurring;
  *
  * @package Genesis\Api\Request\Financial\Sdd\Recurring
  */
-class RecurringSale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
+class RecurringSale extends \Genesis\Api\Request\Base\Financial\Reference
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class RecurringSale extends master\libraries\genesis\src\Genesis\Api\Request\Bas
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::SDD_RECURRING_SALE;
+        return \Genesis\Api\Constants\Transaction\Types::SDD_RECURRING_SALE;
     }
 
     /**
@@ -61,6 +61,6 @@ class RecurringSale extends master\libraries\genesis\src\Genesis\Api\Request\Bas
             'usage'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 }

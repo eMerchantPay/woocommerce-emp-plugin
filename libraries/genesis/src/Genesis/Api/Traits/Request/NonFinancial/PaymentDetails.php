@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\CvvPresents;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\NonFinancial\Kyc\CvvPresents;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait PaymentDetails
@@ -94,7 +94,7 @@ trait PaymentDetails
      * @param $bin
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setBin($bin)
     {
@@ -111,7 +111,7 @@ trait PaymentDetails
      * @param $tail
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setTail($tail)
     {
@@ -128,7 +128,7 @@ trait PaymentDetails
      * @param $account
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setAccount($account)
     {
@@ -145,7 +145,7 @@ trait PaymentDetails
      * @param $cvvPresent
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setCvvPresent($cvvPresent)
     {

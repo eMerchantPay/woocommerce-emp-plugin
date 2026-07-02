@@ -27,12 +27,12 @@
 namespace Genesis\Api\Request\NonFinancial\TransactionApi;
 
 use DateTime;
-use master\libraries\genesis\src\Genesis\Api\Request;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\BaseVersionedRequest;
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Request;
+use Genesis\Api\Request\Base\BaseVersionedRequest;
+use Genesis\Builder;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class CardExpiryDateUpdate
@@ -121,7 +121,7 @@ class CardExpiryDateUpdate extends BaseVersionedRequest
      *
      * @param $value
      * @return CardExpiryDateUpdate
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setExpirationMonth($value)
     {
@@ -138,8 +138,8 @@ class CardExpiryDateUpdate extends BaseVersionedRequest
      *
      * @param string $value
      * @return CardExpiryDateUpdate
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setExpirationYear($value)
     {
@@ -207,7 +207,7 @@ class CardExpiryDateUpdate extends BaseVersionedRequest
     /**
      * Validate provided date before sending the request
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     private function checkDate()
     {

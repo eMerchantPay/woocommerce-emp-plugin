@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Constants\Transaction\Parameters\OnlineBanking;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Banks;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Constants\Banks;
+use Genesis\Utils\Common;
 
 /**
  * Class BankCodesConditionalValues

@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Traits\Request\Financial\TravelData;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Request\Financial\TravelData\Base\AidAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Request\Financial\TravelData\Base\AidAttributes;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait AirlineItineraryAttributes
@@ -112,7 +112,7 @@ trait AirlineItineraryAttributes
     /**
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setAidDateOfIssue($value)
     {
@@ -172,9 +172,9 @@ trait AirlineItineraryAttributes
     }
 
     /**
-     * @param master\libraries\genesis\src\Genesis\Api\Request\Financial\TravelData\Base\AidAttributes $item
+     * @param AidAttributes $item
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function addAdditionalAidAttributes(AidAttributes $item)
     {
@@ -214,7 +214,7 @@ trait AirlineItineraryAttributes
     /**
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setAidTotalFare($value)
     {

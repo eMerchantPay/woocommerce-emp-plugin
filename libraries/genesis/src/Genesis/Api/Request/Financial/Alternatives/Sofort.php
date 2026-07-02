@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
 
 /**
  * Class Sofort
@@ -43,7 +43,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPay
  * @method string getIban()         International bank account number of the customer
  * @method $this  setIban($value)   International bank account number of the customer
  */
-class Sofort extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Sofort extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -136,7 +136,7 @@ class Sofort extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::SOFORT;
+        return \Genesis\Api\Constants\Transaction\Types::SOFORT;
     }
 
     /**
@@ -156,14 +156,14 @@ class Sofort extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
             'billing_country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'billing_country' => ['AT', 'BE', 'DE', 'ES', 'IT', 'NL', 'CH', 'PL'],
-            'currency'        => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
+            'currency'        => \Genesis\Utils\Currency::getList()
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

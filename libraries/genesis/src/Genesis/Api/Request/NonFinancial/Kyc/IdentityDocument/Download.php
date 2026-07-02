@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\IdentityDocument;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
 
 /**
  * Class Download
@@ -63,7 +63,7 @@ class Download extends BaseRequest
             'identity_document_id'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

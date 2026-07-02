@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Base\NonFinancial\Consumers;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\BaseVersionedRequest;
-use master\libraries\genesis\src\Genesis\Builder;
+use Genesis\Api\Request\Base\BaseVersionedRequest;
+use Genesis\Builder;
 
 /**
  * Class BaseRequest
@@ -63,6 +63,6 @@ abstract class BaseRequest extends BaseVersionedRequest
             $this->getRequestPath() . '_request' => $this->getRequestStructure()
         ];
 
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

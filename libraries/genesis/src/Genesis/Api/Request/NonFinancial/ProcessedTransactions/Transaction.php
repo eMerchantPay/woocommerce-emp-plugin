@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\NonFinancial\ProcessedTransactions;
 
-use master\libraries\genesis\src\Genesis\Api\Request;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Request;
+use Genesis\Utils\Common;
 
 /**
  * Class Transaction

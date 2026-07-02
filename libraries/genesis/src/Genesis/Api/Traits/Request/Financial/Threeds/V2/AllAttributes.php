@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Threeds\V2;
 
-use woocommerceuse woocommerce/**
+/**
  * Trait AllAttributes
  * Includes All Common 3DSv2-Method Attributes with Recurring Attributes
  *

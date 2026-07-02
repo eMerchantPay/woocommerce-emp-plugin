@@ -22,12 +22,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Item as InvoiceItem;
-use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Items as InvoiceItems;
-use master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Transaction\ItemTypes as InvoiceItemTypes;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Request\Financial\Alternatives\Transaction\Item as InvoiceItem;
+use Genesis\Api\Request\Financial\Alternatives\Transaction\Items as InvoiceItems;
+use Genesis\Api\Constants\Financial\Alternative\Transaction\ItemTypes as InvoiceItemTypes;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class wc_emerchantpay_order_helper
@@ -150,7 +149,7 @@ class WC_Emerchantpay_Order_Helper {
 	 *
 	 * @return InvoiceItems $items
 	 *
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter|master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+	 * @throws ErrorParameter|InvalidArgument
 	 */
 	public static function get_invoice_custom_param_items( WC_Order $order ) {
 		$items       = new InvoiceItems();

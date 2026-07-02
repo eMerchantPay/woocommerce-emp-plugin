@@ -26,12 +26,12 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PproAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PproAttributes;
 
 /**
  * Class BancoDoBrasil
@@ -43,7 +43,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PproAttrib
  * @method string getConsumerReference()
  * @method string getNationalId()
  */
-class BancoDoBrasil extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class BancoDoBrasil extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -58,7 +58,7 @@ class BancoDoBrasil extends master\libraries\genesis\src\Genesis\Api\Request\Bas
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::BANCO_DO_BRASIL;
+        return \Genesis\Api\Constants\Transaction\Types::BANCO_DO_BRASIL;
     }
 
     /**
@@ -80,13 +80,13 @@ class BancoDoBrasil extends master\libraries\genesis\src\Genesis\Api\Request\Bas
             'billing_country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'billing_country' => [ 'BR' ]
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

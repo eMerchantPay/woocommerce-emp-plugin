@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Constants\Transaction\Parameters\Payout;
 
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Money transfer payout is a standard payout with additional parameters.

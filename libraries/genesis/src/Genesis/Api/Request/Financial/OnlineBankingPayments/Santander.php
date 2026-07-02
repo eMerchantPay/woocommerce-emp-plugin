@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
 
 /**
  * Class Santander
@@ -35,7 +35,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPay
  *
  * @package Genesis\Api\Request\Financial\OnlineBankingPayments
  */
-class Santander extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class Santander extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     use PendingPaymentAttributes;
 
@@ -45,7 +45,7 @@ class Santander extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fi
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::SANTANDER;
+        return \Genesis\Api\Constants\Transaction\Types::SANTANDER;
     }
 
     /**

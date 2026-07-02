@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use Genesis\Api\Validators\Request\RegexValidator;
+use Genesis\Exceptions\ErrorParameter;
 
 /**
  * Trait BankAttributes
@@ -70,7 +70,7 @@ trait BankAttributes
      * @param $value
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setBic($value)
     {

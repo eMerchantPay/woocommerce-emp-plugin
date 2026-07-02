@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\Financial\Wallets;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 
 /**
  * Class WebMoney
@@ -39,7 +39,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAtt
  *
  * @method WebMoney setCustomerAccountId($value) Set Webmoney account ID (WMID)
  */
-class WebMoney extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class WebMoney extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -75,7 +75,7 @@ class WebMoney extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fin
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::WEBMONEY;
+        return \Genesis\Api\Constants\Transaction\Types::WEBMONEY;
     }
 
     /**
@@ -108,14 +108,14 @@ class WebMoney extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fin
             'billing_country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'billing_country' => master\libraries\genesis\src\Genesis\Utils\Country::getList(),
-            'currency'        => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
+            'billing_country' => \Genesis\Utils\Country::getList(),
+            'currency'        => \Genesis\Utils\Currency::getList()
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
 
         $requiredFieldsConditional = [
             'is_payout' => [
@@ -125,7 +125,7 @@ class WebMoney extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fin
             ]
         ];
 
-        $this->requiredFieldsConditional = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
+        $this->requiredFieldsConditional = \Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
     }
 
     /**

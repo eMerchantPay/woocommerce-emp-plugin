@@ -26,9 +26,8 @@
 
 namespace Genesis\Network;
 
-use master\libraries\genesis\src\Genesis\Api\Request;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorNetwork;
-use woocommerce
+use Genesis\Api\Request;
+use Genesis\Exceptions\ErrorNetwork;
 
 /**
  * cURL Network Interface
@@ -72,7 +71,7 @@ class Curl extends Base
      * @param array $requestData
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function prepareRequestBody($requestData)
     {
@@ -128,7 +127,7 @@ class Curl extends Base
      * Check whether or not a cURL request is successful
      *
      * @return string
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorNetwork
+     * @throws \Genesis\Exceptions\ErrorNetwork
      */
     public function checkForErrors()
     {

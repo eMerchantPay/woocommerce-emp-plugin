@@ -18,19 +18,18 @@
  * @package     classes\class-wc-emerchantpay-transaction
  */
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Config;
-use master\libraries\genesis\src\Genesis\Genesis;
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Config;
+use Genesis\Genesis;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-if ( ! class_exists('woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Method_Base') ) {
+if ( ! class_exists( 'WC_Emerchantpay_Method_Base' ) ) {
 	require_once dirname( __DIR__ ) . '/classes/wc_emerchantpay_method_base.php';
 }
 
@@ -471,11 +470,11 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 * @param array $data Transaction data.
 	 * @param array $is_recurring Indicates recurring payment creation
 	 *
-	 * @return master\libraries\genesis\src\Genesis\Genesis
+	 * @return Genesis
 	 *
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod Deprecated method exception.
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument  Invalid argument exception.
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod    Invalid method exception.
+	 * @throws \Genesis\Exceptions\DeprecatedMethod Deprecated method exception.
+	 * @throws \Genesis\Exceptions\InvalidArgument  Invalid argument exception.
+	 * @throws \Genesis\Exceptions\InvalidMethod    Invalid method exception.
 	 */
 	protected function prepare_initial_genesis_request( $data, $is_recurring = false ) {
 		$genesis = WC_emerchantpay_Genesis_Helper::get_gateway_request_by_txn_type( $data['transaction_type'] );
@@ -625,7 +624,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 *
 	 * @return void
 	 *
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+	 * @throws \Genesis\Exceptions\InvalidArgument
 	 */
 	public function set_credentials() {
 		parent::set_credentials();
@@ -794,7 +793,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	/**
 	 * Adds 3DSv2 parameters to the Request
 	 *
-	 * @param master\libraries\genesis\src\Genesis\Genesis  $genesis      Genesis object.
+	 * @param Genesis  $genesis      Genesis object.
 	 * @param WC_Order $order        Order identifier.
 	 * @param array    $data         Request data.
 	 * @param bool     $is_recurring Defines that request should be recurring or not. Default false.
@@ -814,7 +813,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	/**
 	 * Adds browser data to the Genesis Request
 	 *
-	 * @param master\libraries\genesis\src\Genesis\Genesis $genesis Genesis object.
+	 * @param Genesis $genesis Genesis object.
 	 * @param array   $data Request data.
 	 *
 	 * @return void

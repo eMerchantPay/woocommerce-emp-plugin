@@ -26,16 +26,16 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\DocumentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\UserCategoryAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\VirtualPaymentAddressAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\DocumentAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\UserCategoryAttributes;
+use Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\VirtualPaymentAddressAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
 
 class Upi extends Financial
 {
@@ -43,8 +43,8 @@ class Upi extends Financial
     use AsyncAttributes;
     use DocumentAttributes;
     use PaymentAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\UserCategoryAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\VirtualPaymentAddressAttributes;
+    use UserCategoryAttributes;
+    use VirtualPaymentAddressAttributes;
 
     /**
      * Return the Transaction Type used by Genesis
@@ -84,9 +84,9 @@ class Upi extends Financial
      * Add document_id conditional validation if it is present
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws InvalidArgument
+     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {

@@ -26,13 +26,13 @@
 
 namespace Genesis\Api\Request\NonFinancial\BillingApi;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\GraphqlRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\BillingApi\OrderByDirection;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\DateAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Request\Base\GraphqlRequest;
+use Genesis\Api\Traits\Request\NonFinancial\BillingApi\OrderByDirection;
+use Genesis\Api\Traits\Request\NonFinancial\DateAttributes;
+use Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Transaction
@@ -46,7 +46,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 class Transaction extends GraphqlRequest
 {
     use DateAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\BillingApi\OrderByDirection;
+    use OrderByDirection;
     use PagingAttributes;
 
     const MAX_COUNT_BILLING_STATEMENT_ID    = 10;
@@ -112,7 +112,7 @@ class Transaction extends GraphqlRequest
      *
      * @param array $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setUniqueId($value)
     {
@@ -138,7 +138,7 @@ class Transaction extends GraphqlRequest
      *
      * @param array $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setBillingStatementId($value)
     {
@@ -164,7 +164,7 @@ class Transaction extends GraphqlRequest
      *
      * @param array $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setMerchantTransactionId($value)
     {
@@ -190,7 +190,7 @@ class Transaction extends GraphqlRequest
      *
      * @param array $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setMasterAccountName($value)
     {
@@ -216,7 +216,7 @@ class Transaction extends GraphqlRequest
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setTransactionType($value)
     {
@@ -234,7 +234,7 @@ class Transaction extends GraphqlRequest
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setOrderByField($value)
     {
@@ -254,7 +254,7 @@ class Transaction extends GraphqlRequest
      */
     protected function initGraphqlToken()
     {
-        $this->setApiConfig('bearer_token', master\libraries\genesis\src\Genesis\Config::getBillingApiToken());
+        $this->setApiConfig('bearer_token', \Genesis\Config::getBillingApiToken());
     }
 
     /**
@@ -289,7 +289,7 @@ class Transaction extends GraphqlRequest
         $requiredFields = [
             'response_fields'
         ];
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldsGroups = [
             'filter' => [
@@ -302,13 +302,13 @@ class Transaction extends GraphqlRequest
                 'transaction_type'
             ]
         ];
-        $this->requiredFieldsGroups = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsGroups);
+        $this->requiredFieldsGroups = \Genesis\Utils\Common::createArrayObject($requiredFieldsGroups);
     }
 
     /**
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws ErrorParameter
+     * @throws InvalidArgument
      */
     protected function checkRequirements()
     {
@@ -323,7 +323,7 @@ class Transaction extends GraphqlRequest
      * If startDate is provided, then endDate should also be provided and vice versa.
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function validateConditionallyRequiredDates()
     {
@@ -341,7 +341,7 @@ class Transaction extends GraphqlRequest
      * Validate max number of filter elements
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function validateStatementsMaxCount()
     {
@@ -378,7 +378,7 @@ class Transaction extends GraphqlRequest
      * @param string $message - text for the error message
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function checkArrayMaxSize($var, $maxSize, $message)
     {
@@ -401,7 +401,7 @@ class Transaction extends GraphqlRequest
      * @param string $message - the message of the exception
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     protected function setStringArray($value, $name, $message)
     {

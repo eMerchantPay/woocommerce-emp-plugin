@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Threeds\V2;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait Recurring
@@ -67,7 +67,7 @@ trait Recurring
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2RecurringExpirationDate($value)
     {
@@ -90,7 +90,7 @@ trait Recurring
      *
      * @param int $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setThreedsV2RecurringFrequency($value)
     {

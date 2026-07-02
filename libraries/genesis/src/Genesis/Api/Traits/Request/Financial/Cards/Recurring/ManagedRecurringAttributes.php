@@ -26,11 +26,10 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Cards\Recurring;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\Intervals;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\Modes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use woocommerce
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\Intervals;
+use Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\Modes;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait ManagedRecurringAttributes
@@ -102,7 +101,7 @@ trait ManagedRecurringAttributes
      *
      * @param string|null $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setManagedRecurringMode($value)
     {
@@ -134,7 +133,7 @@ trait ManagedRecurringAttributes
     /**
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setManagedRecurringFirstDate($value)
     {
@@ -157,7 +156,7 @@ trait ManagedRecurringAttributes
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setManagedRecurringInterval($value)
     {
@@ -191,7 +190,7 @@ trait ManagedRecurringAttributes
     /**
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setManagedRecurringAmount($value)
     {

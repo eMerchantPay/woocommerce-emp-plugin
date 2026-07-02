@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\Financial\Vouchers;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 
 /**
  * Class CashU
@@ -40,7 +40,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAtt
  *
  * @package Genesis\Api\Request\Financial\Vouchers
  */
-class CashU extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class CashU extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -52,7 +52,7 @@ class CashU extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financ
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::CASHU;
+        return \Genesis\Api\Constants\Transaction\Types::CASHU;
     }
 
     /**
@@ -75,7 +75,7 @@ class CashU extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financ
             ]
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

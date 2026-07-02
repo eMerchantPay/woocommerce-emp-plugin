@@ -2,10 +2,10 @@
 
 namespace Genesis\Api\Traits\Validations\Request;
 
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\Base\Validator as RequestValidator;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Validators\Request\Base\Validator as RequestValidator;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidClassMethod;
+use Genesis\Utils\Common as CommonUtils;
 use RecursiveIteratorIterator;
 
 trait Validations
@@ -84,7 +84,7 @@ trait Validations
      /**
      * Validate that all required fields are populated
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\ErrorParameter
      */
     protected function validateFieldRequirements()
     {
@@ -109,8 +109,8 @@ trait Validations
     /**
      * Validate that all required fields are populated with expected values
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     protected function validateFieldValuesRequirements()
     {
@@ -157,7 +157,7 @@ trait Validations
     /**
      * Validate that the group fields in the request are populated
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\ErrorParameter
      */
     protected function validateGroupRequirements()
     {
@@ -198,7 +198,7 @@ trait Validations
     /**
      * Validate that all fields (who depend on previously populated fields) are populated
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\ErrorParameter
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
@@ -256,7 +256,7 @@ trait Validations
     /**
      * Validate conditional requirement, where either one of the fields are populated
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\ErrorParameter
      */
     protected function validateConditionalFieldsOr()
     {
@@ -287,7 +287,7 @@ trait Validations
      * Validate that all fields (who depend on previously populated fields)
      * are populated with expected values
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\ErrorParameter
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
@@ -319,7 +319,7 @@ trait Validations
                         if ($childFieldValues instanceof RequestValidator) {
                             try {
                                 $childFieldValues->run($this, $childFieldName);
-                            } catch (master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument $e) {
+                            } catch (\Genesis\Exceptions\InvalidArgument $e) {
                                 $childFieldValuesValidated = false;
                             }
 

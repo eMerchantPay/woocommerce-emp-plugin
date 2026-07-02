@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives\Transaction;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\MagicAccessors;
+use Genesis\Api\Traits\MagicAccessors;
 
 /**
  * Class ProductIdentifiers

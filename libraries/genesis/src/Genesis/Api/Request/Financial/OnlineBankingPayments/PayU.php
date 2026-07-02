@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
 
 /**
  * Class PayU
@@ -39,7 +39,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPay
  * @package Genesis\Api\Request\Financial\OnlineBankingPayments
  *
  */
-class PayU extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class PayU extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -52,7 +52,7 @@ class PayU extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::PAYU;
+        return \Genesis\Api\Constants\Transaction\Types::PAYU;
     }
 
     /**
@@ -71,14 +71,14 @@ class PayU extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
             'billing_country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'billing_country' => [ 'CZ', 'PL' ],
             'currency'        => [ 'CZK', 'PLN' ]
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

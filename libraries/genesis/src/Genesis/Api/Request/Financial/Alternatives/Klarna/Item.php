@@ -26,11 +26,10 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives\Klarna;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\MagicAccessors;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
-use master\libraries\genesis\src\Genesis\Utils\Currency as CurrencyUtils;
-use woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Traits\MagicAccessors;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Utils\Common as CommonUtils;
+use Genesis\Utils\Currency as CurrencyUtils;
 
 /**
  * Class Item
@@ -182,7 +181,7 @@ class Item
      * @param $product_url
      * @param $quantity_unit
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function __construct(
         $name,
@@ -213,7 +212,7 @@ class Item
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setName($value)
     {
@@ -228,7 +227,7 @@ class Item
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setUnitPrice($value)
     {
@@ -243,7 +242,7 @@ class Item
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setQuantity($value)
     {
@@ -259,7 +258,7 @@ class Item
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setTaxRate($value)
     {
@@ -273,7 +272,7 @@ class Item
      * Set total discount amount
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setTotalDiscountAmount($value)
     {
@@ -288,7 +287,7 @@ class Item
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setItemType($value)
     {
@@ -319,7 +318,7 @@ class Item
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setQuantityUnit($value)
     {
@@ -429,7 +428,7 @@ class Item
      *
      * @param $field
      * @param $value
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function verifyRequiredField($field, $value)
     {
@@ -448,7 +447,7 @@ class Item
      *
      * @param $field
      * @param $value
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function verifyNonNegativeField($field, $value)
     {
@@ -468,7 +467,7 @@ class Item
      *
      * @param $field
      * @param $value
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function verifyNegativeField($field, $value)
     {
@@ -487,7 +486,7 @@ class Item
      * Verify unit_price filed
      *
      * @param $value
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function verifyUnitPriceField($value)
     {
@@ -536,7 +535,7 @@ class Item
      *
      * @param mixed $value
      * @return mixed
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     private function getAmountInProperUnit($value)
     {

@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\NonFinancial\Consumers;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
+use Genesis\Api\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
 
 /**
  * Class Enable
@@ -72,7 +72,7 @@ class Enable extends ConsumerBaseRequest
             'email'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

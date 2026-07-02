@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
+use Genesis\Exceptions\ErrorParameter;
 
 /**
  * Trait ScaAttributes
@@ -56,7 +56,7 @@ trait ScaAttributes
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setScaExemption($value)
     {

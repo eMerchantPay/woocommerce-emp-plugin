@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\Call;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\CallVerificationStatuses;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use Genesis\Api\Constants\NonFinancial\Kyc\CallVerificationStatuses;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use Genesis\Api\Validators\Request\RegexValidator;
 
 /**
  * Class Update
@@ -84,14 +84,14 @@ class Update extends BaseRequest
             'verification_status'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'verification_status' => CallVerificationStatuses::getAll(),
             'security_code_input' => new RegexValidator(RegexValidator::PATTERN_KYC_CALL_SECURITY_CODE)
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

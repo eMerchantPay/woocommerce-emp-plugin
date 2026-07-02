@@ -55,7 +55,7 @@ trait PaymentAttributes
      * Set the amount of transaction in minor currency unit
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setAmount($value)
     {

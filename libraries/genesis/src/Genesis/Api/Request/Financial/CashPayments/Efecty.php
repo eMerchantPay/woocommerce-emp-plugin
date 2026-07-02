@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\CashPayments;
  *
  * @package Genesis\Api\Request\Financial\CashPayments
  */
-class Efecty extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class Efecty extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class Efecty extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::EFECTY;
+        return \Genesis\Api\Constants\Transaction\Types::EFECTY;
     }
 
     public function getAllowedBillingCountries()

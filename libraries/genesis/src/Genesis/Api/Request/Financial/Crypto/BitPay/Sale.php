@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Financial\Crypto\BitPay;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 
 /**
  * Class BitPaySale
@@ -37,7 +37,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAtt
  *
  * @package Genesis\Api\Request\Financial\Crypto\BitPay
  */
-class Sale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Sale extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use PaymentAttributes;
@@ -55,7 +55,7 @@ class Sale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::BITPAY_SALE;
+        return \Genesis\Api\Constants\Transaction\Types::BITPAY_SALE;
     }
 
     /**
@@ -73,7 +73,7 @@ class Sale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financi
             'customer_email'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

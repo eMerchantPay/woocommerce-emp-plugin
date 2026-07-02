@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Constants;
 
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Utils\Common;
 
 /**
  * Class i18n

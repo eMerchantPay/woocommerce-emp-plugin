@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\ProcessedTransactions;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\DateRangeRequest as BaseDateRangeRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\ExternallyProcessed;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\ProcessingType;
+use Genesis\Api\Request\Base\NonFinancial\DateRangeRequest as BaseDateRangeRequest;
+use Genesis\Api\Traits\Request\NonFinancial\ExternallyProcessed;
+use Genesis\Api\Traits\Request\NonFinancial\ProcessingType;
 
 class DateRange extends BaseDateRangeRequest
 {

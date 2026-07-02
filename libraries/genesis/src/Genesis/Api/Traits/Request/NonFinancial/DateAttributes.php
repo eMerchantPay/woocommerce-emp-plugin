@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Validators\Request\RegexValidator;
 
 /**
  * Trait DateAttributes
@@ -65,7 +65,7 @@ trait DateAttributes
     /**
      * @param string $date
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setStartDate($date)
     {
@@ -101,7 +101,7 @@ trait DateAttributes
     /**
      * @param string $date
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setEndDate($date)
     {

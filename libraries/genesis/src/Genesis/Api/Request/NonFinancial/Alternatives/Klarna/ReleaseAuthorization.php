@@ -26,13 +26,13 @@
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\Klarna;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
+use Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
 
 /**
  * Class ReleaseAuthorization
  * @package Genesis\Api\Request\NonFinancial\Alternatives\Klarna
  */
-class ReleaseAuthorization extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest
+class ReleaseAuthorization extends BaseRequest
 {
     protected function initConfiguration()
     {

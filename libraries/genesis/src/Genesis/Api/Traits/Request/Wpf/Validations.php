@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Traits\Request\Wpf;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Trait Validations
@@ -41,7 +41,7 @@ trait Validations
      *
      * @param string $transactionType
      * @param array $parameters
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function verifyTransactionType($transactionType, $parameters = [])
     {
@@ -126,7 +126,7 @@ trait Validations
      * @param string $customRequiredParam
      * @param array $txnParameters
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\ErrorParameter
      */
     protected function checkEmptyRequiredParamsFor(
         $transactionType,
@@ -164,7 +164,7 @@ trait Validations
      * @param mixed $paramValues
      * @param string $paramName
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\ErrorParameter
      */
     private function checkIsParamSet($transactionType, $parameters, $paramValues, $paramName)
     {

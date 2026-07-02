@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\Call;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\CallServiceTypes;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use Genesis\Api\Constants\NonFinancial\Kyc\CallServiceTypes;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use Genesis\Api\Validators\Request\RegexValidator;
 
 /**
  * Class Download
@@ -115,7 +115,7 @@ class Create extends BaseRequest
             'service_type'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'service_language'      => [
@@ -128,7 +128,7 @@ class Create extends BaseRequest
             'customer_phone_number' => new RegexValidator('/^\d+$/')
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

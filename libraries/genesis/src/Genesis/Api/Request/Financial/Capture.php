@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
+use Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
+use Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
 
 /**
  * Class Capture
@@ -36,7 +36,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\TravelData
  *
  * @package Genesis\Api\Request\Financial
  */
-class Capture extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
+class Capture extends \Genesis\Api\Request\Base\Financial\Reference
 {
     use BusinessAttributes;
     use TravelDataAttributes;
@@ -47,7 +47,7 @@ class Capture extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fina
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::CAPTURE;
+        return \Genesis\Api\Constants\Transaction\Types::CAPTURE;
     }
 
     /**

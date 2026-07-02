@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\Transaction;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\TransactionStatuses;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use Genesis\Api\Constants\NonFinancial\Kyc\TransactionStatuses;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
 
 /**
  * Class Update
@@ -109,7 +109,7 @@ class Update extends BaseRequest
      * @param $status
      *
      * @return Update
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setTransactionStatus($status)
     {
@@ -132,7 +132,7 @@ class Update extends BaseRequest
             'transaction_unique_id'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldsConditional = [
             'status' => [
@@ -145,7 +145,7 @@ class Update extends BaseRequest
             ]
         ];
 
-        $this->requiredFieldsConditional = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
+        $this->requiredFieldsConditional = \Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
     }
 
     /**

@@ -37,7 +37,7 @@ namespace Genesis\Api\Request\Financial\CashPayments;
  * @method string getNationalId()
  * @method string getBirthDate()
  */
-class Boleto extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class Boleto extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -45,7 +45,7 @@ class Boleto extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::BOLETO;
+        return \Genesis\Api\Constants\Transaction\Types::BOLETO;
     }
 
     /**

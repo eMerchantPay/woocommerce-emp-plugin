@@ -26,23 +26,23 @@
 
 namespace Genesis\Api\Request\Financial\Mobile;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Mobile\GooglePay\PaymentTypes as GooglePaySubtypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types as TransactionType;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\DocumentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringTypeAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\NotificationAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Threeds\V2\AllAttributes as AllThreedsV2Attributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Mobile\GooglePayAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
-use master\libraries\genesis\src\Genesis\Utils\Currency;
+use Genesis\Api\Constants\Transaction\Parameters\Mobile\GooglePay\PaymentTypes as GooglePaySubtypes;
+use Genesis\Api\Constants\Transaction\Types as TransactionType;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\DocumentAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
+use Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringTypeAttributes;
+use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+use Genesis\Api\Traits\Request\Financial\NotificationAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\Threeds\V2\AllAttributes as AllThreedsV2Attributes;
+use Genesis\Api\Traits\Request\Mobile\GooglePayAttributes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
+use Genesis\Utils\Currency;
 
 /**
  * Class GooglePay
@@ -60,7 +60,7 @@ class GooglePay extends Financial
     use BusinessAttributes;
     use DescriptorAttributes;
     use DocumentAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Mobile\GooglePayAttributes;
+    use GooglePayAttributes;
     use NotificationAttributes;
     use PaymentAttributes;
     use RecurringTypeAttributes;
@@ -75,7 +75,7 @@ class GooglePay extends Financial
      *
      * @param string $token
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setJsonToken($token)
     {
@@ -131,9 +131,9 @@ class GooglePay extends Financial
      * Add document_id conditional validation if it is present
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws InvalidArgument
+     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {

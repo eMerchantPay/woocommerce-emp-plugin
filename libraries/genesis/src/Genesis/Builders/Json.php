@@ -26,7 +26,7 @@
 
 namespace Genesis\Builders;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class Json
@@ -35,7 +35,7 @@ use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
  *
  * @package Genesis\Builders\Wrapper
  */
-final class Json implements master\libraries\genesis\src\Genesis\Interfaces\Builder
+final class Json implements \Genesis\Interfaces\Builder
 {
     /**
      * JSON storage
@@ -59,9 +59,9 @@ final class Json implements master\libraries\genesis\src\Genesis\Interfaces\Buil
      *
      * @param array $structure
      *
-     * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      *
+     * @return void
      */
     public function populateNodes($structure)
     {

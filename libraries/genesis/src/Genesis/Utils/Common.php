@@ -27,8 +27,8 @@
 namespace Genesis\Utils;
 
 use ArrayObject;
-use master\libraries\genesis\src\Genesis\Exceptions\Exception;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\Exception;
+use Genesis\Exceptions\InvalidArgument;
 use ReflectionClass;
 
 /**
@@ -477,7 +477,7 @@ final class Common
      *
      * @return \ArrayObject
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\Exception
+     * @throws Exception
      */
     public static function removeMultipleKeys($arrayKeys, $arrayObject)
     {
@@ -511,7 +511,7 @@ final class Common
      * @param string $body
      * @param bool $toArray
      * @return null|array|\stdClass
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public static function decodeJsonString($body, $toArray = false)
     {

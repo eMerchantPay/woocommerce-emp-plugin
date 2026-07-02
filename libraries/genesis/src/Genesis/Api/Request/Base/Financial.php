@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Request\Base;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\BaseAttributes;
-use master\libraries\genesis\src\Genesis\Config;
-use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Traits\Request\BaseAttributes;
+use Genesis\Config;
+use Genesis\Exceptions\EnvironmentNotSet;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Financial
@@ -40,7 +40,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
  *
  * @method getUseSmartRouter() Get Smart Router usage. Whether Financial transaction endpoint is a Smart Router or not.
  */
-abstract class Financial extends master\libraries\genesis\src\Genesis\Api\Request
+abstract class Financial extends \Genesis\Api\Request
 {
     use BaseAttributes;
 
@@ -79,7 +79,7 @@ abstract class Financial extends master\libraries\genesis\src\Genesis\Api\Reques
     /**
      * Initialize per-request configuration
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws EnvironmentNotSet
      */
     protected function initConfiguration()
     {
@@ -97,10 +97,10 @@ abstract class Financial extends master\libraries\genesis\src\Genesis\Api\Reques
      *
      * @return void
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws EnvironmentNotSet
+     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidClassMethod
      */
     protected function processRequestParameters()
     {
@@ -129,14 +129,14 @@ abstract class Financial extends master\libraries\genesis\src\Genesis\Api\Reques
 
         $treeStructure['payment_transaction'] += $this->getPaymentTransactionStructure();
 
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 
     /**
      * Initialize Smart Router endpoint
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws \Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initializeSmartRouter()
     {

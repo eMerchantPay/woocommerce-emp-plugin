@@ -28,7 +28,6 @@ use WC_Emerchantpay_Order_Helper as OrderHelper;
 use WC_Emerchantpay_Transaction as Transaction;
 use WC_Emerchantpay_Transactions_Tree as TransactionTree;
 use WC_Emerchantpay_Order_Factory as OrderFactory;
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
 
 /**
  * Emerchantpay Order Storage Proxy

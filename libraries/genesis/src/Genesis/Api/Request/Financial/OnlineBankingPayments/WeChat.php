@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 
 /**
  * Class WeChat
@@ -41,7 +41,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAtt
  * @method WeChat setProductNum($value) Set product number
  * @method WeChat setProductDesc($value) Set product description
  */
-class WeChat extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class WeChat extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -57,7 +57,7 @@ class WeChat extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::WECHAT;
+        return \Genesis\Api\Constants\Transaction\Types::WECHAT;
     }
 
     /**
@@ -77,14 +77,14 @@ class WeChat extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
             'billing_country',
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'currency'        => master\libraries\genesis\src\Genesis\Utils\Currency::getList(),
-            'billing_country' => master\libraries\genesis\src\Genesis\Utils\Country::getList()
+            'currency'        => \Genesis\Utils\Currency::getList(),
+            'billing_country' => \Genesis\Utils\Country::getList()
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

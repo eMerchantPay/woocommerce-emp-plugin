@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Traits\Request\Payout;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Payout\MoneyTransferTypes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\Transaction\Parameters\Payout\MoneyTransferTypes;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait MoneyTransferPayoutAttributes
@@ -123,7 +123,7 @@ trait MoneyTransferPayoutAttributes
 
     /**
      * @param string $value
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setMoneyTransferType($value)
     {
@@ -135,7 +135,7 @@ trait MoneyTransferPayoutAttributes
 
         $this->allowedOptionsSetter(
             'money_transfer_type',
-            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Payout\MoneyTransferTypes::getAllowedMoneyTransferTypes(),
+            MoneyTransferTypes::getAllowedMoneyTransferTypes(),
             $value,
             'Invalid value for type parameter.'
         );
@@ -148,7 +148,7 @@ trait MoneyTransferPayoutAttributes
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setMoneyTransferSenderBirthDate($value)
     {
@@ -179,7 +179,7 @@ trait MoneyTransferPayoutAttributes
     /**
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setMoneyTransferSenderAccountNumber($value)
     {
@@ -194,7 +194,7 @@ trait MoneyTransferPayoutAttributes
     /**
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setMoneyTransferServiceProviderName($value)
     {

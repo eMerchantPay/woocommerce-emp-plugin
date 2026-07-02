@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request;
 
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use Genesis\Api\Validators\Request\RegexValidator;
 
 /**
  * Trait DocumentAttributes
@@ -50,34 +50,34 @@ trait DocumentAttributes
         return [
             'billing_country' => [
                 'AR' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_AR)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_AR)]
                 ],
                 'BR' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_BR)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_BR)]
                 ],
                 'CL' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_CL)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_CL)]
                 ],
                 'CO' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_CO)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_CO)]
                 ],
                 'IN' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_IN)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_IN)]
                 ],
                 'MX' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_MX)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_MX)]
                 ],
                 'PY' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_PY)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_PY)]
                 ],
                 'PE' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_PE)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_PE)]
                 ],
                 'TR' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_TR)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_TR)]
                 ],
                 'UY' => [
-                    ['document_id' => new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::REGEXP_DOCUMENT_ID_UY)]
+                    ['document_id' => new RegexValidator(RegexValidator::REGEXP_DOCUMENT_ID_UY)]
                 ],
             ]
         ];

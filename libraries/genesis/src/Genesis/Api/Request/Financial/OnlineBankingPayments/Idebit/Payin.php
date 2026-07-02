@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 
 /**
  * Class Payin
@@ -39,7 +39,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAtt
  * @method Payin setCustomerAccountId($value) Set Unique consumer account ID
  * @method Payin setReturnUrl($value) Set the URL where customer is sent to after payment
  */
-class Payin extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Payin extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use PaymentAttributes;
@@ -64,7 +64,7 @@ class Payin extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financ
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::IDEBIT_PAYIN;
+        return \Genesis\Api\Constants\Transaction\Types::IDEBIT_PAYIN;
     }
 
     /**
@@ -83,14 +83,14 @@ class Payin extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financ
             'billing_country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'billing_country' => ['CA'],
             'currency'        => ['CAD', 'USD', 'EUR', 'GBP', 'AUD']
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

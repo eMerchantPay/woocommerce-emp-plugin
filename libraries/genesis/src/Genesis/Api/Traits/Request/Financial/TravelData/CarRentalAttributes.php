@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\TravelData;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Trait CarRentalAttributes

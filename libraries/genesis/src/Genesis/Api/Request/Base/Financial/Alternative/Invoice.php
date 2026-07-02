@@ -26,14 +26,14 @@
 
 namespace Genesis\Api\Request\Base\Financial\Alternative;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
-use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Item;
-use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Items;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Currency;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Request\Financial\Alternatives\Transaction\Item;
+use Genesis\Api\Request\Financial\Alternatives\Transaction\Items;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Currency;
 
 /**
  * Class Invoice
@@ -61,14 +61,14 @@ abstract class Invoice extends Financial
     /**
      * List with items
      *
-     * @var master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Items
+     * @var Items
      */
     protected $items;
 
     /**
      * Add item
      *
-     * @param master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Item $item
+     * @param Item $item
      *
      * @return $this
      */
@@ -96,7 +96,7 @@ abstract class Invoice extends Financial
      *
      * @return array
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     protected function getPaymentTransactionStructure()
     {

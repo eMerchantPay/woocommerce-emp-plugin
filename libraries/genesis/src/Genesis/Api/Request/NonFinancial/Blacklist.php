@@ -32,7 +32,7 @@ namespace Genesis\Api\Request\NonFinancial;
  * @package    Genesis
  * @subpackage Request
  */
-class Blacklist extends master\libraries\genesis\src\Genesis\Api\Request
+class Blacklist extends \Genesis\Api\Request
 {
     /**
      * the credit card number to be checked
@@ -71,7 +71,7 @@ class Blacklist extends master\libraries\genesis\src\Genesis\Api\Request
             'card_number'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -88,6 +88,6 @@ class Blacklist extends master\libraries\genesis\src\Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

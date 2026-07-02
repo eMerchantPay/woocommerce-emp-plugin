@@ -27,12 +27,12 @@
 namespace Genesis\Api\Traits\Request\NonFinancial\Kyc;
 
 use DateTime;
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationSupportedModes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Country;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes;
+use Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages;
+use Genesis\Api\Constants\NonFinancial\Kyc\VerificationSupportedModes;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Country;
 
 /**
  * trait KycVerifications
@@ -67,7 +67,7 @@ trait KycVerifications
      * Supported Language Code
      *
      * @var string
-     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages
+     * @see VerificationLanguages
      */
     protected $language;
 
@@ -75,7 +75,7 @@ trait KycVerifications
      * Supported types of address that can be verified
      *
      * @var string
-     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes
+     * @see VerificationAddressesTypes
      */
     protected $address_supported_types;
 
@@ -92,7 +92,7 @@ trait KycVerifications
      *
      * @param $country
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setCountry($country)
     {
@@ -115,14 +115,14 @@ trait KycVerifications
      *
      * @param $verificationMode
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationSupportedModes
+     * @throws InvalidArgument
+     * @see VerificationSupportedModes
      */
     public function setVerificationMode($verificationMode)
     {
         return $this->allowedOptionsSetter(
             'verification_mode',
-            master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationSupportedModes::getAll(),
+            VerificationSupportedModes::getAll(),
             $verificationMode,
             'Invalid verification mode provided.'
         );
@@ -133,14 +133,14 @@ trait KycVerifications
      *
      * @param $language
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages
+     * @throws InvalidArgument
+     * @see VerificationLanguages
      */
     public function setLanguage($language)
     {
         return $this->allowedOptionsSetter(
             'language',
-            master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages::getAll(),
+            VerificationLanguages::getAll(),
             $language,
             'Invalid language provided.'
         );
@@ -151,12 +151,12 @@ trait KycVerifications
      *
      * @param $addressType
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes
+     * @throws InvalidArgument
+     * @see VerificationAddressesTypes
      */
     public function setAddressSupportedTypes($addressType)
     {
-        $getAllowed = master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes::getAll();
+        $getAllowed = VerificationAddressesTypes::getAll();
 
         if (!is_array($addressType) || array_diff($addressType, $getAllowed)) {
             throw new InvalidArgument(
@@ -179,7 +179,7 @@ trait KycVerifications
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setExpiryDate($value)
     {

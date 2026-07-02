@@ -26,14 +26,14 @@
 
 namespace Genesis\Api\Request\Financial\CashPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\CashPaymentTypes;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\DocumentAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Constants\Transaction\Parameters\CashPayments\CashPaymentTypes;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Traits\Request\DocumentAttributes;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Cash
@@ -87,7 +87,7 @@ class Cash extends Financial
 
         $requiredFieldValues = [
             'currency'        => ['MXN'],
-            'payment_type'    => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\CashPaymentTypes::getAll()
+            'payment_type'    => CashPaymentTypes::getAll()
         ];
 
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);

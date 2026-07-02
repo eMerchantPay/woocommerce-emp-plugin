@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Request\Financial\Cards;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CustomerIdentificationData;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PurposeOfPaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\SourceOfFundsAttributes;
+use Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
+use Genesis\Api\Traits\Request\Financial\CustomerIdentificationData;
+use Genesis\Api\Traits\Request\Financial\PurposeOfPaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\SourceOfFundsAttributes;
 
 /**
  * Class Credit
@@ -38,7 +38,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\SourceOfFu
  *
  * @package Genesis\Api\Request\Financial\Cards
  */
-class Credit extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
+class Credit extends \Genesis\Api\Request\Base\Financial\Reference
 {
     use AccountOwnerAttributes;
     use CustomerIdentificationData;
@@ -58,7 +58,7 @@ class Credit extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
             'amount'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -85,7 +85,7 @@ class Credit extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::CREDIT;
+        return \Genesis\Api\Constants\Transaction\Types::CREDIT;
     }
 
     /**

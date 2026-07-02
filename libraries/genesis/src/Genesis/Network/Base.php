@@ -26,8 +26,8 @@
 
 namespace Genesis\Network;
 
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Builder;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class Base
@@ -90,7 +90,7 @@ abstract class Base
      * @param $requestDataFormat
      *
      * @return string
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     protected function getRequestContentType($requestDataFormat)
     {

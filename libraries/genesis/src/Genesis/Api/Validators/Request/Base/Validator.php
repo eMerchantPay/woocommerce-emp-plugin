@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Validators\Request\Base;
 
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Validator
@@ -39,7 +39,7 @@ abstract class Validator
     /**
      * API Request Instance
      *
-     * @var master\libraries\genesis\src\Genesis\Api\Request
+     * @var \Genesis\Api\Request
      */
     protected $request;
 
@@ -68,10 +68,10 @@ abstract class Validator
     }
 
     /**
-     * @param master\libraries\genesis\src\Genesis\Api\Request $request
+     * @param \Genesis\Api\Request $request
      * @param string $field
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function run($request, $field)
     {
@@ -92,7 +92,7 @@ abstract class Validator
 
     /**
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     protected function throwInvalidArgument()
     {
@@ -106,7 +106,7 @@ abstract class Validator
 
     /**
      * @return mixed|null
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\ErrorParameter
      */
     protected function getRequestValue()
     {

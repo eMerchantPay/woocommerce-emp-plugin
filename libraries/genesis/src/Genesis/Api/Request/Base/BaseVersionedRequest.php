@@ -26,16 +26,16 @@
 
 namespace Genesis\Api\Request\Base;
 
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Builder;
+use Genesis\Exceptions\EnvironmentNotSet;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class BaseVersionedRequest
  *
  * @package Genesis\Api\Request\Base
  */
-abstract class BaseVersionedRequest extends master\libraries\genesis\src\Genesis\Api\Request
+abstract class BaseVersionedRequest extends \Genesis\Api\Request
 {
     const DEFAULT_VERSION = 'v1';
 
@@ -80,7 +80,7 @@ abstract class BaseVersionedRequest extends master\libraries\genesis\src\Genesis
      * @param $version
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setVersion($version)
     {
@@ -115,7 +115,7 @@ abstract class BaseVersionedRequest extends master\libraries\genesis\src\Genesis
      * @param $requestType
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setRequestType($requestType)
     {
@@ -136,7 +136,7 @@ abstract class BaseVersionedRequest extends master\libraries\genesis\src\Genesis
      * Set the per-request configuration
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws EnvironmentNotSet
      */
     protected function initConfiguration()
     {
@@ -159,7 +159,7 @@ abstract class BaseVersionedRequest extends master\libraries\genesis\src\Genesis
      */
     protected function populateStructure()
     {
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject(
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject(
             $this->getRequestStructure()
         );
     }

@@ -2,9 +2,8 @@
 
 namespace Genesis\Api\Request\Financial\TravelData;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Financial\TravelData\Base\AidAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use woocommerce
+use Genesis\Api\Request\Financial\TravelData\Base\AidAttributes;
+use Genesis\Exceptions\InvalidArgument;
 
 class AirlineItineraryTaxesData extends AidAttributes
 {
@@ -28,7 +27,7 @@ class AirlineItineraryTaxesData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryTaxesData
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setFeeAmount($value)
     {
@@ -44,7 +43,7 @@ class AirlineItineraryTaxesData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setFeeType($value)
     {

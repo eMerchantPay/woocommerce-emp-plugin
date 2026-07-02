@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Request\NonFinancial\Reconcile;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\DateAttributes;
+use Genesis\Api\Traits\Request\NonFinancial\DateAttributes;
 
 /**
  * Reconcile request by Date Range
@@ -34,7 +34,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\DateAtt
  * @package    Genesis
  * @subpackage Request
  */
-class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
+class DateRange extends \Genesis\Api\Request
 {
     use DateAttributes;
 
@@ -70,7 +70,7 @@ class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
             'start_date'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -88,6 +88,6 @@ class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

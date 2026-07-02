@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\Financial\Wallets;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 
 /**
  * Class Neteller
@@ -40,7 +40,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAtt
  * @method Neteller setCustomerAccount($value) Set Neteller Account Id
  * @method Neteller setAccountPassword($value) Set Neteller Account Password
  */
-class Neteller extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Neteller extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -66,7 +66,7 @@ class Neteller extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fin
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::NETELLER;
+        return \Genesis\Api\Constants\Transaction\Types::NETELLER;
     }
 
     /**
@@ -89,14 +89,14 @@ class Neteller extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fin
             'billing_country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'billing_country' => master\libraries\genesis\src\Genesis\Utils\Country::getList(),
-            'currency'        => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
+            'billing_country' => \Genesis\Utils\Country::getList(),
+            'currency'        => \Genesis\Utils\Currency::getList()
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

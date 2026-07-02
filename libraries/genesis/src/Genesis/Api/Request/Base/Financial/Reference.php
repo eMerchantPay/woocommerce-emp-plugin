@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Base\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
 
 /**
  * Class Reference
@@ -40,10 +40,10 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceA
  *
  * @package Genesis\Api\Request\Base\Financial
  */
-abstract class Reference extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+abstract class Reference extends \Genesis\Api\Request\Base\Financial
 {
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+    use PaymentAttributes;
+    use ReferenceAttributes;
 
     /**
      * Set the required fields
@@ -59,13 +59,13 @@ abstract class Reference extends master\libraries\genesis\src\Genesis\Api\Reques
             'currency'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'currency' => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
+            'currency' => \Genesis\Utils\Currency::getList()
         ];
 
-        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

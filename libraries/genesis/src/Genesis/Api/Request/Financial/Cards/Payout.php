@@ -26,15 +26,15 @@
 
 namespace Genesis\Api\Request\Financial\Cards;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CustomerIdentificationData;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\FxRateAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PurposeOfPaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\SourceOfFundsAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Payout\MoneyTransferPayoutAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
+use Genesis\Api\Traits\Request\Financial\CustomerIdentificationData;
+use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+use Genesis\Api\Traits\Request\Financial\FxRateAttributes;
+use Genesis\Api\Traits\Request\Financial\PurposeOfPaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\SourceOfFundsAttributes;
+use Genesis\Api\Traits\Request\Payout\MoneyTransferPayoutAttributes;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Payout
@@ -43,7 +43,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
  *
  * @package Genesis\Api\Request\Financial\Cards
  */
-class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Cards\CreditCard
+class Payout extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
 {
     use AddressInfoAttributes;
     use AccountOwnerAttributes;
@@ -63,7 +63,7 @@ class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::PAYOUT;
+        return \Genesis\Api\Constants\Transaction\Types::PAYOUT;
     }
 
     /**

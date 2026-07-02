@@ -26,7 +26,7 @@
 
 namespace Genesis\Exceptions;
 
-use woocommerce/**
+/**
  * Class ErrorParameter
  *
  * Used to indicate a problem with transaction's parameters

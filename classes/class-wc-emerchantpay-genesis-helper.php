@@ -18,14 +18,13 @@
  * @package     classes\classes-wc-emerchantpay-genesis-helper
  */
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\States;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
-use master\libraries\genesis\src\Genesis\Genesis;
-use master\libraries\genesis\src\Genesis\Utils\Requirements;
-use woocommerceuse woocommerce
+use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Exceptions\DeprecatedMethod;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidMethod;
+use Genesis\Genesis;
+use Genesis\Utils\Requirements;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
@@ -51,11 +50,11 @@ class WC_Emerchantpay_Genesis_Helper {
 	 *
 	 * @param string $transaction_type Selected transaction type.
 	 *
-	 * @return master\libraries\genesis\src\Genesis\Genesis
+	 * @return Genesis
 	 *
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod Throws deprecated methods.
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument Throws invalid argument of current method.
-	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod  Throws invalid method.
+	 * @throws DeprecatedMethod Throws deprecated methods.
+	 * @throws InvalidArgument Throws invalid argument of current method.
+	 * @throws InvalidMethod  Throws invalid method.
 	 */
 	public static function get_gateway_request_by_txn_type( $transaction_type ) {
 		$api_request_class_name = static::get_transaction_type_request_class_name( $transaction_type );
@@ -80,7 +79,7 @@ class WC_Emerchantpay_Genesis_Helper {
 	 * Returns current gateway status
 	 *
 	 * @param stdClass $response Response object.
-	 * @return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\States
+	 * @return States
 	 */
 	public static function get_gateway_status_instance( $response ) {
 		return new States( $response->status );

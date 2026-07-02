@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\NonFinancial\Consumers;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use Genesis\Api\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
+use Genesis\Exceptions\ErrorParameter;
 
 /**
  * Class Retrieve
@@ -62,7 +62,7 @@ class Retrieve extends ConsumerBaseRequest
     }
 
     /**
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     protected function checkRequirements()
     {

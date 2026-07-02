@@ -32,7 +32,7 @@ namespace Genesis\Api\Request\Wpf;
  * @package    Genesis
  * @subpackage Request
  */
-class Reconcile extends master\libraries\genesis\src\Genesis\Api\Request
+class Reconcile extends \Genesis\Api\Request
 {
     /**
      * Unique id of an existing WPF transaction
@@ -64,7 +64,7 @@ class Reconcile extends master\libraries\genesis\src\Genesis\Api\Request
             'unique_id'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -80,6 +80,6 @@ class Reconcile extends master\libraries\genesis\src\Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

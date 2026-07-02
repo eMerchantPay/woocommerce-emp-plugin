@@ -26,8 +26,8 @@
 
 namespace Genesis;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Config
@@ -64,7 +64,7 @@ final class Config
         'username'            => null,
         'password'            => null,
         'token'               => null,
-        'environment'         => master\libraries\genesis\src\Genesis\Api\Constants\Environments::STAGING,
+        'environment'         => \Genesis\Api\Constants\Environments::STAGING,
         'force_smart_routing' => false,
         'billing_api_token'   => null
     ];
@@ -182,24 +182,24 @@ final class Config
      * @param   string  $environmentArg
      * @return  string
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public static function setEnvironment($environmentArg)
     {
         $environmentArg = strtolower(trim($environmentArg));
 
         $aliases = [
-            master\libraries\genesis\src\Genesis\Api\Constants\Environments::STAGING    => [
+            \Genesis\Api\Constants\Environments::STAGING    => [
                 'test',
                 'testing',
                 'staging',
-                master\libraries\genesis\src\Genesis\Api\Constants\Environments::STAGING
+                \Genesis\Api\Constants\Environments::STAGING
             ],
-            master\libraries\genesis\src\Genesis\Api\Constants\Environments::PRODUCTION => [
+            \Genesis\Api\Constants\Environments::PRODUCTION => [
                 'live',
                 'prod',
                 'production',
-                master\libraries\genesis\src\Genesis\Api\Constants\Environments::PRODUCTION
+                \Genesis\Api\Constants\Environments::PRODUCTION
             ]
         ];
 
@@ -232,23 +232,23 @@ final class Config
      * @param   string  $endpointArg
      * @return  string
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public static function setEndpoint($endpointArg)
     {
         $endpointArg = strtolower(trim($endpointArg));
 
         $aliases = [
-            master\libraries\genesis\src\Genesis\Api\Constants\Endpoints::EMERCHANTPAY      => [
+            \Genesis\Api\Constants\Endpoints::EMERCHANTPAY      => [
                 'emp',
                 'emerchantpay',
-                master\libraries\genesis\src\Genesis\Api\Constants\Endpoints::EMERCHANTPAY
+                \Genesis\Api\Constants\Endpoints::EMERCHANTPAY
             ],
-            master\libraries\genesis\src\Genesis\Api\Constants\Endpoints::ECOMPROCESSING    => [
+            \Genesis\Api\Constants\Endpoints::ECOMPROCESSING    => [
                 'ecp',
                 'ecomprocessing',
                 'e-comprocessing',
-                master\libraries\genesis\src\Genesis\Api\Constants\Endpoints::ECOMPROCESSING
+                \Genesis\Api\Constants\Endpoints::ECOMPROCESSING
             ]
         ];
 
@@ -268,12 +268,12 @@ final class Config
     /**
      * Get a sub-domain host based on the environment
      *
+     * @see self::$domains
+     *
      * @param $sub
      * @return string
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
-     * @see self::$domains
-     *
+     * @throws Exceptions\EnvironmentNotSet
      */
     public static function getSubDomain($sub)
     {
@@ -322,7 +322,7 @@ final class Config
      *
      * @param string $iniFile Path to an ini file containing the settings
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument()
+     * @throws InvalidArgument()
      */
     public static function loadSettings($iniFile)
     {

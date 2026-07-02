@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait ExternallyProcessed
@@ -47,7 +47,7 @@ trait ExternallyProcessed
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setExternallyProcessed($value)
     {
@@ -59,7 +59,7 @@ trait ExternallyProcessed
 
         return $this->allowedOptionsSetter(
             'externally_processed',
-            master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ExternallyProcessed::getAll(),
+            \Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ExternallyProcessed::getAll(),
             $value,
             'Invalid value for externally_processed attribute.'
         );

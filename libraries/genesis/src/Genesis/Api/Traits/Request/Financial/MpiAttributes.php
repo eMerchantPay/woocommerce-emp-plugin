@@ -26,11 +26,11 @@
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\MpiProtocolSubVersions;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\MpiProtocolVersions;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\Transaction\Parameters\MpiProtocolSubVersions;
+use Genesis\Api\Constants\Transaction\Parameters\MpiProtocolVersions;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait MpiAttributes
@@ -108,7 +108,7 @@ trait MpiAttributes
      *
      * @param $value
      * @return MpiAttributes
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setMpiProtocolVersion($value)
     {
@@ -134,7 +134,7 @@ trait MpiAttributes
      *
      * @param $value
      * @return MpiAttributes
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setMpiProtocolSubVersion($value)
     {
@@ -150,7 +150,7 @@ trait MpiAttributes
      * Set the value for 3DS challenge indicator. Highly recommended to increase approve ratio.
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setMpiThreedsChallengeIndicator($value)
     {

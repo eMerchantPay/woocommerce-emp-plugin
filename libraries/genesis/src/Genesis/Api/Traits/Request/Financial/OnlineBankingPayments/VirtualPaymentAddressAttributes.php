@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use Genesis\Api\Validators\Request\RegexValidator;
 
 /**
  * Trait VirtualPaymentAddressAttributes
@@ -49,7 +49,7 @@ trait VirtualPaymentAddressAttributes
      * @param string $value
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setVirtualPaymentAddress($value)
     {
@@ -70,7 +70,7 @@ trait VirtualPaymentAddressAttributes
     /**
      * Virtual Payment Address validation rules
      *
-     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
+     * @return RegexValidator
      */
     protected function getVirtualPaymentAddressValidator()
     {

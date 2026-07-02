@@ -26,8 +26,8 @@
 
 namespace Genesis\Builders;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Interfaces\Builder;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Interfaces\Builder;
 
 /**
  * Class Form
@@ -55,7 +55,7 @@ class Form implements Builder
      *
      * @param array $structure
      * @return mixed|void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function populateNodes($structure)
     {

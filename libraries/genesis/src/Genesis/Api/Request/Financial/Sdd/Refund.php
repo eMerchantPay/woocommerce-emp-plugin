@@ -34,7 +34,7 @@ namespace Genesis\Api\Request\Financial\Sdd;
  * @package Genesis\Api\Request\Financial\Sdd
  *
  */
-class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
+class Refund extends \Genesis\Api\Request\Base\Financial\Reference
 {
     /**
      * Returns the Request transaction type
@@ -42,7 +42,7 @@ class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::SDD_REFUND;
+        return \Genesis\Api\Constants\Transaction\Types::SDD_REFUND;
     }
 
     /**
@@ -62,6 +62,6 @@ class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
             'usage'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 }

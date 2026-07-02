@@ -26,19 +26,19 @@
 
 namespace Genesis\Api\Request\Financial\Cards\Threeds\V2;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Request;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Config;
-use master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod;
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
-use master\libraries\genesis\src\Genesis\Genesis;
-use master\libraries\genesis\src\Genesis\Utils\Common;
-use master\libraries\genesis\src\Genesis\Utils\Currency;
-use master\libraries\genesis\src\Genesis\Utils\Threeds\V2 as ThreedsV2Utils;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Request;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Builder;
+use Genesis\Config;
+use Genesis\Exceptions\DeprecatedMethod;
+use Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidMethod;
+use Genesis\Genesis;
+use Genesis\Utils\Common;
+use Genesis\Utils\Currency;
+use Genesis\Utils\Threeds\V2 as ThreedsV2Utils;
 
 /**
  * Class MethodContinue
@@ -100,7 +100,7 @@ class MethodContinue extends Request
      * Configures a Secure PUT Request with Form body
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws \Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initConfiguration()
     {
@@ -116,9 +116,9 @@ class MethodContinue extends Request
     /**
      * Fill the :unique_id in the endpoint URL after the checks
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws InvalidArgument
+     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidClassMethod
      */
     protected function processRequestParameters()
     {
@@ -146,7 +146,7 @@ class MethodContinue extends Request
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setUrl($value)
     {
@@ -194,7 +194,7 @@ class MethodContinue extends Request
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setTransactionTimestamp($value)
     {
@@ -232,7 +232,7 @@ class MethodContinue extends Request
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setCurrency($value)
     {
@@ -334,12 +334,12 @@ class MethodContinue extends Request
      *
      * @param \stdClass $responseObject
      *
-     * @return master\libraries\genesis\src\Genesis\Genesis
+     * @return Genesis
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws InvalidArgument
+     * @throws DeprecatedMethod
+     * @throws InvalidMethod
+     * @throws ErrorParameter
      */
     public static function buildFromResponseObject(\stdClass $responseObject)
     {

@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Cards\Recurring;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Categories;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\Transaction\Parameters\Recurring\Categories;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * trait RecurringCategoryAttributes
@@ -53,7 +53,7 @@ trait RecurringCategoryAttributes
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setRecurringCategory($value)
     {
@@ -65,7 +65,7 @@ trait RecurringCategoryAttributes
 
         return $this->allowedOptionsSetter(
             'recurring_category',
-            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Categories::getAll(),
+            Categories::getAll(),
             $value,
             'Invalid value given for Recurring Category.'
         );

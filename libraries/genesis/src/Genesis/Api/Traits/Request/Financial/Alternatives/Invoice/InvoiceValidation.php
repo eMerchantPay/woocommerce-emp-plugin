@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Alternatives\Invoice;
 
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\ErrorParameter;
 
 /**
  * Trait Items
@@ -40,7 +40,7 @@ trait InvoiceValidation
      *
      * @return void
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function validateItems()
     {
@@ -57,7 +57,7 @@ trait InvoiceValidation
      *
      * @return void
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function validateAmount()
     {

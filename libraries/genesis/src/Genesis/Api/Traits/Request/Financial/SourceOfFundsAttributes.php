@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\SourceOfFunds;
+use Genesis\Api\Constants\Transaction\Parameters\SourceOfFunds;
 
 /**
  * Trait SourceOfFundsAttrubutes

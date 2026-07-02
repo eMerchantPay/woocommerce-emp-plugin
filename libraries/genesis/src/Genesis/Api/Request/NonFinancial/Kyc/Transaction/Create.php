@@ -26,17 +26,17 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\Transaction;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\DeviceFingerprintTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\IndustryTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\PaymentMethods;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\CustomerInformation;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\DepositLimits;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\KycBillingInformation;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\KycShippingInformation;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\PaymentDetails;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\NonFinancial\Kyc\DeviceFingerprintTypes;
+use Genesis\Api\Constants\NonFinancial\Kyc\IndustryTypes;
+use Genesis\Api\Constants\NonFinancial\Kyc\PaymentMethods;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use Genesis\Api\Traits\Request\NonFinancial\CustomerInformation;
+use Genesis\Api\Traits\Request\NonFinancial\DepositLimits;
+use Genesis\Api\Traits\Request\NonFinancial\KycBillingInformation;
+use Genesis\Api\Traits\Request\NonFinancial\KycShippingInformation;
+use Genesis\Api\Traits\Request\NonFinancial\PaymentDetails;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class Create
@@ -281,7 +281,7 @@ class Create extends BaseRequest
      * @param $type
      *
      * @return Create
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setDeviceFingerprintType($type)
     {
@@ -297,7 +297,7 @@ class Create extends BaseRequest
      * @param $type
      *
      * @return Create
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setIndustryType($type)
     {
@@ -313,7 +313,7 @@ class Create extends BaseRequest
      * @param string $dateTime
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setTransactionCreatedAt($dateTime)
     {
@@ -343,7 +343,7 @@ class Create extends BaseRequest
     /**
      * @param string $dateTime
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setLocalTime($dateTime)
     {
@@ -373,7 +373,7 @@ class Create extends BaseRequest
     /**
      * @param string $date
      * @return $this|Create
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setCustomerRegistrationDate($date)
     {
@@ -403,7 +403,7 @@ class Create extends BaseRequest
     /**
      * @param string $date
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setFirstDepositDate($date)
     {
@@ -433,7 +433,7 @@ class Create extends BaseRequest
     /**
      * @param string $date
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setFirstWithdrawalDate($date)
     {
@@ -474,7 +474,7 @@ class Create extends BaseRequest
             'payment_method'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldsConditional = [
             'payment_method' => [
@@ -493,7 +493,7 @@ class Create extends BaseRequest
             ]
         ];
 
-        $this->requiredFieldsConditional = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
+        $this->requiredFieldsConditional = \Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
     }
 
     /**

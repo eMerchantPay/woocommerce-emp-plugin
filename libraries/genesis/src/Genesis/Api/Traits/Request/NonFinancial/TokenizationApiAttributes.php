@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait TokenizationApiAttributes
@@ -65,7 +65,7 @@ trait TokenizationApiAttributes
      * @param string $value
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setConsumerId($value)
     {
@@ -81,7 +81,7 @@ trait TokenizationApiAttributes
      * @param string $value
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setEmail($value)
     {

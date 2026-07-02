@@ -26,7 +26,7 @@
 
 namespace Genesis\Exceptions;
 
-use woocommerce/**
+/**
  * Class InvalidMethod
  *
  * @package Genesis\Exceptions

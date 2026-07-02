@@ -18,7 +18,7 @@
  * @package     templates/admin/order/totals/capture
  */
 
-use woocommerceuse woocommerceif ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 ?>

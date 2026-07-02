@@ -18,9 +18,8 @@
  * @package     classes\class-wc-emerchantpay-frame-handler
  */
 
-namespace woocommerce-emp - plugin - master\classes;
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -28,44 +27,41 @@ if (!defined('ABSPATH')) {
  *
  * @class WC_Emerchantpay_Frame_Handler
  */
-class WC_Emerchantpay_Frame_Handler
-{
-    /**
-     * Parse QUERY_STRING and load it into the parent window
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @suppressWarnings(PHPMD.ExitExpression)
-     * @return void
-     */
-    public static function frame_handler()
-    {
-        // TODO: Fix Superglobals
-        // TODO: Fix exit expression
-        if (!empty($_SERVER['QUERY_STRING'])) {
-            $sanitized_url = self::sanitize_url(wp_unslash($_SERVER['QUERY_STRING'])); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+class WC_Emerchantpay_Frame_Handler {
+	/**
+	 * Parse QUERY_STRING and load it into the parent window
+	 *
+	 * @SuppressWarnings(PHPMD.Superglobals)
+	 * @suppressWarnings(PHPMD.ExitExpression)
+	 * @return void
+	 */
+	public static function frame_handler() {
+		// TODO: Fix Superglobals
+		// TODO: Fix exit expression
+		if ( ! empty( $_SERVER['QUERY_STRING'] ) ) {
+			$sanitized_url = self::sanitize_url( wp_unslash( $_SERVER['QUERY_STRING'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-            echo "<script>parent.location.href = '" . esc_url_raw($sanitized_url) . "';</script>";
+			echo "<script>parent.location.href = '" . esc_url_raw( $sanitized_url ) . "';</script>";
 
-            exit;
-        }
+			exit;
+		}
 
-        wp_die('Missing data!');
-    }
+		wp_die( 'Missing data!' );
+	}
 
-    /**
-     * Check if the domain of the redirected url points shop's domain url
-     *
-     * @param string $redirect_url Redirect Url.
-     *
-     * @return string
-     */
-    private static function sanitize_url($redirect_url)
-    {
-        $shop_url = wc_get_page_permalink('shop');
-        $decoded_redirect_url = urldecode($redirect_url);
-        $redirect_domain = wp_parse_url($decoded_redirect_url, PHP_URL_HOST);
-        $shop_domain = wp_parse_url($shop_url, PHP_URL_HOST);
+	/**
+	 * Check if the domain of the redirected url points shop's domain url
+	 *
+	 * @param string $redirect_url Redirect Url.
+	 *
+	 * @return string
+	 */
+	private static function sanitize_url( $redirect_url ) {
+		$shop_url             = wc_get_page_permalink( 'shop' );
+		$decoded_redirect_url = urldecode( $redirect_url );
+		$redirect_domain      = wp_parse_url( $decoded_redirect_url, PHP_URL_HOST );
+		$shop_domain          = wp_parse_url( $shop_url, PHP_URL_HOST );
 
-        return ($redirect_domain === $shop_domain) ? $decoded_redirect_url : $shop_url;
-    }
+		return ( $redirect_domain === $shop_domain ) ? $decoded_redirect_url : $shop_url;
+	}
 }

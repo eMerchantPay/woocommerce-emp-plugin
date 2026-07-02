@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\Fx;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Fx\BaseRequest;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Request\Base\NonFinancial\Fx\BaseRequest;
+use Genesis\Exceptions\InvalidArgument;
+use Genesis\Utils\Common;
 
 /**
  * Class SearchRate
@@ -37,7 +37,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common;
  *
  * @package Genesis\Api\Request\NonFinancial\Fx
  */
-class SearchRate extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Fx\BaseRequest
+class SearchRate extends BaseRequest
 {
     const REQUEST_PATH = 'tiers/:tier_id/rates/search';
 
@@ -78,7 +78,7 @@ class SearchRate extends master\libraries\genesis\src\Genesis\Api\Request\Base\N
      * @param string $currency
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setSourceCurrency($currency)
     {
@@ -95,7 +95,7 @@ class SearchRate extends master\libraries\genesis\src\Genesis\Api\Request\Base\N
      * @param string $currency
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setTargetCurrency($currency)
     {
@@ -109,7 +109,7 @@ class SearchRate extends master\libraries\genesis\src\Genesis\Api\Request\Base\N
     }
 
     /**
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     private function throwExceptionTargetEqualsSourceCurrency()
     {
@@ -126,8 +126,8 @@ class SearchRate extends master\libraries\genesis\src\Genesis\Api\Request\Base\N
         $this->requiredFields = Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'source_currency' => master\libraries\genesis\src\Genesis\Utils\Currency::getList(),
-            'target_currency' => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
+            'source_currency' => \Genesis\Utils\Currency::getList(),
+            'target_currency' => \Genesis\Utils\Currency::getList()
         ];
 
         $this->requiredFieldValues = Common::createArrayObject($requiredFieldValues);

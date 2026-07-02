@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Business;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Trait FurnitureAttributes
@@ -62,7 +62,7 @@ trait FurnitureAttributes
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessDateOfOrder($value)
     {
@@ -85,7 +85,7 @@ trait FurnitureAttributes
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessDeliveryDate($value)
     {

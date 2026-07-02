@@ -26,12 +26,12 @@
 
 namespace Genesis\Api\Request\Base\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use Genesis\Api\Validators\Request\RegexValidator;
+use Genesis\Utils\Common;
 
 /**
  * Class GiftCard
@@ -40,12 +40,12 @@ use master\libraries\genesis\src\Genesis\Utils\Common;
  * @method $this setCardNumber($value)
  * @method $this setCvv($value)
  */
-abstract class GiftCard extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+abstract class GiftCard extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+    use DescriptorAttributes;
+    use PaymentAttributes;
+    use ReferenceAttributes;
 
     /**
      * Gift card number
@@ -62,7 +62,7 @@ abstract class GiftCard extends master\libraries\genesis\src\Genesis\Api\Request
     /**
      * Instance of GiftCard Number Format Validator
      *
-     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
+     * @return RegexValidator
      */
     protected function getGiftCardNumberValidator()
     {

@@ -25,7 +25,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WC_Emerchantpay_Hpos_Order_Adapter as HposOrder;
 use WC_Emerchantpay_Legacy_Order_Adapter as LegacyOrder;
 use WC_Emerchantpay_Order_Helper as OrderHelper;
-use woocommerceuse woocommerceuse woocommerceuse woocommerce
 
 /**
  * Order Storage Adapter Factory

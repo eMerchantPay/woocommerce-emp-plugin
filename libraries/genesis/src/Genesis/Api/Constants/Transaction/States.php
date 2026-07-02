@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Constants\Transaction;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Exceptions\InvalidMethod;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class States
@@ -281,8 +281,8 @@ class States
      * @param $method
      * @param $args
      *
+     * @throws InvalidMethod
      * @return bool
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
      */
     public function __call($method, $args)
     {

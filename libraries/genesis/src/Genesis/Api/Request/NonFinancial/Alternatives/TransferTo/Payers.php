@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\TransferTo;
 
-use master\libraries\genesis\src\Genesis\Api\Request;
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Request;
+use Genesis\Builder;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Payers

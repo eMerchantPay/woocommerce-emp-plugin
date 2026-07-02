@@ -26,8 +26,7 @@
 
 namespace Genesis\Api\Request\Financial\Alternatives\Klarna;
 
-use master\libraries\genesis\src\Genesis\Utils\Currency as CurrencyUtils;
-use woocommerceuse woocommerceuse woocommerce
+use Genesis\Utils\Currency as CurrencyUtils;
 
 /**
  * Class Items

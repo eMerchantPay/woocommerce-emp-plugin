@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\Trustly;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Alternatives\Trustly\ClearingHouses;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Constants\NonFinancial\Alternatives\Trustly\ClearingHouses;
+use Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class RegisterAccount
@@ -40,7 +40,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
  * @method $this  setAccountNumber($value)
  * @method $this  setBankNumber($value)
  */
-class RegisterAccount extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest
+class RegisterAccount extends BaseRequest
 {
     /**
      * The clearing house of the customer's bank account
@@ -101,7 +101,7 @@ class RegisterAccount extends master\libraries\genesis\src\Genesis\Api\Request\B
         $this->requiredFields = CommonUtils::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'clearing_house' => master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Alternatives\Trustly\ClearingHouses::getAll()
+            'clearing_house' => ClearingHouses::getAll()
         ];
 
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);

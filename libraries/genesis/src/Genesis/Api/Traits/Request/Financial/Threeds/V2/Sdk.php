@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Threeds\V2;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Sdk\Interfaces;
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Sdk\UiTypes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Sdk\Interfaces;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Sdk\UiTypes;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait Sdk
@@ -106,7 +106,7 @@ trait Sdk
      *
      * @param string|array $value
      * @return Sdk
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setThreedsV2SdkUiTypes($value)
     {
@@ -144,7 +144,7 @@ trait Sdk
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setThreedsV2SdkApplicationId($value)
     {
@@ -161,7 +161,7 @@ trait Sdk
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setThreedsV2SdkEncryptedData($value)
     {
@@ -179,7 +179,7 @@ trait Sdk
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setThreedsV2SdkEphemeralPublicKeyPair($value)
     {
@@ -196,7 +196,7 @@ trait Sdk
      *
      * @param int $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setThreedsV2SdkMaxTimeout($value)
     {
@@ -217,7 +217,7 @@ trait Sdk
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setThreedsV2SdkReferenceNumber($value)
     {

@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\CashPayments;
  *
  * @package Genesis\Api\Request\Financial\CashPayments
  */
-class Redpagos extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class Redpagos extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class Redpagos extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fin
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::REDPAGOS;
+        return \Genesis\Api\Constants\Transaction\Types::REDPAGOS;
     }
 
     public function getAllowedBillingCountries()

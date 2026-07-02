@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use Genesis\Api\Constants\Transaction\Types;
+use Genesis\Api\Request\Base\Financial\SouthAmericanPayment;
+use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
 
 class Webpay extends SouthAmericanPayment
 {

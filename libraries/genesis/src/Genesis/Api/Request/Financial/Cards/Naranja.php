@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\Cards;
  *
  * @package Genesis\Api\Request\Financial\Cards
  */
-class Naranja extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class Naranja extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class Naranja extends master\libraries\genesis\src\Genesis\Api\Request\Base\Fina
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::NARANJA;
+        return \Genesis\Api\Constants\Transaction\Types::NARANJA;
     }
 
     public function getAllowedBillingCountries()

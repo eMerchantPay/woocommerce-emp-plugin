@@ -32,7 +32,7 @@ namespace Genesis\Api\Request\NonFinancial\Reconcile;
  * @package    Genesis
  * @subpackage Request
  */
-class Transaction extends master\libraries\genesis\src\Genesis\Api\Request
+class Transaction extends \Genesis\Api\Request
 {
     /**
      * Acquirer's Reference Number
@@ -78,7 +78,7 @@ class Transaction extends master\libraries\genesis\src\Genesis\Api\Request
             'id'  => ['arn', 'transaction_id', 'unique_id']
         ];
 
-        $this->requiredFieldsGroups = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsGroups);
+        $this->requiredFieldsGroups = \Genesis\Utils\Common::createArrayObject($requiredFieldsGroups);
     }
 
     /**
@@ -96,6 +96,6 @@ class Transaction extends master\libraries\genesis\src\Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

@@ -83,7 +83,7 @@ class Methods
      */
     public static function getMethods()
     {
-        $methods = master\libraries\genesis\src\Genesis\Utils\Common::getClassConstants(__CLASS__);
+        $methods = \Genesis\Utils\Common::getClassConstants(__CLASS__);
 
         return array_values($methods);
     }

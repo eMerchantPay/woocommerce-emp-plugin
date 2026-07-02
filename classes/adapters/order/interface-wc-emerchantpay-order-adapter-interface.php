@@ -1,6 +1,4 @@
 <?php
-
-use woocommerceuse woocommerce
 /**
  * Copyright (C) 2018-2024 emerchantpay Ltd.
  *

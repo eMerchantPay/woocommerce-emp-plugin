@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Request\NonFinancial\TokenizationApi;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\TokenizationApi\BaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\TokenizationApiAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\TokenizationApiCardAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Request\Base\NonFinancial\TokenizationApi\BaseRequest;
+use Genesis\Api\Traits\Request\NonFinancial\TokenizationApiAttributes;
+use Genesis\Api\Traits\Request\NonFinancial\TokenizationApiCardAttributes;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Tokenize
@@ -41,7 +41,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
  *
  * @package Genesis\Api\Request\NonFinancial\TokenizationApi
  */
-class Tokenize extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\TokenizationApi\BaseRequest
+class Tokenize extends BaseRequest
 {
     use TokenizationApiAttributes;
     use TokenizationApiCardAttributes;

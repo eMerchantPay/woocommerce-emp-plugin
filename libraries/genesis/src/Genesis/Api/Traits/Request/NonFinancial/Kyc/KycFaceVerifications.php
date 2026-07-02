@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial\Kyc;
 
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Utils\Common;
 
 /**
  * Trait KycFaceVerifications

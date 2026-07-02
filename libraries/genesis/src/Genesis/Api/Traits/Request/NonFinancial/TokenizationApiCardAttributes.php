@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use Genesis\Api\Validators\Request\RegexValidator;
 
 /**
  * Trait TokenizationApiCardAttributes
@@ -75,7 +75,7 @@ trait TokenizationApiCardAttributes
     /**
      * Instance of CC Number Format Validator
      *
-     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
+     * @return RegexValidator
      */
     protected function getCreditCardNumberValidator()
     {

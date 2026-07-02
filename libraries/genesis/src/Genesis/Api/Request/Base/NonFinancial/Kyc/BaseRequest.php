@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Request\Base\NonFinancial\Kyc;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\BaseVersionedRequest;
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Request\Base\BaseVersionedRequest;
+use Genesis\Builder;
+use Genesis\Exceptions\EnvironmentNotSet;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class BaseRequest
@@ -63,7 +63,7 @@ abstract class BaseRequest extends BaseVersionedRequest
      * Set the per-request configuration
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws EnvironmentNotSet
      */
     protected function initConfiguration()
     {

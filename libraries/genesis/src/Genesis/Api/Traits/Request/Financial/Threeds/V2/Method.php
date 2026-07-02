@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Threeds\V2;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait Method
@@ -48,7 +48,7 @@ trait Method
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setThreedsV2MethodCallbackUrl($value)
     {

@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Request\Financial\Crypto\BitPay;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
 
 /**
  * BitPay Refund is a custom refund method which will handle the asynchronous BitPay refund workflow.
@@ -36,7 +36,7 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceA
  *
  * @package Genesis\Api\Request\Financial\Crypto\BitPay
  */
-class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+class Refund extends \Genesis\Api\Request\Base\Financial
 {
     use PaymentAttributes;
     use ReferenceAttributes;
@@ -47,7 +47,7 @@ class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::BITPAY_REFUND;
+        return \Genesis\Api\Constants\Transaction\Types::BITPAY_REFUND;
     }
 
     /**
@@ -64,7 +64,7 @@ class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Finan
             'reference_id'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

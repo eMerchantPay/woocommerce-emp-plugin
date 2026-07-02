@@ -26,8 +26,8 @@
 
 namespace Genesis;
 
-use master\libraries\genesis\src\Genesis\Parsers\Json;
-use master\libraries\genesis\src\Genesis\Parsers\Xml;
+use Genesis\Parsers\Json;
+use Genesis\Parsers\Xml;
 
 /**
  * Parser handler
@@ -54,7 +54,7 @@ class Parser
      */
     public function __construct($interface = null)
     {
-        $interface = $interface ?: master\libraries\genesis\src\Genesis\Config::getInterface('parser');
+        $interface = $interface ?: \Genesis\Config::getInterface('parser');
 
         switch ($interface) {
             default:

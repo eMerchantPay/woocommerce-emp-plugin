@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\IdentityDocument;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\IdentityDocumentMethods;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\IdentityDocuments;
+use Genesis\Api\Constants\NonFinancial\Kyc\IdentityDocumentMethods;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use Genesis\Api\Traits\Request\NonFinancial\IdentityDocuments;
 
 /**
  * Class Upload
@@ -90,7 +90,7 @@ class Upload extends BaseRequest
      * @param $method
      *
      * @return Upload
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setMethod($method)
     {
@@ -115,13 +115,13 @@ class Upload extends BaseRequest
             'method'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldsGroups = [
             'id'  => ['transaction_unique_id', 'reference_id']
         ];
 
-        $this->requiredFieldsGroups = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsGroups);
+        $this->requiredFieldsGroups = \Genesis\Utils\Common::createArrayObject($requiredFieldsGroups);
     }
 
     /**

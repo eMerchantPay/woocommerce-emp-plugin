@@ -26,7 +26,7 @@
 
 namespace Genesis\Exceptions;
 
-use woocommerce/**
+/**
  * Class InvalidResponse
  *
  * Used to indicate an invalid document

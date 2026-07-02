@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait IdentityDocuments
@@ -68,7 +68,7 @@ trait IdentityDocuments
      * @param $mimeType
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function addDoc($base64Content, $mimeType)
     {

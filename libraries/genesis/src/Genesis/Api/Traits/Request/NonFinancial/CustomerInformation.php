@@ -26,10 +26,10 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\DocumentTypes;
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\Genders;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\NonFinancial\Kyc\DocumentTypes;
+use Genesis\Api\Constants\NonFinancial\Kyc\Genders;
+use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait CustomerInformation
@@ -126,7 +126,7 @@ trait CustomerInformation
      * @param $type
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setDocumentType($type)
     {
@@ -142,7 +142,7 @@ trait CustomerInformation
      * @param $gender
      *
      * @return CustomerInformation
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setGender($gender)
     {

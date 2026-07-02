@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\Cards;
  *
  * @package Genesis\Api\Request\Financial\Cards
  */
-class TarjetaShopping extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class TarjetaShopping extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class TarjetaShopping extends master\libraries\genesis\src\Genesis\Api\Request\B
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::TARJETA_SHOPPING;
+        return \Genesis\Api\Constants\Transaction\Types::TARJETA_SHOPPING;
     }
 
     public function getAllowedBillingCountries()

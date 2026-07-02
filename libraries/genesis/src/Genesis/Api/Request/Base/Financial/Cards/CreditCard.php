@@ -26,14 +26,14 @@
 
 namespace Genesis\Api\Request\Base\Financial\Cards;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\CreditCardAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\DocumentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CredentialOnFileAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\TokenizationAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
-use master\libraries\genesis\src\Genesis\Utils\Currency;
+use Genesis\Api\Request\Base\Financial;
+use Genesis\Api\Traits\Request\CreditCardAttributes;
+use Genesis\Api\Traits\Request\DocumentAttributes;
+use Genesis\Api\Traits\Request\Financial\CredentialOnFileAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\TokenizationAttributes;
+use Genesis\Utils\Common as CommonUtils;
+use Genesis\Utils\Currency;
 
 /**
  * Class CreditCard
@@ -85,9 +85,9 @@ abstract class CreditCard extends Financial
      * Enable CC holder name validation if Client-Side Encryption is not set
      * Add document_id conditional validation if it is present
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {

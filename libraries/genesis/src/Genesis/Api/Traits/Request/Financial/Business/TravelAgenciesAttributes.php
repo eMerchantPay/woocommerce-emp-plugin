@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Business;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Trait TravelAgenciesAttributes
@@ -130,7 +130,7 @@ trait TravelAgenciesAttributes
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessArrivalDate($value)
     {
@@ -153,7 +153,7 @@ trait TravelAgenciesAttributes
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessDepartureDate($value)
     {
@@ -176,7 +176,7 @@ trait TravelAgenciesAttributes
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessPickUpDate($value)
     {
@@ -199,7 +199,7 @@ trait TravelAgenciesAttributes
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessReturnDate($value)
     {

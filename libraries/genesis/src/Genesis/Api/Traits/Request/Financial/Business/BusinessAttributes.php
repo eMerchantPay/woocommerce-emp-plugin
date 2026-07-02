@@ -26,8 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Business;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Business\PaymentTypes;
-use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
+use Genesis\Api\Constants\Transaction\Parameters\Business\PaymentTypes;
 
 /**
  * Trait BusinessAttributes
@@ -68,7 +67,7 @@ trait BusinessAttributes
 
         return $this->allowedOptionsSetter(
             'business_payment_type',
-            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Business\PaymentTypes::getAll(),
+            PaymentTypes::getAll(),
             $value,
             'Invalid Payment Type.'
         );

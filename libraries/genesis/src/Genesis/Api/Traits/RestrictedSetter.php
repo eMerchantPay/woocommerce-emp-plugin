@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits;
 
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait RestrictedSetter
@@ -41,7 +41,7 @@ trait RestrictedSetter
      * @param $errorMessage
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     protected function allowedOptionsSetter($field, $allowed, $value, $errorMessage)
     {
@@ -61,7 +61,7 @@ trait RestrictedSetter
      * @param int/null $max
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     protected function setLimitedString($field, $value, $min = null, $max = null)
     {
@@ -86,7 +86,7 @@ trait RestrictedSetter
      * @param $errorMessage
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     protected function parseDate($field, $formats, $value, $errorMessage)
     {
@@ -112,8 +112,8 @@ trait RestrictedSetter
     /**
      * @param string $field
      * @param $value
+     * @throws InvalidArgument
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function parseAmount($field, $value)
     {
@@ -124,7 +124,7 @@ trait RestrictedSetter
 
         $value = trim($value);
 
-        if (!master\libraries\genesis\src\Genesis\Utils\Common::isValidAmount($value)) {
+        if (!\Genesis\Utils\Common::isValidAmount($value)) {
             throw new InvalidArgument(
                 sprintf(
                     'Unsupported value %s for parameter %s. ' .

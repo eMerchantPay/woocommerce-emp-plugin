@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ProcessingTypes;
+use Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ProcessingTypes;
 
 /**
  * Trait ProcessingType
@@ -46,7 +46,7 @@ trait ProcessingType
      *
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setProcessingType($value)
     {

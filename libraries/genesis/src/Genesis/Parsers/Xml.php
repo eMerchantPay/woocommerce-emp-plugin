@@ -27,7 +27,7 @@
 namespace Genesis\Parsers;
 
 use ArrayObject;
-use master\libraries\genesis\src\Genesis\Parser;
+use Genesis\Parser;
 use stdClass;
 use XMLReader;
 
@@ -38,7 +38,7 @@ use XMLReader;
  *
  * @package Genesis\Parsers
  */
-final class Xml implements master\libraries\genesis\src\Genesis\Interfaces\Parser
+final class Xml implements \Genesis\Interfaces\Parser
 {
     /**
      * Converted XML
@@ -140,7 +140,7 @@ final class Xml implements master\libraries\genesis\src\Genesis\Interfaces\Parse
                     break;
                 case \XMLReader::TEXT:
                 case \XMLReader::CDATA:
-                    $tree = master\libraries\genesis\src\Genesis\Utils\Common::filterBoolean(
+                    $tree = \Genesis\Utils\Common::filterBoolean(
                         trim($reader->expand()->textContent)
                     );
                     break;

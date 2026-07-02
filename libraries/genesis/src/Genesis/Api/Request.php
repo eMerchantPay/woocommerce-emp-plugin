@@ -26,12 +26,12 @@
 
 namespace Genesis\Api;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\MagicAccessors;
-use master\libraries\genesis\src\Genesis\Api\Traits\RestrictedSetter;
-use master\libraries\genesis\src\Genesis\Api\Traits\Validations\Request\Validations;
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Traits\MagicAccessors;
+use Genesis\Api\Traits\RestrictedSetter;
+use Genesis\Api\Traits\Validations\Request\Validations;
+use Genesis\Builder;
+use Genesis\Exceptions\EnvironmentNotSet;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Request
@@ -69,7 +69,7 @@ abstract class Request
     /**
      * Store the API Response context
      * s
-     * @var master\libraries\genesis\src\Genesis\Api\Response
+     * @var \Genesis\Api\Response
      */
     public $response;
 
@@ -83,7 +83,7 @@ abstract class Request
     /**
      * Store the generated Builder Body
      *
-     * @var master\libraries\genesis\src\Genesis\Builder
+     * @var \Genesis\Builder
      */
     protected $builderContext;
 
@@ -115,9 +115,9 @@ abstract class Request
      * Generate the XML output
      *
      * @return string - XML Document with request data
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidClassMethod
      */
     public function getDocument()
     {
@@ -142,9 +142,9 @@ abstract class Request
      * Step 4: Check for Required Fields
      *
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidClassMethod
+     * @throws \Genesis\Exceptions\ErrorParameter
      */
     protected function processRequestParameters()
     {
@@ -176,9 +176,9 @@ abstract class Request
     /**
      * Perform field validation
      *
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws \Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {
@@ -221,7 +221,7 @@ abstract class Request
     protected function transformAmount($amount = '', $currency = '')
     {
         if (is_numeric($amount) && !empty($currency)) {
-            return master\libraries\genesis\src\Genesis\Utils\Currency::amountToExponent($amount, $currency);
+            return \Genesis\Utils\Currency::amountToExponent($amount, $currency);
         }
 
         return false;
@@ -248,15 +248,15 @@ abstract class Request
      * @param $token    String   - should we append the token to the end of the url
      *
      * @return string            - complete URL
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws EnvironmentNotSet
      */
     protected function buildRequestURL($sub = 'gateway', $path = '', $token = '')
     {
         $protocol = ($this->getApiConfig('protocol')) ? $this->getApiConfig('protocol') : 'https';
 
-        $sub      = master\libraries\genesis\src\Genesis\Config::getSubDomain($sub);
+        $sub      = \Genesis\Config::getSubDomain($sub);
 
-        $domain   = master\libraries\genesis\src\Genesis\Config::getEndpoint();
+        $domain   = \Genesis\Config::getEndpoint();
 
         $port     = ($this->getApiConfig('port')) ? $this->getApiConfig('port') : Request::PORT_HTTPS;
 
@@ -370,7 +370,7 @@ abstract class Request
      * @param string $requestPath
      * @param bool $includeToken
      * @return void
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws EnvironmentNotSet
      */
     protected function initApiGatewayConfiguration(
         $requestPath = 'process',
@@ -382,7 +382,7 @@ abstract class Request
             $this->buildRequestURL(
                 $subdomain,
                 $requestPath,
-                ($includeToken ? master\libraries\genesis\src\Genesis\Config::getToken() : false)
+                ($includeToken ? \Genesis\Config::getToken() : false)
             )
         );
     }

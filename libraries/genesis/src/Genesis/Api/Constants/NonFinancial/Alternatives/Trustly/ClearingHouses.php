@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Constants\NonFinancial\Alternatives\Trustly;
 
-use master\libraries\genesis\src\Genesis\Utils\Common;
+use Genesis\Utils\Common;
 
 /**
  * Class ClearingHouses

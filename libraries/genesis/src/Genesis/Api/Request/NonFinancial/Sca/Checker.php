@@ -26,13 +26,13 @@
 
 namespace Genesis\Api\Request\NonFinancial\Sca;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
-use master\libraries\genesis\src\Genesis\Api\Request\Base\BaseVersionedRequest;
-use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
-use master\libraries\genesis\src\Genesis\Builder;
-use master\libraries\genesis\src\Genesis\Config;
-use master\libraries\genesis\src\Genesis\Utils\Common;
-use master\libraries\genesis\src\Genesis\Utils\Currency;
+use Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
+use Genesis\Api\Request\Base\BaseVersionedRequest;
+use Genesis\Api\Validators\Request\RegexValidator;
+use Genesis\Builder;
+use Genesis\Config;
+use Genesis\Utils\Common;
+use Genesis\Utils\Currency;
 
 /**
  * Class Checker
@@ -156,7 +156,7 @@ class Checker extends BaseVersionedRequest
      *
      * @param $value
      * @return Checker
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setTransactionExemption($value)
     {
@@ -179,7 +179,7 @@ class Checker extends BaseVersionedRequest
     /**
      * @param $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setTransactionAmount($value)
     {

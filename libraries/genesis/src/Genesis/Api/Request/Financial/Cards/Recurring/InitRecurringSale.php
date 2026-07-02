@@ -26,18 +26,18 @@
 
 namespace Genesis\Api\Request\Financial\Cards\Recurring;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\ManagedRecurringAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringCategoryAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\FundingAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\FxRateAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\MotoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\RiskAttributes;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
+use Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
+use Genesis\Api\Traits\Request\Financial\Cards\Recurring\ManagedRecurringAttributes;
+use Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringCategoryAttributes;
+use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+use Genesis\Api\Traits\Request\Financial\FundingAttributes;
+use Genesis\Api\Traits\Request\Financial\FxRateAttributes;
+use Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
+use Genesis\Api\Traits\Request\MotoAttributes;
+use Genesis\Api\Traits\Request\RiskAttributes;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class InitRecurringSale
@@ -46,7 +46,7 @@ use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
  *
  * @package Genesis\Api\Request\Financial\Cards\Recurring
  */
-class InitRecurringSale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Cards\CreditCard
+class InitRecurringSale extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
 {
     use AccountOwnerAttributes;
     use AddressInfoAttributes;
@@ -54,9 +54,9 @@ class InitRecurringSale extends master\libraries\genesis\src\Genesis\Api\Request
     use DescriptorAttributes;
     use FundingAttributes;
     use FxRateAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\ManagedRecurringAttributes;
+    use ManagedRecurringAttributes;
     use MotoAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringCategoryAttributes;
+    use RecurringCategoryAttributes;
     use RiskAttributes;
     use TravelDataAttributes;
 
@@ -66,7 +66,7 @@ class InitRecurringSale extends master\libraries\genesis\src\Genesis\Api\Request
      */
     protected function getTransactionType()
     {
-        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::INIT_RECURRING_SALE;
+        return \Genesis\Api\Constants\Transaction\Types::INIT_RECURRING_SALE;
     }
 
     /**

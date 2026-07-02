@@ -64,18 +64,18 @@ class Builder
      */
     public function __construct($interface = null)
     {
-        $interface = $interface ?: master\libraries\genesis\src\Genesis\Config::getInterface('builder');
+        $interface = $interface ?: \Genesis\Config::getInterface('builder');
 
         switch ($interface) {
             default:
             case self::XML:
-                $this->context = new master\libraries\genesis\src\Genesis\Builders\Xml();
+                $this->context = new Builders\Xml();
                 break;
             case self::JSON:
-                $this->context = new master\libraries\genesis\src\Genesis\Builders\Json();
+                $this->context = new Builders\Json();
                 break;
             case self::FORM:
-                $this->context = new master\libraries\genesis\src\Genesis\Builders\Form();
+                $this->context = new Builders\Form();
                 break;
         }
     }
@@ -94,7 +94,7 @@ class Builder
      * Parse tree-structure into Builder document
      *
      * @param array $structure
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws Exceptions\InvalidArgument
      */
     public function parseStructure(array $structure)
     {

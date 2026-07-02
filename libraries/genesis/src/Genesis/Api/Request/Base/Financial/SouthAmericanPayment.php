@@ -26,11 +26,11 @@
 
 namespace Genesis\Api\Request\Base\Financial;
 
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PproAttributes;
+use Genesis\Api\Traits\Request\AddressInfoAttributes;
+use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use Genesis\Api\Traits\Request\Financial\PproAttributes;
 
 /**
  * Class SouthAmericanPayment
@@ -39,13 +39,13 @@ use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PproAttrib
  *
  * @package Genesis\Api\Request\Base\Financial
  */
-abstract class SouthAmericanPayment extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
+abstract class SouthAmericanPayment extends \Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PproAttributes;
+    use AsyncAttributes;
+    use BirthDateAttributes;
+    use PaymentAttributes;
+    use PproAttributes;
 
     /**
      * @return array
@@ -71,7 +71,7 @@ abstract class SouthAmericanPayment extends master\libraries\genesis\src\Genesis
             'billing_country'
         ];
 
-        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $allowedBillingCountries = $this->getAllowedBillingCountries();
         if (!empty($allowedBillingCountries)) {
@@ -79,7 +79,7 @@ abstract class SouthAmericanPayment extends master\libraries\genesis\src\Genesis
                 'billing_country' => $allowedBillingCountries
             ];
 
-            $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+            $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
         }
     }
 

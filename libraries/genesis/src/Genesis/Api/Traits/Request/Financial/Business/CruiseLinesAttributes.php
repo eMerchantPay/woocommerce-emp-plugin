@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Business;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Trait CruiseLinesAttributes
@@ -53,7 +53,7 @@ trait CruiseLinesAttributes
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessCruiseStartDate($value)
     {
@@ -76,7 +76,7 @@ trait CruiseLinesAttributes
      *
      * @param string $value
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws \Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessCruiseEndDate($value)
     {

@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use Genesis\Exceptions\ErrorParameter;
 
 /**
  * Trait PproAttributes
@@ -77,7 +77,7 @@ trait PproAttributes
      * @param string $value
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setConsumerReference($value)
     {
@@ -96,7 +96,7 @@ trait PproAttributes
      * @param string $value
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws ErrorParameter
      */
     public function setNationalId($value)
     {

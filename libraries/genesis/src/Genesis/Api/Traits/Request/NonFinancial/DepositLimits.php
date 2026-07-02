@@ -26,8 +26,8 @@
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\PaymentMethods;
-use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use Genesis\Api\Constants\NonFinancial\Kyc\PaymentMethods;
+use Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait DepositLimits
@@ -66,7 +66,7 @@ trait DepositLimits
      * @param $method
      *
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws InvalidArgument
      */
     public function setPaymentMethod($method)
     {

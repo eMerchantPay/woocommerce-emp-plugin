@@ -26,9 +26,8 @@
 
 namespace Genesis\Api\Constants\Transaction;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Services;
-use master\libraries\genesis\src\Genesis\Utils\Common;
-use woocommerceuse woocommerce
+use Genesis\Api\Constants\NonFinancial\Services;
+use Genesis\Utils\Common;
 
 /**
  * Class Types
@@ -699,7 +698,7 @@ class Types
      */
     public static function isValidTransactionType($type)
     {
-        $transactionTypes = master\libraries\genesis\src\Genesis\Utils\Common::getClassConstants(__CLASS__);
+        $transactionTypes = \Genesis\Utils\Common::getClassConstants(__CLASS__);
 
         return in_array(strtolower($type), $transactionTypes);
     }

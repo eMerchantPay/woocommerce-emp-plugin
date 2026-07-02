@@ -65,7 +65,7 @@ trait TokenizationAttributes
      */
     public function setRememberCard($flag)
     {
-        $this->remember_card = master\libraries\genesis\src\Genesis\Utils\Common::toBoolean($flag);
+        $this->remember_card = \Genesis\Utils\Common::toBoolean($flag);
 
         return $this;
     }
@@ -75,7 +75,7 @@ trait TokenizationAttributes
         return [
             'token'         => $this->token,
             'consumer_id'   => $this->consumer_id,
-            'remember_card' =>  master\libraries\genesis\src\Genesis\Utils\Common::toBoolean($this->remember_card)
+            'remember_card' =>  \Genesis\Utils\Common::toBoolean($this->remember_card)
         ];
     }
 }

@@ -30,7 +30,7 @@ namespace Genesis\Parsers;
  * Class Json
  * @package Genesis\Parsers
  */
-final class Json implements master\libraries\genesis\src\Genesis\Interfaces\Parser
+final class Json implements \Genesis\Interfaces\Parser
 {
     /**
      * Converted JSON

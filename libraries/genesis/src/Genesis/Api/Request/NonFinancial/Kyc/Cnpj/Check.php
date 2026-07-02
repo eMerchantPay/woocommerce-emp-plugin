@@ -26,9 +26,9 @@
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\Cnpj;
 
-use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
-use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use Genesis\Exceptions\EnvironmentNotSet;
+use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Check
@@ -57,8 +57,8 @@ class Check extends BaseRequest
      * Set document_id and modify the request URL
      *
      * @param $value
+     * @throws EnvironmentNotSet
      * @return $this
-     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     public function setDocumentId($value)
     {

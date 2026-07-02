@@ -26,7 +26,7 @@
 
 namespace Genesis\Api\Traits\Request\Financial\Refund;
 
-use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Refund\BankAccountTypeParameters;
+use Genesis\Api\Constants\Transaction\Parameters\Refund\BankAccountTypeParameters;
 
 /**
  * Trait BankAttributes
@@ -79,7 +79,7 @@ trait BankAttributes
     {
         return $this->allowedOptionsSetter(
             'bank_account_type',
-            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Refund\BankAccountTypeParameters::getAll(),
+            BankAccountTypeParameters::getAll(),
             $value,
             'Provided value for bank_account_type is not allowed.'
         );

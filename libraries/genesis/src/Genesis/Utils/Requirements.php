@@ -66,12 +66,12 @@ final class Requirements
         self::isClassExists('XMLReader', self::getErrorMessage('xmlreader'));
 
         // XMLWriter
-        if (master\libraries\genesis\src\Genesis\Config::getInterface('builder') == 'xml') {
+        if (\Genesis\Config::getInterface('builder') == 'xml') {
             self::isClassExists('XMLWriter', self::getErrorMessage('xmlwriter'));
         }
 
         // cURL
-        if (master\libraries\genesis\src\Genesis\Config::getInterface('network') == 'curl') {
+        if (\Genesis\Config::getInterface('network') == 'curl') {
             self::isFunctionExists('curl_init', self::getErrorMessage('curl'));
         }
     }
@@ -83,7 +83,7 @@ final class Requirements
      */
     public static function checkSystemVersion()
     {
-        if (master\libraries\genesis\src\Genesis\Utils\Common::compareVersions(self::$minPHPVersion, '<')) {
+        if (\Genesis\Utils\Common::compareVersions(self::$minPHPVersion, '<')) {
             throw new Exception(self::getErrorMessage('system'));
         }
     }
