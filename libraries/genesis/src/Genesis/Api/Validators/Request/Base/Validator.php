@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Validators\Request\Base;
 
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Validator
@@ -39,7 +39,7 @@ abstract class Validator
     /**
      * API Request Instance
      *
-     * @var \Genesis\Api\Request
+     * @var master\libraries\genesis\src\Genesis\Api\Request
      */
     protected $request;
 
@@ -68,10 +68,10 @@ abstract class Validator
     }
 
     /**
-     * @param \Genesis\Api\Request $request
+     * @param master\libraries\genesis\src\Genesis\Api\Request $request
      * @param string $field
      * @return void
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function run($request, $field)
     {
@@ -92,7 +92,7 @@ abstract class Validator
 
     /**
      * @return void
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function throwInvalidArgument()
     {
@@ -106,7 +106,7 @@ abstract class Validator
 
     /**
      * @return mixed|null
-     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     protected function getRequestValue()
     {

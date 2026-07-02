@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -64,18 +64,18 @@ class Builder
      */
     public function __construct($interface = null)
     {
-        $interface = $interface ?: \Genesis\Config::getInterface('builder');
+        $interface = $interface ?: master\libraries\genesis\src\Genesis\Config::getInterface('builder');
 
         switch ($interface) {
             default:
             case self::XML:
-                $this->context = new Builders\Xml();
+                $this->context = new master\libraries\genesis\src\Genesis\Builders\Xml();
                 break;
             case self::JSON:
-                $this->context = new Builders\Json();
+                $this->context = new master\libraries\genesis\src\Genesis\Builders\Json();
                 break;
             case self::FORM:
-                $this->context = new Builders\Form();
+                $this->context = new master\libraries\genesis\src\Genesis\Builders\Form();
                 break;
         }
     }
@@ -94,7 +94,7 @@ class Builder
      * Parse tree-structure into Builder document
      *
      * @param array $structure
-     * @throws Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function parseStructure(array $structure)
     {

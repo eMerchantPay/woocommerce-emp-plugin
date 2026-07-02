@@ -18,7 +18,7 @@
  * @package     includes\blocks\class-wc-emerchantpay-blocks-checkout
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceif ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
@@ -39,12 +39,10 @@ final class WC_Emerchantpay_Blocks_Checkout extends WC_Emerchantpay_Blocks_Base 
 	 * @SuppressWarnings(PHPMD.MissingImport)
 	 */
 	public function initialize() {
-		$options = array(
+		$options        = array(
+			'draw_transaction_tree'          => false,
 			'register_renewal_subscriptions' => false,
 		);
-		if ( ! is_admin() ) {
-			$options['draw_transaction_tree'] = false;
-		}
 		$this->gateway  = new WC_Emerchantpay_Checkout( $options );
 		$this->supports = $this->gateway->supports;
 		$this->settings = $this->get_filtered_plugin_settings( 'woocommerce_emerchantpay_checkout_settings' );

@@ -20,15 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\GiftCards;
 
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Api\Request\Base\Financial\GiftCard;
-use Genesis\Api\Traits\Request\NonFinancial\TokenizationApiTokenAttributes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\GiftCard;
 
 /**
  * Class Tcs
@@ -39,8 +38,6 @@ use Genesis\Api\Traits\Request\NonFinancial\TokenizationApiTokenAttributes;
  */
 class Tcs extends GiftCard
 {
-    use TokenizationApiTokenAttributes;
-
     /**
      * Returns the Request transaction type
      * @return string
@@ -48,20 +45,5 @@ class Tcs extends GiftCard
     protected function getTransactionType()
     {
         return Types::TCS;
-    }
-
-    /**
-     * Return request structure
-     *
-     * @return array
-     */
-    protected function getPaymentTransactionStructure()
-    {
-        return array_merge(
-            parent::getPaymentTransactionStructure(),
-            [
-                'token' => $this->token
-            ]
-        );
     }
 }

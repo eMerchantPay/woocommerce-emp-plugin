@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationOwner;
-use Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationSubType;
-use Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationType;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Country;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationOwner;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationSubType;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CustomerIdentification\CustomerIdentificationType;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Country;
 
 /**
  * trait CustomerIdentificationData
@@ -82,7 +82,7 @@ trait CustomerIdentificationData
      *
      * @param string $owner
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setCustomerIdentificationOwner($owner)
     {
@@ -108,7 +108,7 @@ trait CustomerIdentificationData
      *
      * @param string $type
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setCustomerIdentificationType($type)
     {
@@ -134,7 +134,7 @@ trait CustomerIdentificationData
      *
      * @param $country
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setCustomerIdentificationIssuingCountry($country)
     {
@@ -160,7 +160,7 @@ trait CustomerIdentificationData
      *
      * @param string $subtype
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setCustomerIdentificationSubtype($subtype)
     {

@@ -20,21 +20,20 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api;
 
-use Genesis\Builder;
-use Genesis\Config;
-use Genesis\Exceptions\DeprecatedMethod;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Exceptions\InvalidClassMethod;
-use Genesis\Exceptions\InvalidMethod;
-use Genesis\Exceptions\InvalidResponse;
-use Genesis\Genesis;
+use master\libraries\genesis\src\Genesis\Builder;
+use master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidResponse;
+use master\libraries\genesis\src\Genesis\Genesis;
 use LogicException;
 
 /**
@@ -42,8 +41,6 @@ use LogicException;
  *
  * @package    Genesis
  * @subpackage Api
- *
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Notification
 {
@@ -53,13 +50,6 @@ class Notification
      * @var string
      */
     private $unique_id;
-
-    /**
-     * Store the Terminal Token of the transaction
-     *
-     * @var string
-     */
-    private $terminal_token;
 
     /**
      * Store the incoming notification as an object
@@ -80,7 +70,7 @@ class Notification
      *
      * @param $data
      *
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function __construct($data = null)
     {
@@ -95,7 +85,7 @@ class Notification
      * @param array $notification - Incoming notification ($_POST)
      * @param bool  $authenticate - Set to true if you want to validate the notification
      *
-     * @throws \Genesis\Exceptions\InvalidArgument()
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument()
      */
     public function parseNotification($notification = [], $authenticate = true)
     {
@@ -110,9 +100,19 @@ class Notification
 
         $notification = $notificationWalk;
 
-        $this->notificationObj = \Genesis\Utils\Common::createArrayObject($notification);
+        $this->notificationObj = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($notification);
 
-        $this->mapVariables();
+        if ($this->isAPINotification()) {
+            $this->unique_id = (string)$this->notificationObj->unique_id;
+        }
+
+        if ($this->isWPFNotification()) {
+            $this->unique_id = (string)$this->notificationObj->wpf_unique_id;
+        }
+
+        if ($this->isKYCNotification()) {
+            $this->unique_id = (string)$this->notificationObj->reference_id;
+        }
 
         if ($authenticate && !$this->isAuthentic()) {
             throw new InvalidArgument('Invalid Genesis Notification!');
@@ -123,12 +123,12 @@ class Notification
      * Reconcile with the Payment Gateway to get the latest
      * status on the transaction
      *
-     * @throws ErrorParameter
-     * @throws InvalidClassMethod
-     * @throws InvalidResponse
-     * @throws InvalidArgument
-     * @throws InvalidMethod
-     * @throws DeprecatedMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidResponse
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod
      */
     public function initReconciliation()
     {
@@ -153,7 +153,7 @@ class Notification
      * Verify the signature on the parsed Notification
      *
      * @return bool
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function isAuthentic()
     {
@@ -164,7 +164,7 @@ class Notification
         }
 
         $messageSig  = trim($this->notificationObj->signature);
-        $customerPwd = trim(\Genesis\Config::getPassword() ? \Genesis\Config::getPassword() : '');
+        $customerPwd = trim(master\libraries\genesis\src\Genesis\Config::getPassword());
 
         switch (strlen($messageSig)) {
             default:
@@ -237,26 +237,6 @@ class Notification
     }
 
     /**
-     * Unique Id getter
-     *
-     * @return string
-     */
-    public function getUniqueId()
-    {
-        return $this->unique_id;
-    }
-
-    /**
-     * Terminal Token getter
-     *
-     * @return string
-     */
-    public function getTerminalToken()
-    {
-        return $this->terminal_token;
-    }
-
-    /**
      * Generate Builder response (Echo) required for acknowledging
      * Genesis's Notification
      *
@@ -304,73 +284,9 @@ class Notification
             header('Content-type: application/xml', true);
         }
 
-        if (ob_get_length()) {
-            // Clean the buffer
-            ob_clean();
-        }
+        // Clean the buffer
+        ob_clean();
 
         echo $this->generateResponse();
-    }
-
-    /**
-     * Sets the Terminal Token to the Genesis Config. The case is useful with the Smart Router API
-     *
-     * @return void
-     */
-    private function assignTerminalToken()
-    {
-        if (!$this->terminal_token || !empty(Config::getToken())) {
-            return;
-        }
-
-        Config::setToken($this->terminal_token);
-    }
-
-    /**
-     * Map Notification params to class variables
-     *
-     * @return void
-     */
-    private function mapVariables()
-    {
-        switch (true) {
-            case $this->isAPINotification():
-                $this->assignAccessorValue('unique_id', 'unique_id');
-                $this->assignAccessorValue('terminal_token', 'terminal_token');
-                $this->assignTerminalToken();
-
-                break;
-            case $this->isWPFNotification():
-                $this->assignAccessorValue('unique_id', 'wpf_unique_id');
-                $this->assignAccessorValue('terminal_token', 'payment_transaction_terminal_token');
-
-                break;
-            case $this->isKYCNotification():
-                $this->assignAccessorValue('unique_id', 'reference_id');
-
-                break;
-            default:
-                $this->unique_id      = null;
-                $this->terminal_token = null;
-        }
-    }
-
-    /**
-     * Safe assign
-     *
-     * @param string $private_accessor
-     * @param string $notification_accessor
-     *
-     * @return void
-     */
-    private function assignAccessorValue($private_accessor, $notification_accessor)
-    {
-        if (!isset($this->notificationObj->{$notification_accessor})) {
-            $this->{$private_accessor} = null;
-
-            return;
-        }
-
-        $this->{$private_accessor} = $this->notificationObj->{$notification_accessor};
     }
 }

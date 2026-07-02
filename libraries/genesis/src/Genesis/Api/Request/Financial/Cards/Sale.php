@@ -20,34 +20,32 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Cards;
 
-use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\DigitalAssetTypeAttributes;
-use Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
-use Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
-use Genesis\Api\Traits\Request\Financial\Cards\Recurring\ManagedRecurringAttributes;
-use Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringCategoryAttributes;
-use Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringTypeAttributes;
-use Genesis\Api\Traits\Request\Financial\Cards\Recurring\SubsequentRecurringTypeAttributes;
-use Genesis\Api\Traits\Request\Financial\CryptoAttributes;
-use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use Genesis\Api\Traits\Request\Financial\FundingAttributes;
-use Genesis\Api\Traits\Request\Financial\FxRateAttributes;
-use Genesis\Api\Traits\Request\Financial\GamingAttributes;
-use Genesis\Api\Traits\Request\Financial\Installments\InstallmentAttributes;
-use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
-use Genesis\Api\Traits\Request\Financial\ScaAttributes;
-use Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
-use Genesis\Api\Traits\Request\Financial\UcofAttributes;
-use Genesis\Api\Traits\Request\MotoAttributes;
-use Genesis\Api\Traits\Request\RiskAttributes;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\ManagedRecurringAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringCategoryAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringTypeAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\SubsequentRecurringTypeAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CryptoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\FundingAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\FxRateAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\GamingAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ScaAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\UcofAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\MotoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\RiskAttributes;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Sale
@@ -57,7 +55,7 @@ use Genesis\Utils\Common as CommonUtils;
  * @package Genesis\Api\Request\Financial\Cards
  *
  */
-class Sale extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
+class Sale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Cards\CreditCard
 {
     use AccountOwnerAttributes;
     use AddressInfoAttributes;
@@ -77,8 +75,6 @@ class Sale extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
     use ScaAttributes;
     use SubsequentRecurringTypeAttributes;
     use UcofAttributes;
-    use InstallmentAttributes;
-    use DigitalAssetTypeAttributes;
 
     /**
      * Returns the Request transaction type
@@ -86,7 +82,7 @@ class Sale extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::SALE;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::SALE;
     }
 
     /**
@@ -128,9 +124,9 @@ class Sale extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
      * Extend the Sale Request Validations
      *
      * @return void
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidArgument
-     * @throws \Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {
@@ -159,8 +155,6 @@ class Sale extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
             [
                 'gaming'                    => $this->gaming,
                 'moto'                      => $this->moto,
-                'crypto'                    => $this->crypto,
-                'digital_asset_type'        => $this->digital_asset_type,
                 'customer_email'            => $this->customer_email,
                 'customer_phone'            => $this->customer_phone,
                 'document_id'               => $this->document_id,
@@ -171,6 +165,7 @@ class Sale extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
                 'reference_id'              => $this->reference_id,
                 'travel'                    => $this->getTravelData(),
                 'fx_rate_id'                => $this->fx_rate_id,
+                'crypto'                    => $this->crypto,
                 'business_attributes'       => $this->getBusinessAttributesStructure(),
                 'recurring_type'            => $this->getRecurringType(),
                 'managed_recurring'         => $this->getManagedRecurringAttributesStructure(),
@@ -179,8 +174,7 @@ class Sale extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
                 'account_owner'             => $this->getAccountOwnerAttributesStructure()
             ],
             $this->getScaAttributesStructure(),
-            $this->getUcofAttributesStructure(),
-            $this->getInstallmentAttributesStructure()
+            $this->getUcofAttributesStructure()
         );
     }
 }

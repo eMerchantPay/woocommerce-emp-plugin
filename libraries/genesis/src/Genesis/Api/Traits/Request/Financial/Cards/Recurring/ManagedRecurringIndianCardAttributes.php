@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Cards\Recurring;
 
-use Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\AmountTypes;
-use Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\Frequencies;
-use Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\PaymentTypes;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\AmountTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\Frequencies;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ManagedRecurring\PaymentTypes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Trait ManagedRecurringIndianCardAttributes
@@ -100,7 +100,7 @@ trait ManagedRecurringIndianCardAttributes
      *
      * @param string|null $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setManagedRecurringPaymentType($value)
     {
@@ -123,7 +123,7 @@ trait ManagedRecurringIndianCardAttributes
      *
      * @param string|null $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setManagedRecurringAmountType($value)
     {
@@ -146,7 +146,7 @@ trait ManagedRecurringIndianCardAttributes
      *
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setManagedRecurringFrequency($value)
     {
@@ -180,7 +180,7 @@ trait ManagedRecurringIndianCardAttributes
     /**
      * @param $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setManagedRecurringMaxAmount($value)
     {

@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Business;
 
-use Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Trait CarPlaneAndBoatRentalsAttributes
@@ -62,7 +62,7 @@ trait CarPlaneAndBoatRentalsAttributes
      *
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessVehiclePickUpDate($value)
     {
@@ -85,7 +85,7 @@ trait CarPlaneAndBoatRentalsAttributes
      *
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setBusinessVehicleReturnDate($value)
     {

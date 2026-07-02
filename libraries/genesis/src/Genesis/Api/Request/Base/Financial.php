@@ -20,16 +20,16 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base;
 
-use Genesis\Api\Traits\Request\BaseAttributes;
-use Genesis\Config;
-use Genesis\Exceptions\EnvironmentNotSet;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\BaseAttributes;
+use master\libraries\genesis\src\Genesis\Config;
+use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Financial
@@ -40,7 +40,7 @@ use Genesis\Utils\Common as CommonUtils;
  *
  * @method getUseSmartRouter() Get Smart Router usage. Whether Financial transaction endpoint is a Smart Router or not.
  */
-abstract class Financial extends \Genesis\Api\Request
+abstract class Financial extends master\libraries\genesis\src\Genesis\Api\Request
 {
     use BaseAttributes;
 
@@ -79,7 +79,7 @@ abstract class Financial extends \Genesis\Api\Request
     /**
      * Initialize per-request configuration
      *
-     * @throws EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initConfiguration()
     {
@@ -97,10 +97,10 @@ abstract class Financial extends \Genesis\Api\Request
      *
      * @return void
      *
-     * @throws EnvironmentNotSet
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidArgument
-     * @throws \Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function processRequestParameters()
     {
@@ -129,14 +129,14 @@ abstract class Financial extends \Genesis\Api\Request
 
         $treeStructure['payment_transaction'] += $this->getPaymentTransactionStructure();
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 
     /**
      * Initialize Smart Router endpoint
      *
      * @return void
-     * @throws \Genesis\Exceptions\EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initializeSmartRouter()
     {

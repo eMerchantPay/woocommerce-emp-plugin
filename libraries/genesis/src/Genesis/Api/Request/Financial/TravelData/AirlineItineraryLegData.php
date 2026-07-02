@@ -20,16 +20,16 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\TravelData;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Request\Financial\TravelData\Base\AidAttributes;
-use Genesis\Api\Traits\MagicAccessors;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Request\Financial\TravelData\Base\AidAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\MagicAccessors;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class AirlineItineraryLegData
@@ -111,7 +111,7 @@ class AirlineItineraryLegData extends AidAttributes
      *
      * @param $fareBasisCode
      * @param $arrivalDate
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -138,7 +138,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setDepartureDate($value)
     {
@@ -169,7 +169,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setCarrierCode($value)
     {
@@ -186,7 +186,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setServiceClass($value)
     {
@@ -203,7 +203,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setOriginCity($value)
     {
@@ -220,7 +220,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setDestinationCity($value)
     {
@@ -237,7 +237,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setFareBasisCode($value)
     {
@@ -254,7 +254,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setFlightNumber($value)
     {
@@ -271,7 +271,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setDepartureTime($value)
     {
@@ -288,7 +288,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setDepartureTimeSegment($value)
     {
@@ -313,7 +313,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setStopoverCode($value)
     {
@@ -338,7 +338,7 @@ class AirlineItineraryLegData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryLegData
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setArrivalDate($value)
     {

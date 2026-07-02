@@ -20,33 +20,32 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Wpf;
 
-use Genesis\Api\Constants\i18n;
-use Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
-use Genesis\Api\Request\Base\Financial\Cards\CreditCard;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\DigitalAssetTypeAttributes;
-use Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
-use Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringCategoryAttributes;
-use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use Genesis\Api\Traits\Request\Financial\FundingAttributes;
-use Genesis\Api\Traits\Request\Financial\NotificationAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\Threeds\V2\WpfAttributes as WpfThreedsV2Attributes;
-use Genesis\Api\Traits\Request\RiskAttributes;
-use Genesis\Api\Traits\Request\Wpf\Validations;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\i18n;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\ScaExemptions;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Cards\CreditCard;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringCategoryAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\FundingAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\NotificationAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Threeds\V2\WpfAttributes as WpfThreedsV2Attributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\RiskAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Wpf\Validations;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Web-Payment-Form Request
@@ -74,7 +73,7 @@ use Genesis\Utils\Common as CommonUtils;
  * @method mixed  getWebPaymentFormId()       The unique ID of the web payment form configuration to be displayed for the current payment.
  * @codingStandardsIgnoreEnd
  */
-class Create extends \Genesis\Api\Request
+class Create extends master\libraries\genesis\src\Genesis\Api\Request
 {
     use AccountOwnerAttributes;
     use AddressInfoAttributes;
@@ -87,9 +86,8 @@ class Create extends \Genesis\Api\Request
     use PendingPaymentAttributes;
     use RecurringCategoryAttributes;
     use RiskAttributes;
-    use Validations;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Wpf\Validations;
     use WpfThreedsV2Attributes;
-    use DigitalAssetTypeAttributes;
 
     const REMINDERS_CHANNEL_EMAIL      = 'email';
     const REMINDERS_CHANNEL_SMS        = 'sms';
@@ -229,8 +227,8 @@ class Create extends \Genesis\Api\Request
      * Will be set to 30 minutes by default.
      * Valid value ranges between 1 minute and 31 days given in minutes
      * @param int $lifetime
-     * @throws InvalidArgument
      * @return $this
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setLifetime($lifetime)
     {
@@ -281,7 +279,7 @@ class Create extends \Genesis\Api\Request
      * @param $after
      *
      * @return Create
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function addReminder($channel, $after)
     {
@@ -379,7 +377,7 @@ class Create extends \Genesis\Api\Request
      * @param string $value
      *
      * @return $this
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function setScaExemption($value)
     {
@@ -406,9 +404,9 @@ class Create extends \Genesis\Api\Request
      *
      * @return $this
      *
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
-    public function setLanguage($language = \Genesis\Api\Constants\i18n::EN)
+    public function setLanguage($language = master\libraries\genesis\src\Genesis\Api\Constants\i18n::EN)
     {
         $language = CommonUtils::filterLanguageCode($language);
 
@@ -477,7 +475,7 @@ class Create extends \Genesis\Api\Request
             'transaction_types'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldsConditional = [
             'remember_card' => [
@@ -544,7 +542,6 @@ class Create extends \Genesis\Api\Request
                 'pay_later'                 => var_export($this->pay_later, true),
                 'reminder_language'         => $this->reminder_language,
                 'reminders'                 => $this->getRemindersStructure(),
-                'digital_asset_type'        => $this->digital_asset_type,
                 'business_attributes'       => $this->getBusinessAttributesStructure(),
                 'sca_preference'            => $this->sca_preference,
                 'sca_params'                => [
@@ -558,13 +555,13 @@ class Create extends \Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 
     /**
      * Validates Reminders
      *
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     protected function validateReminders()
     {

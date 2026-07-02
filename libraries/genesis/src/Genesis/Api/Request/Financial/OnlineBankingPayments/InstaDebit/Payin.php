@@ -20,14 +20,11 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments\InstaDebit;
-
-use Genesis\Utils\Common as CommonUtils;
-use Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit\Payin as IdebitPayin;
 
 /**
  * Class Payin
@@ -36,22 +33,15 @@ use Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit\Payin as IdebitPa
  *
  * @package Genesis\Api\Request\Financial\OnlineBankingPayments\InstaDebit
  */
-class Payin extends IdebitPayin
+class Payin extends master\libraries\genesis\src\Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit\Payin
 {
-    /**
-     * Return url where customer is sent to after payment
-     *
-     * @var string
-     */
-    protected $return_url;
-
     /**
      * Returns the Request transaction type
      * @return string
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::INSTA_DEBIT_PAYIN;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::INSTA_DEBIT_PAYIN;
     }
 
     /**
@@ -63,17 +53,11 @@ class Payin extends IdebitPayin
     {
         parent::setRequiredFields();
 
-        $required_fields = array_merge(
-            (array)$this->requiredFields,
-            ['return_url']
-        );
-        $this->requiredFields = CommonUtils::createArrayObject($required_fields);
-
         $requiredFieldValues = [
             'billing_country' => ['CA'],
             'currency'        => ['CAD', 'USD']
         ];
 
-        $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 }

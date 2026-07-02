@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Builders;
 
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Interfaces\Builder;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Interfaces\Builder;
 
 /**
  * Class Form
@@ -55,7 +55,7 @@ class Form implements Builder
      *
      * @param array $structure
      * @return mixed|void
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function populateNodes($structure)
     {

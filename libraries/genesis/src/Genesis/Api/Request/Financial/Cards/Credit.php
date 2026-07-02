@@ -20,18 +20,16 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Cards;
 
-use Genesis\Api\Traits\Request\DigitalAssetTypeAttributes;
-use Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
-use Genesis\API\Traits\Request\Financial\CryptoAttributes;
-use Genesis\Api\Traits\Request\Financial\CustomerIdentificationData;
-use Genesis\Api\Traits\Request\Financial\PurposeOfPaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\SourceOfFundsAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CustomerIdentificationData;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PurposeOfPaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\SourceOfFundsAttributes;
 
 /**
  * Class Credit
@@ -40,14 +38,12 @@ use Genesis\Api\Traits\Request\Financial\SourceOfFundsAttributes;
  *
  * @package Genesis\Api\Request\Financial\Cards
  */
-class Credit extends \Genesis\Api\Request\Base\Financial\Reference
+class Credit extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
 {
     use AccountOwnerAttributes;
     use CustomerIdentificationData;
     use PurposeOfPaymentAttributes;
     use SourceOfFundsAttributes;
-    use DigitalAssetTypeAttributes;
-    use CryptoAttributes;
 
     /**
      * Set the required fields
@@ -62,7 +58,7 @@ class Credit extends \Genesis\Api\Request\Base\Financial\Reference
             'amount'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -89,7 +85,7 @@ class Credit extends \Genesis\Api\Request\Base\Financial\Reference
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::CREDIT;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::CREDIT;
     }
 
     /**
@@ -102,13 +98,11 @@ class Credit extends \Genesis\Api\Request\Base\Financial\Reference
         return array_merge(
             $this->getSourceOfFundsStructure(),
             [
-                'digital_asset_type'      => $this->digital_asset_type,
                 'reference_id'            => $this->reference_id,
                 'amount'                  => $this->transformAmount($this->amount, $this->currency),
                 'customer_identification' => $this->getCustomerIdentificationDataStructure(),
                 'account_owner'           => $this->getAccountOwnerAttributesStructure(),
-                'purpose_of_payment'      => $this->purpose_of_payment,
-                'crypto'                  => $this->crypto
+                'purpose_of_payment'      => $this->purpose_of_payment
             ]
         );
     }

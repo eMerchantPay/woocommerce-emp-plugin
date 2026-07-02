@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Fraud\Retrieval;
 
-use Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Retrieval request by Date Range
@@ -35,7 +35,7 @@ use Genesis\Api\Constants\DateTimeFormat;
  * @subpackage Request
  */
 
-class DateRange extends \Genesis\Api\Request
+class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
 {
     /**
      * start of the requested date range
@@ -63,7 +63,7 @@ class DateRange extends \Genesis\Api\Request
     /**
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setStartDate($value)
     {
@@ -84,7 +84,7 @@ class DateRange extends \Genesis\Api\Request
     /**
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setEndDate($value)
     {
@@ -143,7 +143,7 @@ class DateRange extends \Genesis\Api\Request
             'start_date'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -161,6 +161,6 @@ class DateRange extends \Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

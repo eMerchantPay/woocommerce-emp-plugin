@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\ConsumerRegistration;
 
-use Genesis\Api\Constants\NonFinancial\Kyc\ProfileCurrentStatuses;
-use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\ProfileCurrentStatuses;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
 
 /**
  * Class Update
@@ -72,7 +72,7 @@ class Update extends BaseRequest
      * @param $status
      *
      * @return Update
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setProfileCurrentStatus($status)
     {
@@ -96,7 +96,7 @@ class Update extends BaseRequest
             'profile_current_status'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldsConditional = [
             'profile_current_status' => [
@@ -106,7 +106,7 @@ class Update extends BaseRequest
             ]
         ];
 
-        $this->requiredFieldsConditional = \Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
+        $this->requiredFieldsConditional = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsConditional);
     }
 
     /**

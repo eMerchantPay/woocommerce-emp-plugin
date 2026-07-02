@@ -20,25 +20,25 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\CashPayments;
 
-use Genesis\Api\Constants\Transaction\Parameters\CashPayments\CompanyTypes;
-use Genesis\Api\Constants\Transaction\Parameters\CashPayments\Gender;
-use Genesis\Api\Constants\Transaction\Parameters\CashPayments\MaritalStatuses;
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Api\Request\Base\Financial;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\DocumentAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use Genesis\Api\Traits\Request\Financial\CustomerAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\CompanyTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\Gender;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\MaritalStatuses;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\DocumentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CustomerAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Pix
@@ -132,27 +132,6 @@ class Pix extends Financial
     protected $birth_state;
 
     /**
-     * The name of the beneficiary, either a Natural Person or Legal Person.
-     *
-     * @var string
-     */
-    protected $beneficiary_name;
-
-    /**
-     * The Document ID of the beneficiary, such as CPF or CNPJ for Brazilian entities.
-     *
-     * @var string
-     */
-    protected $beneficiary_document_id;
-
-    /**
-     * The PIX key associated with the beneficiary.
-     *
-     * @var string
-     */
-    protected $beneficiary_pix_key;
-
-    /**
      * Returns the Request transaction type
      * @return string
      */
@@ -174,13 +153,13 @@ class Pix extends Financial
     /**
      * @param $value
      * @return Pix
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setGender($value)
     {
         return $this->allowedOptionsSetter(
             'gender',
-            Gender::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\Gender::getAll(),
             $value,
             'Invalid value for parameter gender provided.'
         );
@@ -189,13 +168,13 @@ class Pix extends Financial
     /**
      * @param $value
      * @return Pix
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMaritalStatus($value)
     {
         return $this->allowedOptionsSetter(
             'marital_status',
-            MaritalStatuses::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\MaritalStatuses::getAll(),
             $value,
             'Invalid value for marital status parameter provided.'
         );
@@ -205,7 +184,7 @@ class Pix extends Financial
     {
         return $this->allowedOptionsSetter(
             'company_type',
-            CompanyTypes::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\CashPayments\CompanyTypes::getAll(),
             $value,
             'Invalid value for company type parameter provided.'
         );
@@ -239,20 +218,6 @@ class Pix extends Financial
     }
 
     /**
-     * Builds an array list with beneficiary params
-     *
-     * @return array
-     */
-    protected function getBeneficiaryParamsStructure()
-    {
-        return [
-            'beneficiary_name'        => $this->beneficiary_name,
-            'beneficiary_document_id' => $this->beneficiary_document_id,
-            'beneficiary_pix_key'     => $this->beneficiary_pix_key
-        ];
-    }
-
-    /**
      * Return additional request attributes
      *
      * @return array
@@ -277,8 +242,8 @@ class Pix extends Financial
                 'marital_status'     => $this->marital_status,
                 'sender_occupation'  => $this->sender_occupation,
                 'nationality'        => $this->nationality,
-                'country_of_origin'  => $this->country_of_origin,
-                'beneficiary'        => $this->getBeneficiaryParamsStructure()
+                'country_of_origin'  => $this->country_of_origin
+
             ],
             $this->getCustomerParamsStructure()
         );

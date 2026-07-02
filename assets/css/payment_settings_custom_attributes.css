@@ -1,0 +1,55 @@
+/* Container styles */
+#transaction-labels-container {
+	margin-top: 20px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	padding: 10px;
+	background-color: #f9f9f9;
+	width: 100%;
+	border-spacing: 0;
+}
+
+/* Table styles */
+#transaction-labels-container table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+/* Table header styles */
+#transaction-labels-container th {
+	text-align: left;
+	font-weight: bold;
+	font-size: 14px;
+	color: #333;
+	padding: 10px 5px;
+	border-bottom: 1px solid #ddd;
+	background-color: #f4f4f4;
+}
+
+/* Row styles */
+#transaction-labels-container td {
+	padding: 10px 5px;
+	font-size: 14px;
+	border-bottom: 1px dashed #ddd;
+}
+
+/* Key styles (value column) */
+.transaction-label-key {
+	font-weight: bold;
+	color: #555;
+}
+
+/* Input styles (label column) */
+.transaction-label-input {
+	padding: 5px;
+	font-size: 14px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* Hover effect on row */
+#transaction-labels-container tr:hover {
+	background-color: #f0f8ff;
+}

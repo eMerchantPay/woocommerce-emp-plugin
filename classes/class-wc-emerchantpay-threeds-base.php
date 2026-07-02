@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,9 +18,10 @@
  * @package     classes\class-wc-emerchantpay-threeds-base
  */
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Utils\Currency;
-use Genesis\Utils\Threeds\V2 as ThreedsV2Utils;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Utils\Currency;
+use master\libraries\genesis\src\Genesis\Utils\Threeds\V2 as ThreedsV2Utils;
+use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );

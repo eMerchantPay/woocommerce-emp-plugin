@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -323,6 +323,6 @@ final class Country
      */
     public static function getList()
     {
-        return \Genesis\Utils\Common::getArrayKeys(self::$countries);
+        return master\libraries\genesis\src\Genesis\Utils\Common::getArrayKeys(self::$countries);
     }
 }

@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -32,7 +32,7 @@ namespace Genesis\Api\Request\Wpf;
  * @package    Genesis
  * @subpackage Request
  */
-class Reconcile extends \Genesis\Api\Request
+class Reconcile extends master\libraries\genesis\src\Genesis\Api\Request
 {
     /**
      * Unique id of an existing WPF transaction
@@ -64,7 +64,7 @@ class Reconcile extends \Genesis\Api\Request
             'unique_id'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -80,6 +80,6 @@ class Reconcile extends \Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

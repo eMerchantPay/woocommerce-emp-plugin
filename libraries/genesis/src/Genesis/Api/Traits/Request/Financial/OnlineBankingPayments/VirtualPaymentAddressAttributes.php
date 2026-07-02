@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\OnlineBankingPayments;
 
-use Genesis\Api\Validators\Request\RegexValidator;
+use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
 
 /**
  * Trait VirtualPaymentAddressAttributes
@@ -49,7 +49,7 @@ trait VirtualPaymentAddressAttributes
      * @param string $value
      *
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setVirtualPaymentAddress($value)
     {
@@ -70,7 +70,7 @@ trait VirtualPaymentAddressAttributes
     /**
      * Virtual Payment Address validation rules
      *
-     * @return RegexValidator
+     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
      */
     protected function getVirtualPaymentAddressValidator()
     {

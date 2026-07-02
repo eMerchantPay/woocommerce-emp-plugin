@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Threeds\V2;
 
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Sdk\Interfaces;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Sdk\UiTypes;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Sdk\Interfaces;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Sdk\UiTypes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait Sdk
@@ -106,7 +106,7 @@ trait Sdk
      *
      * @param string|array $value
      * @return Sdk
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2SdkUiTypes($value)
     {
@@ -144,7 +144,7 @@ trait Sdk
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2SdkApplicationId($value)
     {
@@ -161,7 +161,7 @@ trait Sdk
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2SdkEncryptedData($value)
     {
@@ -179,7 +179,7 @@ trait Sdk
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2SdkEphemeralPublicKeyPair($value)
     {
@@ -196,7 +196,7 @@ trait Sdk
      *
      * @param int $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2SdkMaxTimeout($value)
     {
@@ -217,7 +217,7 @@ trait Sdk
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2SdkReferenceNumber($value)
     {

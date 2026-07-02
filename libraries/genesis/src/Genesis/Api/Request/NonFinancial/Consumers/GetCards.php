@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Consumers;
 
-use Genesis\Api\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Consumers\BaseRequest as ConsumerBaseRequest;
 
 /**
  * Class GetCards
@@ -76,7 +76,7 @@ class GetCards extends ConsumerBaseRequest
             'consumer_id'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

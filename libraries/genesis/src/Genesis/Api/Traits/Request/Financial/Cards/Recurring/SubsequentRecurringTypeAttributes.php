@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Cards\Recurring;
 
-use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * trait SubsequentRecurringTypeAttributes
@@ -48,7 +48,7 @@ trait SubsequentRecurringTypeAttributes
      */
     protected function transformAmount($amount = '', $currency = '')
     {
-        if ($this->recurring_type == Types::SUBSEQUENT && empty($currency)) {
+        if ($this->recurring_type == master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types::SUBSEQUENT && empty($currency)) {
             return $amount;
         }
 
@@ -59,9 +59,9 @@ trait SubsequentRecurringTypeAttributes
      * Extend the Request Validations for Subsequent recurring type
      *
      * @return void
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidArgument
-     * @throws \Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirementsSubsequent()
     {

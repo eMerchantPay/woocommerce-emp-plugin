@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\Trustly;
 
-use Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest;
-use Genesis\Utils\Common as CommonUtils;
-use Genesis\Utils\Country;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Utils\Country;
 
 /**
  * Class SelectAccount
@@ -46,7 +46,7 @@ use Genesis\Utils\Country;
  * @method $this  setSuccessUrl($value)
  * @method $this  setUniqueId($value)
  */
-class SelectAccount extends BaseRequest
+class SelectAccount extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest
 {
     /**
      * Country code in ISO 3166

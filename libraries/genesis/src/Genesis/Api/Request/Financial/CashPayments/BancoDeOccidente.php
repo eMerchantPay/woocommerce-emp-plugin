@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\CashPayments;
  *
  * @package Genesis\Api\Request\Financial\CashPayments
  */
-class BancoDeOccidente extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class BancoDeOccidente extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class BancoDeOccidente extends \Genesis\Api\Request\Base\Financial\SouthAmerican
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::BANCO_DE_OCCIDENTE;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::BANCO_DE_OCCIDENTE;
     }
 
     /**

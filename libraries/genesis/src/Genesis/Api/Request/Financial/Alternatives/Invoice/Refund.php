@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Alternatives\Invoice;
 
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Api\Request\Base\Financial\Alternative\Invoice;
-use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Alternative\Invoice;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Class Refund
@@ -73,7 +73,7 @@ class Refund extends Invoice
      *
      * @return array
      *
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function getPaymentTransactionStructure()
     {

@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis;
 
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Config
@@ -36,8 +36,8 @@ use Genesis\Utils\Common as CommonUtils;
  *
  * @package Genesis
  *
- * @method static string|null getUsername()     Get the Username, set in configuration
- * @method static string|null getPassword()     Get the Password, set in the configuration
+ * @method static string getUsername()          Get the Username, set in configuration
+ * @method static string getPassword()          Get the Password, set in the configuration
  * @method static string getToken()             Get the Terminal Token, set in configuration
  * @method static bool   getForceSmartRouting() Get whether Smart Routing endpoint will be used for Financial types
  * @method static string getBillingApiToken()   Get the Billing API Token, set in configuration
@@ -52,7 +52,7 @@ final class Config
     /**
      * Library Version
      */
-    const VERSION = '2.2.0';
+    const VERSION = '2.0.3';
 
     /**
      * Core configuration settings
@@ -64,7 +64,7 @@ final class Config
         'username'            => null,
         'password'            => null,
         'token'               => null,
-        'environment'         => \Genesis\Api\Constants\Environments::STAGING,
+        'environment'         => master\libraries\genesis\src\Genesis\Api\Constants\Environments::STAGING,
         'force_smart_routing' => false,
         'billing_api_token'   => null
     ];
@@ -124,9 +124,7 @@ final class Config
                 }
                 break;
             case 'set':
-                if (is_array($args)) {
-                    self::$vault[$keySetting] = trim((string)reset($args));
-                }
+                self::$vault[$keySetting] = trim(reset($args));
                 break;
         }
 
@@ -184,24 +182,24 @@ final class Config
      * @param   string  $environmentArg
      * @return  string
      *
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public static function setEnvironment($environmentArg)
     {
         $environmentArg = strtolower(trim($environmentArg));
 
         $aliases = [
-            \Genesis\Api\Constants\Environments::STAGING    => [
+            master\libraries\genesis\src\Genesis\Api\Constants\Environments::STAGING    => [
                 'test',
                 'testing',
                 'staging',
-                \Genesis\Api\Constants\Environments::STAGING
+                master\libraries\genesis\src\Genesis\Api\Constants\Environments::STAGING
             ],
-            \Genesis\Api\Constants\Environments::PRODUCTION => [
+            master\libraries\genesis\src\Genesis\Api\Constants\Environments::PRODUCTION => [
                 'live',
                 'prod',
                 'production',
-                \Genesis\Api\Constants\Environments::PRODUCTION
+                master\libraries\genesis\src\Genesis\Api\Constants\Environments::PRODUCTION
             ]
         ];
 
@@ -234,23 +232,23 @@ final class Config
      * @param   string  $endpointArg
      * @return  string
      *
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public static function setEndpoint($endpointArg)
     {
         $endpointArg = strtolower(trim($endpointArg));
 
         $aliases = [
-            \Genesis\Api\Constants\Endpoints::EMERCHANTPAY      => [
+            master\libraries\genesis\src\Genesis\Api\Constants\Endpoints::EMERCHANTPAY      => [
                 'emp',
                 'emerchantpay',
-                \Genesis\Api\Constants\Endpoints::EMERCHANTPAY
+                master\libraries\genesis\src\Genesis\Api\Constants\Endpoints::EMERCHANTPAY
             ],
-            \Genesis\Api\Constants\Endpoints::ECOMPROCESSING    => [
+            master\libraries\genesis\src\Genesis\Api\Constants\Endpoints::ECOMPROCESSING    => [
                 'ecp',
                 'ecomprocessing',
                 'e-comprocessing',
-                \Genesis\Api\Constants\Endpoints::ECOMPROCESSING
+                master\libraries\genesis\src\Genesis\Api\Constants\Endpoints::ECOMPROCESSING
             ]
         ];
 
@@ -270,12 +268,12 @@ final class Config
     /**
      * Get a sub-domain host based on the environment
      *
-     * @see self::$domains
-     *
      * @param $sub
      * @return string
      *
-     * @throws Exceptions\EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
+     * @see self::$domains
+     *
      */
     public static function getSubDomain($sub)
     {
@@ -324,7 +322,7 @@ final class Config
      *
      * @param string $iniFile Path to an ini file containing the settings
      *
-     * @throws InvalidArgument()
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument()
      */
     public static function loadSettings($iniFile)
     {

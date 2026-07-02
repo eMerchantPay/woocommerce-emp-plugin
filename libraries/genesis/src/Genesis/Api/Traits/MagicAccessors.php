@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits;
 
-use Genesis\Exceptions\InvalidMethod;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Trait MagicAccessors
@@ -44,8 +44,8 @@ trait MagicAccessors
      * @param $method
      * @param $args
      *
-     * @throws InvalidMethod
      * @return mixed
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
      */
     public function __call($method, $args)
     {

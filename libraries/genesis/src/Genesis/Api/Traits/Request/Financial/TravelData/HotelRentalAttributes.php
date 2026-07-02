@@ -20,14 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\TravelData;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Trait HotelRentalAttributes
@@ -81,7 +80,7 @@ trait HotelRentalAttributes
     /**
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setHotelRentalArrivalDate($value)
     {
@@ -111,7 +110,7 @@ trait HotelRentalAttributes
     /**
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setHotelRentalDepartureDate($value)
     {
@@ -159,8 +158,6 @@ trait HotelRentalAttributes
      * @param $value
      *
      * @return $this
-     *
-     * @throws InvalidArgument
      */
     public function setHotelRentalNoShowIndicator($value)
     {
@@ -176,8 +173,6 @@ trait HotelRentalAttributes
      * @param $value
      *
      * @return $this
-     *
-     * @throws InvalidArgument
      */
     public function setHotelRentalExtraCharges($value)
     {

@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis;
 
-use Genesis\Parsers\Json;
-use Genesis\Parsers\Xml;
+use master\libraries\genesis\src\Genesis\Parsers\Json;
+use master\libraries\genesis\src\Genesis\Parsers\Xml;
 
 /**
  * Parser handler
@@ -54,7 +54,7 @@ class Parser
      */
     public function __construct($interface = null)
     {
-        $interface = $interface ?: \Genesis\Config::getInterface('parser');
+        $interface = $interface ?: master\libraries\genesis\src\Genesis\Config::getInterface('parser');
 
         switch ($interface) {
             default:

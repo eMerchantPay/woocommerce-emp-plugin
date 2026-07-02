@@ -20,19 +20,20 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Threeds\V2;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
-use Genesis\Api\Response;
-use Genesis\Config;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Utils\Currency;
-use Genesis\Utils\Threeds\V2 as ThreedsV2Utils;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
+use master\libraries\genesis\src\Genesis\Api\Response;
+use master\libraries\genesis\src\Genesis\Config;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Utils\Currency;
+use master\libraries\genesis\src\Genesis\Utils\Threeds\V2 as ThreedsV2Utils;
+use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
 
 /**
  * Trait CommonAttributes
@@ -70,11 +71,11 @@ trait CommonAttributes
      * Generate the ThreedsV2Signature from the ResponseObject after Request Execution
      *
      * @return string
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function generateThreedsV2Signature()
     {
-        /** @var Response $response */
+        /** @var master\libraries\genesis\src\Genesis\Api\Response $response */
         $response = $this->getResponse();
 
         if (empty($response)) {

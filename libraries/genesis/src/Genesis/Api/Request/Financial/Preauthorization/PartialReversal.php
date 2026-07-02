@@ -2,14 +2,14 @@
 
 namespace Genesis\Api\Request\Financial\Preauthorization;
 
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Api\Request\Base\Financial;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
 
 /**
  * Class IncrementalAuthorize
  * @package Genesis\Api\Request\Financial\Preauthorization
  */
-class PartialReversal extends Financial\Reference
+class PartialReversal extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
 {
     /**
      * Returns the Request transaction type

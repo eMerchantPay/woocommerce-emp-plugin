@@ -20,26 +20,25 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Mobile;
 
-use Genesis\Api\Constants\Transaction\Parameters\Mobile\ApplePay\PaymentTypes as ApplePaySubtypes;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\DocumentAttributes;
-use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
-use Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringTypeAttributes;
-use Genesis\Api\Traits\Request\Financial\CryptoAttributes;
-use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use Genesis\Api\Traits\Request\Financial\FundingAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\Mobile\ApplePayAttributes;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
-use Genesis\Utils\Currency;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Mobile\ApplePay\PaymentTypes as ApplePaySubtypes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\DocumentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Cards\Recurring\RecurringTypeAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CryptoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Mobile\ApplePayAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Utils\Currency;
 
 /**
  * Class ApplePay
@@ -48,16 +47,15 @@ use Genesis\Utils\Currency;
  *
  * @package Genesis\Api\Request\Financial\Mobile\ApplePay
  */
-class ApplePay extends \Genesis\Api\Request\Base\Financial
+class ApplePay extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
-    use ApplePayAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Mobile\ApplePayAttributes;
     use BirthDateAttributes;
     use BusinessAttributes;
     use CryptoAttributes;
     use DescriptorAttributes;
     use DocumentAttributes;
-    use FundingAttributes;
     use PaymentAttributes;
     use RecurringTypeAttributes;
 
@@ -66,7 +64,7 @@ class ApplePay extends \Genesis\Api\Request\Base\Financial
      *
      * @param string $token
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setJsonToken($token)
     {
@@ -87,7 +85,7 @@ class ApplePay extends \Genesis\Api\Request\Base\Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::APPLE_PAY;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::APPLE_PAY;
     }
 
     /**
@@ -129,9 +127,9 @@ class ApplePay extends \Genesis\Api\Request\Base\Financial
      *
      * @return void
      *
-     * @throws InvalidArgument
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {
@@ -187,8 +185,7 @@ class ApplePay extends \Genesis\Api\Request\Base\Financial
             'crypto'                    => $this->crypto,
             'business_attributes'       => $this->getBusinessAttributesStructure(),
             'dynamic_descriptor_params' => $this->getDynamicDescriptorParamsStructure(),
-            'recurring_type'            => $this->getRecurringType(),
-            'funding'                   => $this->getFundingAttributesStructure()
+            'recurring_type'            => $this->getRecurringType()
         ];
     }
 }

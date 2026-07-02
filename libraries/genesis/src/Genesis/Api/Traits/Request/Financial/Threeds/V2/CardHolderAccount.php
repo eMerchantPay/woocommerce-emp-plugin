@@ -20,19 +20,19 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Threeds\V2;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\PasswordChangeIndicators;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\ShippingAddressUsageIndicators;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\SuspiciousActivityIndicators;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\UpdateIndicators;
-use Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\PasswordChangeIndicators;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\RegistrationIndicators;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\ShippingAddressUsageIndicators;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\SuspiciousActivityIndicators;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount\UpdateIndicators;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
 use DateTime;
 
 /**
@@ -179,7 +179,7 @@ trait CardHolderAccount
      *
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2CardHolderAccountCreationDate($value)
     {
@@ -215,7 +215,7 @@ trait CardHolderAccount
      *
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2CardHolderAccountLastChangeDate($value)
     {
@@ -251,7 +251,7 @@ trait CardHolderAccount
      *
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2CardHolderAccountPasswordChangeDate($value)
     {
@@ -287,7 +287,7 @@ trait CardHolderAccount
      *
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2CardHolderAccountShippingAddressDateFirstUsed($value)
     {
@@ -323,7 +323,7 @@ trait CardHolderAccount
      *
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setThreedsV2CardHolderAccountRegistrationDate($value)
     {
@@ -465,7 +465,7 @@ trait CardHolderAccount
     /**
      * Check if the provided dates are not in the future.
      *
-     * @throws ErrorParameter If any date is in the future.
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter If any date is in the future.
      */
     protected function validateThreedsCarHolderDates()
     {

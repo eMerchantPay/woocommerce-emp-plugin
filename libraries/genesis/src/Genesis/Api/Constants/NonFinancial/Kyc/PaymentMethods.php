@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Constants\NonFinancial\Kyc;
 
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Class PaymentMethods
@@ -47,6 +47,13 @@ class PaymentMethods
      * @var string
      */
     const ECHECK = 'EC';
+
+    /**
+     * E-wallet
+     *
+     * @var string
+     */
+    const EWALLET = 'EW';
 
     /**
      * @return array

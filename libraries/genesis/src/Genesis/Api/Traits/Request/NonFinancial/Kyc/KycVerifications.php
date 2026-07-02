@@ -20,19 +20,19 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\NonFinancial\Kyc;
 
 use DateTime;
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes;
-use Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages;
-use Genesis\Api\Constants\NonFinancial\Kyc\VerificationSupportedModes;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Country;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationSupportedModes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Country;
 
 /**
  * trait KycVerifications
@@ -50,6 +50,13 @@ use Genesis\Utils\Country;
 trait KycVerifications
 {
     /**
+     * Country code in ISO 3166
+     *
+     * @var string
+     */
+    protected $country;
+
+    /**
      * This key specifies the types of proof that can be used for verification
      *
      * @var string
@@ -60,7 +67,7 @@ trait KycVerifications
      * Supported Language Code
      *
      * @var string
-     * @see VerificationLanguages
+     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages
      */
     protected $language;
 
@@ -68,23 +75,54 @@ trait KycVerifications
      * Supported types of address that can be verified
      *
      * @var string
-     * @see VerificationAddressesTypes
+     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes
      */
     protected $address_supported_types;
+
+    /**
+     * Document's expiry date at yyyy-mm-dd format, for example - 2025-12-31, can be a blank string.
+     * A blank string means that the user will need to enter the expiry date from the UI
+     *
+     * @var DateTime
+     */
+    protected $expiry_date;
+
+    /**
+     * Check and set the correct value for Verifications Country
+     *
+     * @param $country
+     * @return $this
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     */
+    public function setCountry($country)
+    {
+        if (empty($country)) {
+            $this->country = null;
+
+            return $this;
+        }
+
+        return $this->allowedOptionsSetter(
+            'country',
+            Country::getList(),
+            $country,
+            'Invalid value given for Country.'
+        );
+    }
 
     /**
      * Set the correct Verifications Modes
      *
      * @param $verificationMode
      * @return $this
-     * @throws InvalidArgument
-     * @see VerificationSupportedModes
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationSupportedModes
      */
     public function setVerificationMode($verificationMode)
     {
         return $this->allowedOptionsSetter(
             'verification_mode',
-            VerificationSupportedModes::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationSupportedModes::getAll(),
             $verificationMode,
             'Invalid verification mode provided.'
         );
@@ -95,14 +133,14 @@ trait KycVerifications
      *
      * @param $language
      * @return $this
-     * @throws InvalidArgument
-     * @see VerificationLanguages
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages
      */
     public function setLanguage($language)
     {
         return $this->allowedOptionsSetter(
             'language',
-            VerificationLanguages::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationLanguages::getAll(),
             $language,
             'Invalid language provided.'
         );
@@ -113,12 +151,12 @@ trait KycVerifications
      *
      * @param $addressType
      * @return $this
-     * @throws InvalidArgument
-     * @see VerificationAddressesTypes
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes
      */
     public function setAddressSupportedTypes($addressType)
     {
-        $getAllowed = VerificationAddressesTypes::getAll();
+        $getAllowed = master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationAddressesTypes::getAll();
 
         if (!is_array($addressType) || array_diff($addressType, $getAllowed)) {
             throw new InvalidArgument(
@@ -134,5 +172,40 @@ trait KycVerifications
         $this->address_supported_types = $addressType;
 
         return $this;
+    }
+
+    /**
+     * Set the correct value for Expiry Date
+     *
+     * @param $value
+     * @return $this
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     */
+    public function setExpiryDate($value)
+    {
+        if (empty($value)) {
+            $this->expiry_date = '';
+
+            return $this;
+        }
+
+        return $this->parseDate(
+            'expiry_date',
+            DateTimeFormat::getAll(),
+            $value,
+            'Invalid value given for Expiry Date'
+        );
+    }
+
+    /**
+     * Get Expiry Date in correct format
+     *
+     * @return string
+     */
+    public function getExpiryDate()
+    {
+        return empty($this->expiry_date)
+            ? ''
+            : $this->expiry_date->format(DateTimeFormat::YYYY_MM_DD_ISO_8601);
     }
 }

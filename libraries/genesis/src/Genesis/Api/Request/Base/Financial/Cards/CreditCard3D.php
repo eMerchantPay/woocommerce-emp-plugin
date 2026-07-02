@@ -20,18 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\Financial\Cards;
 
-use Genesis\Api\Traits\Request\Financial\MpiAttributes;
-use Genesis\Api\Traits\Request\Financial\Threeds\V2\AllAttributes as AllThreedsV2Attributes;
-use Genesis\Api\Traits\Request\Financial\UcofAttributes;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Exceptions\InvalidClassMethod;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\MpiAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Threeds\V2\AllAttributes as AllThreedsV2Attributes;
+use woocommerce
 
 /**
  * Class CreditCard3D
@@ -42,7 +39,6 @@ abstract class CreditCard3D extends CreditCard
 {
     use AllThreedsV2Attributes;
     use MpiAttributes;
-    use UcofAttributes;
 
     /**
      * Return required conditional 3DS fields
@@ -79,23 +75,5 @@ abstract class CreditCard3D extends CreditCard
             'mpi_params'        => $this->getMpiParamsStructure(),
             'threeds_v2_params' => $this->getThreedsV2ParamsStructure()
         ];
-    }
-
-    /**
-     * Check requirements
-     *
-     * @return void
-     *
-     * @throws ErrorParameter
-     * @throws InvalidArgument
-     * @throws InvalidClassMethod
-     */
-    protected function checkRequirements()
-    {
-        if ($this->getSchemeTokenized()) {
-            unset($this->requiredFieldsConditional['mpi_protocol_version']);
-        }
-
-        parent::checkRequirements();
     }
 }

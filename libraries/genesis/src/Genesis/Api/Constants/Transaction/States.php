@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Constants\Transaction;
 
-use Genesis\Exceptions\InvalidMethod;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class States
@@ -281,8 +281,8 @@ class States
      * @param $method
      * @param $args
      *
-     * @throws InvalidMethod
      * @return bool
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
      */
     public function __call($method, $args)
     {

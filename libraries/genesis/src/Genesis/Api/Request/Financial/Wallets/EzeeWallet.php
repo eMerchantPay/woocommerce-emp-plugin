@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Wallets;
 
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\NotificationAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\NotificationAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class EzeeWallet
@@ -44,7 +44,7 @@ use Genesis\Utils\Common as CommonUtils;
  * @method string     getMerchantWebsite() Get the Merchant Website URL
  */
 // @codingStandardsIgnoreStart
-class EzeeWallet extends \Genesis\Api\Request\Base\Financial
+class EzeeWallet extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 // @codingStandardsIgnoreEnd
 {
     use AsyncAttributes;
@@ -77,7 +77,7 @@ class EzeeWallet extends \Genesis\Api\Request\Base\Financial
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMerchantWebsite($value)
     {
@@ -102,7 +102,7 @@ class EzeeWallet extends \Genesis\Api\Request\Base\Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::EZEEWALLET;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::EZEEWALLET;
     }
 
     /**
@@ -123,7 +123,7 @@ class EzeeWallet extends \Genesis\Api\Request\Base\Financial
             'source_wallet_pwd'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -156,7 +156,7 @@ class EzeeWallet extends \Genesis\Api\Request\Base\Financial
      */
     protected function transformWalletPassword($input = '')
     {
-        if (!\Genesis\Utils\Common::isBase64Encoded($input)) {
+        if (!master\libraries\genesis\src\Genesis\Utils\Common::isBase64Encoded($input)) {
             return base64_encode($input);
         }
 

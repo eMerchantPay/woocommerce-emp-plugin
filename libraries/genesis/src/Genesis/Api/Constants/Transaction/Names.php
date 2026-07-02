@@ -20,14 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Constants\Transaction;
 
-use Genesis\Api\Constants\NonFinancial\Services;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Services;
+use master\libraries\genesis\src\Genesis\Utils\Common;
+use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
 
 /**
  * Class Names
@@ -73,7 +74,6 @@ class Names
         Types::EZEECARD_PAYOUT         => 'eZeeCard Payout',
         Types::EZEEWALLET              => 'eZeeWallet',
         Types::FASHIONCHEQUE           => 'Fashioncheque',
-        Types::GLOBAL_PAYOUT           => 'Global Payout',
         Types::GOOGLE_PAY              => 'Google Pay',
         Types::IDEAL                   => 'iDeal',
         Types::IDEBIT_PAYIN            => 'iDebit PayIn',

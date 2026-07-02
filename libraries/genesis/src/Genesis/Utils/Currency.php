@@ -24,7 +24,7 @@
 
 namespace Genesis\Utils;
 
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Currency-related methods
@@ -1036,12 +1036,6 @@ final class Currency
                 'country'     => 'INTERNATIONAL MONETARY FUND (IMF)Â ',
                 'exponent'    => 'N.A.'
             ],
-            'XCG' => [
-                'name'        => 'Netherlands Antillean guilder',
-                'code'        => '532',
-                'country'     => 'Curaçao (CW), Sint Maarten (SX)',
-                'exponent'    => '2'
-            ],
             'XOF' => [
                 'name'        => 'CFA Franc BCEAO',
                 'code'        => '952',
@@ -1124,7 +1118,7 @@ final class Currency
      *
      * @return mixed  - using string as we don't want to cast it without knowing how much precision
      *                is required
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public static function amountToExponent($amount, $iso)
     {
@@ -1165,7 +1159,7 @@ final class Currency
      */
     public static function getList()
     {
-        return \Genesis\Utils\Common::getArrayKeys(self::$iso4217);
+        return master\libraries\genesis\src\Genesis\Utils\Common::getArrayKeys(self::$iso4217);
     }
 
     /**
@@ -1186,7 +1180,7 @@ final class Currency
      * @param int $exp
      * @param string $currency
      * @return void
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public static function validateCurrencyExponent($amount, $exp, $currency)
     {
@@ -1209,8 +1203,7 @@ final class Currency
      */
     public static function fetchCurrencyExponent($currencyCode)
     {
-        $currencyCode = strtoupper((string)$currencyCode);
-
+        $currencyCode = strtoupper($currencyCode);
         return (array_key_exists($currencyCode, self::$iso4217))
             ? intval(self::$iso4217[$currencyCode]['exponent'])
             : null;

@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Utils;
 
 use ArrayObject;
-use Genesis\Exceptions\Exception;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\Exception;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 use ReflectionClass;
 
 /**
@@ -435,8 +435,8 @@ final class Common
     /**
      * Checks if $str ends with $suffix.
      *
-     * @param string $str
-     * @param string $suffix
+     * @param $str
+     * @param $suffix
      *
      * @return bool
      */
@@ -477,7 +477,7 @@ final class Common
      *
      * @return \ArrayObject
      *
-     * @throws Exception
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\Exception
      */
     public static function removeMultipleKeys($arrayKeys, $arrayObject)
     {
@@ -511,7 +511,7 @@ final class Common
      * @param string $body
      * @param bool $toArray
      * @return null|array|\stdClass
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public static function decodeJsonString($body, $toArray = false)
     {

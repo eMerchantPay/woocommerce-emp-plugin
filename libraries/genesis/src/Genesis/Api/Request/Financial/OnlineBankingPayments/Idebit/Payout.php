@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit;
  *
  * @package Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit
  */
-class Payout extends \Genesis\Api\Request\Base\Financial\Reference
+class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial\Reference
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::IDEBIT_PAYOUT;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::IDEBIT_PAYOUT;
     }
 
     /**
@@ -58,12 +58,12 @@ class Payout extends \Genesis\Api\Request\Base\Financial\Reference
             'currency'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'currency' => ['CAD', 'USD', 'EUR', 'GBP', 'AUD']
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 }

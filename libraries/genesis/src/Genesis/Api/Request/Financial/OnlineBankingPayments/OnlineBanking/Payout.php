@@ -20,28 +20,25 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments\OnlineBanking;
 
-use Genesis\Api\Constants\BankAccountTypes;
-use Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters;
-use Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutPaymentTypesParameters;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\DocumentAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use Genesis\Api\Traits\Request\Financial\CustomerAttributes;
-use Genesis\Api\Traits\Request\Financial\NotificationAttributes;
-use Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\PayerAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Exceptions\InvalidClassMethod;
-use Genesis\Utils\Common;
-use Genesis\Api\Traits\Request\Financial\UcofAttributes;
+use master\libraries\genesis\src\Genesis\Api\Constants\BankAccountTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutPaymentTypesParameters;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CustomerAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\NotificationAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Class Payout
@@ -60,18 +57,17 @@ use Genesis\Api\Traits\Request\Financial\UcofAttributes;
  * @method string getPaymentType() Get Payment type
  * @method string getPixKey()
  */
-class Payout extends \Genesis\Api\Request\Base\Financial
+class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
     use BirthDateAttributes;
     use CustomerAttributes;
-    use DocumentAttributes;
     use NotificationAttributes;
     use PaymentAttributes;
-    use PayerAttributes;
 
     const ID_CARD_NUMBER_MAX_LENGTH          = 30;
+    const PAYER_BANK_PHONE_NUMBER_MAX_LENGTH = 11;
     const DOCUMENT_TYPE_MAX_LENGTH           = 10;
     const ACCOUNT_ID_MAX_LENGTH              = 255;
     const USER_ID_MAX_LENGTH                 = 255;
@@ -131,6 +127,13 @@ class Payout extends \Genesis\Api\Request\Base\Financial
     protected $id_card_number;
 
     /**
+     * Payer bank phone number
+     *
+     * @var string $payer_bank_phone_number
+     */
+    protected $payer_bank_phone_number;
+
+    /**
      * The type of account.
      *     C: for Checking accounts
      *     S: for Savings accounts
@@ -188,7 +191,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
 
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::ONLINE_BANKING_PAYOUT;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::ONLINE_BANKING_PAYOUT;
     }
 
     /**
@@ -196,7 +199,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
      *
      * @param $value
      * @return Payout
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setIdCardNumber($value)
     {
@@ -209,11 +212,28 @@ class Payout extends \Genesis\Api\Request\Base\Financial
     }
 
     /**
+     * Payer bank phone number
+     *
+     * @param $value
+     * @return Payout
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     */
+    public function setPayerBankPhoneNumber($value)
+    {
+        return $this->setLimitedString(
+            'payer_bank_phone_number',
+            $value,
+            null,
+            self::PAYER_BANK_PHONE_NUMBER_MAX_LENGTH
+        );
+    }
+
+    /**
      * The type of account
      *
      * @param $value
      * @return Payout
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setBankAccountType($value)
     {
@@ -230,7 +250,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
      *
      * @param $value
      * @return Payout
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setDocumentType($value)
     {
@@ -247,7 +267,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
      *
      * @param $value
      * @return Payout
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setAccountId($value)
     {
@@ -264,7 +284,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
      *
      * @param $value
      * @return Payout
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setUserId($value)
     {
@@ -281,7 +301,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
      *
      * @param $value
      * @return Payout
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setPaymentType($value)
     {
@@ -293,7 +313,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
 
         return $this->allowedOptionsSetter(
             'payment_type',
-            PayoutPaymentTypesParameters::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutPaymentTypesParameters::getAll(),
             $value,
             'Invalid payment_type.'
         );
@@ -323,7 +343,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
         $this->requiredFields = Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'currency' => PayoutBankParameters::getAllowedCurrencies()
+            'currency' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getAllowedCurrencies()
         ];
 
         $this->requiredFieldValues = Common::createArrayObject($requiredFieldValues);
@@ -341,43 +361,43 @@ class Payout extends \Genesis\Api\Request\Base\Financial
         $requiredFieldValuesConditional = [
             'currency' => [
                 'ARS' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('ARS')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('ARS')]
                 ],
                 'BRL' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('BRL')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('BRL')]
                 ],
                 'CAD' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('CAD')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('CAD')]
                 ],
                 'CLP' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('CLP')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('CLP')]
                 ],
                 'CNY' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('CNY')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('CNY')]
                 ],
                 'COP' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('COP')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('COP')]
                 ],
                 'IDR' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('IDR')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('IDR')]
                 ],
                 'INR' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('INR')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('INR')]
                 ],
                 'MYR' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('MYR')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('MYR')]
                 ],
                 'MXN' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('MXN')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('MXN')]
                 ],
                 'PEN' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('PEN')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('PEN')]
                 ],
                 'THB' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('THB')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('THB')]
                 ],
                 'UYU' => [
-                    ['bank_name' => PayoutBankParameters::getBankNamesPerCurrency('UYU')]
+                    ['bank_name' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PayoutBankParameters::getBankNamesPerCurrency('UYU')]
                 ]
             ]
         ];
@@ -407,6 +427,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
                 'bank_account_number'             => $this->bank_account_number,
                 'bank_province'                   => $this->bank_province,
                 'id_card_number'                  => $this->id_card_number,
+                'payer_bank_account_number'       => $this->payer_bank_phone_number,
                 'bank_account_type'               => $this->bank_account_type,
                 'bank_account_verification_digit' => $this->bank_account_verification_digit,
                 'document_type'                   => $this->document_type,
@@ -416,9 +437,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
                 'payment_type'                    => $this->payment_type,
                 'billing_address'                 => $this->getBillingAddressParamsStructure(),
                 'shipping_address'                => $this->getShippingAddressParamsStructure(),
-                'pix_key'                         => $this->pix_key,
-                'document_id'                     => $this->getDocumentId(),
-                'payer'                           => $this->getPayerParametersStructure()
+                'pix_key'                         => $this->pix_key
             ],
             $this->getCustomerParamsStructure()
         );
@@ -428,21 +447,20 @@ class Payout extends \Genesis\Api\Request\Base\Financial
      * Perform field validation
      *
      * @return void
-     * @throws ErrorParameter
-     * @throws InvalidArgument
-     * @throws InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {
         $this->validateBRLCurrency();
-        $this->validateDocumentId();
         parent::checkRequirements();
     }
 
     /**
      * If the currency is BRL at least one of the parameters bank_code or bank_name should be set
      * @return void
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     protected function validateBRLCurrency()
     {
@@ -459,26 +477,5 @@ class Payout extends \Genesis\Api\Request\Base\Financial
         if (empty($this->bank_name)) {
             unset($this->requiredFieldValuesConditional['currency']['BRL']);
         }
-    }
-
-    /**
-     * Add Document ID validations only if document_id variable is set
-     *
-     * @return void
-     */
-    protected function validateDocumentId()
-    {
-        if (empty($this->document_id)) {
-            return;
-        }
-
-        $requiredFieldValuesConditional = (array) $this->requiredFieldValuesConditional;
-
-        $requiredFieldValuesConditional = array_merge(
-            $requiredFieldValuesConditional,
-            $this->getDocumentIdConditions()
-        );
-
-        $this->requiredFieldValuesConditional = Common::createArrayObject($requiredFieldValuesConditional);
     }
 }

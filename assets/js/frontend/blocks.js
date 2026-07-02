@@ -2,6 +2,521 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./resources/js/frontend/CreditCardInputs.js":
+/*!***************************************************!*\
+  !*** ./resources/js/frontend/CreditCardInputs.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/html-entities */ "@wordpress/html-entities");
+/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/EmerchantpayDirect
+ */
+
+
+
+
+const CreditCardInputs = ({
+  handleInputChange,
+  METHOD_NAME,
+  directSettings,
+  cardWrapperRef
+}) => {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    className: "emp-direct-card-form",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+      children: (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(directSettings.description || '')
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      id: "emp-direct-card-wrapper",
+      ref: cardWrapperRef
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      children: [directSettings.show_cc_holder === 'yes' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+        type: "text",
+        name: `${METHOD_NAME}-card-holder`,
+        placeholder: "Cardholder Name",
+        onChange: handleInputChange,
+        autoComplete: "off",
+        className: "emp-input-wide"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+        type: "text",
+        name: `${METHOD_NAME}-card-number`,
+        placeholder: "Card Number",
+        onChange: handleInputChange,
+        autoComplete: "off",
+        className: "emp-input-wide"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "emp-input-half-wrapper",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+          type: "text",
+          name: `${METHOD_NAME}-card-expiry`,
+          placeholder: "Expiry Date",
+          onChange: handleInputChange,
+          autoComplete: "off",
+          className: "emp-input-half"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+          type: "text",
+          name: `${METHOD_NAME}-card-cvc`,
+          placeholder: "CVC",
+          onChange: handleInputChange,
+          autoComplete: "off",
+          className: "emp-input-half"
+        })]
+      })]
+    })]
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CreditCardInputs);
+
+/***/ }),
+
+/***/ "./resources/js/frontend/EmerchantpayCheckout.js":
+/*!*******************************************************!*\
+  !*** ./resources/js/frontend/EmerchantpayCheckout.js ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/html-entities */ "@wordpress/html-entities");
+/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @woocommerce/settings */ "@woocommerce/settings");
+/* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_settings__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _ModalBlock__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ModalBlock */ "./resources/js/frontend/ModalBlock.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/EmerchantpayCheckout
+ */
+
+
+
+
+
+
+
+const checkoutSettings = (0,_woocommerce_settings__WEBPACK_IMPORTED_MODULE_2__.getSetting)('emerchantpay-checkout-blocks_data', {});
+const METHOD_NAME = 'emerchantpay_checkout';
+let EmerchantpayBlocksCheckout = {};
+if (Object.keys(checkoutSettings).length) {
+  const defaultLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Emerchantpay checkout', 'woocommerce-emerchantpay');
+  const label = (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(checkoutSettings.title) || defaultLabel;
+  const Label = props => {
+    const {
+      PaymentMethodLabel
+    } = props.components;
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(PaymentMethodLabel, {
+      text: label
+    });
+  };
+  const Description = props => {
+    const {
+      eventRegistration,
+      emitResponse
+    } = props;
+    const {
+      onPaymentProcessing,
+      onCheckoutSuccess
+    } = eventRegistration;
+    (0,react__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+      if (checkoutSettings.iframe_processing !== 'yes') {
+        return;
+      }
+      const handleCheckoutSuccess = props => {
+        const parentDiv = document.querySelector('.emp-threeds-modal');
+        const iframe = document.querySelector('.emp-threeds-iframe');
+        const redirectUrl = props.processingResponse.paymentDetails.blocks_redirect;
+        parentDiv.style.display = 'block';
+        iframe.style.display = 'block';
+        iframe.src = redirectUrl;
+      };
+      const unsubscribe = onCheckoutSuccess(handleCheckoutSuccess);
+      return () => {
+        unsubscribe();
+      };
+    }, [onCheckoutSuccess, checkoutSettings.iframe_processing]);
+    (0,react__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+      const unsubscribe = onPaymentProcessing(async () => {
+        const paymentMethodData = {
+          [`${METHOD_NAME}_blocks_order`]: true
+        };
+        return {
+          type: emitResponse.responseTypes.SUCCESS,
+          meta: {
+            paymentMethodData
+          }
+        };
+      });
+      return () => {
+        unsubscribe();
+      };
+    }, [emitResponse.responseTypes.ERROR, emitResponse.responseTypes.SUCCESS, onPaymentProcessing]);
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+        children: (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(checkoutSettings.description || '')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_ModalBlock__WEBPACK_IMPORTED_MODULE_3__["default"], {})]
+    });
+  };
+  EmerchantpayBlocksCheckout = {
+    name: "emerchantpay_checkout",
+    label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Label, {}),
+    content: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Description, {}),
+    edit: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Description, {}),
+    canMakePayment: () => true,
+    ariaLabel: label,
+    supports: {
+      features: checkoutSettings.supports
+    }
+  };
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EmerchantpayBlocksCheckout);
+
+/***/ }),
+
+/***/ "./resources/js/frontend/EmerchantpayDirect.js":
+/*!*****************************************************!*\
+  !*** ./resources/js/frontend/EmerchantpayDirect.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/html-entities */ "@wordpress/html-entities");
+/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @woocommerce/settings */ "@woocommerce/settings");
+/* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _CreditCardInputs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CreditCardInputs */ "./resources/js/frontend/CreditCardInputs.js");
+/* harmony import */ var _ModalBlock__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ModalBlock */ "./resources/js/frontend/ModalBlock.js");
+/* harmony import */ var _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./EmpPopulateBrowserParams */ "./resources/js/frontend/EmpPopulateBrowserParams.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/EmerchantpayDirect
+ */
+
+
+
+
+
+
+
+
+
+const directSettings = (0,_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__.getSetting)('emerchantpay-direct-blocks_data', {});
+const METHOD_NAME = 'emerchantpay_direct';
+const CreditCardForm = props => {
+  const [creditCardData, setCreditCardData] = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)({});
+  const cardWrapperRef = (0,react__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
+  const browserParams = _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_6__["default"].execute(METHOD_NAME);
+  const {
+    eventRegistration,
+    emitResponse
+  } = props;
+  const {
+    onPaymentProcessing,
+    onCheckoutSuccess
+  } = eventRegistration;
+  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    const unsubscribe = onPaymentProcessing(async () => {
+      const blocksCheckout = {
+        [`${METHOD_NAME}_blocks_order`]: true
+      };
+      const paymentMethodData = {
+        ...browserParams,
+        ...creditCardData,
+        ...blocksCheckout
+      };
+      return {
+        type: emitResponse.responseTypes.SUCCESS,
+        meta: {
+          paymentMethodData
+        }
+      };
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [emitResponse.responseTypes.ERROR, emitResponse.responseTypes.SUCCESS, onPaymentProcessing, creditCardData]);
+  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    if (directSettings.iframe_processing !== 'yes') {
+      return;
+    }
+    const handleCheckoutSuccess = props => {
+      const iframe = document.querySelector('.emp-threeds-iframe');
+      const parentDiv = document.querySelector('.emp-threeds-modal');
+      const redirectUrl = props.processingResponse.paymentDetails.blocks_redirect;
+      iframe.style.display = 'block';
+      try {
+        fetch(redirectUrl, {
+          method: 'GET'
+        }).then(function (response) {
+          return response.text();
+        }).then(function (html) {
+          const doc = iframe.contentWindow.document;
+          doc.open();
+          doc.write(html);
+          doc.close();
+          parentDiv.style.display = 'block';
+        });
+      } catch (e) {}
+    };
+    const unsubscribe = onCheckoutSuccess(handleCheckoutSuccess);
+    return () => {
+      unsubscribe();
+    };
+  }, [onCheckoutSuccess, directSettings.iframe_processing]);
+  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    __webpack_require__.e(/*! import() */ "resources_js_frontend_card_js").then(__webpack_require__.t.bind(__webpack_require__, /*! ./card.js */ "./resources/js/frontend/card.js", 23)).then(Card => {
+      new Card.default({
+        form: '.wc-block-checkout__form',
+        container: cardWrapperRef.current,
+        formSelectors: {
+          numberInput: `input[name="${METHOD_NAME}-card-number"]`,
+          expiryInput: `input[name="${METHOD_NAME}-card-expiry"]`,
+          cvcInput: `input[name="${METHOD_NAME}-card-cvc"]`,
+          nameInput: `input[name="${METHOD_NAME}-card-holder"]`
+        }
+      });
+    }).catch(error => console.error('Error loading card.js:', error));
+  }, []);
+  const handleInputChange = e => {
+    setCreditCardData(prevData => ({
+      ...prevData,
+      [e.target.name]: e.target.value
+    }));
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_CreditCardInputs__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      handleInputChange: handleInputChange,
+      METHOD_NAME: METHOD_NAME,
+      directSettings: directSettings,
+      cardWrapperRef: cardWrapperRef
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_ModalBlock__WEBPACK_IMPORTED_MODULE_5__["default"], {})]
+  });
+};
+let EmerchantpayBlocksDirect = {};
+if (Object.keys(directSettings).length) {
+  const defaultLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Emerchantpay direct', 'woocommerce-emerchantpay');
+  const label = (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(directSettings.title) || defaultLabel;
+  EmerchantpayBlocksDirect = {
+    name: METHOD_NAME,
+    label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+      children: label
+    }),
+    content: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(CreditCardForm, {}),
+    edit: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(CreditCardForm, {}),
+    canMakePayment: () => true,
+    ariaLabel: label,
+    supports: {
+      features: directSettings.supports
+    }
+  };
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EmerchantpayBlocksDirect);
+
+/***/ }),
+
+/***/ "./resources/js/frontend/EmpPopulateBrowserParams.js":
+/*!***********************************************************!*\
+  !*** ./resources/js/frontend/EmpPopulateBrowserParams.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/EmpPopulateBrowserParams
+ */
+
+const empPopulateBrowserParams = {
+  initParameters: function (methodName) {
+    let java_enabled;
+    try {
+      java_enabled = navigator.javaEnabled();
+    } catch (e) {
+      java_enabled = false;
+    }
+    this.fieldNames = {
+      [`${methodName}_java_enabled`]: java_enabled,
+      [`${methodName}_color_depth`]: screen.colorDepth.toString(),
+      [`${methodName}_browser_language`]: navigator.language,
+      [`${methodName}_screen_height`]: screen.height.toString(),
+      [`${methodName}_screen_width`]: screen.width.toString(),
+      [`${methodName}_user_agent`]: navigator.userAgent,
+      [`${methodName}_browser_timezone_zone_offset`]: new Date().getTimezoneOffset().toString()
+    };
+  },
+  execute: function (methodName) {
+    this.initParameters(methodName);
+    return this.fieldNames;
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (empPopulateBrowserParams);
+
+/***/ }),
+
+/***/ "./resources/js/frontend/ModalBlock.js":
+/*!*********************************************!*\
+  !*** ./resources/js/frontend/ModalBlock.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/**
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * @author      emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
+ * @package     resources/js/frontend/ModalBlock
+ */
+
+
+
+const ModalBlock = () => {
+  const iframeRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const iframe = iframeRef.current;
+    const document = iframe.contentDocument || iframe.contentWindow.document;
+    const content = `
+	  <html>
+	  <head>
+		<title>Payment Processing</title>
+		<style>
+		  body { font-family: Arial, sans-serif; text-align: center; background-color: #fff; overflow: hidden; }
+		  .center { display: flex; justify-content: center; align-items: center; height: 100vh; }
+		  .content { text-align: center; }
+		  .screen-logo img { width: 100px; }
+		  h3 { color: #333; }
+		  h3 span { display: block; margin-top: 20px; font-size: 0.9em; }
+		</style>
+	  </head>
+	  <body>
+		<div class="center">
+		  <div class="content">
+			<h3>The payment is being processed<span>Please wait</span></h3>
+		  </div>
+		</div>
+	  </body>
+	  </html>
+	`;
+    document.open();
+    document.write(content);
+    document.close();
+  }, []);
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+    className: "emp-threeds-modal",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("iframe", {
+      ref: iframeRef,
+      className: "emp-threeds-iframe",
+      frameBorder: "0",
+      style: {
+        border: 'none',
+        'border-radius': '10px',
+        display: 'none'
+      }
+    })
+  });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ModalBlock);
+
+/***/ }),
+
 /***/ "./node_modules/react/cjs/react-jsx-runtime.development.js":
 /*!*****************************************************************!*\
   !*** ./node_modules/react/cjs/react-jsx-runtime.development.js ***!
@@ -1353,535 +1868,20 @@ exports.jsxs = jsxs;
 
 
 
-if (false) // removed by dead control flow
-{} else {
+if (false) {} else {
   module.exports = __webpack_require__(/*! ./cjs/react-jsx-runtime.development.js */ "./node_modules/react/cjs/react-jsx-runtime.development.js");
 }
 
 
 /***/ }),
 
-/***/ "./resources/js/frontend/CreditCardInputs.js":
-/*!***************************************************!*\
-  !*** ./resources/js/frontend/CreditCardInputs.js ***!
-  \***************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ "react":
+/*!************************!*\
+  !*** external "React" ***!
+  \************************/
+/***/ ((module) => {
 
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/html-entities */ "@wordpress/html-entities");
-/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-/**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
- * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
- * @package     resources/js/frontend/EmerchantpayDirect
- */
-
-
-
-
-const CreditCardInputs = ({
-  handleInputChange,
-  METHOD_NAME,
-  directSettings,
-  cardWrapperRef
-}) => {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-    className: "wc-credit-card-form wc-payment-form emp-direct-card-form",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-      children: (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(directSettings.description || '')
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      id: "emp-direct-card-wrapper",
-      ref: cardWrapperRef
-    }), directSettings.show_cc_holder === 'yes' && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-      type: "text",
-      name: `${METHOD_NAME}-card-holder`,
-      placeholder: "Cardholder Name",
-      onChange: handleInputChange,
-      autoComplete: "off",
-      className: "input-text emp-input-wide"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-      type: "text",
-      name: `${METHOD_NAME}-card-number`,
-      placeholder: "Card Number",
-      onChange: handleInputChange,
-      autoComplete: "off",
-      className: "input-text emp-input-wide"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-      type: "text",
-      name: `${METHOD_NAME}-card-expiry`,
-      placeholder: "Expiry Date",
-      onChange: handleInputChange,
-      autoComplete: "off",
-      className: "input-text emp-input-half"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-      type: "text",
-      name: `${METHOD_NAME}-card-cvc`,
-      placeholder: "CVC",
-      onChange: handleInputChange,
-      autoComplete: "off",
-      className: "input-text emp-input-half"
-    })]
-  });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CreditCardInputs);
-
-/***/ }),
-
-/***/ "./resources/js/frontend/EmerchantpayCheckout.js":
-/*!*******************************************************!*\
-  !*** ./resources/js/frontend/EmerchantpayCheckout.js ***!
-  \*******************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/html-entities */ "@wordpress/html-entities");
-/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @woocommerce/settings */ "@woocommerce/settings");
-/* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_settings__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _ModalBlock__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ModalBlock */ "./resources/js/frontend/ModalBlock.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-/**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
- * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
- * @package     resources/js/frontend/EmerchantpayCheckout
- */
-
-
-
-
-
-
-
-const checkoutSettings = (0,_woocommerce_settings__WEBPACK_IMPORTED_MODULE_2__.getSetting)('emerchantpay-checkout-blocks_data', {});
-const METHOD_NAME = 'emerchantpay_checkout';
-let EmerchantpayBlocksCheckout = {};
-if (Object.keys(checkoutSettings).length) {
-  const defaultLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Emerchantpay checkout', 'woocommerce-emerchantpay');
-  const label = (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(checkoutSettings.title) || defaultLabel;
-  const Label = props => {
-    const {
-      PaymentMethodLabel
-    } = props.components;
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(PaymentMethodLabel, {
-      text: label
-    });
-  };
-  const Description = props => {
-    const {
-      eventRegistration,
-      emitResponse
-    } = props;
-    const {
-      onPaymentProcessing,
-      onCheckoutSuccess
-    } = eventRegistration;
-    (0,react__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
-      if (checkoutSettings.iframe_processing !== 'yes') {
-        return;
-      }
-      const handleCheckoutSuccess = props => {
-        const parentDiv = document.querySelector('.emp-threeds-modal');
-        const iframe = document.querySelector('.emp-threeds-iframe');
-        const redirectUrl = props.processingResponse.paymentDetails.blocks_redirect;
-        parentDiv.style.display = 'block';
-        iframe.style.display = 'block';
-        iframe.src = redirectUrl;
-      };
-      const unsubscribe = onCheckoutSuccess(handleCheckoutSuccess);
-      return () => {
-        unsubscribe();
-      };
-    }, [onCheckoutSuccess, checkoutSettings.iframe_processing]);
-    (0,react__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
-      const unsubscribe = onPaymentProcessing(async () => {
-        const paymentMethodData = {
-          [`${METHOD_NAME}_blocks_order`]: true
-        };
-        return {
-          type: emitResponse.responseTypes.SUCCESS,
-          meta: {
-            paymentMethodData
-          }
-        };
-      });
-      return () => {
-        unsubscribe();
-      };
-    }, [emitResponse.responseTypes.ERROR, emitResponse.responseTypes.SUCCESS, onPaymentProcessing]);
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
-        children: (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(checkoutSettings.description || '')
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_ModalBlock__WEBPACK_IMPORTED_MODULE_3__["default"], {})]
-    });
-  };
-  EmerchantpayBlocksCheckout = {
-    name: "emerchantpay_checkout",
-    label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Label, {}),
-    content: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Description, {}),
-    edit: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(Description, {}),
-    canMakePayment: () => true,
-    ariaLabel: label,
-    supports: {
-      features: checkoutSettings.supports
-    }
-  };
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EmerchantpayBlocksCheckout);
-
-/***/ }),
-
-/***/ "./resources/js/frontend/EmerchantpayDirect.js":
-/*!*****************************************************!*\
-  !*** ./resources/js/frontend/EmerchantpayDirect.js ***!
-  \*****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/html-entities */ "@wordpress/html-entities");
-/* harmony import */ var _wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @woocommerce/settings */ "@woocommerce/settings");
-/* harmony import */ var _woocommerce_settings__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _CreditCardInputs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CreditCardInputs */ "./resources/js/frontend/CreditCardInputs.js");
-/* harmony import */ var _ModalBlock__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ModalBlock */ "./resources/js/frontend/ModalBlock.js");
-/* harmony import */ var _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./EmpPopulateBrowserParams */ "./resources/js/frontend/EmpPopulateBrowserParams.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-/**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
- * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
- * @package     resources/js/frontend/EmerchantpayDirect
- */
-
-
-
-
-
-
-
-
-
-const directSettings = (0,_woocommerce_settings__WEBPACK_IMPORTED_MODULE_3__.getSetting)('emerchantpay-direct-blocks_data', {});
-const METHOD_NAME = 'emerchantpay_direct';
-const CreditCardForm = props => {
-  let [creditCardData, setCreditCardData] = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)({});
-  const cardWrapperRef = (0,react__WEBPACK_IMPORTED_MODULE_2__.useRef)(null);
-  const browserParams = _EmpPopulateBrowserParams__WEBPACK_IMPORTED_MODULE_6__["default"].execute(METHOD_NAME);
-  const {
-    eventRegistration,
-    emitResponse
-  } = props;
-  const {
-    onPaymentProcessing,
-    onCheckoutSuccess
-  } = eventRegistration;
-  const publicKey = directSettings.cse_public_key;
-  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-    const unsubscribe = onPaymentProcessing(async () => {
-      if (publicKey) {
-        creditCardData = cseEncrypt(creditCardData);
-      }
-      const blocksCheckout = {
-        [`${METHOD_NAME}_blocks_order`]: true
-      };
-      const paymentMethodData = {
-        ...browserParams,
-        ...creditCardData,
-        ...blocksCheckout
-      };
-      return {
-        type: emitResponse.responseTypes.SUCCESS,
-        meta: {
-          paymentMethodData
-        }
-      };
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, [emitResponse.responseTypes.ERROR, emitResponse.responseTypes.SUCCESS, onPaymentProcessing, creditCardData]);
-  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-    if (directSettings.iframe_processing !== 'yes') {
-      return;
-    }
-    const handleCheckoutSuccess = props => {
-      const iframe = document.querySelector('.emp-threeds-iframe');
-      const parentDiv = document.querySelector('.emp-threeds-modal');
-      const redirectUrl = props.processingResponse.paymentDetails.blocks_redirect;
-      iframe.style.display = 'block';
-      try {
-        fetch(redirectUrl, {
-          method: 'GET'
-        }).then(function (response) {
-          return response.text();
-        }).then(function (html) {
-          const doc = iframe.contentWindow.document;
-          doc.open();
-          doc.write(html);
-          doc.close();
-          parentDiv.style.display = 'block';
-        });
-      } catch (e) {}
-    };
-    const unsubscribe = onCheckoutSuccess(handleCheckoutSuccess);
-    return () => {
-      unsubscribe();
-    };
-  }, [onCheckoutSuccess, directSettings.iframe_processing]);
-  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
-    __webpack_require__.e(/*! import() */ "resources_js_frontend_card_js").then(__webpack_require__.t.bind(__webpack_require__, /*! ./card.js */ "./resources/js/frontend/card.js", 23)).then(Card => {
-      new Card.default({
-        form: '.wc-block-checkout__form',
-        container: cardWrapperRef.current,
-        formSelectors: {
-          numberInput: `input[name="${METHOD_NAME}-card-number"]`,
-          expiryInput: `input[name="${METHOD_NAME}-card-expiry"]`,
-          cvcInput: `input[name="${METHOD_NAME}-card-cvc"]`,
-          nameInput: `input[name="${METHOD_NAME}-card-holder"]`
-        }
-      });
-    }).catch(error => console.error('Error loading card.js:', error));
-  }, []);
-  let cseEncrypt = data => {
-    if (!data || !data[`${METHOD_NAME}-card-number`] || data[`${METHOD_NAME}-card-number`]?.length > 19) return;
-    let [month, year] = empCardDataEncrypt.transformCardExpiry(data[`${METHOD_NAME}-card-expiry`]);
-    data['month'] = month;
-    data['year'] = year;
-    data = empCardDataEncrypt.encrypt(publicKey, data);
-    data[`${METHOD_NAME}-card-expiry`] = `${data['month']}/${data['year']}`;
-    return data;
-  };
-  const handleInputChange = e => {
-    setCreditCardData(prevData => ({
-      ...prevData,
-      [e.target.name]: e.target.value
-    }));
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_CreditCardInputs__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      handleInputChange: handleInputChange,
-      METHOD_NAME: METHOD_NAME,
-      directSettings: directSettings,
-      cardWrapperRef: cardWrapperRef
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_ModalBlock__WEBPACK_IMPORTED_MODULE_5__["default"], {})]
-  });
-};
-let EmerchantpayBlocksDirect = {};
-if (Object.keys(directSettings).length) {
-  const defaultLabel = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Emerchantpay direct', 'woocommerce-emerchantpay');
-  const label = (0,_wordpress_html_entities__WEBPACK_IMPORTED_MODULE_1__.decodeEntities)(directSettings.title) || defaultLabel;
-  EmerchantpayBlocksDirect = {
-    name: METHOD_NAME,
-    label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-      children: label
-    }),
-    content: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(CreditCardForm, {}),
-    edit: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(CreditCardForm, {}),
-    canMakePayment: () => true,
-    ariaLabel: label,
-    supports: {
-      features: directSettings.supports
-    }
-  };
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EmerchantpayBlocksDirect);
-
-/***/ }),
-
-/***/ "./resources/js/frontend/EmpPopulateBrowserParams.js":
-/*!***********************************************************!*\
-  !*** ./resources/js/frontend/EmpPopulateBrowserParams.js ***!
-  \***********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
- * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
- * @package     resources/js/frontend/EmpPopulateBrowserParams
- */
-
-const empPopulateBrowserParams = {
-  initParameters: function (methodName) {
-    let java_enabled;
-    try {
-      java_enabled = navigator.javaEnabled();
-    } catch (e) {
-      java_enabled = false;
-    }
-    this.fieldNames = {
-      [`${methodName}_java_enabled`]: java_enabled,
-      [`${methodName}_color_depth`]: screen.colorDepth.toString(),
-      [`${methodName}_browser_language`]: navigator.language,
-      [`${methodName}_screen_height`]: screen.height.toString(),
-      [`${methodName}_screen_width`]: screen.width.toString(),
-      [`${methodName}_user_agent`]: navigator.userAgent,
-      [`${methodName}_browser_timezone_zone_offset`]: new Date().getTimezoneOffset().toString()
-    };
-  },
-  execute: function (methodName) {
-    this.initParameters(methodName);
-    return this.fieldNames;
-  }
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (empPopulateBrowserParams);
-
-/***/ }),
-
-/***/ "./resources/js/frontend/ModalBlock.js":
-/*!*********************************************!*\
-  !*** ./resources/js/frontend/ModalBlock.js ***!
-  \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-/**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
- * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
- * @package     resources/js/frontend/ModalBlock
- */
-
-
-
-const ModalBlock = () => {
-  const iframeRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    const iframe = iframeRef.current;
-    const document = iframe.contentDocument || iframe.contentWindow.document;
-    const content = `
-	  <html>
-	  <head>
-		<title>Payment Processing</title>
-		<style>
-		  body { font-family: Arial, sans-serif; text-align: center; background-color: #fff; overflow: hidden; }
-		  .center { display: flex; justify-content: center; align-items: center; height: 100vh; }
-		  .content { text-align: center; }
-		  .screen-logo img { width: 100px; }
-		  h3 { color: #333; }
-		  h3 span { display: block; margin-top: 20px; font-size: 0.9em; }
-		</style>
-	  </head>
-	  <body>
-		<div class="center">
-		  <div class="content">
-			<h3>The payment is being processed<span>Please wait</span></h3>
-		  </div>
-		</div>
-	  </body>
-	  </html>
-	`;
-    document.open();
-    document.write(content);
-    document.close();
-  }, []);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-    className: "emp-threeds-modal",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("iframe", {
-      ref: iframeRef,
-      className: "emp-threeds-iframe",
-      allow: "payment",
-      frameBorder: "0",
-      style: {
-        border: 'none',
-        'border-radius': '10px',
-        display: 'none'
-      }
-    })
-  });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ModalBlock);
+module.exports = window["React"];
 
 /***/ }),
 
@@ -1922,16 +1922,6 @@ module.exports = window["wp"]["htmlEntities"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "react":
-/*!************************!*\
-  !*** external "React" ***!
-  \************************/
-/***/ ((module) => {
-
-module.exports = window["React"];
 
 /***/ })
 
@@ -1998,7 +1988,7 @@ module.exports = window["React"];
 /******/ 			__webpack_require__.r(ns);
 /******/ 			var def = {};
 /******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
-/******/ 			for(var current = mode & 2 && value; (typeof current == 'object' || typeof current == 'function') && !~leafPrototypes.indexOf(current); current = getProto(current)) {
+/******/ 			for(var current = mode & 2 && value; typeof current == 'object' && !~leafPrototypes.indexOf(current); current = getProto(current)) {
 /******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
 /******/ 			}
 /******/ 			def['default'] = () => (value);
@@ -2050,6 +2040,18 @@ module.exports = window["React"];
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -2075,6 +2077,7 @@ module.exports = window["React"];
 /******/ 				script = document.createElement('script');
 /******/ 		
 /******/ 				script.charset = 'utf-8';
+/******/ 				script.timeout = 120;
 /******/ 				if (__webpack_require__.nc) {
 /******/ 					script.setAttribute("nonce", __webpack_require__.nc);
 /******/ 				}
@@ -2114,8 +2117,8 @@ module.exports = window["React"];
 /******/ 	/* webpack/runtime/publicPath */
 /******/ 	(() => {
 /******/ 		var scriptUrl;
-/******/ 		if (globalThis.importScripts) scriptUrl = globalThis.location + "";
-/******/ 		var document = globalThis.document;
+/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
+/******/ 		var document = __webpack_require__.g.document;
 /******/ 		if (!scriptUrl && document) {
 /******/ 			if (document.currentScript && document.currentScript.tagName.toUpperCase() === 'SCRIPT')
 /******/ 				scriptUrl = document.currentScript.src;
@@ -2130,7 +2133,7 @@ module.exports = window["React"];
 /******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
 /******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
 /******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
-/******/ 		scriptUrl = scriptUrl.replace(/^blob:/, "").replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
+/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
 /******/ 		__webpack_require__.p = scriptUrl + "../";
 /******/ 	})();
 /******/ 	
@@ -2196,7 +2199,9 @@ module.exports = window["React"];
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
 /******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			var chunkIds = data[0];
+/******/ 			var moreModules = data[1];
+/******/ 			var runtime = data[2];
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
 /******/ 			var moduleId, chunkId, i = 0;
@@ -2219,15 +2224,13 @@ module.exports = window["React"];
 /******/ 		
 /******/ 		}
 /******/ 		
-/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkemerchantpay_payment_page_for_woocommerce"] = globalThis["webpackChunkemerchantpay_payment_page_for_woocommerce"] || [];
+/******/ 		var chunkLoadingGlobal = self["webpackChunkemerchantpay_payment_page_for_woocommerce"] = self["webpackChunkemerchantpay_payment_page_for_woocommerce"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	})();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
-(() => {
 /*!****************************************!*\
   !*** ./resources/js/frontend/index.js ***!
   \****************************************/
@@ -2237,7 +2240,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _EmerchantpayCheckout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EmerchantpayCheckout */ "./resources/js/frontend/EmerchantpayCheckout.js");
 /* harmony import */ var _EmerchantpayDirect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EmerchantpayDirect */ "./resources/js/frontend/EmerchantpayDirect.js");
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -2250,7 +2253,7 @@ __webpack_require__.r(__webpack_exports__);
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     resources/js/frontend/index
  */
@@ -2264,8 +2267,6 @@ if (Object.keys(_EmerchantpayCheckout__WEBPACK_IMPORTED_MODULE_1__["default"]).l
 if (Object.keys(_EmerchantpayDirect__WEBPACK_IMPORTED_MODULE_2__["default"]).length > 0) {
   (0,_woocommerce_blocks_registry__WEBPACK_IMPORTED_MODULE_0__.registerPaymentMethod)(_EmerchantpayDirect__WEBPACK_IMPORTED_MODULE_2__["default"]);
 }
-})();
-
 /******/ })()
 ;
 //# sourceMappingURL=blocks.js.map

@@ -20,28 +20,21 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Cards;
 
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\DigitalAssetTypeAttributes;
-use Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
-use Genesis\Api\Traits\Request\Financial\CredentialOnFileAttributes;
-use Genesis\Api\Traits\Request\Financial\CryptoAttributes;
-use Genesis\Api\Traits\Request\Financial\CustomerIdentificationData;
-use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use Genesis\Api\Traits\Request\Financial\FxRateAttributes;
-use Genesis\API\Traits\Request\Financial\GamingAttributes;
-use Genesis\Api\Traits\Request\Financial\PurposeOfPaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\SourceOfFundsAttributes;
-use Genesis\Api\Traits\Request\Financial\UcofAttributes;
-use Genesis\API\Traits\Request\MotoAttributes;
-use Genesis\Api\Traits\Request\Payout\MoneyTransferPayoutAttributes;
-use Genesis\Exceptions\InvalidMethod;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AccountOwnerAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CustomerIdentificationData;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\FxRateAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PurposeOfPaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\SourceOfFundsAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Payout\MoneyTransferPayoutAttributes;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Payout
@@ -50,105 +43,27 @@ use Genesis\Utils\Common as CommonUtils;
  *
  * @package Genesis\Api\Request\Financial\Cards
  */
-class Payout extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
+class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Cards\CreditCard
 {
-    use AccountOwnerAttributes;
     use AddressInfoAttributes;
-    use CredentialOnFileAttributes;
+    use AccountOwnerAttributes;
     use CustomerIdentificationData;
     use DescriptorAttributes;
     use FxRateAttributes;
     use MoneyTransferPayoutAttributes;
     use PurposeOfPaymentAttributes;
     use SourceOfFundsAttributes;
-    use UcofAttributes;
-    use DigitalAssetTypeAttributes;
-    use CryptoAttributes;
-    use MotoAttributes;
-    use GamingAttributes;
 
     const MONEY_TRANSFER_SENDER_ACCOUNT_NUMBER_MAX_LENGTH = 33;
     const MONEY_TRANSFER_SERVICE_PROVIDER_NAME_MAX_LENGTH = 25;
 
     /**
-     * Payout doesn't support Scheme Tokenized parameter
-     *
-     * @throws InvalidMethod
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function setSchemeTokenized($value)
-    {
-        throw new InvalidMethod(
-            sprintf(
-                'You\'re trying to call a non-existent method setSchemeTokenized of class %s!',
-                static::class
-            )
-        );
-    }
-
-    /**
-     * Payout doesn't support Scheme Tokenized parameter
-     *
-     * @throws InvalidMethod
-     */
-    public function getSchemeTokenized()
-    {
-        throw new InvalidMethod(
-            sprintf(
-                'You\'re trying to call a non-existent method getSchemeTokenized of class %s!',
-                static::class
-            )
-        );
-    }
-
-    /**
-     * Payout doesn't support CredentialOnFile Settlement Date attribute
-     *
-     * @return void
-     *
-     * @throws InvalidMethod
-     */
-    public function getCredentialOnFileSettlementDate()
-    {
-        throw new InvalidMethod(
-            sprintf(
-                'You\'re trying to call a non-existent method %s of class %s!',
-                static::class,
-                __FUNCTION__
-            )
-        );
-    }
-
-    /**
-     * Payout doesn't support CredentialOnFile Settlement Date attribute
-     *
-     * @param $value
-     *
-     * @return void
-     *
-     * @throws InvalidMethod
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function setCredentialOnFileSettlementDate($value)
-    {
-        throw new InvalidMethod(
-            sprintf(
-                'You\'re trying to call a non-existent method %s of class %s!',
-                static::class,
-                __FUNCTION__
-            )
-        );
-    }
-
-/**
      * Returns the Request transaction type
      * @return string
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::PAYOUT;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::PAYOUT;
     }
 
     /**
@@ -175,8 +90,6 @@ class Payout extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
     {
         return array_merge(
             [
-                'moto'                      => $this->moto,
-                'gaming'                    => $this->gaming,
                 'customer_email'            => $this->customer_email,
                 'customer_phone'            => $this->customer_phone,
                 'document_id'               => $this->document_id,
@@ -187,25 +100,9 @@ class Payout extends \Genesis\Api\Request\Base\Financial\Cards\CreditCard
                 'money_transfer'            => $this->getMoneyTransferPayoutStructure(),
                 'customer_identification'   => $this->getCustomerIdentificationDataStructure(),
                 'account_owner'             => $this->getAccountOwnerAttributesStructure(),
-                'purpose_of_payment'        => $this->purpose_of_payment,
-                'digital_asset_type'        => $this->digital_asset_type,
-                'crypto'                    => $this->crypto
+                'purpose_of_payment'        => $this->purpose_of_payment
             ],
-            $this->getSourceOfFundsStructure(),
-            $this->getCredentialOnFileAttributesStructure(),
-            $this->getUcofAttributesStructure()
+            $this->getSourceOfFundsStructure()
         );
-    }
-
-    /**
-     * Returns Cards\Payout UCOF attributes structure
-     *
-     * @return array
-     */
-    protected function getUcofAttributesStructure()
-    {
-        return [
-            'credential_on_file_transaction_identifier' => $this->credential_on_file_transaction_identifier
-        ];
     }
 }

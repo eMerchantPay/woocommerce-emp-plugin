@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\IdentityDocument;
 
-use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
 
 /**
  * Class Download
@@ -63,7 +63,7 @@ class Download extends BaseRequest
             'identity_document_id'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

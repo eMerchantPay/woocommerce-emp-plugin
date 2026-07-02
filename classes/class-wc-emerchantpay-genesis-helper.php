@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,18 +13,19 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     classes\classes-wc-emerchantpay-genesis-helper
  */
 
-use Genesis\Api\Constants\Transaction\States;
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Exceptions\DeprecatedMethod;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Exceptions\InvalidMethod;
-use Genesis\Genesis;
-use Genesis\Utils\Requirements;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\States;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
+use master\libraries\genesis\src\Genesis\Genesis;
+use master\libraries\genesis\src\Genesis\Utils\Requirements;
+use woocommerceuse woocommerce
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
@@ -50,11 +51,11 @@ class WC_Emerchantpay_Genesis_Helper {
 	 *
 	 * @param string $transaction_type Selected transaction type.
 	 *
-	 * @return Genesis
+	 * @return master\libraries\genesis\src\Genesis\Genesis
 	 *
-	 * @throws DeprecatedMethod Throws deprecated methods.
-	 * @throws InvalidArgument Throws invalid argument of current method.
-	 * @throws InvalidMethod  Throws invalid method.
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod Throws deprecated methods.
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument Throws invalid argument of current method.
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod  Throws invalid method.
 	 */
 	public static function get_gateway_request_by_txn_type( $transaction_type ) {
 		$api_request_class_name = static::get_transaction_type_request_class_name( $transaction_type );
@@ -79,7 +80,7 @@ class WC_Emerchantpay_Genesis_Helper {
 	 * Returns current gateway status
 	 *
 	 * @param stdClass $response Response object.
-	 * @return States
+	 * @return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\States
 	 */
 	public static function get_gateway_status_instance( $response ) {
 		return new States( $response->status );

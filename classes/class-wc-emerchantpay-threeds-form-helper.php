@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
  * @package     classes\class-wc-emerchantpay-threeds-form-helper
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+use woocommerceif ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-if ( ! class_exists( 'WC_Emerchantpay_Threeds_Base' ) ) {
+if ( ! class_exists('woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Threeds_Base') ) {
 	require_once __DIR__ . '/class-wc-emerchantpay-threeds-base.php';
 }
 

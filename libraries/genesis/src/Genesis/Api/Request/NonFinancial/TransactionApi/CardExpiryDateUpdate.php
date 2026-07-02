@@ -20,19 +20,19 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\TransactionApi;
 
 use DateTime;
-use Genesis\Api\Request;
-use Genesis\Api\Request\Base\BaseVersionedRequest;
-use Genesis\Builder;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Request;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\BaseVersionedRequest;
+use master\libraries\genesis\src\Genesis\Builder;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class CardExpiryDateUpdate
@@ -87,11 +87,10 @@ class CardExpiryDateUpdate extends BaseVersionedRequest
     {
         $this->config = CommonUtils::createArrayObject(
             [
-                'protocol'      => Request::PROTOCOL_HTTPS,
-                'port'          => Request::PORT_HTTPS,
-                'type'          => Request::METHOD_PUT,
-                'format'        => Builder::XML,
-                'authorization' => Request::AUTH_TYPE_BASIC
+                'protocol' => Request::PROTOCOL_HTTPS,
+                'port'     => Request::PORT_HTTPS,
+                'type'     => Request::METHOD_PUT,
+                'format'   => Builder::XML
             ]
         );
     }
@@ -122,7 +121,7 @@ class CardExpiryDateUpdate extends BaseVersionedRequest
      *
      * @param $value
      * @return CardExpiryDateUpdate
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setExpirationMonth($value)
     {
@@ -139,8 +138,8 @@ class CardExpiryDateUpdate extends BaseVersionedRequest
      *
      * @param string $value
      * @return CardExpiryDateUpdate
-     * @throws ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setExpirationYear($value)
     {
@@ -208,7 +207,7 @@ class CardExpiryDateUpdate extends BaseVersionedRequest
     /**
      * Validate provided date before sending the request
      *
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     private function checkDate()
     {

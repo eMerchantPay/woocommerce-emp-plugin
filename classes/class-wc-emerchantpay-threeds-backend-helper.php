@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,20 +18,21 @@
  * @package     classes\class-wc-emerchantpay-threeds-backend-helper
  */
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\Transaction\States;
-use Genesis\Api\Request\Financial\Cards\Threeds\V2\MethodContinue;
-use Genesis\Exceptions\Exception;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Exceptions\InvalidClassMethod;
-use Genesis\Exceptions\InvalidResponse;
-use Genesis\Genesis;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\States;
+use master\libraries\genesis\src\Genesis\Api\Request\Financial\Cards\Threeds\V2\MethodContinue;
+use master\libraries\genesis\src\Genesis\Exceptions\Exception;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidResponse;
+use master\libraries\genesis\src\Genesis\Genesis;
+use woocommerceuse woocommerceuse woocommerce
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-if ( ! class_exists( 'WC_Emerchantpay_Threeds_Base' ) ) {
+if ( ! class_exists('woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Threeds_Base') ) {
 	require_once __DIR__ . '/class-wc-emerchantpay-threeds-base.php';
 }
 
@@ -96,9 +97,9 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 	 *
 	 * @return void
 	 *
-	 * @throws InvalidArgument When the passed argument is not an array, a string or null.
-	 * @throws InvalidClassMethod When attempting to call a method on an object that doesn't exist or isn't accessible within the current context.
-	 * @throws InvalidResponse When the response is not valid.
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument When the passed argument is not an array, a string or null.
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod When attempting to call a method on an object that doesn't exist or isn't accessible within the current context.
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidResponse When the response is not valid.
 	 */
 	public function method_continue_handler() {
 		ob_start();
@@ -124,7 +125,7 @@ class WC_Emerchantpay_Threeds_Backend_Helper extends WC_Emerchantpay_Threeds_Bas
 		/**
 		 * Create instans of method continue class
 		 *
-		 * @var MethodContinue $request Method continue instance.
+		 * @var master\libraries\genesis\src\Genesis\Api\Request\Financial\Cards\Threeds\V2\MethodContinue $request Method continue instance.
 		 */
 		$request = $genesis->request();
 

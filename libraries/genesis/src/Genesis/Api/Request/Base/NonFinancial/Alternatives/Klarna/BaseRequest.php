@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Request;
-use Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Request;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Class BaseRequest

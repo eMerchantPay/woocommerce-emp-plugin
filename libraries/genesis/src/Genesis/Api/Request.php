@@ -20,20 +20,18 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api;
 
-use Genesis\Api\Traits\MagicAccessors;
-use Genesis\Api\Traits\RestrictedSetter;
-use Genesis\Api\Traits\Validations\Request\Validations;
-use Genesis\Builder;
-use Genesis\Config;
-use Genesis\Exceptions\EnvironmentNotSet;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Traits\MagicAccessors;
+use master\libraries\genesis\src\Genesis\Api\Traits\RestrictedSetter;
+use master\libraries\genesis\src\Genesis\Api\Traits\Validations\Request\Validations;
+use master\libraries\genesis\src\Genesis\Builder;
+use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Request
@@ -57,7 +55,6 @@ abstract class Request
     const METHOD_POST    = 'POST';
     const METHOD_GET     = 'GET';
     const METHOD_PUT     = 'PUT';
-    const METHOD_PATCH   = 'PATCH';
 
     const AUTH_TYPE_BASIC = 'basic';
     const AUTH_TYPE_TOKEN = 'bearer';
@@ -72,7 +69,7 @@ abstract class Request
     /**
      * Store the API Response context
      * s
-     * @var \Genesis\Api\Response
+     * @var master\libraries\genesis\src\Genesis\Api\Response
      */
     public $response;
 
@@ -86,7 +83,7 @@ abstract class Request
     /**
      * Store the generated Builder Body
      *
-     * @var \Genesis\Builder
+     * @var master\libraries\genesis\src\Genesis\Builder
      */
     protected $builderContext;
 
@@ -96,13 +93,6 @@ abstract class Request
      * @var string
      */
     protected $builderInterface;
-
-    /**
-     * Indicates if the given request appends the terminal token to the endpoint
-     *
-     * @var bool
-     */
-    protected $isTokenRequest;
 
     /**
      * Bootstrap per-request configuration
@@ -125,9 +115,9 @@ abstract class Request
      * Generate the XML output
      *
      * @return string - XML Document with request data
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidArgument
-     * @throws \Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     public function getDocument()
     {
@@ -152,9 +142,9 @@ abstract class Request
      * Step 4: Check for Required Fields
      *
      * @return void
-     * @throws \Genesis\Exceptions\InvalidArgument
-     * @throws \Genesis\Exceptions\InvalidClassMethod
-     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     protected function processRequestParameters()
     {
@@ -186,13 +176,12 @@ abstract class Request
     /**
      * Perform field validation
      *
-     * @throws \Genesis\Exceptions\InvalidArgument
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {
-        $this->validateConfig();
         $this->validate();
     }
 
@@ -232,7 +221,7 @@ abstract class Request
     protected function transformAmount($amount = '', $currency = '')
     {
         if (is_numeric($amount) && !empty($currency)) {
-            return \Genesis\Utils\Currency::amountToExponent($amount, $currency);
+            return master\libraries\genesis\src\Genesis\Utils\Currency::amountToExponent($amount, $currency);
         }
 
         return false;
@@ -259,15 +248,15 @@ abstract class Request
      * @param $token    String   - should we append the token to the end of the url
      *
      * @return string            - complete URL
-     * @throws EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     protected function buildRequestURL($sub = 'gateway', $path = '', $token = '')
     {
         $protocol = ($this->getApiConfig('protocol')) ? $this->getApiConfig('protocol') : 'https';
 
-        $sub      = Config::getSubDomain($sub);
+        $sub      = master\libraries\genesis\src\Genesis\Config::getSubDomain($sub);
 
-        $domain   = Config::getEndpoint();
+        $domain   = master\libraries\genesis\src\Genesis\Config::getEndpoint();
 
         $port     = ($this->getApiConfig('port')) ? $this->getApiConfig('port') : Request::PORT_HTTPS;
 
@@ -381,17 +370,21 @@ abstract class Request
      * @param string $requestPath
      * @param bool $includeToken
      * @return void
-     * @throws EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initApiGatewayConfiguration(
         $requestPath = 'process',
         $includeToken = true,
         $subdomain = 'gateway'
     ) {
-        $this->isTokenRequest = $includeToken;
-        $token                = $includeToken ? Config::getToken() : false;
-
-        $this->setApiConfig('url', $this->buildRequestURL($subdomain, $requestPath, $token));
+        $this->setApiConfig(
+            'url',
+            $this->buildRequestURL(
+                $subdomain,
+                $requestPath,
+                ($includeToken ? master\libraries\genesis\src\Genesis\Config::getToken() : false)
+            )
+        );
     }
 
     /**
@@ -421,21 +414,5 @@ abstract class Request
     protected function allowedEmptyNotNullFields()
     {
         return array();
-    }
-
-    /**
-     * Validates the Config against the given Request
-     *
-     * @return void
-     *
-     * @throws InvalidArgument
-     */
-    protected function validateConfig()
-    {
-        if ($this->isTokenRequest && empty(Config::getToken())) {
-            $message = sprintf('Config Token missing! %s requires Token configuration.', static::class);
-
-            throw new InvalidArgument($message);
-        }
     }
 }

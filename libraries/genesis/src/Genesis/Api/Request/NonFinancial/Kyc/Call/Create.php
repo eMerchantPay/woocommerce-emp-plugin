@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\Call;
 
-use Genesis\Api\Constants\NonFinancial\Kyc\CallServiceTypes;
-use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use Genesis\Api\Validators\Request\RegexValidator;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\CallServiceTypes;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
 
 /**
  * Class Download
@@ -115,20 +115,20 @@ class Create extends BaseRequest
             'service_type'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'service_language'      => [
-                'a', 'zh-HK', 'ca', 'hr', 'cs', 'da', 'nl', 'en-AU', 'en-GB', 'en-US', 'et', 'fil', 'fi', 'fr',
-                'fr-CA', 'de', 'el', 'he', 'hi', 'hu', 'is', 'id', 'it', 'ja', 'ko', 'lv', 'ln', 'lt', 'zh-CN',
-                'no', 'pl', 'pt-BR', 'pt', 'ro', 'ru', 'sk', 'es', 'es-419', 'sv', 'th', 'tr', 'uk', 'vi'
+                'a', 'ar-EG', 'bg', 'zh-HK', 'ca', 'hr', 'cs', 'da', 'nl', 'en-AU', 'en-GB', 'en-US', 'et', 'fil',
+                'fi', 'fr', 'fr-CA', 'de', 'el', 'he', 'hi', 'hu', 'is', 'id', 'it', 'ja', 'ko', 'lv', 'ln', 'lt',
+                'zh-CN', 'no', 'pl', 'pt-BR', 'pt', 'ro', 'ru', 'sk', 'es', 'es-419', 'sv', 'th', 'tr', 'uk', 'vi'
             ],
             'service_type'          => CallServiceTypes::getAll(),
             'security_code'         => new RegexValidator(RegexValidator::PATTERN_KYC_CALL_SECURITY_CODE),
             'customer_phone_number' => new RegexValidator('/^\d+$/')
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

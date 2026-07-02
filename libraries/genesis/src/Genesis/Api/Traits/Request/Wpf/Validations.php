@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Wpf;
 
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Trait Validations
@@ -41,7 +41,7 @@ trait Validations
      *
      * @param string $transactionType
      * @param array $parameters
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     protected function verifyTransactionType($transactionType, $parameters = [])
     {
@@ -126,7 +126,7 @@ trait Validations
      * @param string $customRequiredParam
      * @param array $txnParameters
      *
-     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     protected function checkEmptyRequiredParamsFor(
         $transactionType,
@@ -164,7 +164,7 @@ trait Validations
      * @param mixed $paramValues
      * @param string $paramName
      *
-     * @throws \Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     private function checkIsParamSet($transactionType, $parameters, $paramValues, $paramName)
     {

@@ -20,14 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Network;
 
-use Genesis\Api\Request;
-use Genesis\Exceptions\ErrorNetwork;
+use master\libraries\genesis\src\Genesis\Api\Request;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorNetwork;
+use woocommerce
 
 /**
  * Stream Context Network Interface
@@ -64,7 +65,7 @@ class Stream extends Base
      * @param array $requestData
      *
      * @return void
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      *
      * @SuppressWarnings(PHPMD.ElseExpression)
      */
@@ -72,33 +73,20 @@ class Stream extends Base
     {
         $url = parse_url($requestData['url']);
 
-        $headerContent  = [ sprintf('Content-Length: %s', strlen($requestData['body']))];
-        $contextContent = [ 'content' => $requestData['body'] ];
-
-        // If there is no additional data in the request
-        if ($requestData['body'] == '[]') {
-            $headerContent  = [];
-            $contextContent = [];
-        }
-
-        $headers = array_merge(
-            [
-                'Content-Type: ' . $this->getRequestContentType($requestData['format']),
-                $this->authorization($requestData),
-                sprintf('User-Agent: %s', $requestData['user_agent']),
-            ],
-            $headerContent
-        );
+        $headers = [
+            'Content-Type: ' . $this->getRequestContentType($requestData['format']),
+            $this->authorization($requestData),
+            sprintf('Content-Length: %s', strlen($requestData['body'])),
+            sprintf('User-Agent: %s', $requestData['user_agent']),
+        ];
 
         $contextOptions = [
-            'http' => array_merge(
-                [
-                    'method'  => $requestData['type'],
-                    'header'  => implode("\r\n", $headers),
-                    'timeout' => $requestData['timeout']
-                ],
-                $contextContent
-            ),
+            'http' => [
+                'method'  => $requestData['type'],
+                'header'  => implode("\r\n", $headers),
+                'content' => $requestData['body'],
+                'timeout' => $requestData['timeout']
+            ],
             'ssl'  => [
                 // DO NOT allow self-signed certificates
                 'allow_self_signed' => false,
@@ -116,12 +104,12 @@ class Stream extends Base
         ];
 
         // Note: Mitigate CRIME/BEAST attacks
-        if (\Genesis\Utils\Common::compareVersions('5.4.13', '>=')) {
+        if (master\libraries\genesis\src\Genesis\Utils\Common::compareVersions('5.4.13', '>=')) {
             $contextOptions['ssl']['disable_compression'] = true;
         }
 
         // Note: PHP does NOT support SAN certs on PHP version < 5.6
-        if (\Genesis\Utils\Common::compareVersions('5.6.0', '<')) {
+        if (master\libraries\genesis\src\Genesis\Utils\Common::compareVersions('5.6.0', '<')) {
             $contextOptions['ssl']['CN_match']          = $url['host'];
             $contextOptions['ssl']['SNI_server_name']   = $url['host'];
         } else {
@@ -160,7 +148,7 @@ class Stream extends Base
      * @param $errNo  - error code
      * @param $errStr - error message
      *
-     * @throws \Genesis\Exceptions\ErrorNetwork
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorNetwork
      */
     public static function processErrors($errNo, $errStr)
     {

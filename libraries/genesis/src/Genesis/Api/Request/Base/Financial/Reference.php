@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\Financial;
 
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
 
 /**
  * Class Reference
@@ -40,10 +40,10 @@ use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
  *
  * @package Genesis\Api\Request\Base\Financial
  */
-abstract class Reference extends \Genesis\Api\Request\Base\Financial
+abstract class Reference extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
-    use PaymentAttributes;
-    use ReferenceAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
 
     /**
      * Set the required fields
@@ -59,13 +59,13 @@ abstract class Reference extends \Genesis\Api\Request\Base\Financial
             'currency'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'currency' => \Genesis\Utils\Currency::getList()
+            'currency' => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

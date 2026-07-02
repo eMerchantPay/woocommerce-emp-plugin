@@ -6,11 +6,11 @@ This is a Payment Module for WooCommerce that gives you the ability to process p
 Requirements
 ------------
 
-* WordPress 4.x, 5.x or 6.x (Tested up to 6.9)
-* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.x, 9.x (Tested up to 10.4.3)
-* [GenesisPHP v2.2.0](https://github.com/GenesisGateway/genesis_php/releases/tag/2.2.0) - (Integrated in Module)
+* WordPress 4.x, 5.x or 6.x (Tested up to 6.7-beta1)
+* WooCommerce 3.x, 4.x, 5.x, 6.x, 7.x, 8.x, 9.x (Tested up to 9.3.3)
+* [GenesisPHP v2.0.3](https://github.com/GenesisGateway/genesis_php/releases/tag/2.0.3) - (Integrated in Module)
 * PCI-certified server in order to use ```emerchantpay Direct```
-* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x, 6.x 7.x, 8.x (Tested up to 8.3.1) in order to use **Subscriptions**
+* [WooCommerce Subscription Extension](https://woocommerce.com/products/woocommerce-subscriptions/) 2.x, 3.x, 4.x, 5.x, 6.x (Tested up to 6.8.0) in order to use **Subscriptions**
 
 GenesisPHP Requirements
 ------------
@@ -44,6 +44,8 @@ This steps should be followed if you wish to use the ```emerchantpay Direct``` M
 * Login into your WordPress Admin Panel with Administrator privileges
 * Navigate to ```WooCommerce``` - > ```Settings``` -> ```Advanced```
 * In Section ```Page Setup``` check ```Force secure checkout```
+
+__If you are using Tokenization for Web Payment Form, please make sure Guest Checkout is disabled.__
 
 Subscriptions
 ------------
@@ -105,7 +107,7 @@ and add the following line to execute the **WordPress Cron** once per 10 Minutes
 */10 * * * * cd /path/to/wordpress/root && php -q wp-cron.php
 ```
 
-__Note:__ If you are using Sale, Sale 3D, Apple Pay or Google Pay for recurring transactions, please ensure that you contact tech support to obtain a **recurring token** used for renewal payments. The recurring token is mandatory for all consecutive transactions after the initial payment.
+__Note:__ If you are using Sale or Sale 3D for recurring transactions, please ensure that you contact tech support to obtain a **recurring token** used for renewal payments. The recurring token is mandatory for all consecutive transactions after the initial payment.
 
 
 Refunds
@@ -156,8 +158,10 @@ Supported Transactions
     * __Bancomer__
     * __Bancontact__
     * __Banco de Occidente__
+    * __Banco do Brasil__
     * __BitPay__
     * __Boleto__
+    * __Bradesco__
     * __Cabal__
     * __CashU__
     * __Cencosud__
@@ -174,6 +178,7 @@ Supported Transactions
     * __InitRecurringSale__
     * __InitRecurringSale (3D-Secure)__
     * __Intersolve__
+    * __Itau__
     * __Multibanco__
     * __MyBank__
     * __Naranja__
@@ -185,7 +190,7 @@ Supported Transactions
       * __Bancontact (BCT)__ 
       * __BLIK (BLK)__
       * __SPEI (SE)__
-      * __PayID (PID)__
+      * __LatiPay (PID)__
     * __OXXO__
     * __P24__
     * __Pago Facil__
@@ -195,11 +200,14 @@ Supported Transactions
     * __Pix__
     * __POLi__
     * __Post Finance__
+    * __PSE__
     * __RapiPago__
+    * __Redpagos__
     * __SafetyPay__
     * __Sale__
     * __Sale (3D-Secure)__
     * __SDD Init Recurring Sale__
+    * __Santander__
     * __Sepa Direct Debit__
     * __SOFORT__
     * __Tarjeta Shopping__
@@ -208,6 +216,7 @@ Supported Transactions
     * __TrustPay__
     * __UPI__
     * __WebMoney__
+    * __WebPay__
     * __WeChat__
         
 _Note_: If you have trouble with your credentials or terminal configuration, get in touch with our [support] team

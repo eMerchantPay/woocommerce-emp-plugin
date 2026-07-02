@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control;
 
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * The value has weight and might impact the decision whether a challenge will be required for the transaction or not.

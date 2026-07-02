@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\Cards;
  *
  * @package Genesis\Api\Request\Financial\Cards
  */
-class TarjetaShopping extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class TarjetaShopping extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class TarjetaShopping extends \Genesis\Api\Request\Base\Financial\SouthAmericanP
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::TARJETA_SHOPPING;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::TARJETA_SHOPPING;
     }
 
     public function getAllowedBillingCountries()

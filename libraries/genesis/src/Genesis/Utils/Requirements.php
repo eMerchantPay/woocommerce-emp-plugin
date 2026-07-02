@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -66,12 +66,12 @@ final class Requirements
         self::isClassExists('XMLReader', self::getErrorMessage('xmlreader'));
 
         // XMLWriter
-        if (\Genesis\Config::getInterface('builder') == 'xml') {
+        if (master\libraries\genesis\src\Genesis\Config::getInterface('builder') == 'xml') {
             self::isClassExists('XMLWriter', self::getErrorMessage('xmlwriter'));
         }
 
         // cURL
-        if (\Genesis\Config::getInterface('network') == 'curl') {
+        if (master\libraries\genesis\src\Genesis\Config::getInterface('network') == 'curl') {
             self::isFunctionExists('curl_init', self::getErrorMessage('curl'));
         }
     }
@@ -83,7 +83,7 @@ final class Requirements
      */
     public static function checkSystemVersion()
     {
-        if (\Genesis\Utils\Common::compareVersions(self::$minPHPVersion, '<')) {
+        if (master\libraries\genesis\src\Genesis\Utils\Common::compareVersions(self::$minPHPVersion, '<')) {
             throw new Exception(self::getErrorMessage('system'));
         }
     }

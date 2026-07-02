@@ -20,13 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Business;
 
-use Genesis\Api\Constants\Transaction\Parameters\Business\PaymentTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Business\PaymentTypes;
+use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
 
 /**
  * Trait BusinessAttributes
@@ -67,7 +68,7 @@ trait BusinessAttributes
 
         return $this->allowedOptionsSetter(
             'business_payment_type',
-            PaymentTypes::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Business\PaymentTypes::getAll(),
             $value,
             'Invalid Payment Type.'
         );

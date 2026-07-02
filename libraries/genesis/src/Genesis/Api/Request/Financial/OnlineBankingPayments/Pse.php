@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments;
 
-use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
 
 /**
  * Class Pse
@@ -37,7 +37,7 @@ use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
  *
  * @package Genesis\Api\Request\Financial\OnlineBankingPayments
  */
-class Pse extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class Pse extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     use PendingPaymentAttributes;
 
@@ -47,7 +47,7 @@ class Pse extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::PSE;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::PSE;
     }
 
     /**

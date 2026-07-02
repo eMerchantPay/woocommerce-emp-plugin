@@ -20,16 +20,16 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request;
 
-use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use Genesis\Api\Validators\Request\RegexValidator;
-use Genesis\Utils\Common;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use master\libraries\genesis\src\Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Trait CreditCardAttributes
@@ -118,60 +118,60 @@ trait CreditCardAttributes
     /**
      * Instance of CC Holder Validator
      *
-     * @return RegexValidator
+     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
      */
     protected function getCreditCardHolderValidator()
     {
-        return new RegexValidator(
-            RegexValidator::PATTERN_CREDIT_CARD_HOLDER
+        return new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(
+            master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::PATTERN_CREDIT_CARD_HOLDER
         );
     }
 
     /**
      * Instance of CC Number Format Validator
      *
-     * @return RegexValidator
+     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
      */
     protected function getCreditCardNumberValidator()
     {
-        return new RegexValidator(
-            RegexValidator::PATTERN_CREDIT_CARD_NUMBER
+        return new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(
+            master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::PATTERN_CREDIT_CARD_NUMBER
         );
     }
 
     /**
      * Instance of CC CVV Format Validator
      *
-     * @return RegexValidator
+     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
      */
     protected function getCreditCardCVVValidator()
     {
-        return new RegexValidator(
-            RegexValidator::PATTERN_CREDIT_CARD_CVV
+        return new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(
+            master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::PATTERN_CREDIT_CARD_CVV
         );
     }
 
     /**
      * Instance of CC Expiration Month Format Validator
      *
-     * @return RegexValidator
+     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
      */
     protected function getCreditCardExpMonthValidator()
     {
-        return new RegexValidator(
-            RegexValidator::PATTERN_CREDIT_CARD_EXP_MONTH
+        return new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(
+            master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::PATTERN_CREDIT_CARD_EXP_MONTH
         );
     }
 
     /**
      * Instance of CC Expiration Year Format Validator
      *
-     * @return RegexValidator
+     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
      */
     protected function getCreditCardExpYearValidator()
     {
-        return new RegexValidator(
-            RegexValidator::PATTERN_CREDIT_CARD_EXP_YEAR
+        return new master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator(
+            master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator::PATTERN_CREDIT_CARD_EXP_YEAR
         );
     }
 

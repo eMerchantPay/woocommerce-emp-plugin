@@ -20,21 +20,21 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\Klarna;
 
-use Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
-use Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
-use Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
 
 /**
  * Class UpdateAddress
  * @package Genesis\Api\Request\NonFinancial\Alternatives\Klarna
  */
-class UpdateAddress extends BaseRequest
+class UpdateAddress extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest
 {
     use BillingInfoAttributes;
     use ShippingInfoAttributes;

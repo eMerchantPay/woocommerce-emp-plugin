@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\Cpf;
 
-use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use Genesis\Exceptions\EnvironmentNotSet;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Check
@@ -57,8 +57,8 @@ class Check extends BaseRequest
      * Set document_id and modify the request URL
      *
      * @param $value
-     * @throws EnvironmentNotSet
      * @return $this
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     public function setDocumentId($value)
     {

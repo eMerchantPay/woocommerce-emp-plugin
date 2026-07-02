@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait ExternallyProcessed
@@ -47,7 +47,7 @@ trait ExternallyProcessed
      *
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setExternallyProcessed($value)
     {
@@ -59,7 +59,7 @@ trait ExternallyProcessed
 
         return $this->allowedOptionsSetter(
             'externally_processed',
-            \Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ExternallyProcessed::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ExternallyProcessed::getAll(),
             $value,
             'Invalid value for externally_processed attribute.'
         );

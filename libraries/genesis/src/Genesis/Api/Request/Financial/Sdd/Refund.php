@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -34,7 +34,7 @@ namespace Genesis\Api\Request\Financial\Sdd;
  * @package Genesis\Api\Request\Financial\Sdd
  *
  */
-class Refund extends \Genesis\Api\Request\Base\Financial\Reference
+class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
 {
     /**
      * Returns the Request transaction type
@@ -42,7 +42,7 @@ class Refund extends \Genesis\Api\Request\Base\Financial\Reference
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::SDD_REFUND;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::SDD_REFUND;
     }
 
     /**
@@ -62,6 +62,6 @@ class Refund extends \Genesis\Api\Request\Base\Financial\Reference
             'usage'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 }

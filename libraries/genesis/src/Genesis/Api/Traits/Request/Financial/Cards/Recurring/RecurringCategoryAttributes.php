@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Cards\Recurring;
 
-use Genesis\Api\Constants\Transaction\Parameters\Recurring\Categories;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Categories;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * trait RecurringCategoryAttributes
@@ -53,7 +53,7 @@ trait RecurringCategoryAttributes
      *
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setRecurringCategory($value)
     {
@@ -65,7 +65,7 @@ trait RecurringCategoryAttributes
 
         return $this->allowedOptionsSetter(
             'recurring_category',
-            Categories::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Categories::getAll(),
             $value,
             'Invalid value given for Recurring Category.'
         );

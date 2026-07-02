@@ -20,24 +20,24 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Alternatives\TransferTo;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\Transaction\Parameters\Alternatives\AccountTypes;
-use Genesis\Api\Constants\Transaction\Parameters\Alternatives\PurposeOfRemittances;
-use Genesis\Api\Constants\Transaction\Parameters\IdentificationTypes;
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Api\Request\Base\Financial;
-use Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
-use Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Alternatives\AccountTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Alternatives\PurposeOfRemittances;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\IdentificationTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * APM TransferTo Payout
@@ -362,13 +362,13 @@ class Payout extends Financial
      *
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setCustomerEmail($value)
     {
-        $customerEmail = trim((string)$value);
+        $customerEmail = trim($value);
 
-        if (filter_var($customerEmail, FILTER_VALIDATE_EMAIL) === false) {
+        if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
             throw new InvalidArgument(
                 'Please, enter a valid Customer Email'
             );
@@ -409,7 +409,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMsisdn($value)
     {
@@ -432,7 +432,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setAccountType($value)
     {
@@ -455,7 +455,7 @@ class Payout extends Financial
      *
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setIdType($value)
     {
@@ -480,7 +480,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setPurposeOfRemittance($value)
     {
@@ -517,7 +517,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setSenderDateOfBirth($value)
     {
@@ -542,7 +542,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return Payout
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setSenderMsisdn($value)
     {
@@ -565,7 +565,7 @@ class Payout extends Financial
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setSenderIdType($value)
     {

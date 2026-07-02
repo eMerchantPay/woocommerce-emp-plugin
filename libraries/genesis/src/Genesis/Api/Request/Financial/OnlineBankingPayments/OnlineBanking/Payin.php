@@ -20,23 +20,23 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments\OnlineBanking;
 
-use Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters;
-use Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PaymentTypes;
-use Genesis\Api\Request\Base\Financial;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\DocumentAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\UserCategoryAttributes;
-use Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\VirtualPaymentAddressAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PaymentTypes;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\DocumentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\UserCategoryAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\OnlineBankingPayments\VirtualPaymentAddressAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Payin
@@ -93,11 +93,11 @@ class Payin extends Financial
      * @param $paymentType
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setPaymentType($paymentType)
     {
-        $allowedPaymentTypes = PaymentTypes::getAll();
+        $allowedPaymentTypes = master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\PaymentTypes::getAll();
 
         if (in_array($paymentType, $allowedPaymentTypes)) {
             $this->payment_type = $paymentType;
@@ -116,7 +116,7 @@ class Payin extends Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::ONLINE_BANKING_PAYIN;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::ONLINE_BANKING_PAYIN;
     }
 
     /**
@@ -139,7 +139,7 @@ class Payin extends Financial
         $this->requiredFields = CommonUtils::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'currency' => BankCodeParameters::getAllowedCurrencies()
+            'currency' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getAllowedCurrencies()
         ];
 
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);
@@ -166,70 +166,64 @@ class Payin extends Financial
         $requiredFieldValuesConditional = [
             'currency' => [
                 'CNY' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('CNY')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('CNY')]
                 ],
                 'CLP' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('CLP')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('CLP')]
                 ],
                 'THB' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('THB')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('THB')]
                 ],
                 'MYR' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('MYR')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('MYR')]
                 ],
                 'PYG' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('PYG')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('PYG')]
                 ],
                 'IDR' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('IDR')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('IDR')]
                 ],
                 'INR' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('INR')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('INR')]
                 ],
                 'PHP' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('PHP')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('PHP')]
                 ],
                 'SGD' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('SGD')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('SGD')]
                 ],
                 'UYU' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('UYU')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('UYU')]
                 ],
                 'VND' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('VND')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('VND')]
                 ],
                 'PEN' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('PEN')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('PEN')]
                 ],
                 'EUR' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('EUR')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('EUR')]
                 ],
                 'USD' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('USD')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('USD')]
                 ],
                 'MXN' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('MXN')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('MXN')]
                 ],
                 'BRL' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('BRL')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('BRL')]
                 ],
                 'CHF' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('CHF')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('CHF')]
                 ],
                 'CAD' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('CAD')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('CAD')]
                 ],
                 'PLN' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('PLN')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('PLN')]
                 ],
                 'AUD' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('AUD')]
-                ],
-                'GBP' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('GBP')]
-                ],
-                'NZD' => [
-                    ['bank_code' => BankCodeParameters::getBankCodesPerCurrency('NZD')]
+                    ['bank_code' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\OnlineBanking\BankCodeParameters::getBankCodesPerCurrency('AUD')]
                 ]
             ]
         ];
@@ -243,9 +237,9 @@ class Payin extends Financial
      * Add document_id conditional validation if it is present
      *
      * @return void
-     * @throws InvalidArgument
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {

@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Payout;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\Transaction\Parameters\Payout\MoneyTransferTypes;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Payout\MoneyTransferTypes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait MoneyTransferPayoutAttributes
@@ -123,7 +123,7 @@ trait MoneyTransferPayoutAttributes
 
     /**
      * @param string $value
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMoneyTransferType($value)
     {
@@ -135,7 +135,7 @@ trait MoneyTransferPayoutAttributes
 
         $this->allowedOptionsSetter(
             'money_transfer_type',
-            MoneyTransferTypes::getAllowedMoneyTransferTypes(),
+            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Payout\MoneyTransferTypes::getAllowedMoneyTransferTypes(),
             $value,
             'Invalid value for type parameter.'
         );
@@ -148,7 +148,7 @@ trait MoneyTransferPayoutAttributes
      *
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMoneyTransferSenderBirthDate($value)
     {
@@ -179,7 +179,7 @@ trait MoneyTransferPayoutAttributes
     /**
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMoneyTransferSenderAccountNumber($value)
     {
@@ -194,7 +194,7 @@ trait MoneyTransferPayoutAttributes
     /**
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMoneyTransferServiceProviderName($value)
     {

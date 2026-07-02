@@ -20,14 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\TravelData;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Trait CarRentalAttributes
@@ -132,15 +131,6 @@ trait CarRentalAttributes
             $this->car_rental_pickup_date->format(DateTimeFormat::DD_MM_YYYY_L_HYPHENS);
     }
 
-    /**
-     * Set Car Rental Return Date
-     *
-     * @param $value
-     *
-     * @return $this
-     *
-     * @throws InvalidArgument
-     */
     public function setCarRentalReturnDate($value)
     {
         if (empty($value)) {
@@ -178,7 +168,7 @@ trait CarRentalAttributes
                 'pickup_date'               => $this->getCarRentalPickupDate(),
                 'renter_name'               => $this->car_rental_renter_name,
                 'return_city'               => $this->car_rental_return_city,
-                'return_state'              => $this->car_rental_return_state,
+                'return_state'              => $this->car_rental_return_city,
                 'return_country'            => $this->car_rental_return_country,
                 'return_date'               => $this->getCarRentalReturnDate(),
                 'renter_return_location_id' => $this->car_rental_renter_return_location_id,
@@ -193,8 +183,6 @@ trait CarRentalAttributes
      * @param $value
      *
      * @return $this
-     *
-     * @throws InvalidArgument
      */
     public function setCarRentalNoShowIndicator($value)
     {
@@ -210,8 +198,6 @@ trait CarRentalAttributes
      * @param $value
      *
      * @return $this
-     *
-     * @throws InvalidArgument
      */
     public function setCarRentalExtraCharges($value)
     {
@@ -227,8 +213,6 @@ trait CarRentalAttributes
      * @param $value
      *
      * @return $this
-     *
-     * @throws InvalidArgument
      */
     public function setCarRentalClassId($value)
     {

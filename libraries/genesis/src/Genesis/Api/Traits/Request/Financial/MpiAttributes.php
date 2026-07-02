@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use Genesis\Api\Constants\Transaction\Parameters\MpiProtocolSubVersions;
-use Genesis\Api\Constants\Transaction\Parameters\MpiProtocolVersions;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\MpiProtocolSubVersions;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\MpiProtocolVersions;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeIndicators;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait MpiAttributes
@@ -40,7 +40,7 @@ use Genesis\Exceptions\InvalidArgument;
  * @method $this setMpiEci($value) Set Electric Commerce Indicator as returned from the MPI.
  * @method $this setMpiXid($value) Set Transaction ID that uniquely identifies a 3D Secure check request
  * @method $this setMpiDirectoryServerId($value) Set the directory server ID used during 3DS authentication
- * @method $this setMpiAcsTransactionId($value) Set the ACS Transaction ID
+ * @method $this setMpiAscTransactionId($value) Set the ASC Transaction ID
  */
 trait MpiAttributes
 {
@@ -90,12 +90,11 @@ trait MpiAttributes
     protected $mpi_directory_server_id;
 
     /**
-     * The ACS Transaction ID and is optional for 3DS transactions, but highly recommended
-     * for increasing the approval ratio.
+     * Optional value for ASC Transaction ID. Highly recommended to increase approve ratio.
      *
      * @var string
      */
-    protected $mpi_acs_transaction_id;
+    protected $mpi_asc_transaction_id;
 
     /**
      * Optional value for 3DS challenge indicator. Highly recommended to increase approve ratio.
@@ -109,7 +108,7 @@ trait MpiAttributes
      *
      * @param $value
      * @return MpiAttributes
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function setMpiProtocolVersion($value)
     {
@@ -135,7 +134,7 @@ trait MpiAttributes
      *
      * @param $value
      * @return MpiAttributes
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMpiProtocolSubVersion($value)
     {
@@ -151,7 +150,7 @@ trait MpiAttributes
      * Set the value for 3DS challenge indicator. Highly recommended to increase approve ratio.
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMpiThreedsChallengeIndicator($value)
     {
@@ -217,16 +216,11 @@ trait MpiAttributes
             'protocol_version'            => $this->mpi_protocol_version,
             'protocol_sub_version'        => $this->mpi_protocol_sub_version,
             'directory_server_id'         => $this->mpi_directory_server_id,
-            'acs_transaction_id'          => $this->mpi_acs_transaction_id,
+            'asc_transaction_id'          => $this->mpi_asc_transaction_id,
             'threeds_challenge_indicator' => $this->mpi_threeds_challenge_indicator
         ];
     }
 
-    /**
-     * Return required conditional MPI fields
-     *
-     * @return array
-     */
     protected function requiredMpiFieldsConditional()
     {
         return [

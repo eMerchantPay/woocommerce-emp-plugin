@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Builders;
 
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 use XMLWriter;
 
 /**
@@ -36,7 +36,7 @@ use XMLWriter;
  * @package    Genesis
  * @subpackage Builders
  */
-final class Xml implements \Genesis\Interfaces\Builder
+final class Xml implements master\libraries\genesis\src\Genesis\Interfaces\Builder
 {
     /**
      * Store the XMLWriter instance
@@ -71,13 +71,13 @@ final class Xml implements \Genesis\Interfaces\Builder
      *
      * @param array $data - tree-structured array
      *
-     * @throws \Genesis\Exceptions\InvalidArgument
-     *
      * @return void
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     *
      */
     public function populateNodes($data)
     {
-        if (!\Genesis\Utils\Common::isValidArray($data)) {
+        if (!master\libraries\genesis\src\Genesis\Utils\Common::isValidArray($data)) {
             throw new InvalidArgument('Invalid data structure');
         }
 
@@ -112,7 +112,7 @@ final class Xml implements \Genesis\Interfaces\Builder
      */
     public function iterateArray($name, $data)
     {
-        if (\Genesis\Utils\Common::isValidXMLName($name)) {
+        if (master\libraries\genesis\src\Genesis\Utils\Common::isValidXMLName($name)) {
             $this->context->startElement($name);
         }
 
@@ -141,7 +141,7 @@ final class Xml implements \Genesis\Interfaces\Builder
             $this->writeElement($key, $value);
         }
 
-        if (\Genesis\Utils\Common::isValidXMLName($name)) {
+        if (master\libraries\genesis\src\Genesis\Utils\Common::isValidXMLName($name)) {
             $this->context->endElement();
         }
     }
@@ -209,7 +209,7 @@ final class Xml implements \Genesis\Interfaces\Builder
         if (is_array($value)) {
             $this->iterateArray($key, $value);
         } else {
-            $value = \Genesis\Utils\Common::booleanToString($value);
+            $value = master\libraries\genesis\src\Genesis\Utils\Common::booleanToString($value);
 
             $this->context->writeElement($key, $value);
         }

@@ -18,7 +18,7 @@
  * @package     includes\blocks\class-wc-emerchantpay-blocks-direct
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceif ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
@@ -41,7 +41,6 @@ final class WC_Emerchantpay_Blocks_Direct extends WC_Emerchantpay_Blocks_Base {
 	 */
 	private $required_settings = array(
 		WC_Emerchantpay_Direct::SETTING_KEY_SHOW_CC_HOLDER,
-		WC_Emerchantpay_Direct::SETTING_KEY_CSE_PUBLIC_KEY,
 	);
 
 	/**
@@ -50,13 +49,11 @@ final class WC_Emerchantpay_Blocks_Direct extends WC_Emerchantpay_Blocks_Base {
 	 * @SuppressWarnings(PHPMD.MissingImport)
 	 */
 	public function initialize() {
-		$options = array(
+		$options        = array(
+			'draw_transaction_tree'          => false,
 			'blocks_instantiate'             => true,
 			'register_renewal_subscriptions' => false,
 		);
-		if ( ! is_admin() ) {
-			$options['draw_transaction_tree'] = false;
-		}
 		$this->gateway  = new WC_Emerchantpay_Direct( $options );
 		$this->supports = $this->gateway->supports;
 		$this->settings = $this->get_filtered_plugin_settings(
@@ -113,7 +110,6 @@ final class WC_Emerchantpay_Blocks_Direct extends WC_Emerchantpay_Blocks_Base {
 			'supports'          => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
 			'show_cc_holder'    => $this->settings['show_cc_holder'],
 			'iframe_processing' => $this->settings['iframe_processing'],
-			'cse_public_key'    => WC_Emerchantpay_Helper::deep_trim( $this->settings[ WC_Emerchantpay_Direct::SETTING_KEY_CSE_PUBLIC_KEY ] ?? '' ),
 		);
 	}
 }

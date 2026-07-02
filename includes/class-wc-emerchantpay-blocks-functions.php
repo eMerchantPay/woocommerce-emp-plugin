@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     classes\class-wc-emerchantpay-checkout
  */
@@ -23,6 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
+use woocommerceuse woocommerceuse woocommerce
 
 /**
  * Class WC_Emerchantpay_Blocks_Functions
@@ -53,6 +54,7 @@ class WC_Emerchantpay_Blocks_Functions {
 	 * @return void
 	 */
 	public function init() {
+		add_action( 'after_setup_theme', array( $this, 'add_credit_card_input_styles' ) );
 		add_action( 'woocommerce_blocks_loaded', array( $this, 'emerchantpay_blocks_support' ) );
 	}
 
@@ -64,7 +66,7 @@ class WC_Emerchantpay_Blocks_Functions {
 	public function add_credit_card_input_styles() {
 		$block_name = 'genesisgateway/emerchantpay_direct';
 		$args       = array(
-			'handle' => 'emp-credit-card-input-styles',
+			'handle' => 'credit-card-input-styles',
 			'src'    => plugins_url( '/assets/css/blocks/credit-card-inputs.css', $this->file ),
 			'path'   => plugins_url( '/assets/css/blocks/credit-card-inputs.css', $this->file ),
 			'ver'    => WC_Emerchantpay_Helper::get_plugin_version(),
@@ -89,7 +91,6 @@ class WC_Emerchantpay_Blocks_Functions {
 					$payment_method_registry->register( new WC_Emerchantpay_Blocks_Direct() );
 				}
 			);
-			add_action( 'wp_enqueue_scripts', array( $this, 'add_credit_card_input_styles' ) );
 		}
 	}
 }

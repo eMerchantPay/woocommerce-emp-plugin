@@ -20,15 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit;
 
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 
 /**
  * Class Payin
@@ -40,7 +39,7 @@ use Genesis\Utils\Common;
  * @method Payin setCustomerAccountId($value) Set Unique consumer account ID
  * @method Payin setReturnUrl($value) Set the URL where customer is sent to after payment
  */
-class Payin extends \Genesis\Api\Request\Base\Financial
+class Payin extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use PaymentAttributes;
@@ -65,7 +64,7 @@ class Payin extends \Genesis\Api\Request\Base\Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::IDEBIT_PAYIN;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::IDEBIT_PAYIN;
     }
 
     /**
@@ -79,17 +78,19 @@ class Payin extends \Genesis\Api\Request\Base\Financial
             'transaction_id',
             'amount',
             'currency',
+            'return_url',
             'customer_account_id',
             'billing_country'
         ];
 
-        $this->requiredFields = Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'billing_country' => ['CA']
+            'billing_country' => ['CA'],
+            'currency'        => ['CAD', 'USD', 'EUR', 'GBP', 'AUD']
         ];
 
-        $this->requiredFieldValues = Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**
@@ -102,6 +103,7 @@ class Payin extends \Genesis\Api\Request\Base\Financial
             'amount'              => $this->transformAmount($this->amount, $this->currency),
             'currency'            => $this->currency,
             'customer_account_id' => $this->customer_account_id,
+            'return_url'          => $this->return_url,
             'customer_email'      => $this->customer_email,
             'customer_phone'      => $this->customer_phone,
             'billing_address'     => $this->getBillingAddressParamsStructure(),

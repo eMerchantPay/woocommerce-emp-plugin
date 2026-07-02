@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\NonFinancial\Consumers;
 
-use Genesis\Api\Request\Base\BaseVersionedRequest;
-use Genesis\Builder;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\BaseVersionedRequest;
+use master\libraries\genesis\src\Genesis\Builder;
 
 /**
  * Class BaseRequest
@@ -63,6 +63,6 @@ abstract class BaseRequest extends BaseVersionedRequest
             $this->getRequestPath() . '_request' => $this->getRequestStructure()
         ];
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

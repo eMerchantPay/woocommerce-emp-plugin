@@ -20,14 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Constants\Transaction;
 
-use Genesis\Api\Constants\NonFinancial\Services;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Services;
+use master\libraries\genesis\src\Genesis\Utils\Common;
+use woocommerceuse woocommerce
 
 /**
  * Class Types
@@ -575,11 +576,6 @@ class Types
     const INVOICE_REFUND = 'invoice_refund';
 
     /**
-     * Global Payout is a transaction type based on Open Banking APIs, used for initiating bank payments
-     */
-    const GLOBAL_PAYOUT = 'global_payout';
-
-    /**
      * Retrieve all available transaction Types
      *
      * @return array
@@ -674,7 +670,6 @@ class Types
             self::WEBPAY                  => 'OnlineBankingPayments\Webpay',
             self::WECHAT                  => 'OnlineBankingPayments\WeChat',
             self::AFRICAN_MOBILE_PAYOUT   => 'Payout\AfricanMobilePayout',
-            self::GLOBAL_PAYOUT           => 'Payout\GlobalPayout',
             self::RUSSIAN_MOBILE_PAYOUT   => 'Payout\RussianMobilePayout',
             self::INCREMENTAL_AUTHORIZE   => 'Preauthorization\IncrementalAuthorize',
             self::PARTIAL_REVERSAL        => 'Preauthorization\PartialReversal',
@@ -704,7 +699,7 @@ class Types
      */
     public static function isValidTransactionType($type)
     {
-        $transactionTypes = \Genesis\Utils\Common::getClassConstants(__CLASS__);
+        $transactionTypes = master\libraries\genesis\src\Genesis\Utils\Common::getClassConstants(__CLASS__);
 
         return in_array(strtolower($type), $transactionTypes);
     }
@@ -717,8 +712,8 @@ class Types
     public static function getWPFTransactionTypes()
     {
         return [
-            self::APPLE_PAY,
             self::ARGENCARD,
+            self::APPLE_PAY,
             self::AURA,
             self::AUTHORIZE,
             self::AUTHORIZE_3D,
@@ -726,9 +721,11 @@ class Types
             self::BANCOMER,
             self::BANCONTACT,
             self::BANCO_DE_OCCIDENTE,
+            self::BANCO_DO_BRASIL,
             self::BITPAY_PAYOUT,
             self::BITPAY_SALE,
             self::BOLETO,
+            self::BRADESCO,
             self::CABAL,
             self::CASH,
             self::CASHU,
@@ -746,6 +743,7 @@ class Types
             self::INIT_RECURRING_SALE_3D,
             self::INSTA_DEBIT_PAYIN,
             self::INTERSOLVE,
+            self::ITAU,
             self::MULTIBANCO,
             self::MY_BANK,
             self::NARANJA,
@@ -756,18 +754,21 @@ class Types
             self::OXXO,
             self::P24,
             self::PAGO_FACIL,
+            self::PAY_PAL,
             self::PAYSAFECARD,
             self::PAYU,
-            self::PAY_PAL,
             self::PIX,
             self::POLI,
             self::POST_FINANCE,
             self::PPRO,
+            self::PSE,
             self::RAPI_PAGO,
+            self::REDPAGOS,
             self::RUSSIAN_MOBILE_SALE,
             self::SAFETYPAY,
             self::SALE,
             self::SALE_3D,
+            self::SANTANDER,
             self::SDD_INIT_RECURRING_SALE,
             self::SDD_SALE,
             self::SOFORT,
@@ -776,6 +777,7 @@ class Types
             self::TRUSTLY_SALE,
             self::UPI,
             self::WEBMONEY,
+            self::WEBPAY,
             self::WECHAT
         ];
     }
@@ -870,7 +872,7 @@ class Types
             self::INIT_RECURRING_SALE,
             self::INIT_RECURRING_SALE_3D,
             self::ITAU,
-            self::INVOICE_CAPTURE,
+            self::INVOICE,
             self::MY_BANK,
             self::MY_BANK,
             self::NEOSURF,

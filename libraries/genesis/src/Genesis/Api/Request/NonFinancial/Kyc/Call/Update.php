@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\Call;
 
-use Genesis\Api\Constants\NonFinancial\Kyc\CallVerificationStatuses;
-use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use Genesis\Api\Validators\Request\RegexValidator;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\CallVerificationStatuses;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
 
 /**
  * Class Update
@@ -84,14 +84,14 @@ class Update extends BaseRequest
             'verification_status'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'verification_status' => CallVerificationStatuses::getAll(),
             'security_code_input' => new RegexValidator(RegexValidator::PATTERN_KYC_CALL_SECURITY_CODE)
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

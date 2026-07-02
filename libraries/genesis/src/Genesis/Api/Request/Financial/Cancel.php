@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial;
 
-use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
 
 /**
  * Class Cancel
@@ -35,9 +35,9 @@ use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
  *
  * @package Genesis\Api\Request\Financial
  */
-class Cancel extends \Genesis\Api\Request\Base\Financial
+class Cancel extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
-    use ReferenceAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
 
     /**
      * Returns the Request transaction type
@@ -45,7 +45,7 @@ class Cancel extends \Genesis\Api\Request\Base\Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::VOID;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::VOID;
     }
 
     /**
@@ -60,7 +60,7 @@ class Cancel extends \Genesis\Api\Request\Base\Financial
             'reference_id'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**

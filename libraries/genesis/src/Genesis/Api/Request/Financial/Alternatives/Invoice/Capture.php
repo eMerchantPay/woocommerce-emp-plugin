@@ -20,28 +20,28 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Alternatives\Invoice;
 
-use Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentTypes;
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Api\Request\Base\Financial\Alternative\Invoice;
-use Genesis\Api\Request\Financial\Alternatives\Transaction\Items;
-use Genesis\Api\Traits\MagicAccessors;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\Alternatives\Invoice\InvoiceValidation;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
-use Genesis\Api\Traits\Validations\Request\Validations;
-use Genesis\Api\Validators\Request\RegexValidator;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Exceptions\InvalidClassMethod;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Alternative\Invoice;
+use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Items;
+use master\libraries\genesis\src\Genesis\Api\Traits\MagicAccessors;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Alternatives\Invoice\InvoiceValidation;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Validations\Request\Validations;
+use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Capture
@@ -64,7 +64,7 @@ class Capture extends Invoice
     use ReferenceAttributes;
     use MagicAccessors;
     use Validations;
-    use InvoiceValidation;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Alternatives\Invoice\InvoiceValidation;
 
     /**
      * Account Holder, required for Secure Invoice in case of Direct Debit payment
@@ -105,7 +105,7 @@ class Capture extends Invoice
      *
      * @return $this
      *
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setIban($value)
     {
@@ -146,7 +146,7 @@ class Capture extends Invoice
         $this->requiredFields = CommonUtils::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'payment_type' => PaymentTypes::getAll(),
+            'payment_type' => master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentTypes::getAll(),
             'currency'     => ['EUR', 'DKK', 'NOK', 'SEK'],
         ];
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);
@@ -157,9 +157,9 @@ class Capture extends Invoice
      *
      * @return void
      *
-     * @throws ErrorParameter
-     * @throws InvalidArgument
-     * @throws InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {
@@ -174,7 +174,7 @@ class Capture extends Invoice
      *
      * @return array
      *
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function getPaymentTransactionStructure()
     {

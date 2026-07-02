@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit134a7856837c93cd86626734bbdad83d
+use woocommerceuse woocommerceclass ComposerStaticInit134a7856837c93cd86626734bbdad83d
 {
     public static $prefixLengthsPsr4 = array (
         'G' => 
@@ -21,35 +21,35 @@ class ComposerStaticInit134a7856837c93cd86626734bbdad83d
     );
 
     public static $classMap = array (
-        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'WC_Emerchantpay_Blocks_Base' => __DIR__ . '/../../..' . '/includes/blocks/class-wc-emerchantpay-blocks-base.php',
-        'WC_Emerchantpay_Blocks_Checkout' => __DIR__ . '/../../..' . '/includes/blocks/class-wc-emerchantpay-blocks-checkout.php',
-        'WC_Emerchantpay_Blocks_Direct' => __DIR__ . '/../../..' . '/includes/blocks/class-wc-emerchantpay-blocks-direct.php',
-        'WC_Emerchantpay_Blocks_Functions' => __DIR__ . '/../../..' . '/includes/class-wc-emerchantpay-blocks-functions.php',
-        'WC_Emerchantpay_Checkout' => __DIR__ . '/../../..' . '/includes/class-wc-emerchantpay-checkout.php',
-        'WC_Emerchantpay_Constants' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-constants.php',
-        'WC_Emerchantpay_Direct' => __DIR__ . '/../../..' . '/includes/class-wc-emerchantpay-direct.php',
-        'WC_Emerchantpay_Frame_Handler' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-frame-handler.php',
-        'WC_Emerchantpay_Functions' => __DIR__ . '/../../..' . '/includes/class-wc-emerchantpay-functions.php',
-        'WC_Emerchantpay_Genesis_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-genesis-helper.php',
-        'WC_Emerchantpay_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-helper.php',
-        'WC_Emerchantpay_Hpos_Order_Adapter' => __DIR__ . '/../../..' . '/classes/adapters/order/class-wc-emerchantpay-hpos-order-adapter.php',
-        'WC_Emerchantpay_Indicators_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-indicators-helper.php',
-        'WC_Emerchantpay_Legacy_Order_Adapter' => __DIR__ . '/../../..' . '/classes/adapters/order/class-wc-emerchantpay-legacy-order-adapter.php',
-        'WC_Emerchantpay_Message_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-message-helper.php',
-        'WC_Emerchantpay_Method_Base' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-method-base.php',
-        'WC_Emerchantpay_Order_Adapter_Interface' => __DIR__ . '/../../..' . '/classes/adapters/order/interface-wc-emerchantpay-order-adapter-interface.php',
-        'WC_Emerchantpay_Order_Factory' => __DIR__ . '/../../..' . '/classes/adapters/order/class-wc-emerchantpay-order-factory.php',
-        'WC_Emerchantpay_Order_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-order-helper.php',
-        'WC_Emerchantpay_Order_Proxy' => __DIR__ . '/../../..' . '/classes/adapters/class-wc-emerchantpay-order-proxy.php',
-        'WC_Emerchantpay_Posts_Adapter' => __DIR__ . '/../../..' . '/classes/adapters/order/class-wc-emerchantpay-posts-adapter.php',
-        'WC_Emerchantpay_Subscription_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-subscription-helper.php',
-        'WC_Emerchantpay_Threeds_Backend_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-threeds-backend-helper.php',
-        'WC_Emerchantpay_Threeds_Base' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-threeds-base.php',
-        'WC_Emerchantpay_Threeds_Form_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-threeds-form-helper.php',
-        'WC_Emerchantpay_Threeds_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-threeds-helper.php',
-        'WC_Emerchantpay_Transaction' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-transaction.php',
-        'WC_Emerchantpay_Transactions_Tree' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-transactions-tree.php',
+        'woocommerce-emp-plugin-master\\libraries\\vendor\\composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'woocommerce-emp-plugin-master\includes\blocks\WC_Emerchantpay_Blocks_Base' => __DIR__ . '/../../..' . '/includes/blocks/class-wc-emerchantpay-blocks-base.php',
+        'woocommerce-emp-plugin-master\includes\blocks\WC_Emerchantpay_Blocks_Checkout' => __DIR__ . '/../../..' . '/includes/blocks/class-wc-emerchantpay-blocks-checkout.php',
+        'woocommerce-emp-plugin-master\includes\blocks\WC_Emerchantpay_Blocks_Direct' => __DIR__ . '/../../..' . '/includes/blocks/class-wc-emerchantpay-blocks-direct.php',
+        'woocommerce-emp-plugin-master\includes\WC_Emerchantpay_Blocks_Functions' => __DIR__ . '/../../..' . '/includes/class-wc-emerchantpay-blocks-functions.php',
+        'woocommerce-emp-plugin-master\includes\WC_Emerchantpay_Checkout' => __DIR__ . '/../../..' . '/includes/class-wc-emerchantpay-checkout.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Constants' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-constants.php',
+        'woocommerce-emp-plugin-master\includes\WC_Emerchantpay_Direct' => __DIR__ . '/../../..' . '/includes/class-wc-emerchantpay-direct.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Frame_Handler' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-frame-handler.php',
+        'woocommerce-emp-plugin-master\includes\WC_Emerchantpay_Functions' => __DIR__ . '/../../..' . '/includes/class-wc-emerchantpay-functions.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Genesis_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-genesis-helper.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-helper.php',
+        'woocommerce-emp-plugin-master\classes\adapters\order\WC_Emerchantpay_Hpos_Order_Adapter' => __DIR__ . '/../../..' . '/classes/adapters/order/class-wc-emerchantpay-hpos-order-adapter.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Indicators_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-indicators-helper.php',
+        'woocommerce-emp-plugin-master\classes\adapters\order\WC_Emerchantpay_Legacy_Order_Adapter' => __DIR__ . '/../../..' . '/classes/adapters/order/class-wc-emerchantpay-legacy-order-adapter.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Message_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-message-helper.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Method_Base' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-method-base.php',
+        'woocommerce-emp-plugin-master\classes\adapters\order\WC_Emerchantpay_Order_Adapter_Interface' => __DIR__ . '/../../..' . '/classes/adapters/order/interface-wc-emerchantpay-order-adapter-interface.php',
+        'woocommerce-emp-plugin-master\classes\adapters\order\WC_Emerchantpay_Order_Factory' => __DIR__ . '/../../..' . '/classes/adapters/order/class-wc-emerchantpay-order-factory.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Order_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-order-helper.php',
+        'woocommerce-emp-plugin-master\classes\adapters\WC_Emerchantpay_Order_Proxy' => __DIR__ . '/../../..' . '/classes/adapters/class-wc-emerchantpay-order-proxy.php',
+        'woocommerce-emp-plugin-master\classes\adapters\order\WC_Emerchantpay_Posts_Adapter' => __DIR__ . '/../../..' . '/classes/adapters/order/class-wc-emerchantpay-posts-adapter.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Subscription_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-subscription-helper.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Threeds_Backend_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-threeds-backend-helper.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Threeds_Base' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-threeds-base.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Threeds_Form_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-threeds-form-helper.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Threeds_Helper' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-threeds-helper.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Transaction' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-transaction.php',
+        'woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Transactions_Tree' => __DIR__ . '/../../..' . '/classes/class-wc-emerchantpay-transactions-tree.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

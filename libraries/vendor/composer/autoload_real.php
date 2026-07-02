@@ -8,13 +8,13 @@ class ComposerAutoloaderInit134a7856837c93cd86626734bbdad83d
 
     public static function loadClassLoader($class)
     {
-        if ('Composer\Autoload\ClassLoader' === $class) {
+        if ('woocommerce-emp-plugin-master\libraries\vendor\composer\ClassLoader' === $class) {
             require __DIR__ . '/ClassLoader.php';
         }
     }
 
     /**
-     * @return \Composer\Autoload\ClassLoader
+     * @return master\libraries\vendor\composer\ClassLoader
      */
     public static function getLoader()
     {
@@ -22,12 +22,12 @@ class ComposerAutoloaderInit134a7856837c93cd86626734bbdad83d
             return self::$loader;
         }
 
-        spl_autoload_register(array('ComposerAutoloaderInit134a7856837c93cd86626734bbdad83d', 'loadClassLoader'), true, true);
-        self::$loader = $loader = new \Composer\Autoload\ClassLoader(\dirname(__DIR__));
-        spl_autoload_unregister(array('ComposerAutoloaderInit134a7856837c93cd86626734bbdad83d', 'loadClassLoader'));
+        spl_autoload_register(array('woocommerce-emp-plugin-master\libraries\vendor\composer\ComposerAutoloaderInit134a7856837c93cd86626734bbdad83d', 'loadClassLoader'), true, true);
+        self::$loader = $loader = new master\libraries\vendor\composer\ClassLoader(\dirname(__DIR__));
+        spl_autoload_unregister(array('woocommerce-emp-plugin-master\libraries\vendor\composer\ComposerAutoloaderInit134a7856837c93cd86626734bbdad83d', 'loadClassLoader'));
 
         require __DIR__ . '/autoload_static.php';
-        call_user_func(\Composer\Autoload\ComposerStaticInit134a7856837c93cd86626734bbdad83d::getInitializer($loader));
+        call_user_func(master\libraries\vendor\composer\ComposerStaticInit134a7856837c93cd86626734bbdad83d::getInitializer($loader));
 
         $loader->register(true);
 

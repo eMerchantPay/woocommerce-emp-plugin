@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Vouchers;
 
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
 
 /**
  * Class CashU
@@ -40,7 +40,7 @@ use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
  *
  * @package Genesis\Api\Request\Financial\Vouchers
  */
-class CashU extends \Genesis\Api\Request\Base\Financial
+class CashU extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -52,7 +52,7 @@ class CashU extends \Genesis\Api\Request\Base\Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::CASHU;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::CASHU;
     }
 
     /**
@@ -75,7 +75,7 @@ class CashU extends \Genesis\Api\Request\Base\Financial
             ]
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**

@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\Cards;
  *
  * @package Genesis\Api\Request\Financial\Cards
  */
-class Cencosud extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
+class Cencosud extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\SouthAmericanPayment
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class Cencosud extends \Genesis\Api\Request\Base\Financial\SouthAmericanPayment
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::CENCOSUD;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::CENCOSUD;
     }
 
     public function getAllowedBillingCountries()

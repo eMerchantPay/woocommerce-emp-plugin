@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Builders;
 
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class Json
@@ -35,7 +35,7 @@ use Genesis\Exceptions\InvalidArgument;
  *
  * @package Genesis\Builders\Wrapper
  */
-final class Json implements \Genesis\Interfaces\Builder
+final class Json implements master\libraries\genesis\src\Genesis\Interfaces\Builder
 {
     /**
      * JSON storage
@@ -59,9 +59,9 @@ final class Json implements \Genesis\Interfaces\Builder
      *
      * @param array $structure
      *
-     * @throws \Genesis\Exceptions\InvalidArgument
-     *
      * @return void
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     *
      */
     public function populateNodes($structure)
     {

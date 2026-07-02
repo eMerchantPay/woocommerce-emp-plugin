@@ -20,21 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\Klarna;
 
-use Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
-use Genesis\Api\Request\Financial\Alternatives\Transaction\Items;
-use Genesis\Api\Traits\Request\Financial\Alternatives\Invoice\InvoiceItemsTrait;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Builder;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Api\Traits\Request\Financial\Alternatives\Invoice\InvoiceValidation;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Exceptions\InvalidClassMethod;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest;
+use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class UpdateItems
@@ -42,67 +38,51 @@ use Genesis\Exceptions\InvalidClassMethod;
  *
  * @method mixed getAmount()
  */
-class UpdateItems extends BaseRequest
+class UpdateItems extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Klarna\BaseRequest
 {
     use PaymentAttributes;
-    use InvoiceValidation;
-    use InvoiceItemsTrait;
 
     /**
-     * UpdateItems constructor.
+     * Items list
      *
-     * @param string $builderInterface
+     * @var master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items
      */
-    public function __construct($builderInterface = Builder::XML)
-    {
-        parent::__construct($builderInterface);
+    protected $items;
 
-        $this->items = new Items();
+    /**
+     * Set items
+     *
+     * @param master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items $items
+     *
+     * @return $this
+     */
+    public function setItems(master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items $items)
+    {
+        $this->items = $items;
+
+        return $this;
     }
 
-    /**
-     * Init configuration
-     *
-     * @return void
-     */
     protected function initConfiguration()
     {
         parent::initBaseConfiguration('klarna/update_order_items');
     }
 
-    /**
-     * Return the structure of the request
-     *
-     * @throws InvalidArgument
-     * @throws ErrorParameter
-     */
     protected function getRequestStructure()
     {
-        $this->items->setCurrency($this->currency);
-
         return array_merge(
             [
-                'amount'   => \Genesis\Utils\Currency::amountToExponent($this->amount, $this->currency)
+                'amount'   => master\libraries\genesis\src\Genesis\Utils\Currency::amountToExponent($this->amount, $this->currency)
             ],
-            $this->items instanceof Items ? $this->items->toArray() : []
+            $this->items instanceof master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Klarna\Items ? $this->items->toArray() : []
         );
     }
 
-    /**
-     * Return the parent node
-     *
-     * @return string
-     */
     protected function getParentNode()
     {
         return 'update_order_items_request';
     }
 
-    /**
-     * Set the required fields for the request
-     *
-     * @return array
-     */
     protected function setRequestRequiredFields()
     {
         return [
@@ -110,19 +90,13 @@ class UpdateItems extends BaseRequest
         ];
     }
 
-    /**
-     * Check if the items are valid
-     *
-     * @return void
-     * @throws ErrorParameter
-     * @throws InvalidArgument
-     * @throws InvalidClassMethod
-     */
     protected function checkRequirements()
     {
-        $this->items->setCurrency($this->currency);
         parent::checkRequirements();
 
-        $this->validateItems();
+        // verify there is at least one item added
+        if (empty($this->items) || $this->items->count() === 0) {
+            throw new ErrorParameter('Empty (null) required parameter: items');
+        }
     }
 }

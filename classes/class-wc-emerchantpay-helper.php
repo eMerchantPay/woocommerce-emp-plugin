@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     classes\class-wc-emerchantpay-helper
  */
@@ -236,7 +236,7 @@ class WC_Emerchantpay_Helper {
 	 */
 	public static function get_plugin_version() {
 		$path        = dirname( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'index.php';
-		$plugin_data = get_plugin_data( $path, false, false );
+		$plugin_data = get_plugin_data( $path );
 
 		return $plugin_data['Version'] ?? false;
 	}
@@ -320,16 +320,5 @@ class WC_Emerchantpay_Helper {
 		$concatenation_string = $url_query_arguments ? '&' : '?';
 
 		return "{$url}{$concatenation_string}{$query_arguments}";
-	}
-
-	/**
-	 * Removes whitespaces, break and tabs characters from string
-	 *
-	 * @param $value
-	 *
-	 * @return string
-	 */
-	public static function deep_trim( $value ) {
-		return str_replace( array( "\n", "\t", "\r\n", "\r", ' ' ), '', (string) $value );
 	}
 }

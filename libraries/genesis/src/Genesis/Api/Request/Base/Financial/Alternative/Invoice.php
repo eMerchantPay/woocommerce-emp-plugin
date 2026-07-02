@@ -20,22 +20,20 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\Financial\Alternative;
 
-use Genesis\Api\Request\Base\Financial;
-use Genesis\Api\Request\Financial\Alternatives\Transaction\Item;
-use Genesis\Api\Request\Financial\Alternatives\Transaction\Items;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\Alternatives\Invoice\InvoiceItemsTrait;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Currency;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
+use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Item;
+use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Items;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Currency;
 
 /**
  * Class Invoice
@@ -52,7 +50,6 @@ abstract class Invoice extends Financial
     use AddressInfoAttributes;
     use AsyncAttributes;
     use PaymentAttributes;
-    use InvoiceItemsTrait;
 
     /**
      * Payment provider type: klarna / secure_invoice
@@ -62,11 +59,44 @@ abstract class Invoice extends Financial
     protected $payment_type;
 
     /**
+     * List with items
+     *
+     * @var master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Items
+     */
+    protected $items;
+
+    /**
+     * Add item
+     *
+     * @param master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Item $item
+     *
+     * @return $this
+     */
+    public function addItem(Item $item)
+    {
+        $this->items->addItem($item);
+
+        return $this;
+    }
+
+    /**
+     * Clear items
+     *
+     * @return $this
+     */
+    public function clearItems()
+    {
+        $this->items = [];
+
+        return $this;
+    }
+
+    /**
      * Return additional request attributes
      *
      * @return array
      *
-     * @throws InvalidArgument|ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function getPaymentTransactionStructure()
     {

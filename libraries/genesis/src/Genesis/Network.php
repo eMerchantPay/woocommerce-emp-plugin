@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -48,15 +48,15 @@ class Network
      */
     public function __construct($interface = null)
     {
-        $interface = $interface ?: \Genesis\Config::getInterface('network');
+        $interface = $interface ?: master\libraries\genesis\src\Genesis\Config::getInterface('network');
 
         switch ($interface) {
             default:
             case 'curl':
-                $this->context = new Network\Curl();
+                $this->context = new master\libraries\genesis\src\Genesis\Network\Curl();
                 break;
             case 'stream':
-                $this->context = new Network\Stream();
+                $this->context = new master\libraries\genesis\src\Genesis\Network\Stream();
                 break;
         }
     }
@@ -94,10 +94,10 @@ class Network
     /**
      * Set Header/Body of the HTTP request
      *
-     * @param \Genesis\Api\Request $apiContext
-     * @throws Exceptions\ErrorParameter
-     * @throws Exceptions\InvalidArgument
-     * @throws Exceptions\InvalidClassMethod
+     * @param master\libraries\genesis\src\Genesis\Api\Request $apiContext
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     public function setApiCtxData($apiContext)
     {
@@ -110,8 +110,8 @@ class Network
                     'port'          => $apiContext->getApiConfig('port'),
                     'protocol'      => $apiContext->getApiConfig('protocol'),
                     'format'        => $apiContext->getApiConfig('format'),
-                    'timeout'       => \Genesis\Config::getNetworkTimeout(),
-                    'user_agent'    => sprintf('Genesis PHP Client v%s', \Genesis\Config::getVersion()),
+                    'timeout'       => master\libraries\genesis\src\Genesis\Config::getNetworkTimeout(),
+                    'user_agent'    => sprintf('Genesis PHP Client v%s', master\libraries\genesis\src\Genesis\Config::getVersion()),
                     'authorization' => $apiContext->getApiConfig('authorization')
                 ],
                 $this->setAuthCredentials($apiContext)
@@ -140,13 +140,13 @@ class Network
     /**
      * Determine the appropriate credentials based on the authorization type
      *
-     * @param \Genesis\Api\Request $apiContext
+     * @param master\libraries\genesis\src\Genesis\Api\Request $apiContext
      * @return array
      */
     protected function setAuthCredentials($apiContext)
     {
         switch ($apiContext->getApiConfig('authorization')) {
-            case \Genesis\Api\Request::AUTH_TYPE_TOKEN:
+            case master\libraries\genesis\src\Genesis\Api\Request::AUTH_TYPE_TOKEN:
                 return [
                     'token' => $apiContext->getApiConfig('bearer_token')
                 ];
@@ -155,8 +155,8 @@ class Network
                 return [
                     'user_login' => sprintf(
                         '%s:%s',
-                        \Genesis\Config::getUsername(),
-                        \Genesis\Config::getPassword()
+                        master\libraries\genesis\src\Genesis\Config::getUsername(),
+                        master\libraries\genesis\src\Genesis\Config::getPassword()
                     )
                 ];
         }

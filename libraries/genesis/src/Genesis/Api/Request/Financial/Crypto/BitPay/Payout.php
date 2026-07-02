@@ -20,17 +20,16 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Crypto\BitPay;
 
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\NotificationAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
 
 /**
  * BitPay Payout is a crypto currency payout method where merchants are requesting
@@ -38,11 +37,10 @@ use Genesis\Exceptions\ErrorParameter;
  *
  * @package Genesis\Api\Request\Financial\Crypto\BitPay
  */
-class Payout extends \Genesis\Api\Request\Base\Financial
+class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
-    use NotificationAttributes;
     use PaymentAttributes;
 
     const WALLET_PROVIDER_BITGO    = 'bitgo';
@@ -53,7 +51,6 @@ class Payout extends \Genesis\Api\Request\Base\Financial
     const WALLET_PROVIDER_GEMINI   = 'gemini';
     const WALLET_PROVIDER_ITBIT    = 'itbit';
     const WALLET_PROVIDER_KRAKEN   = 'kraken';
-    const WALLET_PROVIDER_OTHER    = 'other';
 
     const CRYPTO_ADDRESS_VALIDATION_REGEX = '/\A[132nm][a-zA-Z1-9]{26,34}\z/';
 
@@ -77,7 +74,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
      * @param $address
      *
      * @return $this
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function setCryptoAddress($address)
     {
@@ -165,7 +162,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::BITPAY_PAYOUT;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::BITPAY_PAYOUT;
     }
 
     /**
@@ -177,7 +174,6 @@ class Payout extends \Genesis\Api\Request\Base\Financial
     {
         $requiredFields = [
             'transaction_id',
-            'notification_url',
             'return_success_url',
             'return_failure_url',
             'amount',
@@ -186,7 +182,7 @@ class Payout extends \Genesis\Api\Request\Base\Financial
             'crypto_wallet_provider'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'crypto_wallet_provider' => [
@@ -197,12 +193,11 @@ class Payout extends \Genesis\Api\Request\Base\Financial
                 self::WALLET_PROVIDER_GDAX,
                 self::WALLET_PROVIDER_GEMINI,
                 self::WALLET_PROVIDER_ITBIT,
-                self::WALLET_PROVIDER_KRAKEN,
-                self::WALLET_PROVIDER_OTHER
+                self::WALLET_PROVIDER_KRAKEN
             ]
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**
@@ -214,7 +209,6 @@ class Payout extends \Genesis\Api\Request\Base\Financial
         return [
             'usage'                  => $this->usage,
             'remote_ip'              => $this->remote_ip,
-            'notification_url'       => $this->notification_url,
             'return_success_url'     => $this->return_success_url,
             'return_failure_url'     => $this->return_failure_url,
             'amount'                 => $this->transformAmount($this->amount, $this->currency),

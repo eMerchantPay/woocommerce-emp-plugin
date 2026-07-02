@@ -20,15 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial;
 
-use Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
-use Genesis\Api\Traits\Request\Financial\Installments\InstallmentAttributes;
-use Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Business\BusinessAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
 
 /**
  * Class Capture
@@ -37,11 +36,10 @@ use Genesis\Api\Traits\Request\Financial\TravelData\TravelDataAttributes;
  *
  * @package Genesis\Api\Request\Financial
  */
-class Capture extends \Genesis\Api\Request\Base\Financial\Reference
+class Capture extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
 {
     use BusinessAttributes;
     use TravelDataAttributes;
-    use InstallmentAttributes;
 
     /**
      * Returns the Request transaction type
@@ -49,7 +47,7 @@ class Capture extends \Genesis\Api\Request\Base\Financial\Reference
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::CAPTURE;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::CAPTURE;
     }
 
     /**
@@ -62,8 +60,7 @@ class Capture extends \Genesis\Api\Request\Base\Financial\Reference
             [
                 'travel'              => $this->getTravelData(),
                 'business_attributes' => $this->getBusinessAttributesStructure()
-            ],
-            $this->getInstallmentAttributesStructure()
+            ]
         );
     }
 }

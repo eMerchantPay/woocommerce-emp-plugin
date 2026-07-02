@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,23 +13,24 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     classes\class-wc-emerchantpay-transaction
  */
 
-use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
-use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Config;
-use Genesis\Genesis;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types as RecurringTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\ChallengeWindowSizes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Control\DeviceTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Config;
+use master\libraries\genesis\src\Genesis\Genesis;
+use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 );
 }
 
-if ( ! class_exists( 'WC_Emerchantpay_Method_Base' ) ) {
+if ( ! class_exists('woocommerce-emp-plugin-master\classes\WC_Emerchantpay_Method_Base') ) {
 	require_once dirname( __DIR__ ) . '/classes/wc_emerchantpay_method_base.php';
 }
 
@@ -60,7 +61,6 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	const SETTING_KEY_TRANSACTION_TYPE        = 'transaction_type';
 	const SETTING_KEY_SHOW_CC_HOLDER          = 'show_cc_holder';
 	const SETTING_KEY_INIT_RECURRING_TXN_TYPE = 'init_recurring_txn_type';
-	const SETTING_KEY_CSE_PUBLIC_KEY          = 'cse_public_key';
 
 	const THREEDS_V2_JAVA_ENABLED                 = 'java_enabled';
 	const THREEDS_V2_COLOR_DEPTH                  = 'color_depth';
@@ -69,7 +69,6 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	const THREEDS_V2_SCREEN_WIDTH                 = 'screen_width';
 	const THREEDS_V2_USER_AGENT                   = 'user_agent';
 	const THREEDS_V2_BROWSER_TIMEZONE_ZONE_OFFSET = 'browser_timezone_zone_offset';
-	const ENCRYPT_LIBRARY_INTEGRITY_HASH          = 'sha512-fezEmqlQWwvKq3A2s897RSda3JsDen/xmPTsBmnx6TWk++rnofg2omiNLHhCbQvQ8DtEvfAvXQTsvE95DlELAw==';
 
 	/**
 	 * Constant contains browser parameters field names
@@ -279,14 +278,6 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 				'default'     => static::SETTING_VALUE_YES,
 				'desc_tip'    => true,
 			),
-			self::SETTING_KEY_CSE_PUBLIC_KEY    => array(
-				'type'        => 'textarea',
-				'title'       => static::get_translated_text( 'Client-Side Encryption Public Key' ),
-				'label'       => static::get_translated_text( 'Turn CSE by filling up your public key.' ),
-				'description' => static::get_translated_text( 'Client Side Encryption public key is located in your Console Admin. For more info ask tech-support@emerchantpay.com.' ),
-				'default'     => '',
-				'desc_tip'    => true,
-			),
 		);
 
 		$this->form_fields += $this->build_3dsv2_attributes_form_fields();
@@ -368,17 +359,9 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 		$card_info            = $this->populate_cc_data( $order );
 		$data['browser_data'] = $this->populate_browser_parameters();
 
-		list( $month, $year )      = array_pad(
-			explode( '/', (string) ( $card_info['expiration'] ?? '' ) ),
-			2,
-			''
-		);
+		list( $month, $year )      = explode( '/', $card_info['expiration'] );
 		$card_info['expire_month'] = trim( $month );
-		$card_info['expire_year']  = trim( $year );
-
-		if ( ! $card_info['encrypted'] ) {
-			$card_info['expire_year'] = substr( gmdate( 'Y' ), 0, 2 ) . substr( $card_info['expire_year'], -2 );
-		}
+		$card_info['expire_year']  = substr( gmdate( 'Y' ), 0, 2 ) . substr( trim( $year ), -2 );
 
 		$data['card'] = $card_info;
 
@@ -478,8 +461,6 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 			// Add the error on the Admin Order view
 			$order->add_order_note( $concat_msg );
 
-			WC()->session->reload_checkout = true;
-
 			throw new Exception( esc_html( $concat_msg ) );
 		} // End of try section.
 	}
@@ -490,11 +471,11 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 * @param array $data Transaction data.
 	 * @param array $is_recurring Indicates recurring payment creation
 	 *
-	 * @return Genesis
+	 * @return master\libraries\genesis\src\Genesis\Genesis
 	 *
-	 * @throws \Genesis\Exceptions\DeprecatedMethod Deprecated method exception.
-	 * @throws \Genesis\Exceptions\InvalidArgument  Invalid argument exception.
-	 * @throws \Genesis\Exceptions\InvalidMethod    Invalid method exception.
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod Deprecated method exception.
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument  Invalid argument exception.
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod    Invalid method exception.
 	 */
 	protected function prepare_initial_genesis_request( $data, $is_recurring = false ) {
 		$genesis = WC_emerchantpay_Genesis_Helper::get_gateway_request_by_txn_type( $data['transaction_type'] );
@@ -545,9 +526,6 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 					->setReturnSuccessUrl( $data['return_success_url'] )
 					->setReturnFailureUrl( $data['return_failure_url'] );
 		}
-
-		// Client Side Encryption
-		$genesis->request()->setClientSideEncryption( $data['card']['encrypted'] );
 
 		return $genesis;
 	}
@@ -638,8 +616,6 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 			// Add the error on the Admin Order view
 			$order->add_order_note( $concat_msg );
 
-			WC()->session->reload_checkout = true;
-
 			throw new Exception( esc_html( $concat_msg ) );
 		} // End of try block.
 	}
@@ -649,7 +625,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	 *
 	 * @return void
 	 *
-	 * @throws \Genesis\Exceptions\InvalidArgument
+	 * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
 	 */
 	public function set_credentials() {
 		parent::set_credentials();
@@ -798,7 +774,6 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 			'number'     => $number,
 			'expiration' => $expiration,
 			'cvv'        => $cvc,
-			'encrypted'  => strlen( $number ?? '' ) > 19,
 		);
 	}
 
@@ -819,7 +794,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	/**
 	 * Adds 3DSv2 parameters to the Request
 	 *
-	 * @param Genesis  $genesis      Genesis object.
+	 * @param master\libraries\genesis\src\Genesis\Genesis  $genesis      Genesis object.
 	 * @param WC_Order $order        Order identifier.
 	 * @param array    $data         Request data.
 	 * @param bool     $is_recurring Defines that request should be recurring or not. Default false.
@@ -839,7 +814,7 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	/**
 	 * Adds browser data to the Genesis Request
 	 *
-	 * @param Genesis $genesis Genesis object.
+	 * @param master\libraries\genesis\src\Genesis\Genesis $genesis Genesis object.
 	 * @param array   $data Request data.
 	 *
 	 * @return void

@@ -20,63 +20,77 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
-namespace Genesis\Api\Constants\Transaction\Parameters;
-
-use Genesis\Utils\Common as CommonUtils;
+namespace Genesis\Api\Request\Financial\Alternatives\Klarna;
 
 /**
- * Digital Asset Types
+ * Class ProductIdentifiers
  *
- * @package Genesis\Api\Constants\Transaction\Parameters
+ * Alternative payment method
+ *
+ * @package Genesis\Api\Request\Financial\Alternatives\Klarn
  */
-class DigitalAssetTypes
+class ProductIdentifiers
 {
-/**
-     * Default crypto flag
-     *
+    /**
+     * Brand
      * @var string
      */
-    const CRYPTO                  = 'crypto';
+    protected $brand;
 
     /**
-     * Central Bank Digital Currency or tokenized deposits
-     *
+     * Category path
      * @var string
      */
-    const CBDC                    = 'cbdc';
+    protected $category_path;
 
     /**
-     * Stablecoin (Fiat-backed)
-     *
+     * Global trade item number
      * @var string
      */
-    const STABLECOIN              = 'stablecoin';
+    protected $global_trade_item_number;
 
     /**
-     * Blockchain native token/coin
-     *
+     * Manufacturer part number
      * @var string
      */
-    const BLOCKCHAIN_NATIVE_TOKEN = 'blockchain_native_token';
+    protected $manufacturer_part_number;
 
-    /**
-     * Non-fungible token
-     *
-     * @var string
-     */
-    const NFT                     = 'nft';
 
-    /**
-     * Get All Digital Asset Types
-     *
-     * @return array
-     */
-    public static function getAll()
+    public function setBrand($value)
     {
-        return CommonUtils::getClassConstants(self::class);
+        $this->brand = $value;
+        return $this;
+    }
+
+    public function setCategoryPath($value)
+    {
+        $this->category_path = $value;
+        return $this;
+    }
+
+    public function setGlobalTradeItemNumber($value)
+    {
+        $this->global_trade_item_number = $value;
+        return $this;
+    }
+
+    public function setManufacturerPartNumber($value)
+    {
+        $this->manufacturer_part_number = $value;
+        return $this;
+    }
+
+    public function toArray()
+    {
+        return [
+            'brand'                    => $this->brand,
+            'category_path'            => $this->category_path,
+            'global_trade_item_number' => $this->global_trade_item_number,
+            'manufacturer_part_number' => $this->manufacturer_part_number
+        ];
     }
 }

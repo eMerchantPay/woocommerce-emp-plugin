@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Constants;
 
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Class Banks
@@ -998,12 +998,6 @@ class Banks
      * Latipay
      */
     const PID = 'PID';
-
-    /**
-     * Latipay
-     *
-     */
-    const POLI = 'POLI';
 
     /**
      * Retrieve list of all Bank Codes

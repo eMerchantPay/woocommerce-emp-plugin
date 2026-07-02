@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Parsers;
 
 use ArrayObject;
-use Genesis\Parser;
+use master\libraries\genesis\src\Genesis\Parser;
 use stdClass;
 use XMLReader;
 
@@ -38,7 +38,7 @@ use XMLReader;
  *
  * @package Genesis\Parsers
  */
-final class Xml implements \Genesis\Interfaces\Parser
+final class Xml implements master\libraries\genesis\src\Genesis\Interfaces\Parser
 {
     /**
      * Converted XML
@@ -140,7 +140,7 @@ final class Xml implements \Genesis\Interfaces\Parser
                     break;
                 case \XMLReader::TEXT:
                 case \XMLReader::CDATA:
-                    $tree = \Genesis\Utils\Common::filterBoolean(
+                    $tree = master\libraries\genesis\src\Genesis\Utils\Common::filterBoolean(
                         trim($reader->expand()->textContent)
                     );
                     break;

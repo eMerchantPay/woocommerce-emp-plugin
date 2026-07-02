@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Alternatives\Trustly;
 
-use Genesis\Api\Constants\NonFinancial\Alternatives\Trustly\ClearingHouses;
-use Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Alternatives\Trustly\ClearingHouses;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class RegisterAccount
@@ -40,7 +40,7 @@ use Genesis\Utils\Common as CommonUtils;
  * @method $this  setAccountNumber($value)
  * @method $this  setBankNumber($value)
  */
-class RegisterAccount extends BaseRequest
+class RegisterAccount extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly\BaseRequest
 {
     /**
      * The clearing house of the customer's bank account
@@ -101,7 +101,7 @@ class RegisterAccount extends BaseRequest
         $this->requiredFields = CommonUtils::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
-            'clearing_house' => ClearingHouses::getAll()
+            'clearing_house' => master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Alternatives\Trustly\ClearingHouses::getAll()
         ];
 
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);

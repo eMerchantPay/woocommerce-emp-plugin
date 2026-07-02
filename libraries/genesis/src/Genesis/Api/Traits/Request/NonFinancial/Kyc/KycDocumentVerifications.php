@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\NonFinancial\Kyc;
 
 use DateTime;
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Trait KycDocumentVerifications
@@ -85,11 +85,19 @@ trait KycDocumentVerifications
     protected $document_allow_online;
 
     /**
+     * Supported types of document that can be verified
+     *
+     * @var string
+     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes
+     */
+    protected $document_supported_types;
+
+    /**
      * Set the correct value for Verifications Document Date Of Birth
      *
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setDocumentDateOfBirth($value)
     {
@@ -141,6 +149,34 @@ trait KycDocumentVerifications
     public function setDocumentAllowOffline($value)
     {
         $this->document_allow_offline = Common::toBoolean($value);
+
+        return $this;
+    }
+
+    /**
+     * Check and set correct Verification Document Type
+     *
+     * @param array $documentSupportedTypes Array with Document Types
+     * @return $this
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @see master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes
+     */
+    public function setDocumentSupportedTypes($documentSupportedTypes)
+    {
+        $getAllowed = master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\VerificationDocumentTypes::getAll();
+
+        if (!is_array($documentSupportedTypes) || array_diff($documentSupportedTypes, $getAllowed)) {
+            throw new InvalidArgument(
+                sprintf(
+                    'Expecting document type to be \'%s\' and \'%s\' provided. Allowed values - %s',
+                    'array',
+                    gettype($documentSupportedTypes),
+                    implode(', ', $getAllowed)
+                )
+            );
+        }
+
+        $this->document_supported_types = $documentSupportedTypes;
 
         return $this;
     }

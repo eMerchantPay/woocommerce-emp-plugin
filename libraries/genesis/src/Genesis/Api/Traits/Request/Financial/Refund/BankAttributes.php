@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Refund;
 
-use Genesis\Api\Constants\Transaction\Parameters\Refund\BankAccountTypeParameters;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Refund\BankAccountTypeParameters;
 
 /**
  * Trait BankAttributes
@@ -79,7 +79,7 @@ trait BankAttributes
     {
         return $this->allowedOptionsSetter(
             'bank_account_type',
-            BankAccountTypeParameters::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Refund\BankAccountTypeParameters::getAll(),
             $value,
             'Provided value for bank_account_type is not allowed.'
         );

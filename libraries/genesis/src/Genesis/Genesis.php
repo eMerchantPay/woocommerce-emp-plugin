@@ -20,19 +20,20 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis;
 
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Api\Response;
-use Genesis\Exceptions\DeprecatedMethod;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Exceptions\InvalidMethod;
-use Genesis\Utils\Common;
-use Genesis\Utils\Requirements;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Api\Response;
+use master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
+use master\libraries\genesis\src\Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Utils\Requirements;
+use woocommerceuse woocommerce
 
 /**
  * Base class of Genesis
@@ -53,7 +54,7 @@ class Genesis
     /**
      * Store the Network Response Instance
      *
-     * @var Response
+     * @var master\libraries\genesis\src\Genesis\Api\Response
      */
     protected $responseCtx;
 
@@ -69,8 +70,8 @@ class Genesis
      *
      * @param $request - API Request name, please consult the README for a list of all requests
      *
-     * @throws InvalidMethod
-     * @throws DeprecatedMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod
      */
     public function __construct($request)
     {
@@ -119,8 +120,8 @@ class Genesis
      * Validation of the request library request
      *
      * @param $request
-     * @throws DeprecatedMethod
-     * @throws InvalidMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
      */
     protected function validate($request)
     {
@@ -154,9 +155,9 @@ class Genesis
      * @param string $trxType
      * @param array $params
      * @return Genesis
-     * @throws DeprecatedMethod
-     * @throws InvalidArgument
-     * @throws InvalidMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\DeprecatedMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
      */
     public static function financialFactory($trxType, $params = [])
     {
@@ -195,7 +196,7 @@ class Genesis
     /**
      * Get Response instance
      *
-     * @return Response
+     * @return master\libraries\genesis\src\Genesis\Api\Response
      */
     public function response()
     {
@@ -205,10 +206,10 @@ class Genesis
     /**
      * Send the request
      *
-     * @throws Exceptions\ErrorParameter
-     * @throws Exceptions\InvalidClassMethod
-     * @throws Exceptions\InvalidResponse
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidResponse
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function execute()
     {

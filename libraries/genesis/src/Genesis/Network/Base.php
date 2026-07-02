@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Network;
 
-use Genesis\Builder;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Builder;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class Base
@@ -90,7 +90,7 @@ abstract class Base
      * @param $requestDataFormat
      *
      * @return string
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function getRequestContentType($requestDataFormat)
     {

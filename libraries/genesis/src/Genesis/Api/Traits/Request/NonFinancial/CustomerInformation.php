@@ -20,16 +20,16 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use Genesis\Api\Constants\NonFinancial\Kyc\DocumentTypes;
-use Genesis\Api\Constants\NonFinancial\Kyc\Genders;
-use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\DocumentTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\Genders;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait CustomerInformation
@@ -126,7 +126,7 @@ trait CustomerInformation
      * @param $type
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setDocumentType($type)
     {
@@ -142,7 +142,7 @@ trait CustomerInformation
      * @param $gender
      *
      * @return CustomerInformation
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setGender($gender)
     {

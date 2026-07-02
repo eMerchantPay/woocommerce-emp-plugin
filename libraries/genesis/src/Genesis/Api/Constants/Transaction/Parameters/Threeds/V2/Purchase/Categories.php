@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Purchase;
 
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Identifies the type of transaction being authenticated. This field is required in some markets.

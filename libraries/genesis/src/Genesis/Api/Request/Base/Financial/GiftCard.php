@@ -20,18 +20,18 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\Financial;
 
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
-use Genesis\Api\Validators\Request\RegexValidator;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
+use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Class GiftCard
@@ -40,12 +40,12 @@ use Genesis\Utils\Common;
  * @method $this setCardNumber($value)
  * @method $this setCvv($value)
  */
-abstract class GiftCard extends \Genesis\Api\Request\Base\Financial
+abstract class GiftCard extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
-    use DescriptorAttributes;
-    use PaymentAttributes;
-    use ReferenceAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\ReferenceAttributes;
 
     /**
      * Gift card number
@@ -62,7 +62,7 @@ abstract class GiftCard extends \Genesis\Api\Request\Base\Financial
     /**
      * Instance of GiftCard Number Format Validator
      *
-     * @return RegexValidator
+     * @return master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator
      */
     protected function getGiftCardNumberValidator()
     {

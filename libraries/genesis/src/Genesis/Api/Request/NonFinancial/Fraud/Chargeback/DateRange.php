@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Fraud\Chargeback;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ExternallyProcessed;
-use Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ProcessingTypes;
-use Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
-use Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ExternallyProcessed;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ProcessingTypes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
 
 /**
  * Chargeback request by Date Range
@@ -41,7 +41,7 @@ use Genesis\Exceptions\ErrorParameter;
  * @method getExternallyProcessed() Filters chargebacks by being externally processed or being native to Genesis
  * @method getProcessingType() Filters chargebacks by being card present or card not present
  */
-class DateRange extends \Genesis\Api\Request
+class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
 {
     use PagingAttributes;
 
@@ -85,7 +85,7 @@ class DateRange extends \Genesis\Api\Request
      *
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setStartDate($value)
     {
@@ -108,7 +108,7 @@ class DateRange extends \Genesis\Api\Request
      *
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setEndDate($value)
     {
@@ -129,7 +129,7 @@ class DateRange extends \Genesis\Api\Request
     /**
      * @param $value
      * @return DateRange
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setImportDate($value)
     {
@@ -152,7 +152,7 @@ class DateRange extends \Genesis\Api\Request
      *
      * @param $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setExternallyProcessed($value)
     {
@@ -164,7 +164,7 @@ class DateRange extends \Genesis\Api\Request
 
         return $this->allowedOptionsSetter(
             'externally_processed',
-            ExternallyProcessed::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ExternallyProcessed::getAll(),
             $value,
             'Invalid value for externally_processed attribute.'
         );
@@ -175,7 +175,7 @@ class DateRange extends \Genesis\Api\Request
      *
      * @param $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setProcessingType($value)
     {
@@ -187,7 +187,7 @@ class DateRange extends \Genesis\Api\Request
 
         return $this->allowedOptionsSetter(
             'processing_type',
-            ProcessingTypes::getAll(),
+            master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Fraud\Chargeback\ProcessingTypes::getAll(),
             $value,
             'Invalid value for processing_type attribute.'
         );
@@ -244,11 +244,11 @@ class DateRange extends \Genesis\Api\Request
             'import_date'
         ];
 
-        $this->requiredFieldsOR = \Genesis\Utils\Common::createArrayObject($requiredFieldsOR);
+        $this->requiredFieldsOR = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsOR);
     }
 
     /**
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     protected function checkRequirements()
     {
@@ -277,13 +277,13 @@ class DateRange extends \Genesis\Api\Request
             ]
         ];
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 
     /**
      * Validates if Date Range is Valid one
      *
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     private function validateDateRange()
     {
@@ -297,7 +297,7 @@ class DateRange extends \Genesis\Api\Request
      * If two are filled then error
      * Only one field should be in request
      *
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     private function validateConditionallyRequiredDates()
     {

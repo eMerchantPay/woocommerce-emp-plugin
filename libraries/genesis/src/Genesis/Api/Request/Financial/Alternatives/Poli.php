@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\Alternatives;
  *
  * @package Genesis\Api\Request\Financial\Wallets
  */
-class Poli extends \Genesis\Api\Request\Base\Financial\Alternative
+class Poli extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Alternative
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class Poli extends \Genesis\Api\Request\Base\Financial\Alternative
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::POLI;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::POLI;
     }
 
     /**
@@ -58,6 +58,6 @@ class Poli extends \Genesis\Api\Request\Base\Financial\Alternative
             'currency'        => ['AUD', 'NZD']
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 }

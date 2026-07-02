@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -33,7 +33,7 @@ namespace Genesis\Api\Request\Financial\OnlineBankingPayments\InstaDebit;
  *
  * @package Genesis\Api\Request\Financial\OnlineBankingPayments\InstaDebit
  */
-class Payout extends \Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit\Payout
+class Payout extends master\libraries\genesis\src\Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit\Payout
 {
     /**
      * Returns the Request transaction type
@@ -41,7 +41,7 @@ class Payout extends \Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::INSTA_DEBIT_PAYOUT;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::INSTA_DEBIT_PAYOUT;
     }
 
     /**
@@ -57,6 +57,6 @@ class Payout extends \Genesis\Api\Request\Financial\OnlineBankingPayments\Idebit
             'currency' => ['CAD', 'USD']
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 }

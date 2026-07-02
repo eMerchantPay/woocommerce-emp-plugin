@@ -20,15 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial;
 
-use Genesis\Api\Traits\Request\Financial\BeneficiaryAttributes;
-use Genesis\Api\Traits\Request\Financial\Installments\InstallmentAttributes;
-use Genesis\Api\Traits\Request\Financial\Refund\BankAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BeneficiaryAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Refund\BankAttributes;
 
 /**
  * Class Refund
@@ -37,11 +36,10 @@ use Genesis\Api\Traits\Request\Financial\Refund\BankAttributes;
  *
  * @package Genesis\Api\Request\Financial
  */
-class Refund extends \Genesis\Api\Request\Base\Financial\Reference
+class Refund extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Reference
 {
     use BankAttributes;
-    use BeneficiaryAttributes;
-    use InstallmentAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BeneficiaryAttributes;
 
     const CREDIT_REASON_INDICATOR_TRANSPORT_CANCELLATION   = 'A';
     const CREDIT_REASON_INDICATOR_TRAVEL_TRANSPORT         = 'B';
@@ -75,10 +73,43 @@ class Refund extends \Genesis\Api\Request\Base\Financial\Reference
     protected $ticket_change_indicator;
 
     /**
+     * Returns the Request transaction type
+     * @return string
+     */
+    protected function getTransactionType()
+    {
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::REFUND;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getPaymentTransactionStructure()
+    {
+        $beneficiaryAttributes = $this->getBeneficiaryAttributesStructure();
+        $bankAttributes        = $this->getBankAttributesStructure();
+
+        return array_merge(
+            parent::getPaymentTransactionStructure(),
+            [
+                'travel' => [
+                    'ticket' => [
+                        'credit_reason_indicator_1' => $this->credit_reason_indicator_1,
+                        'credit_reason_indicator_2' => $this->credit_reason_indicator_2,
+                        'ticket_change_indicator'   => $this->ticket_change_indicator,
+                    ]
+                ]
+            ],
+            $beneficiaryAttributes,
+            $bankAttributes
+        );
+    }
+
+    /**
      * @param $value
      *
      * @return Refund
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setCreditReasonIndicator1($value)
     {
@@ -89,7 +120,7 @@ class Refund extends \Genesis\Api\Request\Base\Financial\Reference
      * @param $value
      *
      * @return Refund
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setCreditReasonIndicator2($value)
     {
@@ -97,39 +128,11 @@ class Refund extends \Genesis\Api\Request\Base\Financial\Reference
     }
 
     /**
-     * @param $value
-     *
-     * @return Refund
-     * @throws \Genesis\Exceptions\InvalidArgument
-     */
-    public function setTicketChangeIndicator($value)
-    {
-        return $this->allowedOptionsSetter(
-            'ticket_change_indicator',
-            [
-                self::TICKET_CHANGE_INDICATOR_TO_EXISTING,
-                self::TICKET_CHANGE_INDICATOR_TO_NEW
-            ],
-            $value,
-            'Invalid ticket change indicator.'
-        );
-    }
-
-    /**
-     * Returns the Request transaction type
-     * @return string
-     */
-    protected function getTransactionType()
-    {
-        return \Genesis\Api\Constants\Transaction\Types::REFUND;
-    }
-
-    /**
      * @param $field
      * @param $value
      *
      * @return Refund
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function setCreditReasonIndicator($field, $value)
     {
@@ -147,26 +150,21 @@ class Refund extends \Genesis\Api\Request\Base\Financial\Reference
     }
 
     /**
-     * Return the payment transaction structure
+     * @param $value
      *
-     * @return array
+     * @return Refund
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
-    protected function getPaymentTransactionStructure()
+    public function setTicketChangeIndicator($value)
     {
-        return array_merge(
-            parent::getPaymentTransactionStructure(),
+        return $this->allowedOptionsSetter(
+            'ticket_change_indicator',
             [
-                'travel' => [
-                    'ticket' => [
-                        'credit_reason_indicator_1' => $this->credit_reason_indicator_1,
-                        'credit_reason_indicator_2' => $this->credit_reason_indicator_2,
-                        'ticket_change_indicator'   => $this->ticket_change_indicator,
-                    ]
-                ]
+                self::TICKET_CHANGE_INDICATOR_TO_EXISTING,
+                self::TICKET_CHANGE_INDICATOR_TO_NEW
             ],
-            $this->getBeneficiaryAttributesStructure(),
-            $this->getBankAttributesStructure(),
-            $this->getInstallmentAttributesStructure()
+            $value,
+            'Invalid ticket change indicator.'
         );
     }
 }

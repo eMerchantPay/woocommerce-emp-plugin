@@ -20,17 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Fraud\Reports;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
-use Genesis\Exceptions\EnvironmentNotSet;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
 
 /**
  * Fraud (SAFE/TC40) reports by Date Range
@@ -38,10 +34,8 @@ use Genesis\Utils\Common as CommonUtils;
  * @package    Genesis
  * @subpackage Request
  */
-class DateRange extends \Genesis\Api\Request
+class DateRange extends master\libraries\genesis\src\Genesis\Api\Request
 {
-    use PagingAttributes;
-
     /**
      * start of the requested date range
      *
@@ -57,30 +51,18 @@ class DateRange extends \Genesis\Api\Request
     protected $end_date;
 
     /**
-     * Date of import in the system. Spans from the beginning until the end of the day
+     * the page within the paginated result
      *
-     * @var \DateTime
-     */
-    protected $import_date;
-
-    /**
-     * Start of the requested date range for the date when the fraud was reported
+     * default: 1
      *
-     * @var \DateTime
+     * @var int
      */
-    protected $report_start_date;
-
-    /**
-     * End of the requested date range for the date when the fraud was reported
-     *
-     * @var \DateTime
-     */
-    protected $report_end_date;
+    protected $page;
 
     /**
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setStartDate($value)
     {
@@ -101,7 +83,7 @@ class DateRange extends \Genesis\Api\Request
     /**
      * @param string $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setEndDate($value)
     {
@@ -116,69 +98,6 @@ class DateRange extends \Genesis\Api\Request
             DateTimeFormat::getAll(),
             $value,
             'Invalid format for end_date'
-        );
-    }
-
-    /**
-     * @param string $value
-     * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
-     */
-    public function setImportDate($value)
-    {
-        if (empty($value)) {
-            $this->import_date = null;
-
-            return $this;
-        }
-
-        return $this->parseDate(
-            'import_date',
-            DateTimeFormat::getAll(),
-            $value,
-            'Invalid format for import_date'
-        );
-    }
-
-    /**
-     * @param string $value
-     * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
-     */
-    public function setReportStartDate($value)
-    {
-        if (empty($value)) {
-            $this->report_start_date = null;
-
-            return $this;
-        }
-
-        return $this->parseDate(
-            'report_start_date',
-            DateTimeFormat::getAll(),
-            $value,
-            'Invalid format for report_start_date'
-        );
-    }
-
-    /**
-     * @param string $value
-     * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
-     */
-    public function setReportEndDate($value)
-    {
-        if (empty($value)) {
-            $this->report_end_date = null;
-
-            return $this;
-        }
-
-        return $this->parseDate(
-            'report_end_date',
-            DateTimeFormat::getAll(),
-            $value,
-            'Invalid format for report_end_date'
         );
     }
 
@@ -201,37 +120,9 @@ class DateRange extends \Genesis\Api\Request
     }
 
     /**
-     * @return string
-     */
-    public function getImportDate()
-    {
-        return (empty($this->import_date)) ? null :
-            $this->import_date->format(DateTimeFormat::YYYY_MM_DD_ISO_8601);
-    }
-
-    /**
-     * @return string
-     */
-    public function getReportStartDate()
-    {
-        return (empty($this->report_start_date)) ? null :
-            $this->report_start_date->format(DateTimeFormat::YYYY_MM_DD_ISO_8601);
-    }
-
-    /**
-     * @return string
-     */
-    public function getReportEndDate()
-    {
-        return (empty($this->report_end_date)) ? null :
-            $this->report_end_date->format(DateTimeFormat::YYYY_MM_DD_ISO_8601);
-    }
-
-    /**
      * Set the per-request configuration
      *
      * @return void
-     * @throws EnvironmentNotSet
      */
     protected function initConfiguration()
     {
@@ -247,21 +138,11 @@ class DateRange extends \Genesis\Api\Request
      */
     protected function setRequiredFields()
     {
-        $requiredFieldsConditional = [
-            'start_date'        => ['end_date'],
-            'report_start_date' => ['report_end_date']
+        $requiredFields = [
+            'start_date'
         ];
-        $this->requiredFieldsConditional = CommonUtils::createArrayObject($requiredFieldsConditional);
-    }
 
-    /**
-     * @throws ErrorParameter
-     */
-    protected function checkRequirements()
-    {
-        parent::checkRequirements();
-
-        $this->validateConditionallyRequiredDates();
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
     }
 
     /**
@@ -273,34 +154,12 @@ class DateRange extends \Genesis\Api\Request
     {
         $treeStructure = [
             'fraud_report_request' => [
-                'start_date'        => $this->getStartDate(),
-                'end_date'          => $this->getEndDate(),
-                'import_date'       => $this->getImportDate(),
-                'report_start_date' => $this->getReportStartDate(),
-                'report_end_date'   => $this->getReportEndDate(),
-                'page'              => $this->page,
-                'per_page'          => $this->per_page
+                'start_date' => $this->getStartDate(),
+                'end_date'   => $this->getEndDate(),
+                'page'       => $this->page
             ]
         ];
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
-    }
-
-    /**
-     * Validate date parameters
-     * Only one date type should be used in the request
-     *
-     * @throws ErrorParameter
-     */
-    private function validateConditionallyRequiredDates()
-    {
-        $params = [$this->getStartDate(), $this->getImportDate(), $this->getReportStartDate()];
-
-        if (count(array_filter($params)) != 1) {
-            throw new ErrorParameter(
-                'Either start_date/end_date, import_date or report_start_date/report_end_date' .
-                    ' fields have to be set, do not mix'
-            );
-        }
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

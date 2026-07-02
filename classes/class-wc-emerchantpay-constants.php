@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,12 +13,12 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     classes\class-wc-emerchantpay-constants
  */
 
-use Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 0 ); // Exit if accessed directly.
@@ -47,11 +47,6 @@ class WC_Emerchantpay_Constants {
 	const RECURRING_METHODS_V2 = array(
 		Types::SALE,
 		Types::SALE_3D,
-	);
-
-	const RECURRING_MOBILE_METHODS = array(
-		WC_Emerchantpay_Method_Base::GOOGLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::APPLE_PAY_PAYMENT_TYPE_SALE,
-		WC_Emerchantpay_Method_Base::APPLE_PAY_TRANSACTION_PREFIX . WC_Emerchantpay_Method_Base::APPLE_PAY_PAYMENT_TYPE_SALE,
 	);
 
 	/**

@@ -20,14 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits;
 
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait RestrictedSetter
@@ -42,7 +41,7 @@ trait RestrictedSetter
      * @param $errorMessage
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function allowedOptionsSetter($field, $allowed, $value, $errorMessage)
     {
@@ -62,7 +61,7 @@ trait RestrictedSetter
      * @param int/null $max
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function setLimitedString($field, $value, $min = null, $max = null)
     {
@@ -87,7 +86,7 @@ trait RestrictedSetter
      * @param $errorMessage
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function parseDate($field, $formats, $value, $errorMessage)
     {
@@ -113,8 +112,8 @@ trait RestrictedSetter
     /**
      * @param string $field
      * @param $value
-     * @throws InvalidArgument
      * @return $this
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function parseAmount($field, $value)
     {
@@ -125,7 +124,7 @@ trait RestrictedSetter
 
         $value = trim($value);
 
-        if (!\Genesis\Utils\Common::isValidAmount($value)) {
+        if (!master\libraries\genesis\src\Genesis\Utils\Common::isValidAmount($value)) {
             throw new InvalidArgument(
                 sprintf(
                     'Unsupported value %s for parameter %s. ' .
@@ -136,27 +135,6 @@ trait RestrictedSetter
             );
         }
         $this->{$field} = $value;
-
-        return $this;
-    }
-
-    /**
-     * Set class variable with array of strings
-     *
-     * @param array $value    - value to be set
-     * @param string $field    - name of the array variable
-     * @param string $message - the message of the exception
-     *
-     * @return $this
-     * @throws InvalidArgument
-     */
-    protected function parseArrayOfStrings($field, $value, $message)
-    {
-        if (!CommonUtils::isValidArray($value)) {
-            throw new InvalidArgument("$message should be an array of strings");
-        }
-
-        $this->{$field} = array_map('strval', $value);
 
         return $this;
     }

@@ -20,15 +20,11 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Reconcile;
-
-use Genesis\Api\Request\Base\NonFinancial\Reconcile\BaseRequest;
-use Genesis\Exceptions\EnvironmentNotSet;
-use Genesis\Utils\Common as CommonUtils;
 
 /**
  * Reconcile request by arn, transaction_id or unique_id
@@ -36,7 +32,7 @@ use Genesis\Utils\Common as CommonUtils;
  * @package    Genesis
  * @subpackage Request
  */
-class Transaction extends BaseRequest
+class Transaction extends master\libraries\genesis\src\Genesis\Api\Request
 {
     /**
      * Acquirer's Reference Number
@@ -63,14 +59,12 @@ class Transaction extends BaseRequest
      * Set the per-request configuration
      *
      * @return void
-     *
-     * @throws EnvironmentNotSet
      */
     protected function initConfiguration()
     {
-        $this->path = 'reconcile';
+        $this->initXmlConfiguration();
 
-        parent::initConfiguration();
+        $this->initApiGatewayConfiguration('reconcile');
     }
 
     /**
@@ -84,7 +78,7 @@ class Transaction extends BaseRequest
             'id'  => ['arn', 'transaction_id', 'unique_id']
         ];
 
-        $this->requiredFieldsGroups = CommonUtils::createArrayObject($requiredFieldsGroups);
+        $this->requiredFieldsGroups = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsGroups);
     }
 
     /**
@@ -102,6 +96,6 @@ class Transaction extends BaseRequest
             ]
         ];
 
-        $this->treeStructure = CommonUtils::createArrayObject($treeStructure);
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

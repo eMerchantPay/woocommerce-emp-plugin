@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Mobile;
 
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
 * @method $this setPaymentSubtype($value) Sets payment type which is of authorize and recurring

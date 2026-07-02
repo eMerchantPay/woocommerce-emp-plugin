@@ -20,18 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Sdd;
 
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\BankAttributes;
-use Genesis\Api\Traits\Request\Financial\DescriptorAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BankAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
 
 /**
  * Class Sale
@@ -40,14 +39,13 @@ use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
  *
  * @package Genesis\Api\Request\Financial\Sdd
  */
-class Sale extends \Genesis\Api\Request\Base\Financial
+class Sale extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
     use BankAttributes;
     use PaymentAttributes;
     use PendingPaymentAttributes;
-    use DescriptorAttributes;
 
     /**
      * Name of the company
@@ -69,7 +67,7 @@ class Sale extends \Genesis\Api\Request\Base\Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::SDD_SALE;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::SDD_SALE;
     }
 
     /**
@@ -90,17 +88,17 @@ class Sale extends \Genesis\Api\Request\Base\Financial
             'billing_country'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldValues = [
             'billing_country' => [
                 'AT', 'BE', 'CY', 'EE', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LV',
                 'LT', 'LU', 'MT', 'MC', 'NL', 'PT', 'SK', 'SM', 'SI', 'ES'
             ],
-            'currency'        => \Genesis\Utils\Currency::getList()
+            'currency'        => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     /**
@@ -110,20 +108,19 @@ class Sale extends \Genesis\Api\Request\Base\Financial
     protected function getPaymentTransactionStructure()
     {
         return [
-            'amount'                    => $this->transformAmount($this->amount, $this->currency),
-            'currency'                  => $this->currency,
-            'iban'                      => $this->iban,
-            'bic'                       => $this->bic,
-            'customer_email'            => $this->customer_email,
-            'customer_phone'            => $this->customer_phone,
-            'company_name'              => $this->company_name,
-            'mandate_reference'         => $this->mandate_reference,
-            'billing_address'           => $this->getBillingAddressParamsStructure(),
-            'shipping_address'          => $this->getShippingAddressParamsStructure(),
-            'return_success_url'        => $this->return_success_url,
-            'return_failure_url'        => $this->return_failure_url,
-            'return_pending_url'        => $this->getReturnPendingUrl(),
-            'dynamic_descriptor_params' => $this->getDynamicDescriptorParamsStructure(),
+            'amount'             => $this->transformAmount($this->amount, $this->currency),
+            'currency'           => $this->currency,
+            'iban'               => $this->iban,
+            'bic'                => $this->bic,
+            'customer_email'     => $this->customer_email,
+            'customer_phone'     => $this->customer_phone,
+            'company_name'       => $this->company_name,
+            'mandate_reference'  => $this->mandate_reference,
+            'billing_address'    => $this->getBillingAddressParamsStructure(),
+            'shipping_address'   => $this->getShippingAddressParamsStructure(),
+            'return_success_url' => $this->return_success_url,
+            'return_failure_url' => $this->return_failure_url,
+            'return_pending_url' => $this->getReturnPendingUrl()
         ];
     }
 }

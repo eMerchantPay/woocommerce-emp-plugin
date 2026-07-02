@@ -20,20 +20,20 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Alternatives;
 
-use Genesis\Api\Constants\Payment\Methods as PaymentMethods;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\BankAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\Payment\Methods as PaymentMethods;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BankAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PendingPaymentAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Ppro
@@ -49,7 +49,7 @@ use Genesis\Utils\Common as CommonUtils;
  * @method Ppro setIban($value) Set a valid IBAN bank account
  * @method Ppro setAccountPhone($value) Set phone number for destination account to pay out
  */
-class Ppro extends \Genesis\Api\Request\Base\Financial
+class Ppro extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
     use AsyncAttributes;
@@ -103,7 +103,7 @@ class Ppro extends \Genesis\Api\Request\Base\Financial
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::PPRO;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::PPRO;
     }
 
     /**
@@ -129,8 +129,8 @@ class Ppro extends \Genesis\Api\Request\Base\Financial
 
         $requiredFieldValues = [
             'payment_type'    => PaymentMethods::getMethods(),
-            'billing_country' => \Genesis\Utils\Country::getList(),
-            'currency'        => \Genesis\Utils\Currency::getList()
+            'billing_country' => master\libraries\genesis\src\Genesis\Utils\Country::getList(),
+            'currency'        => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
         ];
 
         $this->requiredFieldValues = CommonUtils::createArrayObject($requiredFieldValues);
@@ -193,7 +193,7 @@ class Ppro extends \Genesis\Api\Request\Base\Financial
                 ],
                 PaymentMethods::MYBANK     => [
                     [
-                        'billing_country' => ['IT', 'BE', 'PT', 'ES'],
+                        'billing_country' => ['IT'],
                         'currency'        => 'EUR'
                     ]
                 ]

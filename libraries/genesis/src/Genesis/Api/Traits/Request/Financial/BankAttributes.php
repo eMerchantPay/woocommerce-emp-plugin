@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use Genesis\Api\Validators\Request\RegexValidator;
-use Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Api\Validators\Request\RegexValidator;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
 
 /**
  * Trait BankAttributes
@@ -70,7 +70,7 @@ trait BankAttributes
      * @param $value
      *
      * @return $this
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function setBic($value)
     {

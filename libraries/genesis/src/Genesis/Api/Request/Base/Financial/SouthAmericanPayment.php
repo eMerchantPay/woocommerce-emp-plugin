@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\Financial;
 
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\Financial\PproAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PproAttributes;
 
 /**
  * Class SouthAmericanPayment
@@ -39,13 +39,13 @@ use Genesis\Api\Traits\Request\Financial\PproAttributes;
  *
  * @package Genesis\Api\Request\Base\Financial
  */
-abstract class SouthAmericanPayment extends \Genesis\Api\Request\Base\Financial
+abstract class SouthAmericanPayment extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial
 {
     use AddressInfoAttributes;
-    use AsyncAttributes;
-    use BirthDateAttributes;
-    use PaymentAttributes;
-    use PproAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PproAttributes;
 
     /**
      * @return array
@@ -71,7 +71,7 @@ abstract class SouthAmericanPayment extends \Genesis\Api\Request\Base\Financial
             'billing_country'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $allowedBillingCountries = $this->getAllowedBillingCountries();
         if (!empty($allowedBillingCountries)) {
@@ -79,7 +79,7 @@ abstract class SouthAmericanPayment extends \Genesis\Api\Request\Base\Financial
                 'billing_country' => $allowedBillingCountries
             ];
 
-            $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+            $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
         }
     }
 

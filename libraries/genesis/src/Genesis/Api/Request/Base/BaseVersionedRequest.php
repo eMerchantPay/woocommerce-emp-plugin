@@ -20,22 +20,22 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base;
 
-use Genesis\Builder;
-use Genesis\Exceptions\EnvironmentNotSet;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Builder;
+use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Class BaseVersionedRequest
  *
  * @package Genesis\Api\Request\Base
  */
-abstract class BaseVersionedRequest extends \Genesis\Api\Request
+abstract class BaseVersionedRequest extends master\libraries\genesis\src\Genesis\Api\Request
 {
     const DEFAULT_VERSION = 'v1';
 
@@ -80,9 +80,7 @@ abstract class BaseVersionedRequest extends \Genesis\Api\Request
      * @param $version
      *
      * @return $this
-     *
-     * @throws InvalidArgument
-     * @throws EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setVersion($version)
     {
@@ -103,8 +101,6 @@ abstract class BaseVersionedRequest extends \Genesis\Api\Request
      * @param $requestPath
      *
      * @return $this
-     *
-     * @throws EnvironmentNotSet
      */
     public function setRequestPath($requestPath)
     {
@@ -119,7 +115,7 @@ abstract class BaseVersionedRequest extends \Genesis\Api\Request
      * @param $requestType
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setRequestType($requestType)
     {
@@ -140,7 +136,7 @@ abstract class BaseVersionedRequest extends \Genesis\Api\Request
      * Set the per-request configuration
      *
      * @return void
-     * @throws EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initConfiguration()
     {
@@ -163,7 +159,7 @@ abstract class BaseVersionedRequest extends \Genesis\Api\Request
      */
     protected function populateStructure()
     {
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject(
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject(
             $this->getRequestStructure()
         );
     }

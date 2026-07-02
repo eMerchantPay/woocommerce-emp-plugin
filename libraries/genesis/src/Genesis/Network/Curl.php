@@ -20,14 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Network;
 
-use Genesis\Api\Request;
-use Genesis\Exceptions\ErrorNetwork;
+use master\libraries\genesis\src\Genesis\Api\Request;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorNetwork;
+use woocommerce
 
 /**
  * cURL Network Interface
@@ -71,7 +72,7 @@ class Curl extends Base
      * @param array $requestData
      *
      * @return void
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function prepareRequestBody($requestData)
     {
@@ -127,7 +128,7 @@ class Curl extends Base
      * Check whether or not a cURL request is successful
      *
      * @return string
-     * @throws \Genesis\Exceptions\ErrorNetwork
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorNetwork
      */
     public function checkForErrors()
     {
@@ -157,12 +158,6 @@ class Curl extends Base
                 return [
                     CURLOPT_CUSTOMREQUEST => 'PUT'
                 ];
-                break;
-            case Request::METHOD_PATCH:
-                return [
-                    CURLOPT_CUSTOMREQUEST => 'PATCH'
-                ];
-                break;
             default:
                 return [];
         }

@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\NonFinancial\Kyc\Genders;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\Genders;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait KycBillingInformation
@@ -106,7 +106,7 @@ trait KycBillingInformation
      * @param $gender
      *
      * @return KycBillingInformation
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setKycBillingGender($gender)
     {
@@ -121,7 +121,7 @@ trait KycBillingInformation
     /**
      * @param string $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setKycBillingBirthDate($value)
     {

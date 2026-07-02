@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\NonFinancial;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Request;
-use Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Request;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Class DateRangeRequest
@@ -38,7 +38,7 @@ use Genesis\Utils\Common;
  */
 abstract class DateRangeRequest extends Request
 {
-    use PagingAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\PagingAttributes;
 
     /**
      * start of the requested date range
@@ -59,7 +59,7 @@ abstract class DateRangeRequest extends Request
      *
      * @param $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setStartDate($value)
     {
@@ -82,7 +82,7 @@ abstract class DateRangeRequest extends Request
      *
      * @param $value
      * @return $this
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setEndDate($value)
     {
@@ -144,7 +144,7 @@ abstract class DateRangeRequest extends Request
     }
 
     /**
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     protected function checkRequirements()
     {
@@ -187,7 +187,7 @@ abstract class DateRangeRequest extends Request
     /**
      * Validates if Date Range is Valid one
      *
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     protected function validateDateRange()
     {

@@ -2,8 +2,9 @@
 
 namespace Genesis\Api\Request\Financial\TravelData;
 
-use Genesis\Api\Request\Financial\TravelData\Base\AidAttributes;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Request\Financial\TravelData\Base\AidAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use woocommerce
 
 class AirlineItineraryTaxesData extends AidAttributes
 {
@@ -17,11 +18,6 @@ class AirlineItineraryTaxesData extends AidAttributes
      */
     protected $feeType;
 
-    /**
-     * AirlineItineraryTaxesData constructor.
-     *
-     * @throws InvalidArgument
-     */
     public function __construct($feeAmount = null, $feeType = null)
     {
         $this->setFeeAmount($feeAmount);
@@ -32,6 +28,7 @@ class AirlineItineraryTaxesData extends AidAttributes
      * @param $value
      *
      * @return AirlineItineraryTaxesData
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setFeeAmount($value)
     {
@@ -46,9 +43,8 @@ class AirlineItineraryTaxesData extends AidAttributes
     /**
      * @param $value
      *
-     * @return AirlineItineraryTaxesData
-     *
-     * @throws InvalidArgument
+     * @return AirlineItineraryLegData
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setFeeType($value)
     {
@@ -61,11 +57,6 @@ class AirlineItineraryTaxesData extends AidAttributes
         return $this->setLimitedString('feeType', $value, 1, 8);
     }
 
-    /**
-     * Return the structure name
-     *
-     * @return string
-     */
     public function getStructureName()
     {
         return 'taxes';

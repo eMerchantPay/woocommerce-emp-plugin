@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018-2025 emerchantpay Ltd.
+ * Copyright (C) 2018-2024 emerchantpay Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * @author      emerchantpay Ltd.
- * @copyright   2018-2025 emerchantpay Ltd.
+ * @copyright   2018-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU General Public License, version 2 (GPL-2.0)
  * @package     resources/js/frontend/EmerchantpayDirect
  */
@@ -29,20 +29,15 @@ const directSettings = getSetting('emerchantpay-direct-blocks_data', {});
 const METHOD_NAME = 'emerchantpay_direct';
 
 const CreditCardForm = (props) => {
-	let [creditCardData, setCreditCardData]        = useState({});
+	const [creditCardData, setCreditCardData]      = useState({});
 	const cardWrapperRef                           = useRef(null);
 	const browserParams                            = empPopulateBrowserParams.execute(METHOD_NAME);
 	const {eventRegistration, emitResponse}        = props;
 	const {onPaymentProcessing, onCheckoutSuccess} = eventRegistration;
-	const publicKey	                               = directSettings.cse_public_key
 
 	useEffect(() => {
 		const unsubscribe = onPaymentProcessing(
 				async () => {
-					if ( publicKey ) {
-						creditCardData = cseEncrypt( creditCardData )
-					}
-
 				const blocksCheckout    = {[`${METHOD_NAME}_blocks_order`]: true};
 				const paymentMethodData = {
 					...browserParams,
@@ -128,20 +123,6 @@ const CreditCardForm = (props) => {
 			)
 			.catch(error => console.error('Error loading card.js:', error));
 	}, []);
-
-	let cseEncrypt = ( data ) => {
-		if ( ! data || ! data[`${METHOD_NAME}-card-number`] || data[`${METHOD_NAME}-card-number`]?.length > 19 ) return
-
-		let [month, year] = empCardDataEncrypt.transformCardExpiry(data[`${METHOD_NAME}-card-expiry`])
-		data['month'] 	  = month
-		data['year']      = year
-
-		data = empCardDataEncrypt.encrypt( publicKey, data )
-
-		data[`${METHOD_NAME}-card-expiry`] = `${data['month']}/${data['year']}`
-
-		return data
-	}
 
 	const handleInputChange = (e) => {
 		setCreditCardData(

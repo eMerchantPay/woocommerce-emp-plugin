@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Kyc\IdentityDocument;
 
-use Genesis\Api\Constants\NonFinancial\Kyc\IdentityDocumentMethods;
-use Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
-use Genesis\Api\Traits\Request\NonFinancial\IdentityDocuments;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\IdentityDocumentMethods;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\Kyc\BaseRequest;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\IdentityDocuments;
 
 /**
  * Class Upload
@@ -90,7 +90,7 @@ class Upload extends BaseRequest
      * @param $method
      *
      * @return Upload
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setMethod($method)
     {
@@ -115,13 +115,13 @@ class Upload extends BaseRequest
             'method'
         ];
 
-        $this->requiredFields = \Genesis\Utils\Common::createArrayObject($requiredFields);
+        $this->requiredFields = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFields);
 
         $requiredFieldsGroups = [
             'id'  => ['transaction_unique_id', 'reference_id']
         ];
 
-        $this->requiredFieldsGroups = \Genesis\Utils\Common::createArrayObject($requiredFieldsGroups);
+        $this->requiredFieldsGroups = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsGroups);
     }
 
     /**

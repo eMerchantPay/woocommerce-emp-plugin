@@ -20,13 +20,11 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\Fraud\Retrieval;
-
-use Genesis\Api\Traits\Request\NonFinancial\ModeAttribute;
 
 /**
  * Retrieval request by ARN/Unique Transaction Id
@@ -34,10 +32,8 @@ use Genesis\Api\Traits\Request\NonFinancial\ModeAttribute;
  * @package    Genesis
  * @subpackage Request
  */
-class Transaction extends \Genesis\Api\Request
+class Transaction extends master\libraries\genesis\src\Genesis\Api\Request
 {
-    use ModeAttribute;
-
     /**
      * Acquirer's Reference Number
      *
@@ -76,7 +72,7 @@ class Transaction extends \Genesis\Api\Request
             'original_transaction_unique_id'
         ];
 
-        $this->requiredFieldsOR = \Genesis\Utils\Common::createArrayObject($requiredFieldsOR);
+        $this->requiredFieldsOR = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldsOR);
     }
 
     /**
@@ -89,11 +85,10 @@ class Transaction extends \Genesis\Api\Request
         $treeStructure = [
             'retrieval_request_request' => [
                 'arn'                            => $this->arn,
-                'original_transaction_unique_id' => $this->original_transaction_unique_id,
-                'mode'                           => $this->mode
+                'original_transaction_unique_id' => $this->original_transaction_unique_id
             ]
         ];
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 }

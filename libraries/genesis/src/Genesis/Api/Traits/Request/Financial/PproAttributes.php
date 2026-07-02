@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial;
 
-use Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
 
 /**
  * Trait PproAttributes
@@ -77,7 +77,7 @@ trait PproAttributes
      * @param string $value
      *
      * @return $this
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function setConsumerReference($value)
     {
@@ -96,7 +96,7 @@ trait PproAttributes
      * @param string $value
      *
      * @return $this
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function setNationalId($value)
     {

@@ -20,17 +20,18 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Alternatives\Transaction;
 
-use Genesis\Api\Traits\MagicAccessors;
-use Genesis\Exceptions\Exception;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Currency as CurrencyUtils;
+use master\libraries\genesis\src\Genesis\Api\Traits\MagicAccessors;
+use master\libraries\genesis\src\Genesis\Exceptions\Exception;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Currency as CurrencyUtils;
+use woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerceuse woocommerce
 
 /**
  * Class Items
@@ -94,7 +95,7 @@ class Items
      *
      * @return float|int
      *
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function getOrderTaxAmount()
     {
@@ -121,8 +122,8 @@ class Items
      *
      * @return array
      *
-     * @throws InvalidArgument
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function toArray()
     {
@@ -148,7 +149,7 @@ class Items
      *
      * @return void
      *
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     public function validate()
     {
@@ -171,7 +172,7 @@ class Items
      *
      * @return void
      *
-     * @throws ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
      */
     private function checkCurrency()
     {

@@ -20,16 +20,16 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\NonFinancial\TokenizationApi;
 
-use Genesis\Api\Request\Base\NonFinancial\TokenizationApi\BaseRequest;
-use Genesis\Api\Traits\Request\NonFinancial\TokenizationApiAttributes;
-use Genesis\Api\Traits\Request\NonFinancial\TokenizationApiTokenAttributes;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\TokenizationApi\BaseRequest;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\TokenizationApiAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\NonFinancial\TokenizationApiTokenAttributes;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class ValidateToken
@@ -38,7 +38,7 @@ use Genesis\Utils\Common as CommonUtils;
  *
  * @package Genesis\Api\Request\NonFinancial\TokenizationApi
  */
-class ValidateToken extends BaseRequest
+class ValidateToken extends master\libraries\genesis\src\Genesis\Api\Request\Base\NonFinancial\TokenizationApi\BaseRequest
 {
     use TokenizationApiAttributes;
     use TokenizationApiTokenAttributes;

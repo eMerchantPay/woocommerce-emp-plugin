@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use Genesis\Api\Constants\NonFinancial\Kyc\CvvPresents;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\CvvPresents;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait PaymentDetails
@@ -94,7 +94,7 @@ trait PaymentDetails
      * @param $bin
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setBin($bin)
     {
@@ -111,7 +111,7 @@ trait PaymentDetails
      * @param $tail
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setTail($tail)
     {
@@ -128,7 +128,7 @@ trait PaymentDetails
      * @param $account
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setAccount($account)
     {
@@ -145,7 +145,7 @@ trait PaymentDetails
      * @param $cvvPresent
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setCvvPresent($cvvPresent)
     {

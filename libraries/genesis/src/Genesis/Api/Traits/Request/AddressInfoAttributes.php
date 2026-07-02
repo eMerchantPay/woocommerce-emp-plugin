@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -32,7 +32,7 @@ namespace Genesis\Api\Traits\Request;
  */
 trait AddressInfoAttributes
 {
-    use CustomerAddress\BillingInfoAttributes;
-    use CustomerAddress\CustomerInfoAttributes;
-    use CustomerAddress\ShippingInfoAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\BillingInfoAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\CustomerInfoAttributes;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\CustomerAddress\ShippingInfoAttributes;
 }

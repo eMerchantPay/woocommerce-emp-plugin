@@ -20,25 +20,25 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Alternatives\Invoice;
 
-use Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentMethodCategories;
-use Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentTypes;
-use Genesis\Api\Constants\Transaction\Types;
-use Genesis\Api\Request\Base\Financial\Alternative\Invoice;
-use Genesis\Api\Request\Financial\Alternatives\Transaction\Items;
-use Genesis\Api\Traits\Request\AddressInfoAttributes;
-use Genesis\Api\Traits\Request\Financial\Alternatives\Invoice\InvoiceValidation;
-use Genesis\Api\Traits\Request\Financial\AsyncAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Exceptions\ErrorParameter;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Exceptions\InvalidClassMethod;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentMethodCategories;
+use master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentTypes;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Alternative\Invoice;
+use master\libraries\genesis\src\Genesis\Api\Request\Financial\Alternatives\Transaction\Items;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\AddressInfoAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Alternatives\Invoice\InvoiceValidation;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\AsyncAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class Authorize
@@ -64,7 +64,7 @@ class Authorize extends Invoice
     use AddressInfoAttributes;
     use AsyncAttributes;
     use PaymentAttributes;
-    use InvoiceValidation;
+    use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\Alternatives\Invoice\InvoiceValidation;
 
     /**
      * Payment method category: either pay_over_time or pay_later
@@ -136,7 +136,7 @@ class Authorize extends Invoice
 
         $requiredFieldsConditional = [
             'payment_type' => [
-                PaymentTypes::SECURE_INVOICE => [
+                master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentTypes::SECURE_INVOICE => [
                     'customer_birthdate',
                     'customer_reference_number'
                 ]
@@ -145,8 +145,8 @@ class Authorize extends Invoice
         $this->requiredFieldsConditional = CommonUtils::createArrayObject($requiredFieldsConditional);
 
         $requiredFieldValues = [
-            'payment_type'            => PaymentTypes::getAll(),
-            'payment_method_category' => PaymentMethodCategories::getAll(),
+            'payment_type'            => master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentTypes::getAll(),
+            'payment_method_category' => master\libraries\genesis\src\Genesis\Api\Constants\Financial\Alternative\Invoice\PaymentMethodCategories::getAll(),
             'currency'                => ['EUR', 'DKK', 'NOK', 'SEK'],
             'billing_country'         => ['AT', 'DK', 'FI', 'DE', 'NL', 'NO', 'SE'],
             'shipping_country'        => ['AT', 'DK', 'FI', 'DE', 'NL', 'NO', 'SE']
@@ -159,9 +159,9 @@ class Authorize extends Invoice
      *
      * @return void
      *
-     * @throws ErrorParameter
-     * @throws InvalidArgument
-     * @throws InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {
@@ -176,7 +176,7 @@ class Authorize extends Invoice
      *
      * @return array
      *
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     protected function getPaymentTransactionStructure()
     {

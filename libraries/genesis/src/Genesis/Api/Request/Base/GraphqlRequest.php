@@ -20,16 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base;
 
-use Genesis\Builder;
-use Genesis\Exceptions\EnvironmentNotSet;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Builder;
+use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use woocommerce
 
 /**
  * Class GraphqlRequest
@@ -74,7 +75,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
      *
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function addResponseField($value)
     {
@@ -97,7 +98,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
      *
      * @param array $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setResponseFields($value)
     {
@@ -152,7 +153,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
      * Set the per-request configuration
      *
      * @return void
-     * @throws EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initConfiguration()
     {
@@ -168,7 +169,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
      *
      * @param $request_path
      * @return void
-     * @throws \Genesis\Exceptions\EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initializeServiceApiRouter($request_path)
     {
@@ -213,7 +214,7 @@ abstract class GraphqlRequest extends BaseVersionedRequest
             )
         ];
 
-        $this->treeStructure = \Genesis\Utils\Common::createArrayObject($treeStructure);
+        $this->treeStructure = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($treeStructure);
     }
 
     /**

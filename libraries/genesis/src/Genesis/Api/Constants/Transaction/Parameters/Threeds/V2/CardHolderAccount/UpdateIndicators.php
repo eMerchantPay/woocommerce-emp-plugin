@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\CardHolderAccount;
 
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Length of time since the cardholder’s account information with the 3DS Requestor was last changed.

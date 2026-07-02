@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\NonFinancial;
 
-use Genesis\Api\Constants\NonFinancial\Kyc\PaymentMethods;
-use Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Api\Constants\NonFinancial\Kyc\PaymentMethods;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
 
 /**
  * Trait DepositLimits
@@ -61,12 +61,12 @@ trait DepositLimits
     protected $monthly_maximum;
 
     /**
-     * CC; EC; - CreditCard; Echeck;
+     * CC; EC; EW - CreditCard; Echeck; EWallet
      *
      * @param $method
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setPaymentMethod($method)
     {

@@ -20,13 +20,13 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\Financial\Cards\Recurring;
 
-use Genesis\Api\Constants\Transaction\Parameters\Recurring\Types;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types;
 
 /**
  * trait RecurringTypeAttributes
@@ -55,7 +55,7 @@ trait RecurringTypeAttributes
         return [
             'recurring_type' => [
                 $this->recurring_type => [
-                    ['recurring_type' => Types::getInitialTypes()]
+                    ['recurring_type' => master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types::getInitialTypes()]
                 ]
             ]
         ];
@@ -72,8 +72,8 @@ trait RecurringTypeAttributes
             'recurring_type' => [
                 $this->recurring_type => [
                     ['recurring_type' => array_merge(
-                        Types::getInitialTypes(),
-                        Types::getSubsequentTypes()
+                        master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types::getInitialTypes(),
+                        master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types::getSubsequentTypes()
                     )]
                 ]
             ]
@@ -90,7 +90,7 @@ trait RecurringTypeAttributes
     {
         return [
             'recurring_type' => [
-                Types::MANAGED => [
+                master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Recurring\Types::MANAGED => [
                     'managed_recurring_mode'
                 ]
             ]

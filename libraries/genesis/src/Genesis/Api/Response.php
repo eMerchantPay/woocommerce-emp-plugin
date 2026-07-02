@@ -20,17 +20,17 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api;
 
 use DateTime;
-use Genesis\Exceptions\InvalidMethod;
-use Genesis\Exceptions\InvalidResponse;
-use Genesis\Network;
-use Genesis\Parser;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidResponse;
+use master\libraries\genesis\src\Genesis\Network;
+use master\libraries\genesis\src\Genesis\Parser;
 
 /**
  * Response - process/format an incoming Genesis response
@@ -101,20 +101,20 @@ class Response
     /**
      * Genesis Request Context
      *
-     * @var \Genesis\Api\Request
+     * @var master\libraries\genesis\src\Genesis\Api\Request
      */
     protected $requestCtx;
 
     /**
      * Initialize with NetworkContext (if available)
      *
-     * @param \Genesis\Network|null $networkContext
+     * @param master\libraries\genesis\src\Genesis\Network|null $networkContext
      *
-     * @throws \Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function __construct($networkContext = null)
     {
-        if (!is_null($networkContext) && is_a($networkContext, '\Genesis\Network')) {
+        if (!is_null($networkContext) && is_a($networkContext, '\woocommerce-emp-plugin-master\libraries\genesis\src\Genesis\Network')) {
             $this->parseResponse($networkContext);
         }
     }
@@ -123,10 +123,10 @@ class Response
      * Parse Genesis response to stdClass and
      * apply transformation to known fields
      *
-     * @param Network $network
+     * @param master\libraries\genesis\src\Genesis\Network $network
      *
-     * @throws \Genesis\Exceptions\InvalidArgument
-     * @throws \Genesis\Exceptions\InvalidResponse
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidResponse
      */
     public function parseResponse(Network $network)
     {
@@ -184,7 +184,7 @@ class Response
      */
     public function isSuccessful()
     {
-        $status = new Constants\Transaction\States(
+        $status = new master\libraries\genesis\src\Genesis\Api\Constants\Transaction\States(
             isset($this->responseObj->status) ? $this->responseObj->status : ''
         );
 
@@ -205,7 +205,7 @@ class Response
     public function isPartiallyApproved()
     {
         if (isset($this->responseObj->partial_approval)) {
-            return \Genesis\Utils\Common::filterBoolean($this->responseObj->partial_approval);
+            return master\libraries\genesis\src\Genesis\Utils\Common::filterBoolean($this->responseObj->partial_approval);
         }
 
         return null;
@@ -219,11 +219,11 @@ class Response
     public function getErrorDescription()
     {
         if (isset($this->responseObj->code) && !empty($this->responseObj->code)) {
-            return Constants\Errors::getErrorDescription($this->responseObj->code);
+            return master\libraries\genesis\src\Genesis\Api\Constants\Errors::getErrorDescription($this->responseObj->code);
         }
 
         if (isset($this->responseObj->response_code) && !empty($this->responseObj->response_code)) {
-            return Constants\Errors::getIssuerResponseCode($this->responseObj->response_code);
+            return master\libraries\genesis\src\Genesis\Api\Constants\Errors::getIssuerResponseCode($this->responseObj->response_code);
         }
 
         return null;
@@ -328,7 +328,7 @@ class Response
 
         foreach ($properties as $property) {
             if (isset($transaction->{$property}) && isset($transaction->currency)) {
-                $transaction->{$property} = \Genesis\Utils\Currency::exponentToAmount(
+                $transaction->{$property} = master\libraries\genesis\src\Genesis\Utils\Currency::exponentToAmount(
                     $transaction->{$property},
                     $transaction->currency
                 );
@@ -348,7 +348,7 @@ class Response
     {
         // Process a single transaction
         if (isset($transaction->currency) && isset($transaction->amount)) {
-            $transaction->amount = \Genesis\Utils\Currency::exponentToAmount(
+            $transaction->amount = master\libraries\genesis\src\Genesis\Utils\Currency::exponentToAmount(
                 $transaction->amount,
                 $transaction->currency
             );
@@ -383,12 +383,12 @@ class Response
      * @param $method
      * @param $args
      *
-     * @throws InvalidMethod
      * @return bool
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidMethod
      */
     public function __call($method, $args)
     {
-        $status = new Constants\Transaction\States(
+        $status = new master\libraries\genesis\src\Genesis\Api\Constants\Transaction\States(
             isset($this->responseObj->status) ? $this->responseObj->status : ''
         );
 

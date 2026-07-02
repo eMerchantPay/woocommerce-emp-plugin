@@ -20,19 +20,19 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\NonFinancial\Alternatives\Trustly;
 
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Request\Base\BaseVersionedRequest;
-use Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
-use Genesis\Builder;
-use Genesis\Exceptions\EnvironmentNotSet;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\BaseVersionedRequest;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\BirthDateAttributes;
+use master\libraries\genesis\src\Genesis\Builder;
+use master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
 
 /**
  * Class BaseRequest
@@ -118,7 +118,7 @@ abstract class BaseRequest extends BaseVersionedRequest
      * @param string $value
      *
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setEmail($value)
     {
@@ -152,7 +152,7 @@ abstract class BaseRequest extends BaseVersionedRequest
      * Set the per-request configuration
      *
      * @return void
-     * @throws EnvironmentNotSet
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\EnvironmentNotSet
      */
     protected function initConfiguration()
     {

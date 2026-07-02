@@ -20,14 +20,14 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Financial\Alternatives;
 
-use Genesis\Api\Constants\Transaction\Parameters\Alternatives\P24\BankCodes;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Parameters\Alternatives\P24\BankCodes;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Class P24
@@ -39,7 +39,7 @@ use Genesis\Utils\Common;
  * @method integer getBankCode()       The Bank Code
  * @method $this   setBankCode($value) The Bank Code
  */
-class P24 extends \Genesis\Api\Request\Base\Financial\Alternative
+class P24 extends master\libraries\genesis\src\Genesis\Api\Request\Base\Financial\Alternative
 {
     /**
      * Bank codes may vary depending on the gateway configuration
@@ -56,7 +56,7 @@ class P24 extends \Genesis\Api\Request\Base\Financial\Alternative
      */
     protected function getTransactionType()
     {
-        return \Genesis\Api\Constants\Transaction\Types::P24;
+        return master\libraries\genesis\src\Genesis\Api\Constants\Transaction\Types::P24;
     }
 
     /**
@@ -74,10 +74,10 @@ class P24 extends \Genesis\Api\Request\Base\Financial\Alternative
                 'IE', 'IS', 'LT', 'LV', 'LU', 'MT', 'DE', 'NO', 'PL', 'PT', 'SM', 'SK',
                 'SI', 'CH', 'SE', 'HU', 'GB', 'IT', 'US', 'CA', 'JP', 'UA', 'BY', 'RU'
             ],
-            'currency'        => \Genesis\Utils\Currency::getList()
+            'currency'        => master\libraries\genesis\src\Genesis\Utils\Currency::getList()
         ];
 
-        $this->requiredFieldValues = \Genesis\Utils\Common::createArrayObject($requiredFieldValues);
+        $this->requiredFieldValues = master\libraries\genesis\src\Genesis\Utils\Common::createArrayObject($requiredFieldValues);
     }
 
     protected function checkRequirements()

@@ -20,27 +20,23 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Request\Base\Financial\Cards;
 
-use Genesis\Api\Request\Base\Financial;
-use Genesis\Api\Traits\Request\CreditCardAttributes;
-use Genesis\Api\Traits\Request\DocumentAttributes;
-use Genesis\Api\Traits\Request\Financial\Cards\TokenizationParamsAttributes;
-use Genesis\Api\Traits\Request\Financial\CredentialOnFileAttributes;
-use Genesis\Api\Traits\Request\Financial\PaymentAttributes;
-use Genesis\Api\Traits\Request\TokenizationAttributes;
-use Genesis\Utils\Common as CommonUtils;
-use Genesis\Utils\Currency;
+use master\libraries\genesis\src\Genesis\Api\Request\Base\Financial;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\CreditCardAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\DocumentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\CredentialOnFileAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\Financial\PaymentAttributes;
+use master\libraries\genesis\src\Genesis\Api\Traits\Request\TokenizationAttributes;
+use master\libraries\genesis\src\Genesis\Utils\Common as CommonUtils;
+use master\libraries\genesis\src\Genesis\Utils\Currency;
 
 /**
  * Class CreditCard
- *
- * @method bool getSchemeTokenized() Get the scheme tokenized
- *
  * @package Genesis\Api\Request\Base\Financial\Cards
  */
 abstract class CreditCard extends Financial
@@ -50,31 +46,8 @@ abstract class CreditCard extends Financial
     use DocumentAttributes;
     use PaymentAttributes;
     use TokenizationAttributes;
-    use TokenizationParamsAttributes;
 
     const REQUEST_KEY_AMOUNT = 'amount';
-
-    /**
-     * Required when the card_number is DPAN instead of Funding Primary Account Number,
-     * see Tokenized e-commerce for details
-     *
-     * @var bool
-     */
-    protected $scheme_tokenized;
-
-    /**
-     * Set Scheme tokenized value
-     *
-     * @param bool $value
-     *
-     * @return $this
-     */
-    public function setSchemeTokenized($value)
-    {
-        $this->scheme_tokenized = CommonUtils::toBoolean($value);
-
-        return $this;
-    }
 
     /**
      * Return additional request attributes
@@ -112,9 +85,9 @@ abstract class CreditCard extends Financial
      * Enable CC holder name validation if Client-Side Encryption is not set
      * Add document_id conditional validation if it is present
      *
-     * @throws \Genesis\Exceptions\ErrorParameter
-     * @throws \Genesis\Exceptions\InvalidArgument
-     * @throws \Genesis\Exceptions\InvalidClassMethod
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\ErrorParameter
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidClassMethod
      */
     protected function checkRequirements()
     {
@@ -171,15 +144,15 @@ abstract class CreditCard extends Financial
 
     protected function getPaymentTransactionStructure()
     {
-        return [
-            $this->getCCAttributesStructure(),
-            $this->getTokenizationStructure(),
-            $this->getPaymentAttributesStructure(),
-            $this->getTransactionAttributes(),
-            $this->getCredentialOnFileAttributesStructure(),
-            'scheme_tokenized'    => $this->scheme_tokenized,
-            'tokenization_params' => $this->tokenizationParamsAttributesStructure(),
-        ];
+        return array_merge(
+            [
+                $this->getCCAttributesStructure(),
+                $this->getTokenizationStructure(),
+                $this->getPaymentAttributesStructure(),
+                $this->getTransactionAttributes(),
+                $this->getCredentialOnFileAttributesStructure()
+            ]
+        );
     }
 
     protected function requiredTokenizationFieldsConditional()

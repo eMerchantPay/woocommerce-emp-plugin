@@ -2,7 +2,7 @@
 
 namespace Genesis\Exceptions;
 
-class InvalidClassMethod extends Exception
+use woocommerceclass InvalidClassMethod extends Exception
 {
     /**
      * @return string

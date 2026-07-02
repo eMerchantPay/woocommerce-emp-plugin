@@ -20,17 +20,15 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2024 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
 namespace Genesis\Api\Traits\Request\NonFinancial\Kyc;
 
-use DateTime;
-use Genesis\Api\Constants\DateTimeFormat;
-use Genesis\Api\Constants\NonFinancial\Kyc\VerificationAmlFilters;
-use Genesis\Exceptions\InvalidArgument;
-use Genesis\Utils\Common;
+use master\libraries\genesis\src\Genesis\Api\Constants\DateTimeFormat;
+use master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument;
+use master\libraries\genesis\src\Genesis\Utils\Common;
 
 /**
  * Trait KycBackgroundChecksVerifications
@@ -98,25 +96,11 @@ trait KycBackgroundChecksVerifications
     protected $background_checks_async_update;
 
     /**
-     * One or more AML Filters to query.
-     *
-     * @var string[]
-     */
-    protected $background_checks_filters = [];
-
-    /**
-     * Minimum match score to consider the match successful. Default: 100
-     *
-     * @var int
-     */
-    protected $match_score;
-
-    /**
      * Set the correct value for Verifications Background Checks Date Of Birth
      *
      * @param $value
      * @return $this
-     * @throws InvalidArgument
+     * @throws master\libraries\genesis\src\Genesis\Exceptions\InvalidArgument
      */
     public function setBackgroundChecksDateOfBirth($value)
     {
@@ -160,77 +144,6 @@ trait KycBackgroundChecksVerifications
     }
 
     /**
-     * Add Background Checks Filters
-     *
-     * @param string $filter
-     * @return $this
-     * @throws InvalidArgument
-     */
-    public function addBackgroundChecksFilters($filter)
-    {
-        if (empty($filter)) {
-            return $this;
-        }
-
-        $allowed = VerificationAmlFilters::getAll();
-
-        if (!in_array($filter, $allowed)) {
-            throw new InvalidArgument(
-                'Invalid value given for Background Checks Filters. Allowed values are ' .
-                implode(', ', $allowed)
-            );
-        }
-
-        if (!in_array($filter, $this->background_checks_filters)) {
-            $this->background_checks_filters[] = $filter;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set Background Checks Filters
-     *
-     * @param $filters
-     * @return $this
-     * @throws InvalidArgument
-     */
-    public function setBackgroundChecksFilters($filters)
-    {
-        if (empty($filters)) {
-            $this->background_checks_filters = null;
-
-            return $this;
-        }
-
-        $allowed = VerificationAmlFilters::getAll();
-        array_walk($filters, function ($filter) use ($allowed) {
-            if (!in_array($filter, $allowed)) {
-                throw new InvalidArgument(
-                    'Invalid value given for Background Checks Filters. Allowed values are ' .
-                    implode(', ', $allowed)
-                );
-            }
-        });
-
-        $this->background_checks_filters = $filters;
-
-        return $this;
-    }
-
-    /**
-     * Set the correct value for Verifications Match Score
-     *
-     * @param $value
-     * @return $this
-     * @throws InvalidArgument
-     */
-    public function setBackgroundChecksMatchScore($value)
-    {
-        return $this->parseAmount('match_score', $value);
-    }
-
-    /**
      * Get the correct structure for Verifications Background Checks
      *
      * @return array
@@ -244,8 +157,6 @@ trait KycBackgroundChecksVerifications
             'full_name'     => $this->background_checks_full_name,
             'date_of_birth' => $this->getBackgroundChecksDateOfBirth(),
             'async_update'  => $this->background_checks_async_update,
-            'filters'       => $this->background_checks_filters,
-            'match_score'   => $this->match_score
         ];
     }
 }
