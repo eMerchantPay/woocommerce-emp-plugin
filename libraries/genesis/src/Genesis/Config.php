@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -52,7 +52,7 @@ final class Config
     /**
      * Library Version
      */
-    const VERSION = '2.2.0';
+    const VERSION = '2.2.2';
 
     /**
      * Core configuration settings
@@ -142,6 +142,8 @@ final class Config
      */
     public static function getInterface($type)
     {
+        $type = $type === null ? '' : $type;
+
         if (array_key_exists($type, self::$interfaces)) {
             return self::$interfaces[$type];
         }
@@ -159,6 +161,8 @@ final class Config
      */
     public static function setInterface($interface, $value)
     {
+        $interface = $interface === null ? '' : $interface;
+
         if (array_key_exists($interface, self::$interfaces)) {
             self::$interfaces[$interface] = $value;
 

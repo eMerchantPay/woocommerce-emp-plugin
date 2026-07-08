@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -152,17 +152,17 @@ abstract class CreditCard extends Financial
         return $this->client_side_encryption ? [] :
         [
             'card_number' => [
-                $this->card_number => [
+                ($this->card_number === null ? '' : $this->card_number) => [
                     ['card_number' => $this->getCreditCardNumberValidator()]
                 ]
             ],
             'expiration_month' => [
-                $this->expiration_month => [
+                ($this->expiration_month === null ? '' : $this->expiration_month) => [
                     ['expiration_month' => $this->getCreditCardExpMonthValidator()]
                 ]
             ],
             'expiration_year' => [
-                $this->expiration_year => [
+                ($this->expiration_year === null ? '' : $this->expiration_year) => [
                     ['expiration_year' => $this->getCreditCardExpYearValidator()]
                 ]
             ]

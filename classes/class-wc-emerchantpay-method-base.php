@@ -1721,10 +1721,9 @@ abstract class WC_Emerchantpay_Method_Base extends WC_Payment_Gateway_CC {
 							'Your payment has been declined, please check your data and try again'
 						);
 
-						WC()->session->set( 'order_awaiting_payment', false );
 						$order->update_status( self::ORDER_STATUS_CANCELLED, $notice );
 
-						WC_Emerchantpay_Message_Helper::add_error_notice( $notice );
+						WC()->session->set( 'emp_payment_error', $notice );
 
 						if ( $this->get_method_setting( self::SETTING_KEY_REDIRECT_FAILURE ) === self::SETTING_VALUE_CHECKOUT ) {
 							$return_url = wc_get_checkout_url();

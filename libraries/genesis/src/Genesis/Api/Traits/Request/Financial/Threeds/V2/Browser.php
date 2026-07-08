@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -238,7 +238,7 @@ trait Browser
     {
         return [
             'threeds_v2_browser_color_depth' => [
-                $this->threeds_v2_browser_color_depth => [
+                ($this->threeds_v2_browser_color_depth === null ? '' : $this->threeds_v2_browser_color_depth) => [
                     ['threeds_v2_browser_color_depth' => ColorDepths::getAll()]
                 ]
             ]

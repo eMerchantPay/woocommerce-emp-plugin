@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -209,6 +209,8 @@ final class Common
             return false;
         }
 
+        $key = $key === null ? '' : $key;
+
         return array_key_exists($key, $arr);
     }
 
@@ -259,6 +261,8 @@ final class Common
         if (!$arrObj instanceof \ArrayObject) {
             return null;
         }
+
+        $key = $key === null ? '' : $key;
 
         $arr = $arrObj->getArrayCopy();
 

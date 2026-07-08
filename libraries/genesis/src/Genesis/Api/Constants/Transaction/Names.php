@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -158,6 +158,8 @@ class Names
      */
     public static function getName($transactionType)
     {
+        $transactionType = $transactionType === null ? '' : $transactionType;
+
         return array_key_exists($transactionType, self::$names) ?
             self::$names[$transactionType] : 'Unknown Transaction Type';
     }

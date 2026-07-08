@@ -93,11 +93,20 @@ final class WC_Emerchantpay_Blocks_Checkout extends WC_Emerchantpay_Blocks_Base 
 	 * @return array
 	 */
 	public function get_payment_method_data() {
+		$error_message = '';
+		if ( WC()->session ) {
+			$error_message = WC()->session->get( 'emp_payment_error', '' );
+			if ( $error_message ) {
+				WC()->session->set( 'emp_payment_error', null );
+			}
+		}
+
 		return array(
 			'title'             => $this->settings['title'],
 			'description'       => $this->settings['description'],
 			'supports'          => array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ),
 			'iframe_processing' => $this->settings['iframe_processing'],
+			'payment_error'     => $error_message,
 		);
 	}
 }

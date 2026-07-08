@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -84,7 +84,7 @@ class P24 extends \Genesis\Api\Request\Base\Financial\Alternative
     {
         $requiredFieldValuesConditional = [
             'bank_code' => [
-                $this->bank_code => [
+                ($this->bank_code === null ? '' : $this->bank_code) => [
                     [
                         'bank_code' => BankCodes::getAll(),
                         'currency' => $this->bankCodeCurrencies

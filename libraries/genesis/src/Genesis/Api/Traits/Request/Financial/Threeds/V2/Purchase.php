@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -51,7 +51,7 @@ trait Purchase
     {
         return [
             'threeds_v2_purchase_category' => [
-                $this->threeds_v2_purchase_category => [
+                ($this->threeds_v2_purchase_category === null ? '' : $this->threeds_v2_purchase_category) => [
                     ['threeds_v2_purchase_category' => Categories::getAll()]
                 ]
             ]

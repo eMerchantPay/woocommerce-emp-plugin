@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -236,7 +236,7 @@ trait Sdk
     {
         return [
             'threeds_v2_sdk_interface' => [
-                $this->threeds_v2_sdk_interface => [
+                ($this->threeds_v2_sdk_interface === null ? '' : $this->threeds_v2_sdk_interface) => [
                     ['threeds_v2_sdk_interface' => Interfaces::getAll()]
                 ]
             ]

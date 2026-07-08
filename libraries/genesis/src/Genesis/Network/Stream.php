@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -147,7 +147,11 @@ class Stream extends Base
 
         $this->responseBody = stream_get_contents($stream);
 
-        $this->responseHeaders = implode("\r\n", $http_response_header);
+        $responseHeaders = function_exists('http_get_last_response_headers')
+            ? http_get_last_response_headers()
+            : $http_response_header;
+
+        $this->responseHeaders = implode("\r\n", $responseHeaders);
 
         $this->response = $this->responseHeaders . "\r\n\r\n" . $this->responseBody;
 
@@ -221,10 +225,9 @@ class Stream extends Base
     {
         switch ($requestData['authorization']) {
             case Request::AUTH_TYPE_TOKEN:
-                return sprintf('Authorization: Bearer %s', base64_encode($requestData['token']));
-                break;
+                return 'Authorization: Bearer ' . $requestData['token'];
             default:
-                return sprintf('Authorization: Basic %s', base64_encode($requestData['user_login']));
+                return 'Authorization: Basic ' . base64_encode($requestData['user_login']);
         }
     }
 }

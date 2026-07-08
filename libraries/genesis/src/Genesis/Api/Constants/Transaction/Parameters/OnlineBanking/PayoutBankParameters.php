@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -387,7 +387,7 @@ class PayoutBankParameters
      */
     public static function getBankNamesPerCurrency($currency)
     {
-        $currency = strtoupper($currency);
+        $currency = $currency === null ? '' : strtoupper($currency);
 
         if (array_key_exists($currency, self::$names)) {
             return self::$names[$currency];

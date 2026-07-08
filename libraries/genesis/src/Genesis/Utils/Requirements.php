@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -139,6 +139,8 @@ final class Requirements
      */
     public static function getErrorMessage($name)
     {
+        $name = $name === null ? '' : $name;
+
         $messages = [
             'system'    => 'Unsupported PHP version, please upgrade!' . PHP_EOL .
                            'This library requires PHP version ' . self::$minPHPVersion . ' or newer.',

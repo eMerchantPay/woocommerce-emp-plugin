@@ -69,6 +69,7 @@ class WC_Emerchantpay_Functions {
 		add_action( 'woocommerce_api_' . strtolower( WC_Emerchantpay_Frame_Handler::class ), array( new WC_Emerchantpay_Frame_Handler(), 'frame_handler' ) );
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'emp_direct_threeds_iframe' ) );
 		add_action( 'woocommerce_before_thankyou', array( $this, 'emp_woo_custom_redirect_after_purchase' ) );
+		add_action( 'woocommerce_before_checkout_form', array( $this, 'emp_display_payment_declined_notice' ) );
 
 		// Add arguments to JS script source
 		add_filter( 'script_loader_tag', array( $this, 'handle_cse_script_arguments' ), 10, 2 );
@@ -153,6 +154,29 @@ class WC_Emerchantpay_Functions {
 	 */
 	public function emp_direct_threeds_iframe() {
 		echo '<div class="emp-threeds-modal"><iframe class="emp-threeds-iframe" allow="payment" frameBorder="0" style="border: none;"></iframe></div>';
+	}
+
+	/**
+	 * Display payment error notice on classic checkout.
+	 *
+	 * Reads the custom session key `emp_payment_error` (set by handle_return)
+	 * and displays it as a WC error notice. This is safe for classic checkout
+	 * because the notice is added at render time, not stored via wc_add_notice()
+	 * during the API callback. The session key is cleared after display.
+	 *
+	 * @return void
+	 */
+	public function emp_display_payment_declined_notice() {
+		if ( ! WC()->session ) {
+			return;
+		}
+
+		$error_message = WC()->session->get( 'emp_payment_error' );
+
+		if ( $error_message ) {
+			WC()->session->set( 'emp_payment_error', null );
+			wc_add_notice( $error_message, 'error' );
+		}
 	}
 
 	/**

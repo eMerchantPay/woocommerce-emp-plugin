@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author      emerchantpay
- * @copyright   Copyright (C) 2015-2025 emerchantpay Ltd.
+ * @copyright   Copyright (C) 2015-2026 emerchantpay Ltd.
  * @license     http://opensource.org/licenses/MIT The MIT License
  */
 
@@ -54,7 +54,7 @@ trait RecurringTypeAttributes
     {
         return [
             'recurring_type' => [
-                $this->recurring_type => [
+                ($this->recurring_type === null ? '' : $this->recurring_type) => [
                     ['recurring_type' => Types::getInitialTypes()]
                 ]
             ]
@@ -70,7 +70,7 @@ trait RecurringTypeAttributes
     {
         return [
             'recurring_type' => [
-                $this->recurring_type => [
+                ($this->recurring_type === null ? '' : $this->recurring_type) => [
                     ['recurring_type' => array_merge(
                         Types::getInitialTypes(),
                         Types::getSubsequentTypes()

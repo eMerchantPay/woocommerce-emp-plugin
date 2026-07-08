@@ -27,12 +27,18 @@ const requestToHandle = (request) => {
 // Export configuration.
 module.exports = {
 	...defaultConfig,
+	devtool: 'source-map',
 	entry: {
-		'frontend/blocks': '/resources/js/frontend/index.js',
+		'frontend/blocks': './resources/js/frontend/index.js',
 	},
 	output: {
 		path: path.resolve( __dirname, 'assets/js' ),
 		filename: '[name].js',
+		chunkFilename: '[name].js',
+	},
+	optimization: {
+		...defaultConfig.optimization,
+		chunkIds: 'named',
 	},
 	plugins: [
 		...defaultConfig.plugins.filter(

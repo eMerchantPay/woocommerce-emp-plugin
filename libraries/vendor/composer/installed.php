@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'emerchantpay/woocommerce-emerchantpay-plugin',
-        'pretty_version' => '1.17.13',
-        'version' => '1.17.13.0',
-        'reference' => NULL,
+        'pretty_version' => '1.17.14',
+        'version' => '1.17.14.0',
+        'reference' => null,
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'emerchantpay/woocommerce-emerchantpay-plugin' => array(
-            'pretty_version' => '1.17.13',
-            'version' => '1.17.13.0',
-            'reference' => NULL,
+            'pretty_version' => '1.17.14',
+            'version' => '1.17.14.0',
+            'reference' => null,
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../../',
             'aliases' => array(),

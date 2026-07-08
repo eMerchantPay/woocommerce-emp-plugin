@@ -3,7 +3,7 @@
   "description": "emerchantpay Payment Gateway for WooCommerce",
   "minimum-stability": "stable",
   "license": "GPL-2.0",
-  "version": "1.17.13",
+  "version": "1.17.14",
   "type": "wordpress-plugin",
   "authors": [
     {
@@ -30,7 +30,8 @@
   "require-dev": {
     "wp-coding-standards/wpcs": "^3.1",
     "squizlabs/php_codesniffer": "^3.9",
-    "phpmd/phpmd" : "^2.15"
+    "phpmd/phpmd" : "^2.15",
+    "phpunit/phpunit": "^9.6"
   },
   "scripts": {
       "pack": [
@@ -61,6 +62,9 @@
       "styles": [
         "@php-cs",
         "@php-md"
-    ]
+      ],
+      "test": [
+        "libraries/vendor/bin/phpunit"
+      ]
   }
 }

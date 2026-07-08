@@ -26,6 +26,24 @@ import React, {useEffect} from 'react';
 const checkoutSettings = getSetting('emerchantpay-checkout-blocks_data', {});
 const METHOD_NAME      = 'emerchantpay_checkout';
 
+/**
+ * Display payment error notice from server-side session data.
+ * The error message is passed via payment method settings (rendered on page load).
+ * Uses the WordPress core/notices store for theme-agnostic rendering.
+ *
+ * @param {string} errorMessage The error message to display.
+ */
+const showPaymentErrorNotice = (errorMessage) => {
+    if (!errorMessage) {
+        return;
+    }
+
+    const {dispatch} = wp.data;
+    dispatch('core/notices').createErrorNotice(errorMessage, {
+        context: 'wc/checkout',
+    });
+};
+
 let EmerchantpayBlocksCheckout = {};
 
 if (Object.keys(checkoutSettings).length) {
@@ -41,6 +59,10 @@ if (Object.keys(checkoutSettings).length) {
     const Description = (props) => {
         const {eventRegistration, emitResponse}        = props;
         const {onPaymentProcessing, onCheckoutSuccess} = eventRegistration;
+
+        useEffect(() => {
+            showPaymentErrorNotice(checkoutSettings.payment_error);
+        }, []);
 
         useEffect(() => {
             if (checkoutSettings.iframe_processing !== 'yes') {
