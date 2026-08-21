@@ -69,7 +69,6 @@ class WC_Emerchantpay_Direct extends WC_Emerchantpay_Method_Base {
 	const THREEDS_V2_SCREEN_WIDTH                 = 'screen_width';
 	const THREEDS_V2_USER_AGENT                   = 'user_agent';
 	const THREEDS_V2_BROWSER_TIMEZONE_ZONE_OFFSET = 'browser_timezone_zone_offset';
-	const ENCRYPT_LIBRARY_INTEGRITY_HASH          = 'sha512-fezEmqlQWwvKq3A2s897RSda3JsDen/xmPTsBmnx6TWk++rnofg2omiNLHhCbQvQ8DtEvfAvXQTsvE95DlELAw==';
 
 	/**
 	 * Constant contains browser parameters field names

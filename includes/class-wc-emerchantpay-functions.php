@@ -70,9 +70,6 @@ class WC_Emerchantpay_Functions {
 		add_action( 'woocommerce_after_checkout_form', array( $this, 'emp_direct_threeds_iframe' ) );
 		add_action( 'woocommerce_before_thankyou', array( $this, 'emp_woo_custom_redirect_after_purchase' ) );
 		add_action( 'woocommerce_before_checkout_form', array( $this, 'emp_display_payment_declined_notice' ) );
-
-		// Add arguments to JS script source
-		add_filter( 'script_loader_tag', array( $this, 'handle_cse_script_arguments' ), 10, 2 );
 	}
 
 	/**
@@ -140,8 +137,8 @@ class WC_Emerchantpay_Functions {
 			$this->enqueue_style( 'emp-iframe-checkout', '/assets/css/iframe-checkout.css' );
 
 			// Client Side Encryption scripts
-			wp_enqueue_script( 'emp-cse-direct', 'https://d3ptmkrtf16kmh.cloudfront.net/encrypto-1.0.1.js', array(), WC_Emerchantpay_Helper::get_plugin_version(), true );
-			$this->enqueue_script( 'emp-cse-direct-encrypt', '/assets/javascript/direct-credit-card-data-encrypt.js' );
+			$this->enqueue_script( 'emp-cse-direct', '/assets/javascript/encrypto.js' );
+			$this->enqueue_script( 'emp-cse-direct-encrypt', '/assets/javascript/direct-credit-card-data-encrypt.js', array( 'emp-cse-direct' ) );
 		}
 
 		$this->enqueue_style( 'emp-threeds', '/assets/css/threeds.css' );
@@ -215,41 +212,23 @@ class WC_Emerchantpay_Functions {
 		exit;
 	}
 
-	/**
-	 * Adds arguments to specified scripts
-	 *
-	 * @param $tag
-	 * @param $handle
-	 *
-	 * @return array|mixed|string|string[]
-	 */
-	public function handle_cse_script_arguments( $tag, $handle ) {
-		if ( 'emp-cse-direct' === $handle ) {
-			return str_replace(
-				' src',
-				sprintf( ' integrity="%s" crossorigin="anonymous" src', WC_Emerchantpay_Direct::ENCRYPT_LIBRARY_INTEGRITY_HASH ),
-				$tag
-			);
-		}
-
-		return $tag;
-	}
 
 	/**
 	 * Enqueue script.
 	 *
 	 * @param string $handle Script handle.
-	 * @param string $file   Script file.
+	 * @param string $file         Script file.
+	 * @param array  $dependencies Script dependencies.
 	 *
 	 * @return void
 	 */
-	private function enqueue_script( $handle, $file ) {
+	private function enqueue_script( $handle, $file, $dependencies = array() ) {
 		$version = WC_Emerchantpay_Helper::get_plugin_version();
 
 		wp_enqueue_script(
 			$handle,
 			plugins_url( $file, $this->file ),
-			array(),
+			$dependencies,
 			$version,
 			true
 		);

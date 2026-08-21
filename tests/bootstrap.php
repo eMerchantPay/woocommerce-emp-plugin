@@ -17,6 +17,7 @@ require_once dirname( __DIR__ ) . '/libraries/vendor/autoload.php';
 // Load test stubs and helpers.
 require_once __DIR__ . '/stubs/wordpress-stubs.php';
 require_once __DIR__ . '/stubs/woocommerce-stubs.php';
+require_once __DIR__ . '/stubs/blocks-and-scripts-stubs.php';
 
 // Load the message helper (real production code — it's simple enough).
 require_once dirname( __DIR__ ) . '/classes/class-wc-emerchantpay-message-helper.php';

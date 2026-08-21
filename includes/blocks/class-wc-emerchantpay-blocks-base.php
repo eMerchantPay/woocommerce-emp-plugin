@@ -37,6 +37,11 @@ abstract class WC_Emerchantpay_Blocks_Base extends AbstractPaymentMethodType {
 	protected $name;
 
 	/**
+	 * Shared Blocks bundle script handle.
+	 */
+	public const BLOCKS_SCRIPT_HANDLE = 'wc-emerchantpay-payments-blocks';
+
+	/**
 	 * The gateway instance.
 	 *
 	 * @var \stdClass
@@ -73,6 +78,41 @@ abstract class WC_Emerchantpay_Blocks_Base extends AbstractPaymentMethodType {
 	 */
 	public function is_active() {
 		return $this->gateway->is_available();
+	}
+
+	/**
+	 * Returns the shared Blocks bundle handle.
+	 *
+	 * @return array
+	 */
+	public function get_payment_method_script_handles() {
+		$script_asset_path = WC_Emerchantpay_Constants::plugin_abspath() . 'assets/js/frontend/blocks.asset.php';
+		$script_asset      = file_exists( $script_asset_path )
+			? require $script_asset_path
+			: array(
+				'dependencies' => array(),
+				'version'      => WC_Emerchantpay_Helper::get_plugin_version(),
+			);
+
+		if ( ! wp_script_is( self::BLOCKS_SCRIPT_HANDLE, 'registered' ) ) {
+			wp_register_script(
+				self::BLOCKS_SCRIPT_HANDLE,
+				WC_Emerchantpay_Constants::plugin_url() . '/assets/js/frontend/blocks.js',
+				$script_asset['dependencies'],
+				$script_asset['version'],
+				true
+			);
+
+			if ( function_exists( 'wp_set_script_translations' ) ) {
+				wp_set_script_translations(
+					self::BLOCKS_SCRIPT_HANDLE,
+					'woocommerce-emerchantpay',
+					WC_Emerchantpay_Constants::plugin_abspath() . 'languages/'
+				);
+			}
+		}
+
+		return array( self::BLOCKS_SCRIPT_HANDLE );
 	}
 
 	/**

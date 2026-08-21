@@ -66,42 +66,6 @@ final class WC_Emerchantpay_Blocks_Direct extends WC_Emerchantpay_Blocks_Base {
 	}
 
 	/**
-	 * Returns an array of scripts/handles to be registered for this payment method.
-	 * new WC_Payment_Gateway();
-	 *
-	 * @return array
-	 */
-	public function get_payment_method_script_handles() {
-		$script_path       = '/assets/js/frontend/blocks.js';
-		$script_asset_path = WC_Emerchantpay_Constants::plugin_abspath() . 'assets/js/frontend/blocks.asset.php';
-		$script_asset      = file_exists( $script_asset_path )
-			? require $script_asset_path
-			: array(
-				'dependencies' => array(),
-				'version'      => WC_Emerchantpay_Helper::get_plugin_version(),
-			);
-		$script_url        = WC_Emerchantpay_Constants::plugin_url() . $script_path;
-
-		wp_register_script(
-			'wc-emerchantpay-payments-blocks-direct',
-			$script_url,
-			$script_asset['dependencies'],
-			$script_asset['version'],
-			true
-		);
-
-		if ( function_exists( 'wp_set_script_translations' ) ) {
-			wp_set_script_translations(
-				'wc-emerchantpay-payments-blocks-direct',
-				'woocommerce-emerchantpay',
-				WC_Emerchantpay_Constants::plugin_abspath() . 'languages/'
-			);
-		}
-
-		return array( 'wc-emerchantpay-payments-blocks-direct' );
-	}
-
-	/**
 	 * Returns an array of key=>value pairs of data made available to the payment methods script.
 	 *
 	 * @return array
